@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
-
 import '../../../../core/helpers/app_regex.dart';
 import '../../../../core/helpers/widget/custom_text_feild.dart';
 import '../../logic/cubit/login_cubit.dart';
@@ -32,6 +31,16 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
             return null;
           },
           controller: context.read<LoginCubit>().emailController,
+
+          suffixIcon: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10.w),
+            child: Icon(
+              Icons.email_outlined,
+
+              size: 30,
+              color: AppColors.white.withOpacity(0.40),
+            ),
+          ),
         ),
         SizedBox(height: 30.h),
         AppTextFormFeild(
@@ -55,9 +64,11 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
               });
             },
             child: Padding(
-              padding:  EdgeInsets.symmetric(horizontal: 10.w),
+              padding: EdgeInsets.symmetric(horizontal: 10.w),
               child: Icon(
-                isObscureText ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                isObscureText
+                    ? Icons.visibility_off_outlined
+                    : Icons.visibility_outlined,
                 size: 30,
                 color: AppColors.white.withOpacity(0.40),
               ),

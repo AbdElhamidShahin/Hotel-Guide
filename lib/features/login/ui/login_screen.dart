@@ -7,6 +7,7 @@ import 'package:hotel_guide/core/theme/app_theme.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
 import 'package:hotel_guide/features/login/ui/widget/EmailAndPassword.dart';
 import 'package:hotel_guide/features/login/ui/widget/divider_with_text.dart';
+import 'package:hotel_guide/features/login/ui/widget/social_login_section.dart';
 import '../../../core/helpers/contact/custom_show_snackbar.dart';
 import '../../../core/helpers/widget/custom_button.dart';
 import '../../../core/router/routers.dart';
@@ -21,122 +22,129 @@ class LoginScreen extends StatelessWidget {
     return Form(
       key: context.read<LoginCubit>().formKey,
       child: Scaffold(
-        body: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Color(0xFF181201), Color(0xFFB25916)],
-              stops: [0.67, 1.0],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
+        body: SingleChildScrollView(
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color(0xFF181201), Color(0xFFB25916)],
+                stops: [0.55, 1.0],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
             ),
-          ),
-          child: Stack(
-            children: [
-              Column(
-                children: [
-                  SizedBox(height: 37.h),
-                  Image.asset(
-                    "assets/images/logo/logo.png",
-                    width: 244.33.w,
-                    height: 237.67.h,
-                  ),
+            child: Stack(
+              children: [
+                Padding(
+                  padding:  EdgeInsets.symmetric(horizontal: 24.0),
+                  child: Column(
+                    children: [
+                      SizedBox(height: 24.h),
+                      Image.asset(
+                        "assets/images/logo/logo.png",
+                        width: 244.33.w,
+                        height: 237.67.h,
+                      ),
 
-                  BlocListener<LoginCubit, LoginState>(
-                    listener: (context, state) {
-                      if (state is LoginSuccess) {
-                        showCustomSnackbar(
-                          context,
-                          ContentType.success,
-                          'نجاح باهر! ✅',
-                          state.message,
-                        );
-                        context.go(routes.onBoardingScreen);
-                      } else if (state is LoginError) {
-                        showCustomSnackbar(
-                          context,
-                          ContentType.failure,
-                          'خطأ في الدخول 🚨',
-                          state.errorMessage,
-                        );
-                      } else if (state is LoginEmailNotVerified) {
-                        showCustomSnackbar(
-                          context,
-                          ContentType.warning,
-                          'تفعيل مطلوب 📧',
-                          "من فضلك تحقق من بريدك الإلكتروني لإتمام عملية التفعيل.",
-                        );
-                      }
-                    },
-                    child: BlocBuilder<LoginCubit, LoginState>(
-                      builder: (context, state) {
-                        final isLoading = state is LoginLoading;
+                      BlocListener<LoginCubit, LoginState>(
+                        listener: (context, state) {
+                          if (state is LoginSuccess) {
+                            showCustomSnackbar(
+                              context,
+                              ContentType.success,
+                              'نجاح باهر! ✅',
+                              state.message,
+                            );
+                            context.go(routes.onBoardingScreen);
+                          } else if (state is LoginError) {
+                            showCustomSnackbar(
+                              context,
+                              ContentType.failure,
+                              'خطأ في الدخول 🚨',
+                              state.errorMessage,
+                            );
+                          } else if (state is LoginEmailNotVerified) {
+                            showCustomSnackbar(
+                              context,
+                              ContentType.warning,
+                              'تفعيل مطلوب 📧',
+                              "من فضلك تحقق من بريدك الإلكتروني لإتمام عملية التفعيل.",
+                            );
+                          }
+                        },
+                        child: BlocBuilder<LoginCubit, LoginState>(
+                          builder: (context, state) {
+                            final isLoading = state is LoginLoading;
 
-                        return Align(
-                          alignment: Alignment.topCenter,
-                          child: SingleChildScrollView(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                const EmailAndPassword(),
-
-                                SizedBox(height: 30),
-                                SizedBox(
-                                  width: 260,
-                                  height: 70,
-                                  child: CustomButton(
-                                    text: 'التالي',
-                                    onTap: isLoading
-                                        ? null
-                                        : () {
-                                            context
-                                                .read<LoginCubit>()
-                                                .loginUser();
-                                          },
-                                  ),
-                                ),
-                                const SizedBox(height: 152),
-
-                                DividerWithText(),
-
-
-
-
-
-                                
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
+                            return Align(
+                              alignment: Alignment.topCenter,
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Text(
-                                      'حساب جديد',
-                                      style: TextStyle(
-                                        color: AppColors.blueSoft,
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
+                                    const EmailAndPassword(),
 
-                                    Text(
-                                      'ليس لديك حساب؟',
-                                      style: TextStyle(
-                                        color: Colors.grey.shade600,
-                                        fontSize: 18,
+                                    SizedBox(height: 30),
+                                    SizedBox(
+                                      width: 260,
+                                      height: 70,
+                                      child: CustomButton(
+                                        text: 'التالي',
+                                        onTap: isLoading
+                                            ? null
+                                            : () {
+                                                context
+                                                    .read<LoginCubit>()
+                                                    .loginUser();
+                                              },
                                       ),
-                                      textDirection: TextDirection.rtl,
                                     ),
+                                    const SizedBox(height: 80),
+
+                                    DividerWithText(),
+                                    const SizedBox(height: 30),
+
+                                    SocialLoginSection(),
+                                    const SizedBox(height: 30),
+
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        TextButton(
+                                          onPressed: () {
+
+                                          },
+                                          child: Text(
+                                            'إنشاء حساب',
+                                            style: textStyle20RegularWhite.copyWith(
+                                              color: AppColors.yellowGold,
+                                            ),
+                                          ),
+                                        ),
+                                        Text(
+                                          'لا تمتلك حساب؟',
+                                          style: textStyle20RegularWhite.copyWith(
+                                            color: AppColors.white.withOpacity(
+                                              0.60,
+                                            ),
+                                          ),
+                                          textDirection: TextDirection.rtl,
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 180),
                                   ],
                                 ),
-                                const SizedBox(height: 30),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
