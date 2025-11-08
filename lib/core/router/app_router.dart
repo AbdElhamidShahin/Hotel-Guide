@@ -23,7 +23,7 @@ abstract class AppRouter {
         builder: (BuildContext context, GoRouterState state) {
           return BlocProvider(
             create: (BuildContext context) => getIt<LoginCubit>(),
-            child: const LoginScreen(),
+            child:  LoginScreen(),
           );
         },
       ),
