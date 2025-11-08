@@ -5,29 +5,29 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hotel_guide/core/theme/app_theme.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
-import 'package:hotel_guide/features/login/ui/widget/EmailAndPassword.dart';
 import 'package:hotel_guide/features/login/ui/widget/divider_with_text.dart';
 import 'package:hotel_guide/features/login/ui/widget/social_login_section.dart';
+import 'package:hotel_guide/features/sign_up/logic/cubit/sign_up_cubit.dart';
+import 'package:hotel_guide/features/sign_up/ui/widget/email_and_password_and-name.dart';
 import '../../../core/helpers/contact/custom_show_snackbar.dart';
 import '../../../core/helpers/widget/custom_button.dart';
 import '../../../core/router/routers.dart';
-import '../logic/cubit/login_cubit.dart';
-import '../logic/cubit/login_state.dart';
+import '../logic/cubit/sign_up_state.dart';
 
-class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+class SignUpScreen extends StatelessWidget {
+  const SignUpScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: context.read<LoginCubit>().formKey,
+      key: context.read<SignUpCubit>().formKey,
       child: Scaffold(
         body: SingleChildScrollView(
           child: Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [Color(0xFF181201), Color(0xFFB25916)],
-                stops: [0.55, 1.0],
+                stops: [0.48, 1.0],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
               ),
@@ -35,7 +35,7 @@ class LoginScreen extends StatelessWidget {
             child: Stack(
               children: [
                 Padding(
-                  padding:  EdgeInsets.symmetric(horizontal: 24.0),
+                  padding: EdgeInsets.symmetric(horizontal: 24.0),
                   child: Column(
                     children: [
                       SizedBox(height: 24.h),
@@ -45,9 +45,21 @@ class LoginScreen extends StatelessWidget {
                         height: 237.67.h,
                       ),
 
-                      BlocListener<LoginCubit, LoginState>(
+                      BlocListener<SignUpCubit, SignUpState>(
                         listener: (context, state) {
-                          if (state is LoginSuccess) {
+                          if (state is SignUpVerificationRequired) {
+                            showCustomSnackbar(
+                              context,
+                              ContentType.warning,
+                              'تحقق من بريدك 📧',
+                              'تم إرسال كود التفعيل إلى ${state.email}',
+                            );
+
+                            context.go(
+                              routes.verificationScreen,
+                              extra: state.email,
+                            );
+                          } else if (state is SignUpSuccess) {
                             showCustomSnackbar(
                               context,
                               ContentType.success,
@@ -55,14 +67,14 @@ class LoginScreen extends StatelessWidget {
                               state.message,
                             );
                             context.go(routes.onBoardingScreen);
-                          } else if (state is LoginError) {
+                          } else if (state is SignUpError) {
                             showCustomSnackbar(
                               context,
                               ContentType.failure,
                               'خطأ في الدخول 🚨',
                               state.errorMessage,
                             );
-                          } else if (state is LoginEmailNotVerified) {
+                          } else if (state is SignUpEmailNotVerified) {
                             showCustomSnackbar(
                               context,
                               ContentType.warning,
@@ -71,9 +83,9 @@ class LoginScreen extends StatelessWidget {
                             );
                           }
                         },
-                        child: BlocBuilder<LoginCubit, LoginState>(
+                        child: BlocBuilder<SignUpCubit, SignUpState>(
                           builder: (context, state) {
-                            final isLoading = state is LoginLoading;
+                            final isLoading = state is SignUpLoading;
 
                             return Align(
                               alignment: Alignment.topCenter,
@@ -82,24 +94,24 @@ class LoginScreen extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    const EmailAndPassword(),
+                                    const EmailAndPasswordAndName(),
 
                                     SizedBox(height: 30),
                                     SizedBox(
                                       width: 260,
                                       height: 70,
                                       child: CustomButton(
-                                        text: 'التالي',
+                                        text: 'إنشاء حساب',
                                         onTap: isLoading
                                             ? null
                                             : () {
                                                 context
-                                                    .read<LoginCubit>()
-                                                    .loginUser();
+                                                    .read<SignUpCubit>()
+                                                    .signUpUser();
                                               },
                                       ),
                                     ),
-                                    const SizedBox(height: 48),
+                                    const SizedBox(height: 80),
 
                                     DividerWithText(),
                                     const SizedBox(height: 30),
@@ -108,30 +120,28 @@ class LoginScreen extends StatelessWidget {
                                     const SizedBox(height: 30),
 
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         TextButton(
                                           onPressed: () {
-
-
-
-                                            context.go(routes.signUpScreen);
-
+                                            context.go(routes.loginScreen);
                                           },
                                           child: Text(
-                                            'إنشاء حساب',
-                                            style: textStyle20RegularWhite.copyWith(
-                                              color: AppColors.yellowGold,
-                                            ),
+                                            'تسجيل دخول',
+                                            style: textStyle20RegularWhite
+                                                .copyWith(
+                                                  color: AppColors.yellowGold,
+                                                ),
                                           ),
                                         ),
                                         Text(
-                                          'لا تمتلك حساب؟',
-                                          style: textStyle20RegularWhite.copyWith(
-                                            color: AppColors.white.withOpacity(
-                                              0.60,
-                                            ),
-                                          ),
+                                          'لديك حساب بالفعل؟',
+                                          style: textStyle20RegularWhite
+                                              .copyWith(
+                                                color: AppColors.white
+                                                    .withOpacity(0.60),
+                                              ),
                                           textDirection: TextDirection.rtl,
                                         ),
                                       ],
