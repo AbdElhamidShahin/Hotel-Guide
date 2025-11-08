@@ -1,54 +1,60 @@
 import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import '../../data/repo/login_repostry.dart';
 import 'login_state.dart';
+
 class LoginCubit extends Cubit<LoginState> {
-  final FirebaseAuth auth;
+  final LoginRepostry _loginRepository;
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  LoginCubit(this.auth) : super(LoginInitial());
+  LoginCubit(this._loginRepository) : super(LoginInitial());
 
-  Future<void> emitLoginState() async {
+  Future<void> loginUser() async {
     if (!formKey.currentState!.validate()) return;
 
     emit(LoginLoading());
 
     try {
-      final userCredential = await auth.signInWithEmailAndPassword(
-        email: emailController.text.trim(),
-        password: passwordController.text.trim(),
+      final userCredential = await _loginRepository.login(
+        emailController.text.trim(),
+        passwordController.text.trim(),
       );
 
       if (userCredential.user != null) {
-        if (userCredential.user!.emailVerified) {
-          emit(LoginSuccess("تم تسجيل الدخول بنجاح ✅"));
-        } else {
-          emit(LoginEmailNotVerified(
-            "من فضلك فعّل بريدك الإلكتروني أولاً.",
-            userCredential.user!,
-          ));
-        }
+        emit(LoginSuccess("تم تسجيل الدخول بنجاح. مرحباً بعودتك! ✨"));
       }
     } on FirebaseAuthException catch (e) {
-      emit(LoginError(e.message ?? "خطأ في تسجيل الدخول"));
+      print("Firebase Error Code: ${e.code}");
+
+      String errorMessage = _mapFirebaseAuthErrorToArabic(e.code);
+      emit(LoginError(errorMessage));
     } catch (e) {
-      emit(LoginError("حدث خطأ غير متوقع"));
+      print("General Error: $e");
+      emit(LoginError("حدث خطأ غير متوقع. نعتذر، يرجى المحاولة لاحقاً. 🚧"));
     }
   }
 
-  Future<void> sendEmailVerification(User user) async {
-    await user.sendEmailVerification();
-    emit(LoginSuccess("تم إرسال رابط تفعيل البريد الإلكتروني 📧"));
+  String _mapFirebaseAuthErrorToArabic(String errorCode) {
+    switch (errorCode) {
+      case 'invalid-credential':
+        return "البريد الإلكتروني أو كلمة المرور غير صحيحة. 🔑";
+
+      case 'user-not-found':
+      case 'wrong-password':
+        return "البريد الإلكتروني أو كلمة المرور غير صحيحة. 🔑";
+
+
+
+
+      case 'network-request-failed':
+        return "فشلت عملية تسجيل الدخول. تأكد من اتصالك بالإنترنت. 🌐";
+
+      default:
+        return "فشلت عملية تسجيل الدخول. يرجى المحاولة لاحقاً. 🚧";
+    }
   }
-}
-
-// حالة جديدة:
-class LoginEmailNotVerified extends LoginState {
-  final String message;
-  final User user;
-
-  LoginEmailNotVerified(this.message, this.user);
 }
