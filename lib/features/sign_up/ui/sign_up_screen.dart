@@ -67,6 +67,7 @@ class SignUpScreen extends StatelessWidget {
                               state.message,
                             );
                             context.go(routes.homeScreen);
+
                           } else if (state is SignUpError) {
                             showCustomSnackbar(
                               context,

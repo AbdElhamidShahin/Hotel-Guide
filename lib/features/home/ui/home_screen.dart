@@ -5,6 +5,7 @@ import 'package:hotel_guide/features/home/ui/widget/custom_rating_listview.dart'
 import 'package:hotel_guide/features/home/ui/widget/custom_welcome_header.dart';
 import 'package:hotel_guide/features/home/ui/widget/top_rating_widget.dart';
 
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -36,5 +37,6 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
     );
+
   }
 }

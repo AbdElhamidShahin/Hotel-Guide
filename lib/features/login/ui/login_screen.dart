@@ -42,6 +42,7 @@ class LoginScreen extends StatelessWidget {
                         "assets/images/logo/logo.png",
                         width: 244.33,
                         height: 237.67,
+
                       ),
 
                       BlocListener<LoginCubit, LoginState>(

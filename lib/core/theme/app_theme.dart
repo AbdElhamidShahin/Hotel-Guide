@@ -58,4 +58,5 @@ TextStyle textStyle28MediumBlack = TextStyle(
   fontWeight: FontWeight.w500,
   color: AppColors.black2,
   fontFamily: 'Cairo',
+
 );
