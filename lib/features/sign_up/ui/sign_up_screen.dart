@@ -66,7 +66,7 @@ class SignUpScreen extends StatelessWidget {
                               'نجاح باهر! ✅',
                               state.message,
                             );
-                            context.go(routes.onBoardingScreen);
+                            context.go(routes.homeScreen);
                           } else if (state is SignUpError) {
                             showCustomSnackbar(
                               context,

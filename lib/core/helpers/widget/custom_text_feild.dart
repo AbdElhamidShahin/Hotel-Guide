@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../theme/app_theme.dart';
 import '../../theme/colors.dart';
@@ -41,7 +40,7 @@ class AppTextFormFeild extends StatelessWidget {
           isDense: true,
           contentPadding:
               contentPadding ??
-              EdgeInsets.symmetric(vertical: 16.h, horizontal: 11.w),
+              EdgeInsets.symmetric(vertical: 16, horizontal: 11),
           enabledBorder:
               enabledBorder ??
               OutlineInputBorder(

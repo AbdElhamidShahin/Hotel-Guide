@@ -14,7 +14,7 @@ import '../di/injection.dart';
 
 abstract class AppRouter {
   static final router = GoRouter(
-    initialLocation: routes.onBoardingScreen,
+    initialLocation: routes.homeScreen,
     routes: [
       GoRoute(
         path: routes.onBoardingScreen,

@@ -35,3 +35,14 @@ TextStyle textStyle22RegularWhite = TextStyle(
   color: AppColors.white.withOpacity(0.53),
   fontFamily: 'Cairo',
 );
+TextStyle textStyle23SemiBoldBlack = TextStyle(
+  fontSize: 23,
+  fontWeight: FontWeight.w600,
+  color: AppColors.black2,
+  fontFamily: 'Cairo',
+);TextStyle textStyle17MediumBlack = TextStyle(
+  fontSize: 17,
+  fontWeight: FontWeight.w500,
+  color: AppColors.black2.withOpacity(0.65),
+  fontFamily: 'Cairo',
+);
