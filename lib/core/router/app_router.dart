@@ -3,48 +3,38 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hotel_guide/core/router/routers.dart';
 import 'package:hotel_guide/features/sign_up/logic/cubit/sign_up_cubit.dart';
-
 import '../../features/home/ui/home_screen.dart';
 import '../../features/login/logic/cubit/login_cubit.dart';
 import '../../features/login/ui/login_screen.dart';
 import '../../features/on_boarding/ui/on_boarding_screen.dart';
 import '../../features/sign_up/ui/sign_up_screen.dart';
 import '../../features/verification/ui/verification_screen.dart';
+import '../../main_app_shell.dart';
 import '../di/injection.dart';
 
 abstract class AppRouter {
+  // تم تغيير المسار الأولي إلى مسار البداية الجديد
   static final router = GoRouter(
     initialLocation: routes.homeScreen,
     routes: [
       GoRoute(
         path: routes.onBoardingScreen,
-        builder: (BuildContext context, GoRouterState state) {
-          return const OnBoardingScreen();
-        },
+        builder: (BuildContext context, GoRouterState state) =>
+        const OnBoardingScreen(),
       ),
       GoRoute(
         path: routes.loginScreen,
-        builder: (BuildContext context, GoRouterState state) {
-          return BlocProvider(
-            create: (BuildContext context) => getIt<LoginCubit>(),
-            child: LoginScreen(),
-          );
-        },
+        builder: (BuildContext context, GoRouterState state) => BlocProvider(
+          create: (BuildContext context) => getIt<LoginCubit>(),
+          child: const LoginScreen(),
+        ),
       ),
       GoRoute(
         path: routes.signUpScreen,
-        builder: (BuildContext context, GoRouterState state) {
-          return BlocProvider(
-            create: (BuildContext context) => getIt<SignUpCubit>(),
-            child: SignUpScreen(),
-          );
-        },
-      ),
-      GoRoute(
-        path: routes.homeScreen,
-        builder: (BuildContext context, GoRouterState state) {
-          return HomeScreen();
-        },
+        builder: (BuildContext context, GoRouterState state) => BlocProvider(
+          create: (BuildContext context) => getIt<SignUpCubit>(),
+          child: const SignUpScreen(),
+        ),
       ),
       GoRoute(
         path: routes.verificationScreen,
@@ -52,6 +42,58 @@ abstract class AppRouter {
           final email = state.extra as String? ?? '';
           return VerificationScreen(email: email);
         },
+      ),
+
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) {
+          // يستخدم MainAppShell الجديد الذي يدعم 4 فروع
+          return MainAppShell(navigationShell: navigationShell);
+        },
+        branches: [
+          // Index 0: Profile Screen (الشكل الأول)
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: routes.profileScreen,
+                builder: (context, state) =>
+                const Center(child: Text('Profile Screen (Index 0)')),
+              ),
+            ],
+          ),
+
+          // Index 1: Notifications/Bell Screen (الشكل الثاني - إضافة جديدة)
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                // يجب تعريف هذا المسار في ملف routes.dart
+                path: '/notifications',
+                builder: (context, state) =>
+                const Center(child: Text('Notifications Screen (Index 1)')),
+              ),
+            ],
+          ),
+
+          // Index 2: Favorites Screen (الشكل الثالث - تم تحويل فهرسه من 1 إلى 2)
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: routes.favoritesScreen,
+                builder: (context, state) =>
+                const Center(child: Text('Favorites Screen (Index 2)')),
+              ),
+            ],
+          ),
+
+          // Index 3: Home Screen (الشكل الرابع - تم تحويل فهرسه من 2 إلى 3)
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: routes.homeScreen,
+                builder: (context, state) => const HomeScreen(),
+              ),
+            ],
+          ),
+        ],
       ),
     ],
   );

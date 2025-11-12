@@ -46,6 +46,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   awesome_snackbar_content: ^0.1.7
   emailjs: ^4.0.0
+  iconoir_flutter: ^7.11.0
 
 dev_dependencies:
   flutter_test:
@@ -75,7 +76,8 @@ flutter:
     - assets/fonts/
     - assets/images/logo/
     - assets/icons/
-
+    - assets/images/city/
+    - assets/icons/Icons_bar/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 
