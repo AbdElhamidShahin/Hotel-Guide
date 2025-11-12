@@ -13,4 +13,5 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(HotelApp());
 }
-//
+//fastlane android firebase_distribution
+
