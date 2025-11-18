@@ -16,38 +16,29 @@ class MainAppShell extends StatelessWidget {
     );
   }
 
-  // دالة بناء عنصر شريط التنقل (تم تصحيحها وإزالة التكرار)
   Widget _buildNavItem({
     required String defaultAsset,
     required String selectedAsset,
     required int index,
-    required bool hasBadge, // لم يتم استخدامها هنا، ولكن يمكن إضافتها لاحقًا
+    required bool hasBadge,
   }) {
     final bool isSelected = navigationShell.currentIndex == index;
 
-    // 1. منطق تلوين الأيقونة: أسود للمختار ورمادي لغير المختار
-    final Color iconColor = isSelected ? AppColors.black : Colors.grey.shade600;
+    final Color iconColor = isSelected ? AppColors.orangeGold : Colors.grey.shade600;
 
-    // 2. منطق تلوين الخلفية: برتقالي فاتح للمختار، وشفاف لغير المختار
-    final Color backgroundColor = isSelected
-        ? AppColors.orangeGold.withOpacity(0.2)
-        : Colors.transparent;
+
 
     Widget iconWidget = SvgPicture.asset(
       isSelected ? selectedAsset : defaultAsset,
-      height: 28, // حجم الأيقونة
-      width: 28,
-      // استخدام ColorFilter لتلوين ملفات SVG بشكل صحيح
+      height: 32,
+      width: 32,
       colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
     );
 
-    // 3. يتم تغليف الأيقونة في حاوية لتطبيق الخلفية والحدود الدائرية
     return AnimatedContainer(
       duration: const Duration(milliseconds: 250),
-      // إضافة Padding متساوي (8) لجعل الخلفية تبدو كمربع مستدير
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: backgroundColor,
         borderRadius: BorderRadius.circular(10),
       ),
       child: iconWidget,
@@ -56,19 +47,16 @@ class MainAppShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // تم تصحيح منطق الـ PopScope ليطابق التصميم القياسي GoRouter
     return PopScope(
       canPop: navigationShell.currentIndex == 3
           ? false
-          : true, // يمكن العودة إلا إذا كنا في الهوم
+          : true,
       onPopInvoked: (bool didPop) {
         if (didPop) return;
 
-        // إذا كنا في أي تاب غير الهوم (index 3)، نعود للهوم
         if (navigationShell.currentIndex != 3) {
-          navigationShell.goBranch(3); // الانتقال إلى الهوم (index 3)
+          navigationShell.goBranch(3);
         } else {
-          // إذا كنا في الهوم ولا يمكن العودة، نخرج من التطبيق
           SystemNavigator.pop();
         }
       },
@@ -107,7 +95,6 @@ class MainAppShell extends StatelessWidget {
                 ),
                 label: '',
               ),
-              // Index 1: الإشعارات
               BottomNavigationBarItem(
                 icon: _buildNavItem(
                   defaultAsset:
@@ -119,7 +106,6 @@ class MainAppShell extends StatelessWidget {
                 ),
                 label: '',
               ),
-              // Index 2: المفضلة
               BottomNavigationBarItem(
                 icon: _buildNavItem(
                   defaultAsset:
@@ -131,7 +117,6 @@ class MainAppShell extends StatelessWidget {
                 ),
                 label: '',
               ),
-              // Index 3: الرئيسية
               BottomNavigationBarItem(
                 icon: _buildNavItem(
                   defaultAsset:

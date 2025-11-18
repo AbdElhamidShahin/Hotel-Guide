@@ -159,9 +159,10 @@ class Customfavoriteitem extends StatelessWidget {
                                   size: 24,
                                 ),
                                 onPressed: () async {
-                                  await favoriteCubit.toggleFavorite(
-                                    hotelModel,
-                                  );
+                                  final wasFavorite = isCurrentlyFavorite;
+
+                                  await favoriteCubit.toggleFavorite(hotelModel);
+
 
                                   Snackly.success(
                                     context: context,
