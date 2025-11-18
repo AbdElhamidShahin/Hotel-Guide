@@ -35,3 +35,40 @@ TextStyle textStyle22RegularWhite = TextStyle(
   color: AppColors.white.withOpacity(0.53),
   fontFamily: 'Cairo',
 );
+TextStyle textStyle23SemiBoldBlack = TextStyle(
+  fontSize: 23,
+  fontWeight: FontWeight.w600,
+  color: AppColors.black2,
+  fontFamily: 'Cairo',
+);
+TextStyle textStyle17MediumBlack = TextStyle(
+  fontSize: 17,
+  fontWeight: FontWeight.w500,
+  color: AppColors.black2.withOpacity(0.65),
+  fontFamily: 'Cairo',
+);
+TextStyle textStyle14SemiBoldWhite = TextStyle(
+  fontSize: 14,
+  fontWeight: FontWeight.w600,
+  color: AppColors.white,
+  fontFamily: 'Cairo',
+);
+TextStyle textStyle28MediumBlack = TextStyle(
+  fontSize: 24,
+  fontWeight: FontWeight.w500,
+  color: AppColors.black2,
+  fontFamily: 'Cairo',
+
+);TextStyle textStyle15MediumGray = TextStyle(
+  fontSize: 15,
+  fontWeight: FontWeight.w500,
+  color: AppColors.gray2,
+  fontFamily: 'Cairo',
+
+);TextStyle textStyle18BoldGray = TextStyle(
+  fontSize: 18,
+  fontWeight: FontWeight.w700,
+  color: AppColors.gray3,
+  fontFamily: 'Cairo',
+
+);

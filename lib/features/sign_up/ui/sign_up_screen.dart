@@ -47,26 +47,15 @@ class SignUpScreen extends StatelessWidget {
 
                       BlocListener<SignUpCubit, SignUpState>(
                         listener: (context, state) {
-                          if (state is SignUpVerificationRequired) {
-                            showCustomSnackbar(
-                              context,
-                              ContentType.warning,
-                              'تحقق من بريدك 📧',
-                              'تم إرسال كود التفعيل إلى ${state.email}',
-                            );
-
-                            context.go(
-                              routes.verificationScreen,
-                              extra: state.email,
-                            );
-                          } else if (state is SignUpSuccess) {
+                 if (state is SignUpSuccess) {
                             showCustomSnackbar(
                               context,
                               ContentType.success,
                               'نجاح باهر! ✅',
                               state.message,
                             );
-                            context.go(routes.onBoardingScreen);
+                            context.go(routes.homeScreen);
+
                           } else if (state is SignUpError) {
                             showCustomSnackbar(
                               context,
