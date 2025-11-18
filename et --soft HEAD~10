@@ -1,0 +1,141 @@
+[33mcommit a78a0e5e4c2a5e1a7620f8289d5b7d62e37cc0b5[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mdevelopment-[m[33m, [m[1;31morigin/development-[m[33m, [m[1;31mHotel_Guide/development-[m[33m)[m
+Merge: 3a0588f eb9ced2
+Author: AbdElhamid Shahin <123959686+AbdElhamidShahin@users.noreply.github.com>
+Date:   Wed Nov 12 11:30:05 2025 +0200
+
+    Merge pull request #5 from AbdElhamidShahin/home
+    
+    Finshed home Screen Ui
+
+[33mcommit eb9ced23835de056e9611faa934b1b6990537490[m[33m ([m[1;31morigin/home[m[33m, [m[1;31mHotel_Guide/home[m[33m, [m[1;32mhome[m[33m)[m
+Author: Abdelhamid shahin <abdelhamid.shahin0@gmail.com>
+Date:   Wed Nov 12 11:27:57 2025 +0200
+
+    -added  icons buttom navBar
+    -added app_shell
+    added custom Offers home
+    -added custom city home ui
+
+A	assets/icons/Icons_bar/bell-bing-svgrepo-com.svg
+A	assets/icons/Icons_bar/favorite-heart-like-love-alert-notification-svgrepo-com.svg
+A	assets/icons/Icons_bar/home-angle-2-svgrepo-com.svg
+A	assets/icons/Icons_bar/user-alt-1-svgrepo-com.svg
+A	assets/images/Offers.jpg
+A	assets/images/city/Hurghada.png
+A	assets/images/city/alex.jpg
+A	assets/images/city/cairo.png
+A	assets/images/city/sharm.png
+M	lib/core/router/app_router.dart
+M	lib/core/router/routers.dart
+M	lib/core/theme/colors.dart
+M	lib/features/home/ui/home_screen.dart
+A	lib/features/home/ui/widget/custom_city_home.dart
+A	lib/features/home/ui/widget/custom_offers_home.dart
+M	lib/hotel_app.dart
+A	lib/main_app_shell.dart
+M	pubspec.lock
+M	pubspec.yaml
+
+[33mcommit b25197471a62e45225085f799756936f1825b027[m
+Merge: 5753a11 3a0588f
+Author: Abdelhamid shahin <abdelhamid.shahin0@gmail.com>
+Date:   Tue Nov 11 14:13:56 2025 +0200
+
+    Merge remote-tracking branch 'origin/development-' into home
+    
+    # Conflicts:
+    #       lib/core/helpers/widget/custom_text_feild.dart
+    #       lib/core/router/routers.dart
+    #       lib/core/theme/app_theme.dart
+    #       lib/features/home/ui/home_screen.dart
+    #       lib/features/login/ui/login_screen.dart
+    #       lib/features/login/ui/widget/EmailAndPassword.dart
+    #       lib/features/sign_up/ui/sign_up_screen.dart
+    #       lib/main.dart
+
+[33mcommit 5753a111dbf146a905a3cc80cb5652b7ed210174[m
+Author: Abdelhamid shahin <abdelhamid.shahin0@gmail.com>
+Date:   Tue Nov 11 14:10:11 2025 +0200
+
+    -added Appbar HomeScreen
+    -added listview home rating ui
+
+A	assets/images/card-image.png
+A	assets/images/test.png
+M	lib/core/theme/app_theme.dart
+M	lib/core/theme/colors.dart
+M	lib/features/home/ui/home_screen.dart
+A	lib/features/home/ui/widget/custom_rating_listview.dart
+A	lib/features/home/ui/widget/custom_rating_listview_item.dart
+A	lib/features/home/ui/widget/top_rating_widget.dart
+
+[33mcommit cf3fbe54550fdd03b85e72c3681b217476bb0ff7[m[33m ([m[1;31morigin/fastLane[m[33m, [m[1;31mHotel_Guide/fastLane[m[33m, [m[1;32mfastLane[m[33m)[m
+Author: Abdelhamid shahin <abdelhamid.shahin0@gmail.com>
+Date:   Tue Nov 11 12:13:41 2025 +0200
+
+    س
+
+M	android/.gitignore
+
+[33mcommit 31be02b3c1a5c20155d309d8e80da96df84e7ff1[m
+Author: Abdelhamid shahin <abdelhamid.shahin0@gmail.com>
+Date:   Tue Nov 11 12:07:24 2025 +0200
+
+    -added home screen
+
+A	android/.bundle/config
+A	android/Gemfile
+A	android/fastlane/Appfile
+A	android/fastlane/Pluginfile
+A	android/fastlane/README.md
+A	android/fastlane/report.xml
+A	assets/icons/search.png
+A	assets/images/profile.png
+M	lib/core/helpers/widget/custom_text_feild.dart
+M	lib/core/router/app_router.dart
+M	lib/core/router/routers.dart
+M	lib/core/theme/app_theme.dart
+M	lib/core/theme/colors.dart
+D	lib/features/home/models/home_model.dart
+M	lib/features/home/ui/home_screen.dart
+A	lib/features/home/ui/widget/custom_appBar_home.dart
+A	lib/features/home/ui/widget/custom_welcome_header.dart
+M	lib/features/login/ui/login_screen.dart
+M	lib/features/login/ui/widget/EmailAndPassword.dart
+M	lib/features/sign_up/ui/sign_up_screen.dart
+M	lib/main.dart
+M	pubspec.yaml
+
+[33mcommit 3a0588f1de2cb38ff9bc5bb720207443554168a9[m
+Merge: ebd3c1a f7dabb6
+Author: AbdElhamid Shahin <123959686+AbdElhamidShahin@users.noreply.github.com>
+Date:   Sat Nov 8 17:04:05 2025 +0200
+
+    Merge pull request #4 from AbdElhamidShahin/fireBase-Distribution-
+    
+    -added fire base Distribution
+
+[33mcommit 7188d785871f4608b297b45c024a326cbf09789d[m
+Merge: 443f20b 5bbd574
+Author: AbdElhamid Shahin <123959686+AbdElhamidShahin@users.noreply.github.com>
+Date:   Sat Nov 8 17:04:05 2025 +0200
+
+    Merge pull request #4 from AbdElhamidShahin/fireBase-Distribution-
+    
+    -added fire base Distribution
+
+[33mcommit f7dabb6485d726a897082af196e9e7a58b75154a[m[33m ([m[1;31morigin/fireBase-Distribution-[m[33m, [m[1;31mHotel_Guide/fireBase-Distribution-[m[33m)[m
+Author: Abdelhamid shahin <abdelhamid.shahin0@gmail.com>
+Date:   Sat Nov 8 17:03:00 2025 +0200
+
+    -added fire base Distribution
+
+M	lib/main.dart
+
+[33mcommit 5bbd57442d95d726cd733c980fc5529be1a496be[m[33m ([m[1;32mfireBase-Distribution-[m[33m)[m
+Author: Abdelhamid shahin <abdelhamid.shahin0@gmail.com>
+Date:   Sat Nov 8 17:03:00 2025 +0200
+
+    -added fire base Distribution
+
+M	lib/main.dart

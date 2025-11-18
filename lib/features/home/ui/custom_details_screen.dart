@@ -39,6 +39,7 @@ class CustomDetailsScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Expanded(
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       CustomServiceDetails(
                         text: hotelModel.rating,
@@ -59,7 +60,7 @@ class CustomDetailsScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 12),
+              SizedBox(height: 32),
               AccommodationCard(
                 address: hotelModel.location,
                 name: hotelModel.name,

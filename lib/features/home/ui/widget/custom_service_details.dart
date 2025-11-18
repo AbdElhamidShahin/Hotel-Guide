@@ -3,7 +3,12 @@ import 'package:hotel_guide/core/theme/app_theme.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
 
 class CustomServiceDetails extends StatelessWidget {
-  const CustomServiceDetails({super.key, required this.text, required this.icon,  this.color});
+  const CustomServiceDetails({
+    super.key,
+    required this.text,
+    required this.icon,
+    this.color,
+  });
   final String text;
   final IconData icon;
   final Color? color;
@@ -21,15 +26,11 @@ class CustomServiceDetails extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-
-            Icon(
-              icon,
-              size: 20,
-              color: color ?? AppColors.black7,
-            ),        SizedBox(width: 6),
+            Icon(icon, size: 20, color: color ?? AppColors.black7),
+            SizedBox(width: 6),
             Text(
               text.length > 14 ? '${text.substring(0, 14)}...' : text,
-
+              textDirection: TextDirection.rtl,
               style: textStyle14SemiBoldWhite.copyWith(color: AppColors.black7),
             ),
           ],

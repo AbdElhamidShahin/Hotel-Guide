@@ -71,4 +71,16 @@ TextStyle textStyle28MediumBlack = TextStyle(
   color: AppColors.gray3,
   fontFamily: 'Cairo',
 
+);TextStyle textStyle12BoldBlack = TextStyle(
+  fontSize: 12,
+  fontWeight: FontWeight.w700,
+  color: AppColors.black7,
+  fontFamily: 'Cairo',
+
+);TextStyle textStyle10BoldGray = TextStyle(
+  fontSize: 10,
+  fontWeight: FontWeight.w600,
+  color: AppColors.gray2,
+  fontFamily: 'inter',
+
 );

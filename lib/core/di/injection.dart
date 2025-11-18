@@ -39,7 +39,7 @@ Future<void> setupGetIt() async {
   getIt.registerLazySingleton<HomeRepository>(() => HomeRepoImpl(getIt()));
   getIt.registerFactory<HomeCubit>(() => HomeCubit(getIt()));
   ///favorite
-  getIt.registerLazySingleton<FavoriteCubit>(() => FavoriteCubit());
+  getIt.registerFactory<FavoriteCubit>(() => FavoriteCubit());
 
 
 }

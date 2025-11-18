@@ -1,7 +1,7 @@
-import 'dart:convert';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hotel_guide/features/favorite/logic/cubit/favorite_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 import '../../../../core/network/hotel_model.dart';
 
@@ -9,9 +9,8 @@ class FavoriteCubit extends Cubit<FavoriteState> {
   FavoriteCubit() : super(FavoriteInitial()) {
     _loadFavorites();
   }
-//
-  List<HotelModel> _favorites = [];
 
+  List<HotelModel> _favorites = [];
   List<HotelModel> get favorites => _favorites;
 
   bool isFavorite(HotelModel hotel) {
@@ -19,26 +18,43 @@ class FavoriteCubit extends Cubit<FavoriteState> {
   }
 
   Future<void> toggleFavorite(HotelModel hotel) async {
-    final bool exists = isFavorite(hotel);
+    try {
+      if (isClosed) return; // منع emit إذا كان Cubit مغلق
 
-    if (exists) {
-      _favorites.removeWhere((item) => item.id == hotel.id);
-    } else {
-      _favorites.add(hotel);
+      final bool exists = isFavorite(hotel);
+      final List<HotelModel> updatedFavorites = List.from(_favorites);
+
+      if (exists) {
+        updatedFavorites.removeWhere((item) => item.id == hotel.id);
+      } else {
+        updatedFavorites.add(hotel);
+      }
+
+      _favorites = updatedFavorites;
+
+      if (!isClosed) {
+        emit(FavoriteUpdated(_favorites.toList()));
+      }
+
+      // حفظ في SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      final List<String> favoriteList =
+      _favorites.map((e) => jsonEncode(e.toJson())).toList();
+      await prefs.setStringList('favorites', favoriteList);
+
+    } catch (error) {
+      if (!isClosed) {
+        emit(FavoriteError('Failed to toggle favorite'));
+      }
     }
-
-    emit(FavoriteUpdated(_favorites.toList()));
-
-    // حفظ في SharedPreferences
-    final prefs = await SharedPreferences.getInstance();
-    final List<String> favoriteList =
-    _favorites.map((e) => jsonEncode(e.toJson())).toList();
-    await prefs.setStringList('favorites', favoriteList);
   }
 
   Future<void> _loadFavorites() async {
     try {
-      emit(FavoriteLoading());
+      if (!isClosed) {
+        emit(FavoriteLoading());
+      }
+
       final prefs = await SharedPreferences.getInstance();
       final data = prefs.getStringList('favorites');
 
@@ -46,12 +62,25 @@ class FavoriteCubit extends Cubit<FavoriteState> {
         _favorites = data
             .map((e) => HotelModel.fromJson(jsonDecode(e)))
             .toList();
-        emit(FavoriteUpdated(_favorites.toList()));
+        if (!isClosed) {
+          emit(FavoriteUpdated(_favorites.toList()));
+        }
       } else {
-        emit(FavoriteUpdated([]));
+        if (!isClosed) {
+          emit(FavoriteUpdated([]));
+        }
       }
     } catch (e) {
-      emit(FavoriteError('Failed to load favorites'));
+      if (!isClosed) {
+        emit(FavoriteError('Failed to load favorites'));
+      }
     }
+  }
+
+  // إضافة دالة للتأكد من عدم إغلاق الـ Cubit
+  @override
+  Future<void> close() {
+    // تنظيف أي موارد إذا لزم الأمر
+    return super.close();
   }
 }
