@@ -59,6 +59,7 @@ TextStyle textStyle28MediumBlack = TextStyle(
   color: AppColors.black2,
   fontFamily: 'Cairo',
 
+<<<<<<< HEAD
 );TextStyle textStyle15MediumGray = TextStyle(
   fontSize: 15,
   fontWeight: FontWeight.w500,
@@ -83,4 +84,6 @@ TextStyle textStyle28MediumBlack = TextStyle(
   color: AppColors.gray2,
   fontFamily: 'inter',
 
+=======
+>>>>>>> development-
 );
