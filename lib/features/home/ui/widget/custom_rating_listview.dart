@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-<<<<<<< HEAD
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hotel_guide/features/home/logic/cubit/home_cubit.dart';
@@ -51,32 +50,11 @@ class _CustomRatingListviewState extends State<CustomRatingListview> {
               );
             },
           );
-
         }
 
         return const Center(child: Text("يرجى اختيار مدينة"));
-=======
-
-import 'custom_rating_listview_item.dart';
-
-class CustomRatingListview extends StatelessWidget {
-  const CustomRatingListview({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      scrollDirection: Axis.horizontal,
-      itemCount: 5,
-
-      itemBuilder: (context, index) {
-        return CustomRatingListviewItem();
->>>>>>> development-
-      },
+      }
     );
   }
+
 }
-<<<<<<< HEAD
-=======
-
-
->>>>>>> development-

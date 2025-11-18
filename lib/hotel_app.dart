@@ -6,13 +6,8 @@ class HotelApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-<<<<<<< HEAD
-    return Directionality(
-      textDirection: TextDirection.rtl,
-=======
     return Directionality(      textDirection: TextDirection.rtl,
 
->>>>>>> development-
       child: ScreenUtilInit(
         minTextAdapt: true,
         builder: (context, _) => MaterialApp.router(
