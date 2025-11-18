@@ -1,13 +1,12 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hotel_guide/features/favorite/logic/cubit/favorite_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
-
 import '../../../../core/network/hotel_model.dart';
+import 'favorite_state.dart';
 
 class FavoriteCubit extends Cubit<FavoriteState> {
   FavoriteCubit() : super(FavoriteInitial()) {
-    _loadFavorites();
+    loadFavorites();
   }
 
   List<HotelModel> _favorites = [];
@@ -19,7 +18,7 @@ class FavoriteCubit extends Cubit<FavoriteState> {
 
   Future<void> toggleFavorite(HotelModel hotel) async {
     try {
-      if (isClosed) return; // منع emit إذا كان Cubit مغلق
+      if (isClosed) return;
 
       final bool exists = isFavorite(hotel);
       final List<HotelModel> updatedFavorites = List.from(_favorites);
@@ -32,15 +31,14 @@ class FavoriteCubit extends Cubit<FavoriteState> {
 
       _favorites = updatedFavorites;
 
-      if (!isClosed) {
-        emit(FavoriteUpdated(_favorites.toList()));
-      }
-
-      // حفظ في SharedPreferences
       final prefs = await SharedPreferences.getInstance();
       final List<String> favoriteList =
       _favorites.map((e) => jsonEncode(e.toJson())).toList();
       await prefs.setStringList('favorites', favoriteList);
+
+      if (!isClosed) {
+        emit(FavoriteUpdated(List.from(_favorites)));
+      }
 
     } catch (error) {
       if (!isClosed) {
@@ -49,7 +47,7 @@ class FavoriteCubit extends Cubit<FavoriteState> {
     }
   }
 
-  Future<void> _loadFavorites() async {
+  Future<void> loadFavorites() async {
     try {
       if (!isClosed) {
         emit(FavoriteLoading());
@@ -63,7 +61,7 @@ class FavoriteCubit extends Cubit<FavoriteState> {
             .map((e) => HotelModel.fromJson(jsonDecode(e)))
             .toList();
         if (!isClosed) {
-          emit(FavoriteUpdated(_favorites.toList()));
+          emit(FavoriteUpdated(List.from(_favorites)));
         }
       } else {
         if (!isClosed) {
@@ -77,10 +75,8 @@ class FavoriteCubit extends Cubit<FavoriteState> {
     }
   }
 
-  // إضافة دالة للتأكد من عدم إغلاق الـ Cubit
   @override
   Future<void> close() {
-    // تنظيف أي موارد إذا لزم الأمر
     return super.close();
   }
 }
