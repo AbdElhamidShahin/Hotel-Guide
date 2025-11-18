@@ -21,12 +21,9 @@ class AppColors {
   static const Color black2 = Color(0xFF343434);
   static const Color black3 = Color(0xFF292929);
   static const Color black4 = Color(0xFF222222);
-<<<<<<< HEAD
   static const Color black45 = Color(0x80222222);
   static const Color black5 = Color(0xFF1F1F1F);
   static const Color black6 = Color(0xFF171725);
   static const Color black7 = Color(0xFF101010);
-=======
-  static const Color black5 = Color(0xFF1F1F1F);
->>>>>>> development-
+  static const Color black8 = Color(0xFF1F1F1F);
 }
