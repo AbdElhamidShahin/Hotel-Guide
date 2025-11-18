@@ -5,14 +5,21 @@ import 'package:hotel_guide/core/router/routers.dart';
 import 'package:hotel_guide/features/favorite/ui/favorite_screen.dart';
 import 'package:hotel_guide/features/home/logic/cubit/home_cubit.dart';
 import 'package:hotel_guide/features/sign_up/logic/cubit/sign_up_cubit.dart';
+<<<<<<< HEAD
 import '../../AuthWrapper.dart';
 import '../../features/favorite/logic/cubit/favorite_cubit.dart';
 import '../../features/home/ui/custom_details_screen.dart';
+=======
+>>>>>>> development-
 import '../../features/home/ui/home_screen.dart';
 import '../../features/login/logic/cubit/login_cubit.dart';
 import '../../features/login/ui/login_screen.dart';
 import '../../features/on_boarding/ui/on_boarding_screen.dart';
 import '../../features/sign_up/ui/sign_up_screen.dart';
+<<<<<<< HEAD
+=======
+import '../../features/verification/ui/verification_screen.dart';
+>>>>>>> development-
 import '../../main_app_shell.dart';
 import '../di/injection.dart';
 import '../helpers/favorite_manger.dart';
@@ -20,8 +27,13 @@ import '../network/hotel_model.dart';
 import 'package:provider/provider.dart';
 
 abstract class AppRouter {
+  // تم تغيير المسار الأولي إلى مسار البداية الجديد
   static final router = GoRouter(
+<<<<<<< HEAD
     initialLocation: routes.authWrapper,
+=======
+    initialLocation: routes.homeScreen,
+>>>>>>> development-
     routes: [
       GoRoute(
         path: routes.authWrapper,
@@ -49,12 +61,15 @@ abstract class AppRouter {
           create: (BuildContext context) => getIt<SignUpCubit>(),
           child: const SignUpScreen(),
         ),
+<<<<<<< HEAD
       ),
       GoRoute(
         path: routes.customDetailsScreen,
         builder: (BuildContext context, GoRouterState state) {
           return CustomDetailsScreen(hotelModel: state.extra as HotelModel);
         },
+=======
+>>>>>>> development-
       ),
 
       StatefulShellRoute.indexedStack(
@@ -104,6 +119,58 @@ abstract class AppRouter {
                   create: (context) => getIt<HomeCubit>(),
                   child: const HomeScreen(),
                 ),
+              ),
+            ],
+          ),
+        ],
+      ),
+
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) {
+          // يستخدم MainAppShell الجديد الذي يدعم 4 فروع
+          return MainAppShell(navigationShell: navigationShell);
+        },
+        branches: [
+          // Index 0: Profile Screen (الشكل الأول)
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: routes.profileScreen,
+                builder: (context, state) =>
+                const Center(child: Text('Profile Screen (Index 0)')),
+              ),
+            ],
+          ),
+
+          // Index 1: Notifications/Bell Screen (الشكل الثاني - إضافة جديدة)
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                // يجب تعريف هذا المسار في ملف routes.dart
+                path: '/notifications',
+                builder: (context, state) =>
+                const Center(child: Text('Notifications Screen (Index 1)')),
+              ),
+            ],
+          ),
+
+          // Index 2: Favorites Screen (الشكل الثالث - تم تحويل فهرسه من 1 إلى 2)
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: routes.favoritesScreen,
+                builder: (context, state) =>
+                const Center(child: Text('Favorites Screen (Index 2)')),
+              ),
+            ],
+          ),
+
+          // Index 3: Home Screen (الشكل الرابع - تم تحويل فهرسه من 2 إلى 3)
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: routes.homeScreen,
+                builder: (context, state) => const HomeScreen(),
               ),
             ],
           ),
