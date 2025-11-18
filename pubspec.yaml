@@ -51,6 +51,7 @@ dependencies:
   flutter_launcher_icons: ^0.14.4
   shared_preferences: ^2.5.3
   snackly: ^0.0.9
+  image_picker: ^1.2.1
 
 dev_dependencies:
   flutter_test:

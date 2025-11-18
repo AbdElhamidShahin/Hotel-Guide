@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:hotel_guide/core/router/routers.dart';
 import 'package:hotel_guide/features/favorite/ui/favorite_screen.dart';
 import 'package:hotel_guide/features/home/logic/cubit/home_cubit.dart';
+import 'package:hotel_guide/features/search/logic/cubit/search_cubit.dart';
+import 'package:hotel_guide/features/search/ui/search_screen.dart';
 import 'package:hotel_guide/features/sign_up/logic/cubit/sign_up_cubit.dart';
 import '../../AuthWrapper.dart';
 import '../../features/favorite/logic/cubit/favorite_cubit.dart';
@@ -12,6 +14,7 @@ import '../../features/home/ui/home_screen.dart';
 import '../../features/login/logic/cubit/login_cubit.dart';
 import '../../features/login/ui/login_screen.dart';
 import '../../features/on_boarding/ui/on_boarding_screen.dart';
+import '../../features/profile/ui/profile_screen.dart';
 import '../../features/sign_up/ui/sign_up_screen.dart';
 
 import '../../main_app_shell.dart';
@@ -33,7 +36,7 @@ abstract class AppRouter {
       GoRoute(
         path: routes.onBoardingScreen,
         builder: (BuildContext context, GoRouterState state) =>
-        const OnBoardingScreen(),
+            const OnBoardingScreen(),
       ),
       GoRoute(
         path: routes.loginScreen,
@@ -55,6 +58,13 @@ abstract class AppRouter {
           return CustomDetailsScreen(hotelModel: state.extra as HotelModel);
         },
       ),
+      GoRoute(
+        path: routes.searchScreen,
+        builder: (BuildContext context, GoRouterState state) => BlocProvider(
+          create: (BuildContext context) => getIt<SearchCubit>(),
+          child: const SearchView(),
+        ),
+      ),
 
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
@@ -64,9 +74,9 @@ abstract class AppRouter {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: routes.profileScreen,
+                path: routes.accountScreen,
                 builder: (context, state) =>
-                const Center(child: Text('Profile Screen (Index 0)')),
+                    const AccountScreen()
               ),
             ],
           ),
@@ -76,7 +86,7 @@ abstract class AppRouter {
               GoRoute(
                 path: '/notifications',
                 builder: (context, state) =>
-                const Center(child: Text('Notifications Screen (Index 1)')),
+                    const Center(child: Text('Notifications Screen (Index 1)')),
               ),
             ],
           ),
@@ -90,8 +100,6 @@ abstract class AppRouter {
                   child: const FavoriteScreen(),
                 ),
               ),
-
-
             ],
           ),
 
@@ -119,32 +127,28 @@ abstract class AppRouter {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: routes.profileScreen,
-                builder: (context, state) =>
-                const Center(child: Text('Profile Screen (Index 0)')),
+                path: routes.accountScreen,
+                builder: (context, state) => AccountScreen(),
               ),
             ],
           ),
 
-          // Index 1: Notifications/Bell Screen (الشكل الثاني - إضافة جديدة)
           StatefulShellBranch(
             routes: [
               GoRoute(
-                // يجب تعريف هذا المسار في ملف routes.dart
                 path: '/notifications',
                 builder: (context, state) =>
-                const Center(child: Text('Notifications Screen (Index 1)')),
+                    const Center(child: Text('Notifications Screen (Index 1)')),
               ),
             ],
           ),
 
-          // Index 2: Favorites Screen (الشكل الثالث - تم تحويل فهرسه من 1 إلى 2)
           StatefulShellBranch(
             routes: [
               GoRoute(
                 path: routes.favoritesScreen,
                 builder: (context, state) =>
-                const Center(child: Text('Favorites Screen (Index 2)')),
+                    const Center(child: Text('Favorites Screen (Index 2)')),
               ),
             ],
           ),

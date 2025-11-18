@@ -6,6 +6,7 @@ class HotelModel {
   final String imageUrl;
   final String imageUrlAll;
   final String isWifi;
+  final String view;
   final String breakfast;
   final String location;
   final String locationUrl;
@@ -21,6 +22,7 @@ class HotelModel {
     required this.imageUrlAll,
     required this.isWifi,
     required this.breakfast,
+    required this.view,
     required this.location,
     required this.locationUrl,
     required this.description,
@@ -33,6 +35,7 @@ class HotelModel {
       name: json['name'] ?? '',
       rating: json['rating'] ?? '',
       price: json['price'] ?? '',
+      view: json['view'] ?? '',
       imageUrl: json['imageUrl'] ?? '',
       imageUrlAll: json['imageUrlAll'] ?? '',
       isWifi: json['iswifi'] ?? '',
@@ -42,12 +45,14 @@ class HotelModel {
       description: json['description'] ?? '',
       cityId: json['city_id'] ?? 0,
     );
-  }  Map<String, dynamic> toJson() {
+  }
+  Map<String, dynamic> toJson() {
     return {
       'id': id,
       'name': name,
       'rating': rating,
       'price': price,
+      'view': view,
       'imageUrl': imageUrl,
       'imageUrlAll': imageUrlAll,
       'iswifi': isWifi,
@@ -59,13 +64,11 @@ class HotelModel {
     };
   }
 
-
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is HotelModel &&
-        other.id == id;
+    return other is HotelModel && other.id == id;
   }
 
   @override

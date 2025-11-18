@@ -26,4 +26,11 @@ class AppColors {
   static const Color black6 = Color(0xFF171725);
   static const Color black7 = Color(0xFF101010);
   static const Color black8 = Color(0xFF1F1F1F);
+
+
+
+  static const Color mainOrange = Color(0xFFFFBD59);     // لون الزر
+  static const Color borderGrey = Color(0xFFE0E0E0);     // لون الحدود
+  static const Color hintTextGrey = Color(0xFF8A8A8A);   // لون تلميح النص
+  static const Color textBlack = Color(0xFF1E1E1E);
 }
