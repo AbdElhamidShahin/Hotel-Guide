@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/colors.dart';
 
 
@@ -7,7 +8,7 @@ class Customtextfeild extends StatelessWidget {
   Customtextfeild({
     super.key,
     required this.hintText,
-    required this.label, 
+    required this.label,
     this.onChanged,
     this.validator,
     this.controller,
@@ -24,16 +25,18 @@ class Customtextfeild extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Text(
             label,
-            style: const TextStyle(
+            style:  TextStyle(
               fontWeight: FontWeight.bold,
-              fontSize: 16,
-              color: AppColors.textBlack,
+              fontSize: 15,
+              color: AppColors.black,
+              fontFamily: 'Cairo',
+
             ),
           ),
           const SizedBox(height: 8),
@@ -44,30 +47,26 @@ class Customtextfeild extends StatelessWidget {
             keyboardType: keyboardType,
             textAlign: TextAlign.right,
             style: const TextStyle(
-              color: AppColors.textBlack,
+              color: AppColors.black,
               fontSize: 18.0,
             ),
             decoration: InputDecoration(
               filled: true,
               fillColor: Colors.white,
               hintText: hintText,
-              hintStyle: const TextStyle(
-                color: AppColors.hintTextGrey,
-                fontSize: 16,
-                fontWeight: FontWeight.normal,
-              ),
+              hintStyle: textStyle15MediumGray,
               contentPadding: const EdgeInsets.symmetric(
-                horizontal: 15,
-                vertical: 15,
+                horizontal: 8,
+                vertical: 18,
               ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
-                borderSide: const BorderSide(color: AppColors.borderGrey),
+                borderSide: const BorderSide(color: AppColors.yellowGold),
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: const BorderSide(
-                  color: AppColors.borderGrey,
+                borderRadius: BorderRadius.circular(6),
+                borderSide:  BorderSide(
+                  color: AppColors.black4.withOpacity(0.7),
                   width: 1.0,
                 ),
               ),

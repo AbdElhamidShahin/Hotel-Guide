@@ -14,6 +14,7 @@ import '../../features/home/ui/home_screen.dart';
 import '../../features/login/logic/cubit/login_cubit.dart';
 import '../../features/login/ui/login_screen.dart';
 import '../../features/on_boarding/ui/on_boarding_screen.dart';
+import '../../features/profile/ui/edit_account_screen.dart';
 import '../../features/profile/ui/profile_screen.dart';
 import '../../features/sign_up/ui/sign_up_screen.dart';
 
@@ -64,6 +65,9 @@ abstract class AppRouter {
           create: (BuildContext context) => getIt<SearchCubit>(),
           child: const SearchView(),
         ),
+      ),     GoRoute(
+        path: routes.editAccountScreen,
+        builder: (BuildContext context, GoRouterState state) => EditAccountScreen(),
       ),
 
       StatefulShellRoute.indexedStack(
