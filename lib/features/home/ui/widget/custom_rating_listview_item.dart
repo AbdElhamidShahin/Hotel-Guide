@@ -20,7 +20,6 @@ class CustomRatingListviewItem extends StatelessWidget {
   final HotelModel hotelModel;
   @override
   Widget build(BuildContext context) {
-
     return GestureDetector(
       onTap: () {
         context.go(routes.customDetailsScreen, extra: hotelModel);
@@ -42,6 +41,7 @@ class CustomRatingListviewItem extends StatelessWidget {
                 ),
               ],
             ),
+            // This is the overflowing Column (Line 44)
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -114,24 +114,32 @@ class CustomRatingListviewItem extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(height: 16),
+                // FIX: Reduced from 16 to 13 to resolve the 3.0 pixel overflow.
+                SizedBox(height: 13),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Text(
-                        "${hotelModel.name}",
-                        style: textStyle22RegularWhite.copyWith(
-                          color: AppColors.black4,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 20,
+                      SingleChildScrollView(
+                        scrollDirection:
+                        Axis.horizontal, // تفعيل التمرير أفقياً
+                        reverse: true, // يجعل البداية من اليمين
+                        child: Text(
+                          "${hotelModel.name}",
+                          style: textStyle22RegularWhite.copyWith(
+                            color: AppColors.black4,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 20,
+                          ),
+                          textDirection: TextDirection.rtl, // من اليمين لليسار
+                          maxLines: 1, // سطر واحد فقط
+                          overflow:
+                          TextOverflow.visible, // يسمح بالتمرير بدل القص
                         ),
-                        textDirection: TextDirection.rtl,
                       ),
                       const SizedBox(height: 16),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Container(
                             height: 50,
@@ -141,64 +149,73 @@ class CustomRatingListviewItem extends StatelessWidget {
                               color: Color(0xFFF2F2F2),
                             ),
                             child: // 💡 يجب تحديد النوع: Consumer<ItemProvider>
-                                // استخدام Cubit بدلاً من Consumer
-                                BlocProvider(
-                                  create: (context) => getIt<FavoriteCubit>(),
+                            // استخدام Cubit بدلاً من Consumer
+                            BlocProvider.value(
+                              value: getIt<FavoriteCubit>(),
 
-                                  child: BlocBuilder<FavoriteCubit, FavoriteState>(
-                                    builder: (context, state) {
-                                      final isFavorite = context
-                                          .read<FavoriteCubit>()
-                                          .isFavorite(hotelModel);
-                                  
-                                      return IconButton(
-                                        icon: Icon(
-                                          isFavorite
-                                              ? Icons.favorite_rounded
-                                              : Icons.favorite_border,
-                                          color: isFavorite
-                                              ? Colors.redAccent
-                                              : Colors.black,
-                                          size: 32,
-                                        ),
-                                        onPressed: () {
-                                          final bool currentlyFavorite =
-                                              isFavorite;
-                                          context
-                                              .read<FavoriteCubit>()
-                                              .toggleFavorite(hotelModel);
-                                  
-                                          if (currentlyFavorite) {
-                                            Snackly.success(
-                                              context: context,
-                                              title: "تم الحذف من المفضلة",
-                                              style: SnackbarStyle.filled,
-                                            );
-                                          } else {
-                                            Snackly.success(
-                                              context: context,
-                                              title: "تم الإضافة إلى المفضلة",
-                                              style: SnackbarStyle.filled,
-                                            );
-                                          }
-                                        },
-                                        padding: const EdgeInsets.all(8),
-                                        constraints: const BoxConstraints(),
-                                      );
+                              child:
+                              BlocBuilder<FavoriteCubit, FavoriteState>(
+                                builder: (context, state) {
+                                  final favoriteCubit = context
+                                      .read<FavoriteCubit>();
+                                  final isFavorite = favoriteCubit
+                                      .isFavorite(hotelModel);
+
+                                  return IconButton(
+                                    icon: Icon(
+                                      isFavorite
+                                          ? Icons.favorite_rounded
+                                          : Icons.favorite_border,
+                                      color: isFavorite
+                                          ? Colors.redAccent
+                                          : Colors.black,
+                                      size: 32,
+                                    ),
+                                    onPressed: () async {
+                                      final bool currentlyFavorite =
+                                          isFavorite;
+                                      await favoriteCubit
+                                          .toggleFavorite(hotelModel);
+
+                                      if (currentlyFavorite) {
+                                        Snackly.success(
+                                          context: context,
+                                          title: "تم الحذف من المفضلة",
+                                          style: SnackbarStyle.filled,
+                                        );
+                                      } else {
+                                        Snackly.success(
+                                          context: context,
+                                          title:
+                                          "تم الإضافة إلى المفضلة",
+                                          style: SnackbarStyle.filled,
+                                        );
+                                      }
                                     },
-                                  ),
-                                ),
+                                    padding: const EdgeInsets.all(8),
+                                    constraints: const BoxConstraints(),
+                                  );
+                                },
+                              ),
+                            ),
                           ),
+                          Spacer(),
                           Row(
-                            mainAxisSize: MainAxisSize.min,
+                            mainAxisSize: MainAxisSize.min, // يخلي حجم الـ Row بس قد النص
+                            crossAxisAlignment: CrossAxisAlignment.center, // لمطابقة الارتفاع
                             children: [
                               Text(
-                                "\$${hotelModel.price}",
-
+                                "\$", // علامة الدولار
+                                style: textStyle28MediumBlack,
+                              ),
+                              SizedBox(width: 4), // مسافة بسيطة بين $ والسعر
+                              Text(
+                                "${hotelModel.price}", // السعر
                                 style: textStyle28MediumBlack,
                               ),
                             ],
-                          ),
+                          )
+
                         ],
                       ),
                     ],
