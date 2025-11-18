@@ -38,11 +38,11 @@ class LoginScreen extends StatelessWidget {
                   padding:  EdgeInsets.symmetric(horizontal: 24.0),
                   child: Column(
                     children: [
-                      SizedBox(height: 24.h),
                       Image.asset(
                         "assets/images/logo/logo.png",
-                        width: 244.33.w,
-                        height: 237.67.h,
+                        width: 244.33,
+                        height: 237.67,
+
                       ),
 
                       BlocListener<LoginCubit, LoginState>(
@@ -54,7 +54,7 @@ class LoginScreen extends StatelessWidget {
                               'نجاح باهر! ✅',
                               state.message,
                             );
-                            context.go(routes.onBoardingScreen);
+                            context.go(routes.homeScreen);
                           } else if (state is LoginError) {
                             showCustomSnackbar(
                               context,

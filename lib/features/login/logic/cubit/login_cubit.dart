@@ -30,7 +30,18 @@ class LoginCubit extends Cubit<LoginState> {
     } on FirebaseAuthException catch (e) {
       print("Firebase Error Code: ${e.code}");
 
-      String errorMessage = _mapFirebaseAuthErrorToArabic(e.code);
+      String errorMessage;
+
+      if (e.code == 'user-not-found') {
+        errorMessage = "لا يوجد حساب بهذا البريد الإلكتروني. سجّل الآن! 📝";
+      } else if (e.code == 'wrong-password' || e.code == 'invalid-credential') {
+        errorMessage = "البريد الإلكتروني أو كلمة المرور غير صحيحة. 🔑";
+      } else if (e.code == 'network-request-failed') {
+        errorMessage = "فشلت عملية تسجيل الدخول. تأكد من اتصالك بالإنترنت. 🌐";
+      } else {
+        errorMessage = "حدث خطأ غير متوقع. يرجى المحاولة لاحقاً. 🚧";
+      }
+
       emit(LoginError(errorMessage));
     } catch (e) {
       print("General Error: $e");
@@ -38,23 +49,4 @@ class LoginCubit extends Cubit<LoginState> {
     }
   }
 
-  String _mapFirebaseAuthErrorToArabic(String errorCode) {
-    switch (errorCode) {
-      case 'invalid-credential':
-        return "البريد الإلكتروني أو كلمة المرور غير صحيحة. 🔑";
-
-      case 'user-not-found':
-      case 'wrong-password':
-        return "البريد الإلكتروني أو كلمة المرور غير صحيحة. 🔑";
-
-
-
-
-      case 'network-request-failed':
-        return "فشلت عملية تسجيل الدخول. تأكد من اتصالك بالإنترنت. 🌐";
-
-      default:
-        return "فشلت عملية تسجيل الدخول. يرجى المحاولة لاحقاً. 🚧";
-    }
-  }
 }

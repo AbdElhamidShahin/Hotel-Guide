@@ -35,9 +35,7 @@ class SignUpCubit extends Cubit<SignUpState> {
       final user = userCredential.user;
 
       if (user != null) {
-        await user.sendEmailVerification();
-        emit(SignUpVerificationRequired(user.email!));
-
+          emit(SignUpSuccess("تم إنشاء الحساب بنجاح!"));
       }
     } on FirebaseAuthException catch (e) {
       print("Firebase Error Code: ${e.code}");

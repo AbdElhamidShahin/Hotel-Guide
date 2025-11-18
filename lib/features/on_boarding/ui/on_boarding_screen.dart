@@ -26,12 +26,12 @@ class OnBoardingScreen extends StatelessWidget {
             ),
 
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15.h),
+              padding: EdgeInsets.symmetric(horizontal: 15),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  SizedBox(height: 130),
+                  SizedBox(height: 100),
                   Image.asset(
                     "assets/images/logo/logo.png",
                     width: 270,
@@ -48,7 +48,7 @@ class OnBoardingScreen extends StatelessWidget {
                           style: textStyle33BoldGray,
                           textAlign: TextAlign.right,
                         ),
-                        SizedBox(height: 16.h),
+                        SizedBox(height: 16),
                         Text(
                           "اكتشف أفضل الفنادق... قارن واحجز بثقة وبأسرع طريقة.",
                           textAlign: TextAlign.right,
@@ -58,7 +58,7 @@ class OnBoardingScreen extends StatelessWidget {
                     ),
                   ),
 
-                  SizedBox(height: 134.h),
+                  SizedBox(height: 100),
                   CustomElevatedButton(),
                 ],
               ),
