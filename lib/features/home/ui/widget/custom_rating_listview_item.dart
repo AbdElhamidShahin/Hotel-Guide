@@ -4,19 +4,15 @@ import 'package:go_router/go_router.dart';
 import 'package:hotel_guide/core/network/hotel_model.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
 import 'package:snackly/snackly.dart';
-
 import '../../../../core/di/injection.dart';
-import '../../../../core/helpers/favorite_manger.dart';
-import '../../../../core/network/city_model.dart';
 import '../../../../core/router/routers.dart';
 import '../../../../core/theme/app_theme.dart';
 import 'package:provider/provider.dart';
-
 import '../../../favorite/logic/cubit/favorite_cubit.dart';
 import '../../../favorite/logic/cubit/favorite_state.dart';
 
 class CustomRatingListviewItem extends StatelessWidget {
-   CustomRatingListviewItem({super.key, required this.hotelModel});
+  CustomRatingListviewItem({super.key, required this.hotelModel});
   final HotelModel hotelModel;
   @override
   Widget build(BuildContext context) {
@@ -41,7 +37,6 @@ class CustomRatingListviewItem extends StatelessWidget {
                 ),
               ],
             ),
-            // This is the overflowing Column (Line 44)
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -114,7 +109,6 @@ class CustomRatingListviewItem extends StatelessWidget {
                     ),
                   ],
                 ),
-                // FIX: Reduced from 16 to 13 to resolve the 3.0 pixel overflow.
                 SizedBox(height: 13),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -122,9 +116,8 @@ class CustomRatingListviewItem extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       SingleChildScrollView(
-                        scrollDirection:
-                        Axis.horizontal, // تفعيل التمرير أفقياً
-                        reverse: true, // يجعل البداية من اليمين
+                        scrollDirection: Axis.horizontal,
+                        reverse: true,
                         child: Text(
                           "${hotelModel.name}",
                           style: textStyle22RegularWhite.copyWith(
@@ -132,10 +125,9 @@ class CustomRatingListviewItem extends StatelessWidget {
                             fontWeight: FontWeight.w600,
                             fontSize: 20,
                           ),
-                          textDirection: TextDirection.rtl, // من اليمين لليسار
-                          maxLines: 1, // سطر واحد فقط
-                          overflow:
-                          TextOverflow.visible, // يسمح بالتمرير بدل القص
+                          textDirection: TextDirection.rtl,
+                          maxLines: 1,
+                          overflow: TextOverflow.visible,
                         ),
                       ),
                       const SizedBox(height: 16),
@@ -148,18 +140,16 @@ class CustomRatingListviewItem extends StatelessWidget {
                               shape: BoxShape.circle,
                               color: Color(0xFFF2F2F2),
                             ),
-                            child: // 💡 يجب تحديد النوع: Consumer<ItemProvider>
-                            // استخدام Cubit بدلاً من Consumer
-                            BlocProvider.value(
+                            child: BlocProvider.value(
                               value: getIt<FavoriteCubit>(),
 
-                              child:
-                              BlocBuilder<FavoriteCubit, FavoriteState>(
+                              child: BlocBuilder<FavoriteCubit, FavoriteState>(
                                 builder: (context, state) {
                                   final favoriteCubit = context
                                       .read<FavoriteCubit>();
-                                  final isFavorite = favoriteCubit
-                                      .isFavorite(hotelModel);
+                                  final isFavorite = favoriteCubit.isFavorite(
+                                    hotelModel,
+                                  );
 
                                   return IconButton(
                                     icon: Icon(
@@ -172,10 +162,10 @@ class CustomRatingListviewItem extends StatelessWidget {
                                       size: 32,
                                     ),
                                     onPressed: () async {
-                                      final bool currentlyFavorite =
-                                          isFavorite;
-                                      await favoriteCubit
-                                          .toggleFavorite(hotelModel);
+                                      final bool currentlyFavorite = isFavorite;
+                                      await favoriteCubit.toggleFavorite(
+                                        hotelModel,
+                                      );
 
                                       if (currentlyFavorite) {
                                         Snackly.success(
@@ -186,8 +176,7 @@ class CustomRatingListviewItem extends StatelessWidget {
                                       } else {
                                         Snackly.success(
                                           context: context,
-                                          title:
-                                          "تم الإضافة إلى المفضلة",
+                                          title: "تم الإضافة إلى المفضلة",
                                           style: SnackbarStyle.filled,
                                         );
                                       }
@@ -201,21 +190,17 @@ class CustomRatingListviewItem extends StatelessWidget {
                           ),
                           Spacer(),
                           Row(
-                            mainAxisSize: MainAxisSize.min, // يخلي حجم الـ Row بس قد النص
-                            crossAxisAlignment: CrossAxisAlignment.center, // لمطابقة الارتفاع
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
+                              Text("\$", style: textStyle28MediumBlack),
+                              SizedBox(width: 4),
                               Text(
-                                "\$", // علامة الدولار
-                                style: textStyle28MediumBlack,
-                              ),
-                              SizedBox(width: 4), // مسافة بسيطة بين $ والسعر
-                              Text(
-                                "${hotelModel.price}", // السعر
+                                "${hotelModel.price}",
                                 style: textStyle28MediumBlack,
                               ),
                             ],
-                          )
-
+                          ),
                         ],
                       ),
                     ],
@@ -223,11 +208,9 @@ class CustomRatingListviewItem extends StatelessWidget {
                 ),
               ],
             ),
-    )
-    )
-    )
+          ),
+        ),
+      ),
     );
-
+  }
 }
-}
-
