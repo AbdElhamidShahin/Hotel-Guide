@@ -9,7 +9,7 @@ class FavoriteCubit extends Cubit<FavoriteState> {
   FavoriteCubit() : super(FavoriteInitial()) {
     _loadFavorites();
   }
-
+//
   List<HotelModel> _favorites = [];
 
   List<HotelModel> get favorites => _favorites;
