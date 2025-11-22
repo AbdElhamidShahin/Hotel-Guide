@@ -2,10 +2,35 @@ import 'package:flutter/material.dart';
 import 'package:hotel_guide/features/on_boarding/ui/on_boarding_screen.dart';
 import 'package:hotel_guide/features/profile/ui/widget/build_sttings_item.dart';
 import 'package:hotel_guide/features/profile/ui/widget/custom_profile_image_and_name.dart';
+import '../../../core/helpers/local_storage_account.dart';
 import '../../../core/theme/colors.dart';
 
-class AccountScreen extends StatelessWidget {
-  const AccountScreen({super.key});
+class AccountScreen extends StatefulWidget {
+  const AccountScreen({super.key, this.name});
+  final String? name;
+
+  @override
+  State<AccountScreen> createState() => _AccountScreenState();
+}
+
+class _AccountScreenState extends State<AccountScreen> {
+  String? name;
+
+  @override
+  void initState() {
+    super.initState();
+    name = widget.name;
+    _loadIfNeeded();
+  }
+
+  Future<void> _loadIfNeeded() async {
+    if (name == null || name!.isEmpty) {
+      final data = await UserDataManager.loadUserData();
+      setState(() {
+        name = data['name'] ?? '';
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +40,7 @@ class AccountScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          CustomProfileImageAndName(showEditIcon: true,),
+          CustomProfileImageAndName(showEditIcon: true, name: name),
           Expanded(
             child: ListView(
               padding: EdgeInsets.zero,

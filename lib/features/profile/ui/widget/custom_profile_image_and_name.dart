@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:hotel_guide/core/router/routers.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../../core/helpers/local_storage_account.dart';
+
 typedef ImagePickedCallback = void Function(File? file);
 
 class CustomProfileImageAndName extends StatefulWidget {
@@ -14,6 +16,7 @@ class CustomProfileImageAndName extends StatefulWidget {
     this.onTap,
     this.currentImageFile,
     this.onImagePicked,
+    this.name,
   });
 
   final bool showEditIcon;
@@ -21,15 +24,15 @@ class CustomProfileImageAndName extends StatefulWidget {
   final VoidCallback? onTap;
   final File? currentImageFile;
   final ImagePickedCallback? onImagePicked;
-
+  final String? name;
   @override
   State<CustomProfileImageAndName> createState() =>
       _CustomProfileImageAndNameState();
 }
 
 class _CustomProfileImageAndNameState extends State<CustomProfileImageAndName> {
+  String? image;
   String? name;
-  String? image; // مسار الصورة المحفوظة (من الداتا بيز)
 
   final ImagePicker _picker = ImagePicker();
 
@@ -40,17 +43,19 @@ class _CustomProfileImageAndNameState extends State<CustomProfileImageAndName> {
   }
 
   Future<void> loadUserData() async {
+    final userData = await UserDataManager.loadUserData();
     setState(() {
-      name = " عبده شاهين";
+      name = userData['name'] ?? widget.name;
+      image = userData['imagePath'];
     });
   }
 
-  // دالة اختيار الصورة التي تستدعي دالة الأب للتحديث
   Future<void> _pickImage() async {
     try {
       final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
       if (pickedFile != null) {
-        widget.onImagePicked!(File(pickedFile.path));
+        final file = File(pickedFile.path);
+        widget.onImagePicked?.call(file);
       }
     } catch (e) {
       debugPrint("حدث خطأ أثناء اختيار الصورة: $e");
@@ -77,8 +82,11 @@ class _CustomProfileImageAndNameState extends State<CustomProfileImageAndName> {
             children: [
               if (widget.showEditIcon)
                 IconButton(
-                  onPressed: () async {
-                    context.go(routes.editAccountScreen);
+                  onPressed: () {
+                    context.go(
+                      routes.editAccountScreen,
+                      extra: {'name': name ?? widget.name ?? ''},
+                    );
                   },
                   icon: Icon(
                     Icons.settings_outlined,
@@ -91,7 +99,7 @@ class _CustomProfileImageAndNameState extends State<CustomProfileImageAndName> {
 
               IconButton(
                 onPressed: () {
-                  Navigator.pop(context);
+                  context.go(routes.homeScreen);
                 },
                 icon: Icon(
                   Icons.arrow_forward,
@@ -101,6 +109,7 @@ class _CustomProfileImageAndNameState extends State<CustomProfileImageAndName> {
               ),
             ],
           ),
+
           const SizedBox(height: 10),
 
           Stack(
@@ -116,13 +125,10 @@ class _CustomProfileImageAndNameState extends State<CustomProfileImageAndName> {
                 child: CircleAvatar(
                   radius: 80,
                   backgroundColor: Colors.grey[800],
-                  // استخدام currentImageFile لتحديد الصورة
-                  backgroundImage: widget.currentImageFile != null
-                      ? FileImage(widget.currentImageFile!)
-                      : (image != null && File(image!).existsSync()
-                            ? FileImage(File(image!))
-                            : const AssetImage('assets/images/profile.png')
-                                  as ImageProvider),
+                  backgroundImage: image != null && File(image!).existsSync()
+                      ? FileImage(File(image!))
+                      : const AssetImage('assets/images/profile.png')
+                            as ImageProvider,
                 ),
               ),
 
@@ -155,6 +161,7 @@ class _CustomProfileImageAndNameState extends State<CustomProfileImageAndName> {
           ),
 
           const SizedBox(height: 15),
+
           Text(
             name ?? 'اسم المستخدم',
             style: const TextStyle(
@@ -164,6 +171,7 @@ class _CustomProfileImageAndNameState extends State<CustomProfileImageAndName> {
               fontFamily: 'Cairo',
             ),
           ),
+
           const SizedBox(height: 20),
         ],
       ),

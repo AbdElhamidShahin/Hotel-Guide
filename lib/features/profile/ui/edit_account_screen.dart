@@ -1,31 +1,64 @@
-import 'package:flutter/material.dart';
 import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hotel_guide/core/router/routers.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
 import 'package:hotel_guide/features/profile/ui/widget/custom_buttom.dart';
 import 'package:hotel_guide/features/profile/ui/widget/custom_profile_image_and_name.dart';
 import 'package:hotel_guide/features/profile/ui/widget/custom_text_field.dart';
-
-import '../../../core/helpers/contact/custom_show_snackbar.dart';
+import 'package:snackly/snackly.dart';
 import '../../../core/helpers/local_storage_account.dart';
 
 class EditAccountScreen extends StatefulWidget {
+  final String name;
+
+  const EditAccountScreen({super.key, required this.name});
+
   @override
   _EditAccountScreenState createState() => _EditAccountScreenState();
 }
 
 class _EditAccountScreenState extends State<EditAccountScreen> {
   final _formKey = GlobalKey<FormState>();
-
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
   final _emailController = TextEditingController();
   final _addressController = TextEditingController();
-  File? _currentImageFile;
+  File? _imageFile;
+  @override
+  void initState() {
+    super.initState();
+    _nameController.text = widget.name ?? '';
+    _loadIfEmpty();
+  }
 
-  void _updateImageFile(File? newFile) {
+  Future<void> _loadIfEmpty() async {
+    if ((_nameController.text).isEmpty) {
+      final data = await UserDataManager.loadUserData();
+      _nameController.text = data['name'] ?? '';
+      setState(() {});
+    }
+  }
+  void _onImagePicked(File? file) {
     setState(() {
-      _currentImageFile = newFile;
+      _imageFile = file;
     });
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _phoneController.dispose();
+    _emailController.dispose();
+    _addressController.dispose();
+    super.dispose();
+  }
+
+  String? _validateEmail(String? value) {
+    if (value == null || value.isEmpty) return 'الرجاء إدخال الايميل';
+    final emailRegex = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
+    if (!emailRegex.hasMatch(value)) return 'أدخل عنوان بريد إلكتروني صالح';
+    return null;
   }
 
   @override
@@ -39,8 +72,8 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
               CustomProfileImageAndName(
                 showEditIcon: false,
                 showAddIcon: true,
-                currentImageFile: _currentImageFile,
-                onImagePicked: _updateImageFile,
+                currentImageFile: _imageFile,
+                onImagePicked: _onImagePicked,
               ),
               const SizedBox(height: 12),
 
@@ -62,12 +95,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
                 label: 'البريد الإلكتروني',
                 hintText: 'example@gmail.com',
                 keyboardType: TextInputType.emailAddress,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'الرجاء إدخال الايميل';
-                  }
-                  return null;
-                },
+                validator: _validateEmail,
               ),
               const SizedBox(height: 8),
 
@@ -172,22 +200,20 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
                   color: AppColors.mainOrange,
                   text: 'تعديل الملف',
                   onTap: () async {
-                    // 1. التحقق من صحة حقول الإدخال
                     if (_formKey.currentState!.validate()) {
-                      // 2. حفظ البيانات
                       await UserDataManager.saveUserData(
                         name: _nameController.text,
+                        imagePath: _imageFile?.path,
                         phone: _phoneController.text,
                         email: _emailController.text,
-                        imagePath: _currentImageFile?.path,
+                      );
+                      Snackly.success(
+                        context: context,
+                        title: 'تم حفظ البيانات بنجاح',
+                        style: SnackbarStyle.filled,
                       );
 
-                      // 3. 🌟 استخدام maybePop كبديل أكثر أماناً
-                      // تقوم هذه الدالة بمحاولة إغلاق الصفحة، وإذا لم تنجح (لأنها آخر صفحة)، فإنها تتوقف بدون إطلاق Error.
-                      Navigator.maybePop(context, true);
-
-                      // إذا كنت تفضل الانتقال لشاشة محددة بدلاً من العودة، استخدم:
-                      // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainProfileScreen()));
+                      context.go(routes.homeScreen, extra: {'name': _nameController.text});
                     }
                   },
                 ),

@@ -65,10 +65,16 @@ abstract class AppRouter {
           create: (BuildContext context) => getIt<SearchCubit>(),
           child: const SearchView(),
         ),
-      ),     GoRoute(
-        path: routes.editAccountScreen,
-        builder: (BuildContext context, GoRouterState state) => EditAccountScreen(),
       ),
+      // في AppRouter
+      GoRoute(
+        path: routes.editAccountScreen,
+        builder: (BuildContext context, GoRouterState state) {
+          final data = state.extra as Map<String, dynamic>?;
+          return EditAccountScreen(name: data?['name'] ?? '');
+        },
+      ),
+
 
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
@@ -79,8 +85,14 @@ abstract class AppRouter {
             routes: [
               GoRoute(
                 path: routes.accountScreen,
-                builder: (context, state) =>
-                    const AccountScreen()
+                builder: (context, state) {
+                  final data = state.extra as Map<String, dynamic>?;
+
+                  return BlocProvider(
+                    create: (context) => getIt<HomeCubit>(),
+                    child: AccountScreen(name: data?["name"] ?? ""),
+                  );
+                },
               ),
             ],
           ),
@@ -111,10 +123,15 @@ abstract class AppRouter {
             routes: [
               GoRoute(
                 path: routes.homeScreen,
-                builder: (context, state) => BlocProvider(
-                  create: (context) => getIt<HomeCubit>(),
-                  child: const HomeScreen(),
-                ),
+                builder: (context, state) {
+                  // استلام البيانات من extra
+                  final data = state.extra as Map<String, dynamic>?;
+
+                  return BlocProvider(
+                    create: (context) => getIt<HomeCubit>(),
+                    child: HomeScreen(name: data?["name"] ?? ""),
+                  );
+                },
               ),
             ],
           ),
@@ -132,7 +149,15 @@ abstract class AppRouter {
             routes: [
               GoRoute(
                 path: routes.accountScreen,
-                builder: (context, state) => AccountScreen(),
+                builder: (context, state) {
+                  // استلام البيانات من extra
+                  final data = state.extra as Map<String, dynamic>?;
+
+                  return BlocProvider(
+                    create: (context) => getIt<HomeCubit>(),
+                    child: AccountScreen(name: data?["name"] ?? ""),
+                  );
+                },
               ),
             ],
           ),
@@ -157,12 +182,19 @@ abstract class AppRouter {
             ],
           ),
 
-          // Index 3: Home Screen (الشكل الرابع - تم تحويل فهرسه من 2 إلى 3)
           StatefulShellBranch(
             routes: [
               GoRoute(
                 path: routes.homeScreen,
-                builder: (context, state) => const HomeScreen(),
+                builder: (context, state) {
+                  // استلام البيانات من extra
+                  final data = state.extra as Map<String, dynamic>?;
+
+                  return BlocProvider(
+                    create: (context) => getIt<HomeCubit>(),
+                    child: HomeScreen(name: data?["name"] ?? ""),
+                  );
+                },
               ),
             ],
           ),
