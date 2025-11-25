@@ -1,23 +1,28 @@
-// features/search/data/repo/home_repo_imp.dart
-import 'package:hotel_guide/core/network/city_model.dart';
-import 'package:hotel_guide/features/search/data/repo/search_repo.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+import '../../../../core/network/hotel_model.dart';
 import '../../../../core/network/supabase_failure.dart';
+import 'search_repo.dart';
 import '../../../../core/network/supabase_service.dart';
 
 class SearchRepoIplm implements SearchRepo {
   final SupabaseService service;
+  final SupabaseClient client = Supabase.instance.client;
+
   SearchRepoIplm(this.service);
 
   @override
-  Future<List<CityModel>> fetchCitiesWithHotels() async {
+  Future<List<HotelModel>> fetchHotels() async {
     try {
-      final data = await service.getCitiesWithHotels();
-      if (data == null) return [];
-      return (data as List)
-          .map((e) => CityModel.fromJson(Map<String, dynamic>.from(e)))
+      final response = await client.from('hotel').select('*');
+
+      final hotels = response
+          .map((hotelData) => HotelModel.fromJson(hotelData))
           .toList();
-    } catch (error) {
-      throw SupabaseFailure.fromGenericError(error);
+
+      return hotels;
+    } catch (e) {
+      throw SupabaseFailure.fromSupabaseError(e);
     }
   }
 }

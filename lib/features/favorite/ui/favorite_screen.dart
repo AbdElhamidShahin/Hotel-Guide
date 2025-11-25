@@ -6,7 +6,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/colors.dart'; // نفترض وجود AppColors
 import '../logic/cubit/favorite_cubit.dart';
 import '../logic/cubit/favorite_state.dart';
-import 'widget/custom_item_favorite.dart';
+import '../../../core/helpers/widget/custom_item.dart';
 
 class FavoriteScreen extends StatelessWidget {
   const FavoriteScreen({super.key});
@@ -67,10 +67,12 @@ class FavoriteScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
-        title:  Text(
+        title: Text(
           'المفضلة',
-          style: textStyle18BoldGray.copyWith(fontWeight: FontWeight.w600,
-              color: AppColors.black6),
+          style: textStyle18BoldGray.copyWith(
+            fontWeight: FontWeight.w600,
+            color: AppColors.black6,
+          ),
         ),
 
         actions: [
@@ -105,9 +107,10 @@ class FavoriteScreen extends StatelessWidget {
               itemCount: favoriteItems.length,
               itemBuilder: (context, index) {
                 final item = favoriteItems[index];
-                return Customfavoriteitem(
-                  key: ValueKey(item.id), // إضافة key فريد
+                return CustomItem(
+                  key: ValueKey(item.id),
                   hotelModel: item,
+                  isContinar: true,
                 );
               },
             ),

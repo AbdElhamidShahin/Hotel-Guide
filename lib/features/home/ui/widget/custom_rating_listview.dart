@@ -19,6 +19,8 @@ class CustomRatingListview extends StatefulWidget {
 
 class _CustomRatingListviewState extends State<CustomRatingListview> {
   @override
+  bool get wantKeepAlive => true;
+
   void initState() {
     super.initState();
     BlocProvider.of<HomeCubit>(context).fetchHotelsByCity(2);
@@ -45,16 +47,13 @@ class _CustomRatingListviewState extends State<CustomRatingListview> {
             scrollDirection: Axis.horizontal,
             itemCount: state.hotels.length,
             itemBuilder: (context, index) {
-              return CustomRatingListviewItem(
-                hotelModel: state.hotels[index],
-              );
+              return CustomRatingListviewItem(hotelModel: state.hotels[index]);
             },
           );
         }
 
         return const Center(child: Text("يرجى اختيار مدينة"));
-      }
+      },
     );
   }
-
 }
