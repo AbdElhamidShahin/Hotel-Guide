@@ -10,6 +10,7 @@ import 'package:hotel_guide/features/login/ui/widget/social_login_section.dart';
 import 'package:hotel_guide/features/sign_up/logic/cubit/sign_up_cubit.dart';
 import 'package:hotel_guide/features/sign_up/ui/widget/email_and_password_and-name.dart';
 import '../../../core/helpers/contact/custom_show_snackbar.dart';
+import '../../../core/helpers/local_storage_account.dart';
 import '../../../core/helpers/widget/custom_button.dart';
 import '../../../core/router/routers.dart';
 import '../logic/cubit/sign_up_state.dart';
@@ -46,17 +47,26 @@ class SignUpScreen extends StatelessWidget {
                       ),
 
                       BlocListener<SignUpCubit, SignUpState>(
-                        listener: (context, state) {
-                 if (state is SignUpSuccess) {
+                        listener: (context, state) async {
+                          if (state is SignUpSuccess) {
+                            final name = context.read<SignUpCubit>().nameController.text;
+                            final email = context.read<SignUpCubit>().emailController.text;
+
+                            await UserDataManager.saveUserData(
+                              name: name,
+                              email: email,
+                              phone: '',
+                            );
                             showCustomSnackbar(
                               context,
                               ContentType.success,
                               'نجاح باهر! ✅',
                               state.message,
                             );
-                            context.go(routes.homeScreen);
-
-                          } else if (state is SignUpError) {
+                            context.go(
+                              routes.homeScreen,
+                              extra: {'name': name},
+                            );                          } else if (state is SignUpError) {
                             showCustomSnackbar(
                               context,
                               ContentType.failure,

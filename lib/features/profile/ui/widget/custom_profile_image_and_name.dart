@@ -1,32 +1,38 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hotel_guide/core/router/routers.dart';
 import 'package:image_picker/image_picker.dart';
 
-// تأكد من استيراد ملفاتك الخاصة بشكل صحيح
-import '../../../../core/theme/app_theme.dart';
-import '../edit_account_screen.dart';
+import '../../../../core/helpers/local_storage_account.dart';
+
+typedef ImagePickedCallback = void Function(File? file);
 
 class CustomProfileImageAndName extends StatefulWidget {
   const CustomProfileImageAndName({
     super.key,
-    this.showEditIcon = false, // افتراضيا مخفية
-    this.showAddIcon = false,  // افتراضيا مخفية
-    this.onTap, // جعلته اختياري لأنه قد لا يُستخدم إذا اعتمدنا على _pickImage الداخلي
+    this.showEditIcon = false,
+    this.showAddIcon = false,
+    this.onTap,
+    this.currentImageFile,
+    this.onImagePicked,
+    this.name,
   });
 
   final bool showEditIcon;
   final bool showAddIcon;
   final VoidCallback? onTap;
-
+  final File? currentImageFile;
+  final ImagePickedCallback? onImagePicked;
+  final String? name;
   @override
   State<CustomProfileImageAndName> createState() =>
       _CustomProfileImageAndNameState();
 }
 
 class _CustomProfileImageAndNameState extends State<CustomProfileImageAndName> {
+  String? image;
   String? name;
-  String? image; // مسار الصورة المحفوظة من الداتا بيز أو اللوكال
-  File? _imageFile; // الصورة التي يتم اختيارها الآن من المعرض
 
   final ImagePicker _picker = ImagePicker();
 
@@ -36,22 +42,20 @@ class _CustomProfileImageAndNameState extends State<CustomProfileImageAndName> {
     loadUserData();
   }
 
-  // محاكاة تحميل البيانات
   Future<void> loadUserData() async {
+    final userData = await UserDataManager.loadUserData();
     setState(() {
-      name = "شادي عبده أبودنيا";
-      // image = "path/to/saved/image"; // لو عندك مسار محفوظ ضعه هنا
+      name = userData['name'] ?? widget.name;
+      image = userData['imagePath'];
     });
   }
 
-  // دالة اختيار الصورة
   Future<void> _pickImage() async {
     try {
       final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
       if (pickedFile != null) {
-        setState(() {
-          _imageFile = File(pickedFile.path);
-        });
+        final file = File(pickedFile.path);
+        widget.onImagePicked?.call(file);
       }
     } catch (e) {
       debugPrint("حدث خطأ أثناء اختيار الصورة: $e");
@@ -73,20 +77,16 @@ class _CustomProfileImageAndNameState extends State<CustomProfileImageAndName> {
       ),
       child: Column(
         children: [
-          // --- الصف العلوي (أيقونة الإعدادات والسهم) ---
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               if (widget.showEditIcon)
                 IconButton(
-                  onPressed: () async {
-                    final result = await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>  EditAccountScreen(),
-                      ),
+                  onPressed: () {
+                    context.go(
+                      routes.editAccountScreen,
+                      extra: {'name': name ?? widget.name ?? ''},
                     );
-                    if (result == true) await loadUserData();
                   },
                   icon: Icon(
                     Icons.settings_outlined,
@@ -95,12 +95,11 @@ class _CustomProfileImageAndNameState extends State<CustomProfileImageAndName> {
                   ),
                 )
               else
-                const SizedBox(width: 48), // حفظ مسافة لتوازن الصف
+                const SizedBox(width: 48),
 
               IconButton(
                 onPressed: () {
-                  // أضف أكشن الرجوع هنا
-                  Navigator.pop(context);
+                  context.go(routes.homeScreen);
                 },
                 icon: Icon(
                   Icons.arrow_forward,
@@ -110,14 +109,13 @@ class _CustomProfileImageAndNameState extends State<CustomProfileImageAndName> {
               ),
             ],
           ),
+
           const SizedBox(height: 10),
 
-          // --- الصورة الشخصية مع زر الإضافة ---
           Stack(
             clipBehavior: Clip.none,
             alignment: Alignment.bottomRight,
             children: [
-              // 1. الصورة الأساسية
               Container(
                 padding: const EdgeInsets.all(3),
                 decoration: BoxDecoration(
@@ -127,31 +125,27 @@ class _CustomProfileImageAndNameState extends State<CustomProfileImageAndName> {
                 child: CircleAvatar(
                   radius: 80,
                   backgroundColor: Colors.grey[800],
-                  // المنطق: لو اخترت صورة جديدة اعرضها، لو لأ اعرض المحفوظة، لو مفيش اعرض الافتراضية
-                  backgroundImage: _imageFile != null
-                      ? FileImage(_imageFile!)
-                      : (image != null && File(image!).existsSync()
+                  backgroundImage: image != null && File(image!).existsSync()
                       ? FileImage(File(image!))
                       : const AssetImage('assets/images/profile.png')
-                  as ImageProvider),
+                            as ImageProvider,
                 ),
               ),
 
-              // 2. أيقونة الزائد (تظهر فقط بناء على الشرط)
               if (widget.showAddIcon)
                 Positioned(
                   bottom: 5,
                   right: 5,
                   child: GestureDetector(
-                    onTap: _pickImage, // استدعاء دالة اختيار الصورة عند الضغط
+                    onTap: _pickImage,
                     child: Container(
                       height: 42,
                       width: 42,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFFFBD59), // اللون البرتقالي
+                        color: const Color(0xFFFFBD59),
                         shape: BoxShape.circle,
                         border: Border.all(
-                          color: const Color(0xFF222222), // لون الخلفية الداكن (لعمل تأثير القطع)
+                          color: const Color(0xFF222222),
                           width: 3,
                         ),
                       ),
@@ -168,17 +162,16 @@ class _CustomProfileImageAndNameState extends State<CustomProfileImageAndName> {
 
           const SizedBox(height: 15),
 
-          // --- الاسم ---
           Text(
             name ?? 'اسم المستخدم',
-            // تأكد من ضبط الستايل حسب ملفاتك
             style: const TextStyle(
               fontSize: 20,
               color: Colors.white,
               fontWeight: FontWeight.bold,
-              fontFamily: 'Cairo', // مثال
+              fontFamily: 'Cairo',
             ),
           ),
+
           const SizedBox(height: 20),
         ],
       ),

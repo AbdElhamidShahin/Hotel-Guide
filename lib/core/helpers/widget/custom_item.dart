@@ -3,17 +3,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:snackly/snackly.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/network/hotel_model.dart';
-import '../../../../core/router/routers.dart';
-import '../../../../core/theme/app_theme.dart';
-import '../../../../core/theme/colors.dart';
-import '../../logic/cubit/favorite_cubit.dart';
-import '../../logic/cubit/favorite_state.dart';
+import '../../network/hotel_model.dart';
+import '../../router/routers.dart';
+import '../../theme/app_theme.dart';
+import '../../theme/colors.dart';
+import '../../../features/favorite/logic/cubit/favorite_cubit.dart';
+import '../../../features/favorite/logic/cubit/favorite_state.dart';
 
-class Customfavoriteitem extends StatelessWidget {
+class CustomItem extends StatelessWidget {
   final HotelModel hotelModel;
-
-  const Customfavoriteitem({super.key, required this.hotelModel});
+  final  bool isContinar ;
+  CustomItem({super.key, required this.hotelModel, required this.isContinar});
 
   @override
   Widget build(BuildContext context) {
@@ -145,7 +145,7 @@ class Customfavoriteitem extends StatelessWidget {
 
 
                             Spacer(),
-                            Container(
+                            isContinar ?  Container(
                               width: 38,
                               height: 38,
                               decoration: BoxDecoration(
@@ -175,7 +175,7 @@ class Customfavoriteitem extends StatelessWidget {
                                 padding: EdgeInsets.zero,
                                 constraints: const BoxConstraints(),
                               ),
-                            ),
+                            ): SizedBox(),
                           ],
                         ),
                       ],
