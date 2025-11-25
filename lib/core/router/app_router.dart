@@ -14,6 +14,7 @@ import '../../features/home/ui/home_screen.dart';
 import '../../features/login/logic/cubit/login_cubit.dart';
 import '../../features/login/ui/login_screen.dart';
 import '../../features/on_boarding/ui/on_boarding_screen.dart';
+import '../../features/profile/ui/edit_account_screen.dart';
 import '../../features/profile/ui/profile_screen.dart';
 import '../../features/sign_up/ui/sign_up_screen.dart';
 
@@ -60,10 +61,29 @@ abstract class AppRouter {
       ),
       GoRoute(
         path: routes.searchScreen,
-        builder: (BuildContext context, GoRouterState state) => BlocProvider(
-          create: (BuildContext context) => getIt<SearchCubit>(),
-          child: const SearchView(),
-        ),
+        builder: (BuildContext context, GoRouterState state) =>
+            MultiBlocProvider(
+              providers: [
+                BlocProvider<FavoriteCubit>(
+                  create: (_) =>
+                      getIt<
+                        FavoriteCubit
+                      >(), // أو FavoriteCubit() لو مش مستخدم getIt
+                ),
+                BlocProvider<SearchCubit>(
+                  create: (_) => getIt<SearchCubit>()..loadHotels(),
+                ),
+              ],
+              child: const SearchScreen(),
+            ),
+      ),
+      // في AppRouter
+      GoRoute(
+        path: routes.editAccountScreen,
+        builder: (BuildContext context, GoRouterState state) {
+          final data = state.extra as Map<String, dynamic>?;
+          return EditAccountScreen(name: data?['name'] ?? '');
+        },
       ),
 
       StatefulShellRoute.indexedStack(
@@ -75,8 +95,14 @@ abstract class AppRouter {
             routes: [
               GoRoute(
                 path: routes.accountScreen,
-                builder: (context, state) =>
-                    const AccountScreen()
+                builder: (context, state) {
+                  final data = state.extra as Map<String, dynamic>?;
+
+                  return BlocProvider(
+                    create: (context) => getIt<HomeCubit>(),
+                    child: AccountScreen(name: data?["name"] ?? ""),
+                  );
+                },
               ),
             ],
           ),
@@ -107,10 +133,15 @@ abstract class AppRouter {
             routes: [
               GoRoute(
                 path: routes.homeScreen,
-                builder: (context, state) => BlocProvider(
-                  create: (context) => getIt<HomeCubit>(),
-                  child: const HomeScreen(),
-                ),
+                builder: (context, state) {
+                  // استلام البيانات من extra
+                  final data = state.extra as Map<String, dynamic>?;
+
+                  return BlocProvider(
+                    create: (context) => getIt<HomeCubit>(),
+                    child: HomeScreen(name: data?["name"] ?? ""),
+                  );
+                },
               ),
             ],
           ),
@@ -128,7 +159,15 @@ abstract class AppRouter {
             routes: [
               GoRoute(
                 path: routes.accountScreen,
-                builder: (context, state) => AccountScreen(),
+                builder: (context, state) {
+                  // استلام البيانات من extra
+                  final data = state.extra as Map<String, dynamic>?;
+
+                  return BlocProvider(
+                    create: (context) => getIt<HomeCubit>(),
+                    child: AccountScreen(name: data?["name"] ?? ""),
+                  );
+                },
               ),
             ],
           ),
@@ -153,12 +192,19 @@ abstract class AppRouter {
             ],
           ),
 
-          // Index 3: Home Screen (الشكل الرابع - تم تحويل فهرسه من 2 إلى 3)
           StatefulShellBranch(
             routes: [
               GoRoute(
                 path: routes.homeScreen,
-                builder: (context, state) => const HomeScreen(),
+                builder: (context, state) {
+                  // استلام البيانات من extra
+                  final data = state.extra as Map<String, dynamic>?;
+
+                  return BlocProvider(
+                    create: (context) => getIt<HomeCubit>(),
+                    child: HomeScreen(name: data?["name"] ?? ""),
+                  );
+                },
               ),
             ],
           ),

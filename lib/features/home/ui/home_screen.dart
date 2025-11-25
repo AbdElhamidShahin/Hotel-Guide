@@ -10,8 +10,8 @@ import 'package:hotel_guide/features/home/ui/widget/top_rating_widget.dart';
 import '../../../core/theme/app_theme.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
-
+  const HomeScreen({super.key, required this.name});
+final String name;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +22,7 @@ class HomeScreen extends StatelessWidget {
             children: [
               CustomAppbarHome(),
               SizedBox(height: 16),
-              CustomWelcomeHeader(),
+              CustomWelcomeHeader(name: name,),
               SizedBox(height: 14),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),

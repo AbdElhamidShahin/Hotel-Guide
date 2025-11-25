@@ -26,17 +26,15 @@ class TopRatingWidget extends StatelessWidget {
             ),
             child: TextButton(
               onPressed: () {},
-              child: Padding(
-                padding: const EdgeInsets.all(0.0),
-                child: Text(
-                  "إكتشف المزيد",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Color(0xFF222222),
-                    fontSize: 15,
+              child: Text(
+                "إكتشف المزيد",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Color(0xFF222222),
+                  fontSize: 13,
+                  fontFamily: 'Cairo',
 
-                    fontWeight: FontWeight.w600,
-                  ),
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ),
