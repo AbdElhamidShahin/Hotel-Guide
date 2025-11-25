@@ -61,10 +61,21 @@ abstract class AppRouter {
       ),
       GoRoute(
         path: routes.searchScreen,
-        builder: (BuildContext context, GoRouterState state) => BlocProvider(
-          create: (BuildContext context) => getIt<SearchCubit>(),
-          child: const SearchView(),
-        ),
+        builder: (BuildContext context, GoRouterState state) =>
+            MultiBlocProvider(
+              providers: [
+                BlocProvider<FavoriteCubit>(
+                  create: (_) =>
+                      getIt<
+                        FavoriteCubit
+                      >(), // أو FavoriteCubit() لو مش مستخدم getIt
+                ),
+                BlocProvider<SearchCubit>(
+                  create: (_) => getIt<SearchCubit>()..loadHotels(),
+                ),
+              ],
+              child: const SearchScreen(),
+            ),
       ),
       // في AppRouter
       GoRoute(
@@ -74,7 +85,6 @@ abstract class AppRouter {
           return EditAccountScreen(name: data?['name'] ?? '');
         },
       ),
-
 
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {

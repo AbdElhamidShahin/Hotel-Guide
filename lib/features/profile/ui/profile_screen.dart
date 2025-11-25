@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hotel_guide/core/router/routers.dart';
 import 'package:hotel_guide/features/on_boarding/ui/on_boarding_screen.dart';
 import 'package:hotel_guide/features/profile/ui/widget/build_sttings_item.dart';
 import 'package:hotel_guide/features/profile/ui/widget/custom_profile_image_and_name.dart';
@@ -148,12 +150,7 @@ class _AccountScreenState extends State<AccountScreen> {
                   icon: Icons.login_rounded,
                   isLast: true,
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => OnBoardingScreen(),
-                      ),
-                    );
+                    context.go(routes.onBoardingScreen);
                   },
                 ),
               ],

@@ -1,5 +1,5 @@
-import '../../../../core/network/city_model.dart';
+import '../../../../core/network/hotel_model.dart';
 
 abstract class SearchRepo {
-  Future<List<CityModel>> fetchCitiesWithHotels();
+  Future<List<HotelModel>> fetchHotels();
 }

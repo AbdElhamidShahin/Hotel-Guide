@@ -1,3 +1,5 @@
+import '../../../../core/network/hotel_model.dart';
+
 abstract class SearchState {}
 
 class SearchInitial extends SearchState {}
@@ -5,20 +7,13 @@ class SearchInitial extends SearchState {}
 class SearchLoading extends SearchState {}
 
 class SearchSuccess extends SearchState {
-  final List<dynamic> hotels; // use HotelModel if preferred
+  final List<HotelModel> hotels;
+
   SearchSuccess(this.hotels);
 }
 
 class SearchFailure extends SearchState {
-  final String errorMessage;
-  SearchFailure(this.errorMessage);
-}
+  final String message;
 
-// dynamic filters states (optional/useful)
-class SearchLoaded extends SearchState {} // when filters loaded
-class SearchFiltersUpdated extends SearchState {}
-class SearchApplied extends SearchState {
-  final Map<String, dynamic> filters;
-  SearchApplied(this.filters);
+  SearchFailure(this.message);
 }
-class SearchFiltersCleared extends SearchState {}
