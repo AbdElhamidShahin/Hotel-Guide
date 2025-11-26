@@ -43,7 +43,7 @@ Future<void> setupGetIt() async {
   getIt.registerFactory<HomeCubit>(() => HomeCubit(getIt()));
 
   ///favorite
-  getIt.registerFactory<FavoriteCubit>(() => FavoriteCubit());
+  getIt.registerSingleton<FavoriteCubit>(FavoriteCubit());
 
   ///Search
   getIt.registerFactory<SearchRepo>(() => SearchRepoIplm(getIt<SupabaseService>()));
