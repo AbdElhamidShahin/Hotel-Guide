@@ -145,7 +145,8 @@ class CustomItem extends StatelessWidget {
 
 
                             Spacer(),
-                            isContinar ?  Container(
+                            isContinar
+                                ? Container(
                               width: 38,
                               height: 38,
                               decoration: BoxDecoration(
@@ -154,29 +155,24 @@ class CustomItem extends StatelessWidget {
                               ),
                               child: IconButton(
                                 icon: Icon(
-                                  Icons.favorite_rounded,
-                                  color: Colors.red,
+                                  isCurrentlyFavorite ? Icons.favorite_rounded : Icons.favorite_border,
+                                  color: isCurrentlyFavorite ? Colors.redAccent : Colors.black,
                                   size: 24,
                                 ),
                                 onPressed: () async {
                                   final wasFavorite = isCurrentlyFavorite;
-
                                   await favoriteCubit.toggleFavorite(hotelModel);
-
-
                                   Snackly.success(
                                     context: context,
-                                    title: isCurrentlyFavorite
-                                        ? "تم الحذف من المفضلة"
-                                        : "تم الإضافة إلى المفضلة",
+                                    title: wasFavorite ? "تم الحذف من المفضلة" : "تم الإضافة إلى المفضلة",
                                     style: SnackbarStyle.filled,
                                   );
                                 },
                                 padding: EdgeInsets.zero,
                                 constraints: const BoxConstraints(),
                               ),
-                            ): SizedBox(),
-                          ],
+                            )
+                                : SizedBox(),                          ],
                         ),
                       ],
                     ),

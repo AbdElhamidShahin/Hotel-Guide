@@ -24,7 +24,7 @@ class FavoriteScreen extends StatelessWidget {
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
-                color: AppColors.black, // يفترض وجود هذا اللون
+                color: AppColors.black,
               ),
               textAlign: TextAlign.center,
             ),

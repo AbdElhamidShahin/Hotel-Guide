@@ -13,6 +13,7 @@ import '../../features/home/ui/custom_details_screen.dart';
 import '../../features/home/ui/home_screen.dart';
 import '../../features/login/logic/cubit/login_cubit.dart';
 import '../../features/login/ui/login_screen.dart';
+import '../../features/notification/ui/notification_screen.dart';
 import '../../features/on_boarding/ui/on_boarding_screen.dart';
 import '../../features/profile/ui/edit_account_screen.dart';
 import '../../features/profile/ui/profile_screen.dart';
@@ -110,9 +111,8 @@ abstract class AppRouter {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: '/notifications',
-                builder: (context, state) =>
-                    const Center(child: Text('Notifications Screen (Index 1)')),
+                path: routes.notification,
+                builder: (context, state) => NotificationScreenListView(),
               ),
             ],
           ),
@@ -134,7 +134,6 @@ abstract class AppRouter {
               GoRoute(
                 path: routes.homeScreen,
                 builder: (context, state) {
-                  // استلام البيانات من extra
                   final data = state.extra as Map<String, dynamic>?;
 
                   return BlocProvider(
@@ -175,9 +174,8 @@ abstract class AppRouter {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: '/notifications',
-                builder: (context, state) =>
-                    const Center(child: Text('Notifications Screen (Index 1)')),
+                path: routes.notification,
+                builder: (context, state) => NotificationScreenListView(),
               ),
             ],
           ),
