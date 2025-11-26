@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-
+import 'package:hotel_guide/core/theme/app_theme.dart';
+import 'package:hotel_guide/core/theme/colors.dart';
 
 class CustomItemNotification extends StatelessWidget {
   const CustomItemNotification({super.key});
@@ -27,7 +28,8 @@ class CustomItemNotification extends StatelessWidget {
           onTap: () {},
           child: Padding(
             padding: const EdgeInsets.all(12),
-            child: Row(textDirection: TextDirection.rtl,
+            child: Row(
+              textDirection: TextDirection.rtl,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ClipRRect(
@@ -49,17 +51,14 @@ class CustomItemNotification extends StatelessWidget {
 
                 Expanded(
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       // Title
-                      const Text(
+                      Text(
                         "عرض جديد متاح الآن!",
                         textDirection: TextDirection.rtl,
-                        style: TextStyle(
-                          fontFamily: 'Cairo',
-                          fontSize: 16,
-                          fontWeight: FontWeight.w800, // Bold
-                          color: Colors.black87,
+                        style: textStyle18BoldGray.copyWith(
+                          color: AppColors.black4,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -67,26 +66,23 @@ class CustomItemNotification extends StatelessWidget {
 
                       const SizedBox(height: 6),
 
-                      // The Horizontal Divider Line
                       Divider(
                         height: 1,
                         thickness: 1,
-                        color: Colors.grey.shade200,
+                        color: Colors.black.withOpacity(0.1),
                       ),
 
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 6),
 
                       // Body Text
-                      const Expanded(
+                      Expanded(
                         child: Text(
                           "فندق The Nile Ritz-Carlton أطلق خصمًا خاصًا لفترة محدودة — احجز الآن قبل انتهاء العرض!",
                           textDirection: TextDirection.rtl,
-                          style: TextStyle(
-                            fontFamily: 'Cairo',
-                            fontSize: 12,
-                            height: 1.4, // Line height for readability
-                            color: Colors.grey, // Grey color as in image
-                            fontWeight: FontWeight.w500,
+                          style: textStyle15MediumGray.copyWith(
+                            color: AppColors.black.withOpacity(0.43),
+
+                            fontSize: 14,
                           ),
                           maxLines: 3, // Allow multiple lines
                           overflow: TextOverflow.ellipsis,
@@ -95,22 +91,19 @@ class CustomItemNotification extends StatelessWidget {
 
                       // Time Footer
                       Row(
-                        textDirection: TextDirection.rtl,
+                        textDirection: TextDirection.ltr,
                         children: [
                           Icon(
                             Icons.access_time, // Clock icon
-                            size: 16,
-                            color: Colors.grey.shade600,
+                            size: 24,
+                            color: Colors.black.withOpacity(0.55),
                           ),
                           const SizedBox(width: 4),
                           Text(
                             "اليوم 14:35",
                             textDirection: TextDirection.rtl,
-                            style: TextStyle(
-                              fontFamily: 'Cairo',
-                              fontSize: 12,
-                              color: Colors.grey.shade500,
-                              fontWeight: FontWeight.w600,
+                            style: textStyle12BoldBlack.copyWith(
+                              color: Color(0xFF8B8E918C),
                             ),
                           ),
                         ],
