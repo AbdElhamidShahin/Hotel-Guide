@@ -1,54 +1,52 @@
+// cities_cubit.dart
 import 'package:flutter_bloc/flutter_bloc.dart';
-// لازم تعمل امبورت لملف الـ Failure بتاعك
-import 'package:hotel_guide/core/network/supabase_failure.dart';
+import 'package:hotel_guide/core/network/city_model.dart';
+import 'package:hotel_guide/features/home/data/repo/home_repo.dart';
 import 'package:hotel_guide/features/home/logic/cubit/home_state.dart';
+
 import '../../../../core/network/hotel_model.dart';
-import '../../data/repo/home_repo.dart';
 
-class HomeCubit extends Cubit<HomeState> {
+class CitiesCubit extends Cubit<CityState> {
   final HomeRepository repository;
+  List<CityModel>? _cachedCities;
 
-  HomeCubit(this.repository) : super(CitiesInitial());
-  Map<int, List<HotelModel>> _cachedHotelsByCity = {}; // cache
+  CitiesCubit(this.repository) : super(CityInitial());
 
-  Future<void> fetchCitiesWithHotels(int cityId ) async {
-    if (_cachedHotelsByCity.containsKey(cityId)) {
-    emit(HotelsLoaded(_cachedHotelsByCity[cityId]!));
-    return;
-  }
+  Future<void> fetchCities() async {
+    if (_cachedCities != null) {
+      emit(CitiesLoaded(_cachedCities!));
+      return;
+    }
+
     emit(CitiesLoading());
     try {
-      final cities = await repository.getCitiesWithHotels();
+      final cities = await repository.getCities();
+      _cachedCities = cities;
       emit(CitiesLoaded(cities));
     } catch (e) {
-      // --- ده التعديل الصحيح ---
-      if (e is SupabaseFailure) {
-        emit(CitiesError(e.errorMessage)); // ابعت رسالة الخطأ الفعلية
-      } else {
-        emit(CitiesError("خطأ غير متوقع: ${e.toString()}"));
-      }
-      // --- نهاية التعديل ---
+      emit(CitiesError("حدث خطأ في تحميل المدن"));
     }
   }
+}
+class HotelsCubit extends Cubit<HotelState> {
+  final HomeRepository repository;
+  Map<int, List<HotelModel>> _cachedHotelsByCity = {};
+
+  HotelsCubit(this.repository) : super(HotelInitial());
+
   Future<void> fetchHotelsByCity(int cityId) async {
-    emit(CitiesLoading());
+    if (_cachedHotelsByCity.containsKey(cityId)) {
+      emit(HotelsLoaded(_cachedHotelsByCity[cityId]!));
+      return;
+    }
+
+    emit(HotelsLoading());
     try {
       final hotels = await repository.getHotelsByCity(cityId);
       _cachedHotelsByCity[cityId] = hotels;
-
-      for (var hotel in hotels) {
-        print("Hotel Details: Name=${hotel.name}, Rating=${hotel.rating}");
-      }
-
       emit(HotelsLoaded(hotels));
     } catch (e) {
-      if (e is SupabaseFailure) {
-        emit(CitiesError(e.errorMessage));
-      } else {
-        emit(CitiesError("خطأ غير متوقع: ${e.toString()}"));
-      }
+      emit(HotelsError("حدث خطأ في تحميل الفنادق"));
     }
-
-
   }
 }

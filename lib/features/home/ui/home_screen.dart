@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hotel_guide/core/router/routers.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
 import 'package:hotel_guide/features/home/ui/widget/custom_appBar_home.dart';
 import 'package:hotel_guide/features/home/ui/widget/custom_city_home.dart';
@@ -8,10 +11,11 @@ import 'package:hotel_guide/features/home/ui/widget/custom_welcome_header.dart';
 import 'package:hotel_guide/features/home/ui/widget/top_rating_widget.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../logic/cubit/home_cubit.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key, required this.name});
-final String name;
+  final String name;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +26,7 @@ final String name;
             children: [
               CustomAppbarHome(),
               SizedBox(height: 16),
-              CustomWelcomeHeader(name: name,),
+              CustomWelcomeHeader(name: name),
               SizedBox(height: 14),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -35,7 +39,14 @@ final String name;
 
               TopRatingWidget(),
               SizedBox(height: 24),
-              SizedBox(height: 380, child: CustomRatingListview()),
+              Builder(
+                builder: (context) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    context.read<HotelsCubit>().fetchHotelsByCity(2);
+                  });
+                  return SizedBox(height: 380, child: CustomRatingListview());
+                },
+              ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Text(
@@ -71,7 +82,7 @@ final String name;
               ),
               SizedBox(height: 12),
 
-              CustomOffersHome()
+              CustomOffersHome(),
             ],
           ),
         ),

@@ -40,16 +40,14 @@ Future<void> setupGetIt() async {
 
   ///home
   getIt.registerLazySingleton<HomeRepository>(() => HomeRepoImpl(getIt()));
-  getIt.registerFactory<HomeCubit>(() => HomeCubit(getIt()));
-
+  getIt.registerFactory<CitiesCubit>(() => CitiesCubit(getIt<HomeRepository>()));
+  getIt.registerFactory<HotelsCubit>(() => HotelsCubit(getIt<HomeRepository>()));
   ///favorite
   getIt.registerSingleton<FavoriteCubit>(FavoriteCubit());
 
   ///Search
-  getIt.registerFactory<SearchRepo>(() => SearchRepoIplm(getIt<SupabaseService>()));
+  getIt.registerFactory<SearchRepo>(
+    () => SearchRepoIplm(getIt<SupabaseService>()),
+  );
   getIt.registerFactory<SearchCubit>(() => SearchCubit(getIt<SearchRepo>()));
-
-
-
-
 }

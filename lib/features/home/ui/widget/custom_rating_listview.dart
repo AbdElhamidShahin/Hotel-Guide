@@ -23,26 +23,24 @@ class _CustomRatingListviewState extends State<CustomRatingListview> {
 
   void initState() {
     super.initState();
-    BlocProvider.of<HomeCubit>(context).fetchHotelsByCity(2);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      BlocProvider.of<HotelsCubit>(context).fetchHotelsByCity(2);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<HomeCubit, HomeState>(
+    return BlocBuilder<HotelsCubit, HotelState>(
       builder: (BuildContext context, state) {
-        if (state is CitiesLoading) {
+        if (state is HotelsLoading) {
           return const Center(child: CircularProgressIndicator());
         }
 
-        if (state is CitiesError) {
+        if (state is HotelsError) {
           return Center(child: Text("حدث خطأ: ${state.message}"));
         }
 
         if (state is HotelsLoaded) {
-          if (state.hotels.isEmpty) {
-            return const Center(child: Text("لا توجد فنادق لهذه المدينة"));
-          }
-
           return ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: state.hotels.length,
@@ -52,7 +50,7 @@ class _CustomRatingListviewState extends State<CustomRatingListview> {
           );
         }
 
-        return const Center(child: Text("يرجى اختيار مدينة"));
+        return const Center(child: Text("حدث خطأ اثناء تحميل البيانات"));
       },
     );
   }
