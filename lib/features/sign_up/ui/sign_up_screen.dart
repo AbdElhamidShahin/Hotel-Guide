@@ -27,10 +27,11 @@ class SignUpScreen extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [Color(0xFF181201), Color(0xFFB25916)],
-                stops: [0.48, 1.0],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
+                stops: [0.3, 1.0],
+
+                colors: [Color(0xFF000000), Color(0xFF51526C)],
               ),
             ),
             child: Stack(
@@ -40,17 +41,19 @@ class SignUpScreen extends StatelessWidget {
                   child: Column(
                     children: [
                       SizedBox(height: 24.h),
-                      Image.asset(
-                        "assets/images/logo/logo.png",
-                        width: 244.33.w,
-                        height: 237.67.h,
-                      ),
+                      Image.asset("assets/images/logo/logo.png"),
 
                       BlocListener<SignUpCubit, SignUpState>(
                         listener: (context, state) async {
                           if (state is SignUpSuccess) {
-                            final name = context.read<SignUpCubit>().nameController.text;
-                            final email = context.read<SignUpCubit>().emailController.text;
+                            final name = context
+                                .read<SignUpCubit>()
+                                .nameController
+                                .text;
+                            final email = context
+                                .read<SignUpCubit>()
+                                .emailController
+                                .text;
 
                             await UserDataManager.saveUserData(
                               name: name,
@@ -66,7 +69,8 @@ class SignUpScreen extends StatelessWidget {
                             context.go(
                               routes.homeScreen,
                               extra: {'name': name},
-                            );                          } else if (state is SignUpError) {
+                            );
+                          } else if (state is SignUpError) {
                             showCustomSnackbar(
                               context,
                               ContentType.failure,
@@ -95,10 +99,10 @@ class SignUpScreen extends StatelessWidget {
                                   children: [
                                     const EmailAndPasswordAndName(),
 
-                                    SizedBox(height: 30),
+                                    SizedBox(height: 30.h),
                                     SizedBox(
-                                      width: 260,
-                                      height: 70,
+                                      width: 260.w,
+                                      height: 70.h,
                                       child: CustomButton(
                                         text: 'إنشاء حساب',
                                         onTap: isLoading
@@ -110,13 +114,13 @@ class SignUpScreen extends StatelessWidget {
                                               },
                                       ),
                                     ),
-                                    const SizedBox(height: 80),
+                                    SizedBox(height: 48.h),
 
                                     DividerWithText(),
-                                    const SizedBox(height: 30),
+                                    SizedBox(height: 24.h),
 
                                     SocialLoginSection(),
-                                    const SizedBox(height: 30),
+                                    SizedBox(height: 25.h),
 
                                     Row(
                                       mainAxisAlignment:
@@ -130,7 +134,7 @@ class SignUpScreen extends StatelessWidget {
                                             'تسجيل دخول',
                                             style: textStyle20RegularWhite
                                                 .copyWith(
-                                                  color: AppColors.yellowGold,
+                                                  color: AppColors.white,
                                                 ),
                                           ),
                                         ),
@@ -145,7 +149,7 @@ class SignUpScreen extends StatelessWidget {
                                         ),
                                       ],
                                     ),
-                                    const SizedBox(height: 180),
+                                    SizedBox(height: 180.h),
                                   ],
                                 ),
                               ),
