@@ -21,6 +21,8 @@ import '../../features/profile/ui/profile_screen.dart';
 import '../../features/sign_up/ui/sign_up_screen.dart';
 import '../../main_app_shell.dart';
 import '../di/injection.dart';
+import '../helpers/widget/custom_item.dart';
+import '../network/city_model.dart';
 import '../network/hotel_model.dart';
 import '../network/supabase_service.dart';
 
@@ -35,8 +37,8 @@ abstract class AppRouter {
               providers: [
                 BlocProvider<CitiesCubit>(
                   create: (context) =>
-                  CitiesCubit(HomeRepoImpl(SupabaseService()))
-                    ..fetchCities(),
+                      CitiesCubit(HomeRepoImpl(SupabaseService()))
+                        ..fetchCities(),
                 ),
                 BlocProvider<HotelsCubit>(
                   create: (context) =>
@@ -49,7 +51,7 @@ abstract class AppRouter {
       GoRoute(
         path: routes.onBoardingScreen,
         builder: (BuildContext context, GoRouterState state) =>
-        const OnBoardingScreen(),
+            const OnBoardingScreen(),
       ),
       GoRoute(
         path: routes.loginScreen,
@@ -71,23 +73,55 @@ abstract class AppRouter {
           return CustomDetailsScreen(hotelModel: state.extra as HotelModel);
         },
       ),
-
       GoRoute(
-        path: routes.searchScreen,
-        builder: (BuildContext context, GoRouterState state) =>
-            MultiBlocProvider(
-              providers: [
-                BlocProvider<FavoriteCubit>(
-                  create: (_) => getIt<FavoriteCubit>(),
-                ),
-                BlocProvider<SearchCubit>(
-                  create: (_) => getIt<SearchCubit>()..loadHotels(),
-                ),
-              ],
-              child: const SearchScreen(),
-            ),
-      ),
+        path: routes.customItem,
+        builder: (BuildContext context, GoRouterState state) {
+          final hotelModel = state.extra as HotelModel?;
 
+          if (hotelModel == null) {
+            // Handle null case - redirect or show error
+            return const Scaffold(
+              body: Center(child: Text('Hotel data not available')),
+            );
+          }
+
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider<CitiesCubit>(
+                create: (context) =>
+                    CitiesCubit(HomeRepoImpl(SupabaseService()))..fetchCities(),
+              ),
+              BlocProvider<HotelsCubit>(
+                create: (context) =>
+                    HotelsCubit(HomeRepoImpl(SupabaseService())),
+              ),
+            ],
+            child: CustomItem(hotelModel: hotelModel, isContinar: false),
+          );
+        },
+      ),
+      GoRoute(
+        path: routes.customItem,
+        builder: (BuildContext context, GoRouterState state) {
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider<CitiesCubit>(
+                create: (context) =>
+                    CitiesCubit(HomeRepoImpl(SupabaseService()))..fetchCities(),
+              ),
+              BlocProvider<HotelsCubit>(
+                create: (context) =>
+                    HotelsCubit(HomeRepoImpl(SupabaseService())),
+              ),
+            ],
+            child: CustomItem(
+              cityId: state.extra as int,
+              isContinar: false,
+              hotelModel: state.extra as HotelModel,
+            ),
+          );
+        },
+      ),
       GoRoute(
         path: routes.editAccountScreen,
         builder: (BuildContext context, GoRouterState state) {
@@ -101,7 +135,6 @@ abstract class AppRouter {
           return MainAppShell(navigationShell: navigationShell);
         },
         branches: [
-
           StatefulShellBranch(
             routes: [
               GoRoute(
@@ -146,8 +179,8 @@ abstract class AppRouter {
                     providers: [
                       BlocProvider<CitiesCubit>(
                         create: (context) =>
-                        CitiesCubit(HomeRepoImpl(SupabaseService()))
-                          ..fetchCities(),
+                            CitiesCubit(HomeRepoImpl(SupabaseService()))
+                              ..fetchCities(),
                       ),
                       BlocProvider<HotelsCubit>(
                         create: (context) =>

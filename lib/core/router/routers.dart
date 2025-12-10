@@ -12,4 +12,5 @@ class routes {
   static const String editAccountScreen = "/EditAccountScreen";
   static const String notification = "/notification";
   static const String cityHome = "/cityHome";
+  static const String customItem = "/customItem";
 }

@@ -1,7 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hotel_guide/core/network/city_model.dart';
 import 'package:hotel_guide/core/network/supabase_failure.dart';
+import 'package:hotel_guide/core/router/routers.dart';
 import 'package:hotel_guide/core/theme/app_theme.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
 import 'package:hotel_guide/features/home/logic/cubit/home_cubit.dart';
@@ -93,56 +96,64 @@ class CustomCityHomeItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 200,
-      height: 140,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.black4.withOpacity(0.45), width: 2),
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: Image.network(
-                cityModel.imageUrl,
-                fit: BoxFit.cover,
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return Container(
+    return GestureDetector(
+      onTap: () {
+        context.go(routes.customItem, extra: cityModel.id);
+      },
+      child: Container(
+        width: 200,
+        height: 140,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: AppColors.black4.withOpacity(0.45),
+            width: 2,
+          ),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: Stack(
+            children: [
+              Positioned.fill(
+                child: CachedNetworkImage(
+                  imageUrl: cityModel.imageUrl,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => Container(
                     color: Colors.grey[300],
-                    child: const Center(child: CircularProgressIndicator()),
-                  );
-                },
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(
+                    child: const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => Container(
                     color: Colors.grey[300],
-                    child: const Icon(Icons.error, color: Colors.red),
-                  );
-                },
-              ),
-            ),
-
-            Positioned.fill(
-              child: Container(color: Colors.black.withOpacity(0.3)),
-            ),
-
-            Positioned(
-              right: 0,
-              left: 0,
-              bottom: 10,
-              child: Center(
-                child: Text(
-                  cityModel.name,
-                  style: textStyle23SemiBoldBlack.copyWith(
-                    color: AppColors.white,
-                    fontSize: 22,
+                    child: const Icon(
+                      Icons.error,
+                      color: Colors.red,
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+
+              Positioned.fill(
+                child: Container(color: Colors.black.withOpacity(0.3)),
+              ),
+
+              Positioned(
+                right: 0,
+                left: 0,
+                bottom: 10,
+                child: Center(
+                  child: Text(
+                    cityModel.name,
+                    style: textStyle23SemiBoldBlack.copyWith(
+                      color: AppColors.white,
+                      fontSize: 22,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -1,5 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hotel_guide/features/home/logic/cubit/home_cubit.dart';
 import 'package:snackly/snackly.dart';
 import 'package:go_router/go_router.dart';
 
@@ -10,18 +12,30 @@ import '../../theme/colors.dart';
 import '../../../features/favorite/logic/cubit/favorite_cubit.dart';
 import '../../../features/favorite/logic/cubit/favorite_state.dart';
 
-class CustomItem extends StatelessWidget {
+class CustomItem extends StatefulWidget {
   final HotelModel hotelModel;
   final  bool isContinar ;
-  CustomItem({super.key, required this.hotelModel, required this.isContinar});
+  final int? cityId;
 
+  CustomItem({super.key, required this.hotelModel, required this.isContinar,  this.cityId});
+
+  @override
+  State<CustomItem> createState() => _CustomItemState();
+}
+
+class _CustomItemState extends State<CustomItem> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<HotelsCubit>().fetchHotelsByCity(widget.cityId!);
+  }
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<FavoriteCubit, FavoriteState>(
       listener: (context, state) {},
       builder: (context, state) {
         final favoriteCubit = context.read<FavoriteCubit>();
-        final isCurrentlyFavorite = favoriteCubit.isFavorite(hotelModel);
+        final isCurrentlyFavorite = favoriteCubit.isFavorite(widget.hotelModel);
         return Container(
           height: 132,
           margin: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
@@ -40,7 +54,7 @@ class CustomItem extends StatelessWidget {
           child: InkWell(
             borderRadius: BorderRadius.circular(16),
             onTap: () {
-              context.go(routes.customDetailsScreen, extra: hotelModel);
+              context.go(routes.customDetailsScreen, extra: widget.hotelModel);
             },
             child: Padding(
               padding: const EdgeInsets.all(12),
@@ -49,20 +63,28 @@ class CustomItem extends StatelessWidget {
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(12), // Radios 12
-                    child: Image.network(
-                      hotelModel.imageUrl,
+                    child: CachedNetworkImage(
+                      imageUrl: widget.hotelModel.imageUrl,
                       width: 150, // العرض: 150
                       height: 108, // الطول: 108
                       fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => Container(
+                      placeholder: (context, url) => Container(
+                        width: 150,
+                        height: 108,
+                        color: Colors.grey[200],
+                        child: Center(
+                          child: CircularProgressIndicator(), // أو ممكن تحط لودينج أنيميشن بدل الـ CircularProgressIndicator
+                        ),
+                      ),
+                      errorWidget: (context, url, error) => Container(
                         width: 150,
                         height: 108,
                         color: Colors.grey[200],
                         child: Center(
                           child: Image.asset(
                             "assets/images/logo/logo.png",
-                            width: 150, // العرض: 150
-                            height: 108, // الطول: 108
+                            width: 150,
+                            height: 108,
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -83,7 +105,7 @@ class CustomItem extends StatelessWidget {
                           children: [
                             Expanded(
                               child: Text(
-                                hotelModel.name,
+                                widget.hotelModel.name,
                                 style: TextStyle(
                                   fontFamily: 'Cairo',
                                   fontWeight: FontWeight.w600,
@@ -105,7 +127,7 @@ class CustomItem extends StatelessWidget {
                                 ),
                                 const SizedBox(width: 4),
                                 Text(
-                                  "${hotelModel.rating}",
+                                  "${widget.hotelModel.rating}",
                                   style: textStyle12BoldBlack,
                                 ),
                               ],
@@ -116,7 +138,7 @@ class CustomItem extends StatelessWidget {
                         const SizedBox(height: 4),
 
                         Text(
-                          "${hotelModel.locationUrl}",
+                          "${widget.hotelModel.locationUrl}",
                           style: textStyle10BoldGray,
                           textDirection: TextDirection.rtl,
                           maxLines: 1,
@@ -136,7 +158,7 @@ class CustomItem extends StatelessWidget {
                             ),
                           ),
                             Text(
-                              "EGP ${hotelModel.price}/",
+                              "EGP ${widget.hotelModel.price}/",
                               style: textStyle18BoldGray.copyWith(
                                 fontSize: 16,
                                 color: AppColors.gray3,
@@ -145,7 +167,7 @@ class CustomItem extends StatelessWidget {
 
 
                             Spacer(),
-                            isContinar
+                            widget.isContinar
                                 ? Container(
                               width: 38,
                               height: 38,
@@ -161,7 +183,7 @@ class CustomItem extends StatelessWidget {
                                 ),
                                 onPressed: () async {
                                   final wasFavorite = isCurrentlyFavorite;
-                                  await favoriteCubit.toggleFavorite(hotelModel);
+                                  await favoriteCubit.toggleFavorite(widget.hotelModel);
                                   Snackly.success(
                                     context: context,
                                     title: wasFavorite ? "تم الحذف من المفضلة" : "تم الإضافة إلى المفضلة",
