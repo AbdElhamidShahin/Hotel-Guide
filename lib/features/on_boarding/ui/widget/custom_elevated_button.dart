@@ -7,25 +7,30 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/colors.dart';
 
 class CustomElevatedButton extends StatelessWidget {
-  const CustomElevatedButton({super.key});
-
+  const CustomElevatedButton({
+    super.key,
+    required this.name,
+    required this.onPressed,
+  });
+  final String name;
+  final VoidCallback onPressed;
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: MediaQuery.of(context).size.width * 0.70.w,
-      height: 66.h,
+      width: 315.w,
+      height: 60.h,
       child: ElevatedButton(
-        onPressed: () {
-          context.go(routes.loginScreen);
-        },
+        onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.DarkPurpleGray,
+          backgroundColor: const Color(0xFF2C2C3E),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(40),
-            side: BorderSide( width: 2),
+            borderRadius: BorderRadius.circular(15),
           ),
         ),
-        child: Text('ابدأ الآن', style: textStyle25SemiBoldWhite),
+        child: Text(
+          name,
+          style: textStyle22BoldPrimary
+        ),
       ),
     );
   }
