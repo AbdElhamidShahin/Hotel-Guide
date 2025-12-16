@@ -25,7 +25,7 @@ import '../network/hotel_model.dart';
 
 abstract class AppRouter {
   static final router = GoRouter(
-    initialLocation: routes.onBoardingScreen,
+    initialLocation: routes.authWrapper,
     routes: [
       GoRoute(
         path: routes.authWrapper,
