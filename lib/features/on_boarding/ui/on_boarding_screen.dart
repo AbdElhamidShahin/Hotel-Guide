@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hotel_guide/core/theme/colors.dart';
 import 'package:hotel_guide/features/on_boarding/ui/widget/custom_elevated_button.dart';
 import '../../../core/theme/app_theme.dart';
 
@@ -22,7 +20,15 @@ class OnBoardingScreen extends StatelessWidget {
             ),
 
             Positioned.fill(
-              child: Container(color: Colors.black.withOpacity(0.6)),
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Color(0xD9252530), Color(0xE6000000)],
+                  ),
+                ),
+              ),
             ),
 
             Padding(
@@ -31,12 +37,8 @@ class OnBoardingScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
+                  Image.asset("assets/images/logo/logo.png"),
                   SizedBox(height: 100),
-                  Image.asset(
-                    "assets/images/logo/logo.png",
-                    width: 270,
-                    height: 340,
-                  ),
 
                   Container(
                     width: double.infinity,

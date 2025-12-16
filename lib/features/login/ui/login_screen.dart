@@ -19,31 +19,29 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: context.read<LoginCubit>().formKey,
-      child: Scaffold(
-        body: SingleChildScrollView(
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Color(0xFF181201), Color(0xFFB25916)],
-                stops: [0.55, 1.0],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
+    return Scaffold(
+      body: Form(
+        key: context.read<LoginCubit>().formKey,
+
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              stops: [0.4, 1.0],
+
+              colors: [Color(0xFF000000), Color(0xFF51526C)],
             ),
+          ),
+
+          child: SingleChildScrollView(
             child: Stack(
               children: [
                 Padding(
-                  padding:  EdgeInsets.symmetric(horizontal: 24.0),
+                  padding: EdgeInsets.symmetric(horizontal: 24.0.h),
                   child: Column(
                     children: [
-                      Image.asset(
-                        "assets/images/logo/logo.png",
-                        width: 244.33,
-                        height: 237.67,
-
-                      ),
+                      Image.asset("assets/images/logo/logo.png"),
 
                       BlocListener<LoginCubit, LoginState>(
                         listener: (context, state) {
@@ -79,15 +77,15 @@ class LoginScreen extends StatelessWidget {
                               alignment: Alignment.topCenter,
                               child: SingleChildScrollView(
                                 child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     const EmailAndPassword(),
 
-                                    SizedBox(height: 30),
+                                    SizedBox(height: 30.h),
                                     SizedBox(
-                                      width: 260,
-                                      height: 70,
+                                      width: 260.w,
+                                      height: 70.h,
                                       child: CustomButton(
                                         text: 'التالي',
                                         onTap: isLoading
@@ -99,44 +97,41 @@ class LoginScreen extends StatelessWidget {
                                               },
                                       ),
                                     ),
-                                    const SizedBox(height: 48),
+                                    SizedBox(height: 42.h),
 
                                     DividerWithText(),
                                     const SizedBox(height: 30),
 
                                     SocialLoginSection(),
-                                    const SizedBox(height: 30),
+                                    SizedBox(height: 33.h),
 
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         TextButton(
                                           onPressed: () {
-
-
-
                                             context.go(routes.signUpScreen);
-
                                           },
                                           child: Text(
                                             'إنشاء حساب',
-                                            style: textStyle20RegularWhite.copyWith(
-                                              color: AppColors.yellowGold,
-                                            ),
+                                            style: textStyle20RegularWhite
+                                                .copyWith(
+                                                  color: AppColors.white,
+                                                ),
                                           ),
                                         ),
                                         Text(
                                           'لا تمتلك حساب؟',
-                                          style: textStyle20RegularWhite.copyWith(
-                                            color: AppColors.white.withOpacity(
-                                              0.60,
-                                            ),
-                                          ),
+                                          style: textStyle20RegularWhite
+                                              .copyWith(
+                                                color: AppColors.white
+                                                    .withOpacity(0.60),
+                                              ),
                                           textDirection: TextDirection.rtl,
                                         ),
                                       ],
                                     ),
-                                    const SizedBox(height: 180),
                                   ],
                                 ),
                               ),
@@ -144,7 +139,8 @@ class LoginScreen extends StatelessWidget {
                           },
                         ),
                       ),
-                    ],
+
+                   SizedBox(height: 150.h,) ],
                   ),
                 ),
               ],

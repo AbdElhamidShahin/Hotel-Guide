@@ -12,18 +12,17 @@ class CustomElevatedButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 190,
-      height: 63,
+      width: MediaQuery.of(context).size.width * 0.70.w,
+      height: 66.h,
       child: ElevatedButton(
         onPressed: () {
           context.go(routes.loginScreen);
-
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.transparent,
+          backgroundColor: AppColors.DarkPurpleGray,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(7),
-            side: BorderSide(color: AppColors.yellowSoft, width: 2),
+            borderRadius: BorderRadius.circular(40),
+            side: BorderSide( width: 2),
           ),
         ),
         child: Text('ابدأ الآن', style: textStyle25SemiBoldWhite),
