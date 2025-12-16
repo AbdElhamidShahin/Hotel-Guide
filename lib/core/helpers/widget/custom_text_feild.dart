@@ -41,12 +41,12 @@ class AppTextFormFeild extends StatelessWidget {
           isDense: true,
           contentPadding:
               contentPadding ??
-              EdgeInsets.symmetric(vertical: 16, horizontal: 11),
+              EdgeInsets.symmetric(vertical: 24.w, horizontal: 11.h),
           enabledBorder:
               enabledBorder ??
               OutlineInputBorder(
                 borderSide: BorderSide(
-                  color: AppColors.white.withOpacity(0.26),
+                  color: AppColors.ShadowPurple.withOpacity(0.9),
                   width: 1.3,
                 ),
                 borderRadius: BorderRadius.circular(10),
@@ -54,7 +54,10 @@ class AppTextFormFeild extends StatelessWidget {
           focusedBorder:
               focusedBorder ??
               OutlineInputBorder(
-                borderSide: BorderSide(color: AppColors.blueSoft, width: 1.3),
+                borderSide: BorderSide(
+                  color: AppColors.RoyalPurple,
+                  width: 1.3,
+                ),
 
                 borderRadius: BorderRadius.circular(10),
               ),
@@ -66,7 +69,7 @@ class AppTextFormFeild extends StatelessWidget {
             borderSide: const BorderSide(color: Colors.red, width: 1.3),
             borderRadius: BorderRadius.circular(10),
           ),
-          hintStyle: hintStyle ?? textStyle20RegularWhite,
+          hintStyle: hintStyle ?? textStyle14RegularNightfall,
           hintText: "${hintText}",
           suffixIcon: suffixIcon,
           suffixIconColor: AppColors.blueSoft,
