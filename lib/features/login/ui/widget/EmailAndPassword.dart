@@ -42,7 +42,7 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
             ),
           ),
         ),
-        SizedBox(height: 30),
+        SizedBox(height: 30.h),
         AppTextFormFeild(
           validator: (value) {
             if (value == null || value.isEmpty) {
@@ -75,7 +75,6 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
             ),
           ),
         ),
-        SizedBox(height: 24),
       ],
     );
   }

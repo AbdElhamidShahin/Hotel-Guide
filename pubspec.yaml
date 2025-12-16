@@ -52,6 +52,7 @@ dependencies:
   shared_preferences: ^2.5.3
   snackly: ^0.0.9
   image_picker: ^1.2.1
+  flutter_native_splash: ^2.4.7
 
 dev_dependencies:
   flutter_test:
@@ -87,6 +88,7 @@ flutter:
     - assets/images/city/
     - assets/icons/Icons_bar/
     - assets/icons/icon_bar_active/
+    - assets/new_logo.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 
@@ -111,3 +113,14 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+flutter_native_splash:
+  color: "#2C2A3F"
+  image: assets/new_logo.png
+
+  android: true
+  ios: true
+  web: false
+
+  android_12:
+    color: "#2C2A3F"
+    image: assets/new_logo.png
