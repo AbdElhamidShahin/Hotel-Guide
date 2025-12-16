@@ -5,14 +5,6 @@ class AppColors {
 
   static const Color DarkPurpleGray = Color(0xFF51526C);
 
-
-
-
-
-
-
-
-
   static const Color gray = Color(0xCCDDDDDD);
   static const Color gray2 = Color(0xFF939393);
   static const Color gray3 = Color(0xFF4A4A4A);
@@ -43,6 +35,16 @@ class AppColors {
 
   static const Color mainOrange = Color(0xFFFFBD59);     // لون الزر
   static const Color borderGrey = Color(0xFFE0E0E0);     // لون الحدود
-  static const Color hintTextGrey = Color(0xFF8A8A8A);   // لون تلميح النص
+  static const Color hintTextGrey = Color(0xFFD9D9D9);   // لون تلميح النص
   static const Color textBlack = Color(0xFF1E1E1E);
+
+
+
+
+  static const Color primary = Color(0xFF2D2B3E);
+
+
+
+
+
 }

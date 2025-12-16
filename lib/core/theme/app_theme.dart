@@ -83,4 +83,23 @@ TextStyle textStyle28MediumBlack = TextStyle(
   color: AppColors.gray2,
   fontFamily: 'inter',
 
+);TextStyle textStyle30BoldPrimary = TextStyle(
+  fontSize: 30,
+  fontWeight: FontWeight.w700,
+  color: AppColors.primary,
+  fontFamily: 'Cairo',
+
+);
+TextStyle textStyle20RegularPrimary = TextStyle(
+  fontSize: 20,
+  fontWeight: FontWeight.w400,
+  color: AppColors.primary.withOpacity(0.70),
+  fontFamily: 'Cairo',
+
+);TextStyle textStyle22BoldPrimary = TextStyle(
+  fontSize: 22,
+  fontWeight: FontWeight.w700,
+  color: AppColors.white,
+  fontFamily: 'Cairo',
+
 );
