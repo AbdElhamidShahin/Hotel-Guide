@@ -48,6 +48,7 @@ class AppColors {
   static const Color Nightfall = Color(0xFF1A1C1E);
   static const Color softGray = Color(0xFFD9DDDF);
   static const Color Milk = Color(0xFFEFF0F6);
+  static const Color red = Color(0xFFFF3838);
 
 
 
