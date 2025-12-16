@@ -102,4 +102,23 @@ TextStyle textStyle20RegularPrimary = TextStyle(
   color: AppColors.white,
   fontFamily: 'Cairo',
 
+);TextStyle textStyle16RegularGray = TextStyle(
+  fontSize: 16,
+  fontWeight: FontWeight.w400,
+  color: AppColors.Gray,
+  fontFamily: 'Cairo',
+
+);TextStyle textStyle14RegularNightfall = TextStyle(
+  fontSize: 14,
+  fontWeight: FontWeight.w400,
+  color: AppColors.Nightfall,
+  fontFamily: 'Cairo',
+
+);
+TextStyle textStyle16BoldWhite = TextStyle(
+  fontSize: 16,
+  fontWeight: FontWeight.w700,
+  color: AppColors.white,
+  fontFamily: 'Cairo',
+
 );
