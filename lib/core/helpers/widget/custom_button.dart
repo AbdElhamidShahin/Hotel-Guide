@@ -13,17 +13,17 @@ class CustomButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.transparent,
-        foregroundColor: Colors.white,
+        backgroundColor:AppColors.primary,
+        foregroundColor: AppColors.primary,
         elevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(7.0),
-          side: BorderSide(color: AppColors.white.withOpacity(0.10), width: 2),
+          borderRadius: BorderRadius.circular(10.0),
+          side: BorderSide(color: AppColors.primary, width: 2),
         ),
         padding: EdgeInsets.zero,
       ),
       onPressed: onTap,
-      child: Text(text ?? '', style: textStyle22RegularWhite),
+      child: Text(text ?? '', style: textStyle16BoldWhite),
     );
   }
 }

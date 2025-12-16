@@ -13,7 +13,7 @@ class AuthWrapper extends StatelessWidget {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        GoRouter.of(context).go(routes.homeScreen); // مسار الـ route
+        GoRouter.of(context).go(routes.homeScreen);
       });
       return const SizedBox.shrink();
     } else {

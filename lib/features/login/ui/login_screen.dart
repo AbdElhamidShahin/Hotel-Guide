@@ -23,26 +23,52 @@ class LoginScreen extends StatelessWidget {
       body: Form(
         key: context.read<LoginCubit>().formKey,
 
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              stops: [0.4, 1.0],
+        child: SingleChildScrollView(
+          child: Stack(
+            children: [
+              Container(
+                width: double.infinity,
+                height: MediaQuery.of(context).size.height * 0.2,
+                decoration: BoxDecoration(
+                  color: const Color(0x83809FB2).withOpacity(0.3),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFF83809F).withOpacity(0.5),
+                      blurRadius: 50,
+                      spreadRadius: 20,
+                      offset: const Offset(0, 0),
+                    ),
+                  ],
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.white.withOpacity(0.0),
+                      const Color(0xFF83809F).withOpacity(0.6),
+                      Colors.white.withOpacity(0.0),
+                    ],
+                    stops: const [0.0, 0.5, 1.0],
+                  ),
+                ),
+              ),
 
-              colors: [Color(0xFF000000), Color(0xFF51526C)],
-            ),
-          ),
-
-          child: SingleChildScrollView(
-            child: Stack(
-              children: [
-                Padding(
+              SafeArea(
+                child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 24.0.h),
                   child: Column(
                     children: [
-                      Image.asset("assets/images/logo/logo.png"),
+                      Image.asset(
+                        "assets/images/logo-light.png",
+                        height: 173.h,
+                        width: 173.w,
+                      ),
+                      SizedBox(height: 20.h),
 
+                      Text(
+                        "بوابتك لتجربة فندقية استثنائية",
+                        style: textStyle30BoldPrimary,
+                      ),
+                      SizedBox(height: 20.h),
                       BlocListener<LoginCubit, LoginState>(
                         listener: (context, state) {
                           if (state is LoginSuccess) {
@@ -84,10 +110,10 @@ class LoginScreen extends StatelessWidget {
 
                                     SizedBox(height: 30.h),
                                     SizedBox(
-                                      width: 260.w,
-                                      height: 70.h,
+                                      width: double.infinity,
+                                      height: 63.h,
                                       child: CustomButton(
-                                        text: 'التالي',
+                                        text: 'تسجيل الدخول',
                                         onTap: isLoading
                                             ? null
                                             : () {
@@ -97,17 +123,16 @@ class LoginScreen extends StatelessWidget {
                                               },
                                       ),
                                     ),
-                                    SizedBox(height: 42.h),
+                                    SizedBox(height: 16.h),
 
                                     DividerWithText(),
-                                    const SizedBox(height: 30),
+                                    SizedBox(height: 20.h),
 
                                     SocialLoginSection(),
-                                    SizedBox(height: 33.h),
+                                    SizedBox(height: 50.h),
 
                                     Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         TextButton(
                                           onPressed: () {
@@ -115,21 +140,17 @@ class LoginScreen extends StatelessWidget {
                                           },
                                           child: Text(
                                             'إنشاء حساب',
-                                            style: textStyle20RegularWhite
+                                            style:  textStyle16BoldWhite
                                                 .copyWith(
-                                                  color: AppColors.white,
-                                                ),
-                                          ),
+                                              color: AppColors
+                                                  .ShadowPurple,
+                                            ), ),
                                         ),
                                         Text(
                                           'لا تمتلك حساب؟',
-                                          style: textStyle20RegularWhite
-                                              .copyWith(
-                                                color: AppColors.white
-                                                    .withOpacity(0.60),
-                                              ),
-                                          textDirection: TextDirection.rtl,
-                                        ),
+                                          style: textStyle16RegularGray,
+                                          ),
+
                                       ],
                                     ),
                                   ],
@@ -140,11 +161,12 @@ class LoginScreen extends StatelessWidget {
                         ),
                       ),
 
-                   SizedBox(height: 150.h,) ],
+                      SizedBox(height: 50.h),
+                    ],
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
