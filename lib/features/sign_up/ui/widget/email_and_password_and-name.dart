@@ -5,6 +5,7 @@ import 'package:hotel_guide/core/theme/colors.dart';
 import 'package:hotel_guide/features/sign_up/logic/cubit/sign_up_cubit.dart';
 import '../../../../core/helpers/app_regex.dart';
 import '../../../../core/helpers/widget/custom_text_feild.dart';
+import '../../../../core/theme/app_theme.dart';
 
 class EmailAndPasswordAndName extends StatefulWidget {
   const EmailAndPasswordAndName({super.key});
@@ -20,9 +21,14 @@ class _EmailAndPasswordState extends State<EmailAndPasswordAndName> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Text("الإسم", style: textStyle16RegularGray),
+        ),
         AppTextFormFeild(
-          hintText: "إسم المستخدم",
+          hintText: "abdo shahin",
           validator: (value) {
             if (value == null || value.isEmpty) {
               return "من فضلك أدخل الاسم";
@@ -37,14 +43,17 @@ class _EmailAndPasswordState extends State<EmailAndPasswordAndName> {
               Icons.person_outline_sharp,
 
               size: 30,
-              color: AppColors.white.withOpacity(0.40),
+              color: AppColors.primary,
             ),
           ),
         ),
         SizedBox(height: 30.h),
-
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Text("البريد الإلكتروني", style: textStyle16RegularGray),
+        ),
         AppTextFormFeild(
-          hintText: "البريد الإلكتروني",
+          hintText: "examble@gmail.com",
           validator: (value) {
             if (value == null || value.isEmpty) {
               return "من فضلك أدخل بريدك الإلكتروني";
@@ -61,11 +70,15 @@ class _EmailAndPasswordState extends State<EmailAndPasswordAndName> {
               Icons.email_outlined,
 
               size: 30,
-              color: AppColors.white.withOpacity(0.40),
+              color: AppColors.primary,
             ),
           ),
         ),
         SizedBox(height: 30.h),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Text("كلمة المرور", style: textStyle16RegularGray),
+        ),
         AppTextFormFeild(
           validator: (value) {
             if (value == null || value.isEmpty) {
@@ -78,7 +91,7 @@ class _EmailAndPasswordState extends State<EmailAndPasswordAndName> {
             return null;
           },
           controller: context.read<SignUpCubit>().passwordController,
-          hintText: "كلمة السر",
+          hintText: "******",
           isObscureText: isObscureText,
           suffixIcon: GestureDetector(
             onTap: () {
@@ -93,13 +106,16 @@ class _EmailAndPasswordState extends State<EmailAndPasswordAndName> {
                     ? Icons.visibility_off_outlined
                     : Icons.visibility_outlined,
                 size: 30,
-                color: AppColors.white.withOpacity(0.40),
+                color: AppColors.primary,
               ),
             ),
           ),
         ),
         SizedBox(height: 30.h),
-
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Text("تأكيد كلمة المرور", style: textStyle16RegularGray),
+        ),
         AppTextFormFeild(
           validator: (value) {
             if (value == null || value.isEmpty) {
@@ -112,7 +128,7 @@ class _EmailAndPasswordState extends State<EmailAndPasswordAndName> {
             return null;
           },
           controller: context.read<SignUpCubit>().confirmPasswordController,
-          hintText: "تأكيد كلمة السر",
+          hintText: "******",
           isObscureText: isObscureText2,
           suffixIcon: GestureDetector(
             onTap: () {
@@ -127,7 +143,7 @@ class _EmailAndPasswordState extends State<EmailAndPasswordAndName> {
                     ? Icons.visibility_off_outlined
                     : Icons.visibility_outlined,
                 size: 30,
-                color: AppColors.white.withOpacity(0.40),
+                color: AppColors.primary,
               ),
             ),
           ),
