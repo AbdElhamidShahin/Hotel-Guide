@@ -15,39 +15,40 @@ class CustomAppbarHome extends StatelessWidget {
       child: Container(
         height: 73.h,
         width: double.infinity,
+        clipBehavior: Clip.antiAlias, // ضروري جداً لقص الدوائر عند حواف الحاوية
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8.r),
-          color: AppColors.primary,
+          color: AppColors.primary, // اللون الأساسي الداكن
         ),
-        child: Center(
-          child: Stack(
-            children: [
-              Positioned(
-                left: -55.w,
-                bottom: -100.h,
-                child: Container(
-                  width: 190.w,
-                  height: 190.h,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: AppColors.SlateBlueLight,
-                  ),
+        child: Stack(
+          children: [
+            Positioned(
+              left: -55.w,
+              bottom: -100.h,
+              child: Container(
+                width: 190.w,
+                height: 190.h,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: AppColors.SlateBlueLight,
                 ),
               ),
-              Positioned(
-                right: -55.w,
-                bottom: -100.h,
-                child: Container(
-                  width: 190.w,
-                  height: 190.h,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: AppColors.SlateBlueLight,
-                  ),
+            ),
+            Positioned(
+              right: -55.w,
+              bottom: -100.h,
+              child: Container(
+                width: 190.w,
+                height: 190.h,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: AppColors.SlateBlueLight,
                 ),
               ),
+            ),
 
-              Padding(
+            Center(
+              child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 12.w),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -86,8 +87,8 @@ class CustomAppbarHome extends StatelessWidget {
                   ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
