@@ -32,7 +32,7 @@ class HomeScreen extends StatelessWidget {
 
               SizedBox(height: 24),
 
-              TopRatingWidget(),
+              TopRatingWidget(name: 'الأكثر حجزًا هذا الأسبوع'),
               SizedBox(height: 16),
 
               Padding(
@@ -43,30 +43,22 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 24),
-              SizedBox(height: 380, child: CustomRatingListview()),
+              SizedBox(height: 440, child: CustomRatingListview()),
+              TopRatingWidget(name: 'إستكشف مصر'),
+              SizedBox(height: 16),
+
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Text(
-                  "الوجهات الرائجة",
-                  style: textStyle23SemiBoldBlack.copyWith(
-                    color: AppColors.black,
-                  ),
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Divider(
+                  height: 2,
+                  color: AppColors.black.withOpacity(0.1),
                 ),
               ),
               SizedBox(height: 12),
 
               CustomCityHome(),
 
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Text(
-                  "عروض",
-                  style: textStyle20RegularWhite.copyWith(
-                    color: AppColors.black4,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
+
               SizedBox(height: 8),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
