@@ -28,18 +28,20 @@ class HomeScreen extends StatelessWidget {
               SizedBox(height: 14),
               AiBookingBanner(),
               SizedBox(height: 24),
-
               BookingSearchForm(),
+
+              SizedBox(height: 24),
+
+              TopRatingWidget(),
+              SizedBox(height: 16),
+
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Divider(
-                  height: 1,
+                  height: 2,
                   color: AppColors.black.withOpacity(0.1),
                 ),
               ),
-              SizedBox(height: 16),
-
-              TopRatingWidget(),
               SizedBox(height: 24),
               SizedBox(height: 380, child: CustomRatingListview()),
               Padding(

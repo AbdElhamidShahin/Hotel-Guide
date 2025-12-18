@@ -121,4 +121,17 @@ TextStyle textStyle16BoldWhite = TextStyle(
   color: AppColors.white,
   fontFamily: 'Cairo',
 
+);TextStyle textStyle20BoldShadowPurple = TextStyle(
+  fontSize: 20,
+  fontWeight: FontWeight.w700,
+  color: AppColors.ShadowPurple,
+  fontFamily: 'Cairo',
+
+);
+TextStyle textStyle12RegularShadowPurple = TextStyle(
+  fontSize: 18,
+  fontWeight: FontWeight.w400,
+  color: AppColors.ShadowPurple,
+  fontFamily: 'Cairo',
+
 );
