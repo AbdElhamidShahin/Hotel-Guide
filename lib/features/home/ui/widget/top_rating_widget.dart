@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hotel_guide/core/theme/app_theme.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
 
@@ -11,44 +12,31 @@ class TopRatingWidget extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Row(
         children: [
-          Container(
-            width: 111,
-            height: 40,
-            decoration: BoxDecoration(
-              color: Colors.transparent,
-              border: Border.all(color: AppColors.yellowSoft, width: 2),
-              borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(20),
-                topRight: Radius.circular(20),
-                topLeft: Radius.circular(2),
-                bottomRight: Radius.circular(2),
-              ),
-            ),
-            child: TextButton(
-              onPressed: () {},
-              child: Text(
-                "إكتشف المزيد",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Color(0xFF222222),
-                  fontSize: 13,
-                  fontFamily: 'Cairo',
-
-                  fontWeight: FontWeight.w600,
+          GestureDetector(
+            onTap: () {},
+            child: Row(
+              children: [
+                SvgPicture.asset(
+                  "assets/icons/received.svg",
+                  color: AppColors.ShadowPurple,
+                  width: 24,
+                  height: 24,
                 ),
-              ),
+
+                Text(
+                  "عرض المزيد  ",
+                  textAlign: TextAlign.center,
+                  style: textStyle12RegularShadowPurple,
+                ),
+              ],
             ),
           ),
-
           Spacer(),
-          Text(
-            "الأعلى تقييمًا...",
-            style: textStyle23SemiBoldBlack.copyWith(
-              color: AppColors.black3,
 
-              fontSize: 22,
-            ),
-            textDirection: TextDirection.rtl,
+          Text(
+            "الأكثر حجزًا هذا الأسبوع",
+            textAlign: TextAlign.center,
+            style: textStyle20BoldShadowPurple,
           ),
         ],
       ),
