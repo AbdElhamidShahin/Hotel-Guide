@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
+import 'package:hotel_guide/features/home/ui/widget/ai_booking_banner.dart';
 import 'package:hotel_guide/features/home/ui/widget/custom_appBar_home.dart';
 import 'package:hotel_guide/features/home/ui/widget/custom_city_home.dart';
 import 'package:hotel_guide/features/home/ui/widget/custom_offers_home.dart';
@@ -24,6 +25,7 @@ final String name;
               SizedBox(height: 16),
               CustomWelcomeHeader(name: name,),
               SizedBox(height: 14),
+              AiBookingBanner  (),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Divider(
