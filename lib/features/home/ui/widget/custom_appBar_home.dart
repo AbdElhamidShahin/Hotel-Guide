@@ -15,10 +15,10 @@ class CustomAppbarHome extends StatelessWidget {
       child: Container(
         height: 73.h,
         width: double.infinity,
-        clipBehavior: Clip.antiAlias, // ضروري جداً لقص الدوائر عند حواف الحاوية
+        clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8.r),
-          color: AppColors.primary, // اللون الأساسي الداكن
+          color: AppColors.primary,
         ),
         child: Stack(
           children: [
