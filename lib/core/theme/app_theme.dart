@@ -135,3 +135,10 @@ TextStyle textStyle12RegularShadowPurple = TextStyle(
   fontFamily: 'Cairo',
 
 );
+TextStyle textStyle1Regularprimary = TextStyle(
+  fontSize: 17,
+  fontWeight: FontWeight.w400,
+  color: AppColors.primary,
+  fontFamily: 'Cairo',
+
+);
