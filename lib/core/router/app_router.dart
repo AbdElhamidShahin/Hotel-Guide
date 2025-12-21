@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hotel_guide/core/router/routers.dart';
 import 'package:hotel_guide/features/favorite/ui/favorite_screen.dart';
 import 'package:hotel_guide/features/home/logic/cubit/home_cubit.dart';
+import 'package:hotel_guide/features/home/ui/menu_screen.dart';
 import 'package:hotel_guide/features/search/logic/cubit/search_cubit.dart';
 import 'package:hotel_guide/features/search/ui/search_screen.dart';
 import 'package:hotel_guide/features/sign_up/logic/cubit/sign_up_cubit.dart';
@@ -86,8 +87,50 @@ abstract class AppRouter {
           return EditAccountScreen(name: data?['name'] ?? '');
         },
       ),
+      GoRoute(
+        path: routes.menuScreen,
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: const MenuScreen(),
+            transitionDuration: const Duration(milliseconds: 1000),
+            reverseTransitionDuration: const Duration(milliseconds: 1000),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
 
-      StatefulShellRoute.indexedStack(
+              final curvedAnimation = CurvedAnimation(
+                parent: animation,
+                curve: Curves.easeOutBack,
+                reverseCurve: Curves.easeInBack,
+              );
+              final slide = Tween<Offset>(
+                begin: const Offset(-1.0, 0.0),
+                end: Offset.zero,
+              ).animate(curvedAnimation);
+
+              final scale = Tween<double>(
+                begin: 0.88,
+                end: 1.0,
+              ).animate(curvedAnimation);
+              final opacity = Tween<double>(
+                begin: 0.0,
+                end: 1.0,
+              ).animate(curvedAnimation);
+
+              return FadeTransition(
+                opacity: opacity,
+                child: ScaleTransition(
+                  scale: scale,
+                  alignment: Alignment.centerLeft,
+                  child: SlideTransition(
+                    position: slide,
+                    child: child,
+                  ),
+                ),
+              );
+            },
+          );
+        },
+      ),   StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
           return MainAppShell(navigationShell: navigationShell);
         },

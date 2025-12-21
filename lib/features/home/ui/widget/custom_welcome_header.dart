@@ -44,7 +44,9 @@ class _CustomWelcomeHeaderState extends State<CustomWelcomeHeader> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  context.go(routes.menuScreen);
+                },
                 icon: Icon(Icons.menu_outlined, size: 34),
               ),
               Expanded(

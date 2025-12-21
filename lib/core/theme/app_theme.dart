@@ -141,4 +141,10 @@ TextStyle textStyle1Regularprimary = TextStyle(
   color: AppColors.primary,
   fontFamily: 'Cairo',
 
+);TextStyle textStyle23Regularprimary = TextStyle(
+  fontSize: 23,
+  fontWeight: FontWeight.w400,
+  color: AppColors.primary,
+  fontFamily: 'Cairo',
+
 );
