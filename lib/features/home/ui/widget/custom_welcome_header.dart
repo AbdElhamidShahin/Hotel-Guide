@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hotel_guide/core/theme/app_theme.dart';
 import '../../../../core/helpers/local_storage_account.dart';
@@ -42,13 +43,28 @@ class _CustomWelcomeHeaderState extends State<CustomWelcomeHeader> {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
+              IconButton(
+                onPressed: () {
+                  context.go(routes.menuScreen);
+                },
+                icon: Icon(Icons.menu_outlined, size: 34),
+              ),
               Expanded(
                 child: Directionality(
                   textDirection: TextDirection.rtl,
-                  child: Text(
-                    "مرحبًا ${name} جاهز لبدء رحلتك؟",
-                    style: textStyle23SemiBoldBlack,
-                    overflow: TextOverflow.ellipsis,
+                  child: Row(
+                    children: [
+                      Text(
+                        "مرحبًا ${name}",
+                        style: textStyle23SemiBoldBlack,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Image.asset(
+                        "assets/images/hi.png",
+                        width: 24,
+                        height: 24,
+                      ),
+                    ],
                   ),
                 ),
               ),

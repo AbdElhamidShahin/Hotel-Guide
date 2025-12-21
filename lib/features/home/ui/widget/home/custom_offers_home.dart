@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hotel_guide/core/theme/app_theme.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
 
@@ -35,17 +36,17 @@ class CustomOffersHome extends StatelessWidget {
             child: Row(
               children: [
                 Container(
-                  width: 143,
-                  height: 45,
+                  width: 143.w,
+                  height: 45.h,
                   decoration: BoxDecoration(
-                    color: AppColors.orangeGold,
-                    borderRadius: BorderRadius.circular(50),
+                    color: AppColors.primary,
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   child: Center(
                     child: Text(
                       'إكتشف العروض',
                       style: textStyle14SemiBoldWhite.copyWith(
-                        color: AppColors.black5,
+                        color: AppColors.white,
                       ),
                       textDirection: TextDirection.rtl,
                     ),
@@ -76,7 +77,6 @@ class CustomOffersHome extends StatelessWidget {
                         textDirection: TextDirection.rtl,
                       ),
                       SizedBox(height: 19),
-
                     ],
                   ),
                 ),
