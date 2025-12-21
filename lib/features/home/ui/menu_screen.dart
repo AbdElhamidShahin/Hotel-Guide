@@ -94,36 +94,6 @@ class MenuScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildBackgroundDecorations() {
-    return Stack(
-      children: [
-        Positioned(
-          top: -150.h,
-          right: -150.w,
-          child: Container(
-            width: 300.w,
-            height: 300.h,
-            decoration: BoxDecoration(
-              color: AppColors.GrayLight,
-              shape: BoxShape.circle,
-            ),
-          ),
-        ),
-        Positioned(
-          bottom: -150.h,
-          right: -150.w,
-          child: Container(
-            width: 300.w,
-            height: 300.h,
-            decoration: BoxDecoration(
-              color: AppColors.GrayLight,
-              shape: BoxShape.circle,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
 
   Widget _buildLogoutButton(BuildContext context) {
     return OutlinedButton(
