@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:hotel_guide/core/router/routers.dart';
 import 'package:hotel_guide/core/theme/app_theme.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
+import 'package:hotel_guide/features/home/ui/widget/menu/build_background_decorations.dart';
+import 'package:hotel_guide/features/home/ui/widget/menu/menu_tile.dart';
 
 class MenuScreen extends StatelessWidget {
   const MenuScreen({super.key});
@@ -15,7 +17,7 @@ class MenuScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          _buildBackgroundDecorations(),
+          buildBackgroundDecorations(),
           SafeArea(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 24.w),
@@ -49,32 +51,32 @@ class MenuScreen extends StatelessWidget {
                   Expanded(
                     child: ListView(
                       children: [
-                        _MenuTile(
+                        MenuTile(
                           title: 'من نحن',
                           iconPath: 'assets/icons/menu_icons/people.svg',
                           onTap: () {},
                         ),
-                        _MenuTile(
+                        MenuTile(
                           title: 'الأسئلة الشائعة',
                           iconPath: 'assets/icons/menu_icons/FAQ_Icon_UIA.svg',
                           onTap: () {},
                         ),
-                        _MenuTile(
+                        MenuTile(
                           title: 'خريطة التطبيق',
                           iconPath: 'assets/icons/menu_icons/map.svg',
                           onTap: () {},
                         ),
-                        _MenuTile(
+                        MenuTile(
                           title: 'اتصل بنا',
                           iconPath: 'assets/icons/menu_icons/call-calling.svg',
                           onTap: () {},
                         ),
-                        _MenuTile(
+                        MenuTile(
                           title: 'سياسة الخصوصية',
                           iconPath: 'assets/icons/menu_icons/security-user.svg',
                           onTap: () {},
                         ),
-                        _MenuTile(
+                        MenuTile(
                           title: 'الشروط والأحكام',
                           iconPath:
                               'assets/icons/menu_icons/clipboard-text.svg',
@@ -93,7 +95,6 @@ class MenuScreen extends StatelessWidget {
       ),
     );
   }
-
 
   Widget _buildLogoutButton(BuildContext context) {
     return OutlinedButton(
@@ -115,52 +116,6 @@ class MenuScreen extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _MenuTile extends StatelessWidget {
-  final String title;
-  final String iconPath;
-  final VoidCallback onTap;
-
-  const _MenuTile({
-    required this.title,
-    required this.iconPath,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        ListTile(
-          contentPadding: EdgeInsets.zero,
-          onTap: onTap,
-          leading: Icon(
-            Icons.arrow_back_ios_new,
-            size: 24,
-            color: AppColors.primary,
-          ),
-          title: Text(
-            title,
-            textAlign: TextAlign.right,
-            style: textStyle23Regularprimary,
-          ),
-          trailing: SvgPicture.asset(
-            iconPath,
-            width: 30.w,
-            height: 30.h,
-            color: AppColors.primary,
-          ),
-        ),
-        Divider(
-          height: 1,
-          thickness: 0.5,
-          color: AppColors.primary.withOpacity(0.2),
-        ),
-        SizedBox(height: 28.h),
-      ],
     );
   }
 }

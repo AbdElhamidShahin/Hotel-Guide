@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
-import '../../../../core/router/routers.dart';
+import '../../../../../core/router/routers.dart';
 
 class CustomAppbarHome extends StatelessWidget {
   const CustomAppbarHome({super.key});
