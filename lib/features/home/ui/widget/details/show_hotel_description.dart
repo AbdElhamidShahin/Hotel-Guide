@@ -54,8 +54,9 @@ void showHotelDescription(
                   child: Container(
                     width: 55,
                     height: 55,
+
                     decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.2),
+                      border: Border.all(color: Colors.white, width: 2),
                       shape: BoxShape.circle,
                     ),
                     child: const Icon(

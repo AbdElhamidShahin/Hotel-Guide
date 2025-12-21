@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
-import 'package:hotel_guide/features/home/ui/widget/ai_booking_banner.dart';
-import 'package:hotel_guide/features/home/ui/widget/booking_search_form.dart';
-import 'package:hotel_guide/features/home/ui/widget/custom_appBar_home.dart';
-import 'package:hotel_guide/features/home/ui/widget/custom_city_home.dart';
-import 'package:hotel_guide/features/home/ui/widget/custom_offers_home.dart';
+import 'package:hotel_guide/features/home/ui/widget/home/ai_booking_banner.dart';
+import 'package:hotel_guide/features/home/ui/widget/home/booking_search_form.dart';
+import 'package:hotel_guide/features/home/ui/widget/home/custom_appBar_home.dart';
+import 'package:hotel_guide/features/home/ui/widget/home/custom_city_home.dart';
+import 'package:hotel_guide/features/home/ui/widget/home/custom_offers_home.dart';
 import 'package:hotel_guide/features/home/ui/widget/custom_rating_listview.dart';
 import 'package:hotel_guide/features/home/ui/widget/custom_welcome_header.dart';
 import 'package:hotel_guide/features/home/ui/widget/top_rating_widget.dart';

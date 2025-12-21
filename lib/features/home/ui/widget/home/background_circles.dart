@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../core/theme/colors.dart';
+import '../../../../../core/theme/colors.dart';
 
 class BackgroundCircle extends StatelessWidget {
   const BackgroundCircle({
