@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hotel_guide/core/network/hotel_model.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
@@ -21,7 +23,7 @@ class CustomRatingListviewItem extends StatelessWidget {
         context.go(routes.customDetailsScreen, extra: hotelModel);
       },
       child: SizedBox(
-        width: 350,
+        width: 320.h,
         child: Padding(
           padding: const EdgeInsets.only(right: 16, left: 16, bottom: 24),
           child: Container(
@@ -50,20 +52,21 @@ class CustomRatingListviewItem extends StatelessWidget {
                           borderRadius: BorderRadius.circular(20),
                           child: Image.network(
                             hotelModel.imageUrl,
-                            width: double.infinity,
-                            height: 230,
+                            width: 320.h,
+                            height: 300.h,
+
                             fit: BoxFit.cover,
                           ),
                         ),
                       ],
                     ),
                     Positioned(
-                      bottom: 30,
-                      right: 25,
+                      bottom: 20.h,
+                      right: 10.w,
                       child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 14,
-                          vertical: 10,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 14.w,
+                          vertical: 10.h,
                         ),
                         decoration: BoxDecoration(
                           color: Colors.green,
@@ -77,15 +80,77 @@ class CustomRatingListviewItem extends StatelessWidget {
                       ),
                     ),
                     Positioned(
-                      bottom: 30,
-                      left: 25,
+                      top: 0.h,
+                      left: 10.w,
                       child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 14,
-                          vertical: 8,
+                        height: 50.h,
+                        width: 50.w,
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.4),
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(50),
+                            bottomRight: Radius.circular(50),
+                          ),
+                        ),
+                        child: BlocProvider.value(
+                          value: getIt<FavoriteCubit>(),
+
+                          child: BlocBuilder<FavoriteCubit, FavoriteState>(
+                            builder: (context, state) {
+                              final favoriteCubit = context
+                                  .read<FavoriteCubit>();
+                              final isFavorite = favoriteCubit.isFavorite(
+                                hotelModel,
+                              );
+
+                              return IconButton(
+                                icon: Icon(
+                                  isFavorite
+                                      ? Icons.favorite_rounded
+                                      : Icons.favorite_border,
+                                  color: isFavorite
+                                      ? Colors.redAccent
+                                      : Colors.white,
+                                  size: 32,
+                                ),
+                                onPressed: () async {
+                                  final bool currentlyFavorite = isFavorite;
+                                  await favoriteCubit.toggleFavorite(
+                                    hotelModel,
+                                  );
+
+                                  if (currentlyFavorite) {
+                                    Snackly.success(
+                                      context: context,
+                                      title: "تم الحذف من المفضلة",
+                                      style: SnackbarStyle.filled,
+                                    );
+                                  } else {
+                                    Snackly.success(
+                                      context: context,
+                                      title: "تم الإضافة إلى المفضلة",
+                                      style: SnackbarStyle.filled,
+                                    );
+                                  }
+                                },
+                                padding: const EdgeInsets.all(8),
+                                constraints: const BoxConstraints(),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    Positioned(
+                      bottom: 20.h,
+                      left: 10.w,
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 14.w,
+                          vertical: 8.h,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.white,
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Row(
@@ -94,13 +159,13 @@ class CustomRatingListviewItem extends StatelessWidget {
                             Icon(
                               Icons.star_rounded,
                               color: Colors.amber,
-                              size: 24,
+                              size: 32,
                             ),
-                            SizedBox(width: 5),
+                            SizedBox(width: 5.w),
                             Text(
                               "${hotelModel.rating}",
-                              style: textStyle16mediumWhite.copyWith(
-                                color: AppColors.black,
+                              style: textStyle16BoldWhite.copyWith(
+                                fontSize: 18.sp,
                               ),
                             ),
                           ],
@@ -109,13 +174,13 @@ class CustomRatingListviewItem extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(height: 13),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      SingleChildScrollView(
+                SizedBox(height: 13.h),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 24.w),
+                      child: SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         reverse: true,
                         child: Text(
@@ -130,81 +195,28 @@ class CustomRatingListviewItem extends StatelessWidget {
                           overflow: TextOverflow.visible,
                         ),
                       ),
-                      const SizedBox(height: 16),
-                      Row(
-                        children: [
-                          Container(
-                            height: 50,
-                            width: 50,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Color(0xFFF2F2F2),
-                            ),
-                            child: BlocProvider.value(
-                              value: getIt<FavoriteCubit>(),
+                    ),
 
-                              child: BlocBuilder<FavoriteCubit, FavoriteState>(
-                                builder: (context, state) {
-                                  final favoriteCubit = context
-                                      .read<FavoriteCubit>();
-                                  final isFavorite = favoriteCubit.isFavorite(
-                                    hotelModel,
-                                  );
-
-                                  return IconButton(
-                                    icon: Icon(
-                                      isFavorite
-                                          ? Icons.favorite_rounded
-                                          : Icons.favorite_border,
-                                      color: isFavorite
-                                          ? Colors.redAccent
-                                          : Colors.black,
-                                      size: 32,
-                                    ),
-                                    onPressed: () async {
-                                      final bool currentlyFavorite = isFavorite;
-                                      await favoriteCubit.toggleFavorite(
-                                        hotelModel,
-                                      );
-
-                                      if (currentlyFavorite) {
-                                        Snackly.success(
-                                          context: context,
-                                          title: "تم الحذف من المفضلة",
-                                          style: SnackbarStyle.filled,
-                                        );
-                                      } else {
-                                        Snackly.success(
-                                          context: context,
-                                          title: "تم الإضافة إلى المفضلة",
-                                          style: SnackbarStyle.filled,
-                                        );
-                                      }
-                                    },
-                                    padding: const EdgeInsets.all(8),
-                                    constraints: const BoxConstraints(),
-                                  );
-                                },
-                              ),
-                            ),
-                          ),
-                          Spacer(),
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text("\$", style: textStyle28MediumBlack),
-                              SizedBox(width: 4),
-                              Text(
-                                "${hotelModel.price}",
-                                style: textStyle28MediumBlack,
-                              ),
-                            ],
-                          ),
-                        ],
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 16.w),
+                      child: Divider(
+                        height: 2,
+                        color: AppColors.black.withOpacity(0.1),
                       ),
-                    ],
-                  ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SvgPicture.asset(
+                          "assets/icons/send.svg",
+                          width: 24.w,
+                          height: 24.h,
+                        ),
+                        SizedBox(width: 8.w),
+                        Text("إحجز الآن", style: textStyle1Regularprimary),
+                      ],
+                    ),
+                  ],
                 ),
               ],
             ),
