@@ -9,6 +9,7 @@ import 'package:hotel_guide/features/home/ui/widget/details/custom_service_detai
 import 'package:hotel_guide/features/home/ui/widget/details/custom_service_details_list_view.dart';
 import 'package:hotel_guide/features/home/ui/widget/details/custom_name_details.dart';
 import 'package:hotel_guide/features/home/ui/widget/details/divider.dart';
+import 'package:hotel_guide/features/home/ui/widget/details/rating_screen.dart';
 import 'package:hotel_guide/features/home/ui/widget/details/show_hotel_description.dart';
 
 import '../../../core/network/hotel_model.dart';
@@ -88,6 +89,16 @@ class CustomDetailsScreen extends StatelessWidget {
 
               DividerWidget(),
 
+              SizedBox(
+                height: 150.h,
+                child: Center(child: RatingScreen()),
+              ),
+
+              Row(
+                children: [
+
+                ],
+              ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
