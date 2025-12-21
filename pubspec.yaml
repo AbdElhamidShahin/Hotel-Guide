@@ -90,6 +90,7 @@ flutter:
     - assets/icons/icon_bar_active/
     - assets/Onpording/
     - assets/icons/menu_icons/
+    - assets/icons/rating/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 

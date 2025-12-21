@@ -148,3 +148,10 @@ TextStyle textStyle1Regularprimary = TextStyle(
   fontFamily: 'Cairo',
 
 );
+TextStyle textStyle25RegularWhite = TextStyle(
+  fontSize: 25,
+  fontWeight: FontWeight.w400,
+  color: AppColors.white,
+  fontFamily: 'Cairo',
+
+);
