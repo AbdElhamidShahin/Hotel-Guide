@@ -5,7 +5,7 @@ import 'package:hotel_guide/core/theme/colors.dart';
 
 class TopRatingWidget extends StatelessWidget {
   const TopRatingWidget({super.key, required this.name});
-final String name;
+  final String name;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -26,7 +26,7 @@ final String name;
                 Text(
                   "عرض المزيد  ",
                   textAlign: TextAlign.center,
-                  style: textStyle12RegularShadowPurple,
+                  style: textStyle18RegularShadowPurple,
                 ),
               ],
             ),
@@ -34,7 +34,8 @@ final String name;
           Spacer(),
 
           Text(
-name,            textAlign: TextAlign.center,
+            name,
+            textAlign: TextAlign.center,
             style: textStyle20BoldShadowPurple,
           ),
         ],

@@ -37,7 +37,7 @@ Widget buildNoConnectionWidget({VoidCallback? onRetry}) {
               ),
               child: Text(
                 'إعادة الإتصال',
-                style: textStyle12RegularShadowPurple.copyWith(
+                style: textStyle18RegularShadowPurple.copyWith(
                   color: AppColors.white,
                 ),
               ),

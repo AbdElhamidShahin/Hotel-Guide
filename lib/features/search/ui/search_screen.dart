@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hotel_guide/features/search/logic/cubit/search_state.dart';
 import 'package:hotel_guide/features/search/ui/widget/custom_appbar_search.dart';
 import '../../../core/helpers/widget/custom_item.dart';
-import '../../../core/network/connect/build_error_widget.dart';
-import '../../../core/network/connect/build_not_found_search.dart';
+import '../../../core/helpers/contact/build_error_widget.dart';
+import '../../../core/helpers/contact/build_not_found_search.dart';
 import '../logic/cubit/search_cubit.dart';
 
 class SearchScreen extends StatefulWidget {
