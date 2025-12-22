@@ -5,7 +5,7 @@ class SupabaseService {
   Future<List<Map<String, dynamic>>> getCitiesWithHotels() async {
     final response = await client
         .from('cities')
-        .select('id, name, image_url, hotels(id, name, rating, price, imageUrl, imageUrlAll, iswifi, breakfast, location, locationUrl, description, city_id)');
+        .select('id, name, image_url, hotels(id, name, rating, price, imageUrl, imageUrlAll, iswifi, breakfast, location, locationUrl, description, city_id)').timeout(const Duration(seconds: 20));
     return List<Map<String, dynamic>>.from(response);
   }
 

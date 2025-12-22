@@ -21,13 +21,11 @@ class HomeCubit extends Cubit<HomeState> {
       final cities = await repository.getCitiesWithHotels();
       emit(CitiesLoaded(cities));
     } catch (e) {
-      // --- ده التعديل الصحيح ---
       if (e is SupabaseFailure) {
-        emit(CitiesError(e.errorMessage)); // ابعت رسالة الخطأ الفعلية
+        emit(CitiesError(e.errorMessage));
       } else {
         emit(CitiesError("خطأ غير متوقع: ${e.toString()}"));
       }
-      // --- نهاية التعديل ---
     }
   }
   Future<void> fetchHotelsByCity(int cityId) async {
