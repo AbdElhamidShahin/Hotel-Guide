@@ -42,6 +42,7 @@ class AppColors {
 
 
   static const Color primary = Color(0xFF2D2B3E);
+  static const Color colorText = Color(0xFF51526C);
   static const Color ShadowPurple = Color(0xFF575472);
   static const Color RoyalPurple = Color(0xFF6547D0);
   static const Color Gray = Color(0xFF6C7278);

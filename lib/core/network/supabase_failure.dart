@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 abstract class Failure {
@@ -21,15 +23,24 @@ class SupabaseFailure extends Failure {
     }
   }
 
-// في ملف supabase_failure.dart (مهم جداً)
 
   factory SupabaseFailure.fromGenericError(Object? error) {
-    if (error == null) {
-      return SupabaseFailure("حدث خطأ غير معروف.");
-    } else if (error.toString().contains("SocketException")) { // <--- هنا يتم اكتشاف خطأ الاتصال
-      return SupabaseFailure("لا يوجد اتصال بالإنترنت.");
-    } else {
-      return SupabaseFailure("حدث خطأ غير متوقع: ${error.toString()}");
+    String errorStr = error.toString();
+
+    // تشخيص أخطاء الاتصال بشكل أوسع
+    if (errorStr.contains("SocketException") ||
+        errorStr.contains("Connection failed") ||
+        errorStr.contains("ClientException") ||
+        errorStr.contains("TimeoutException") || // مهم جداً عشان الـ timeout اللي ضفناه
+        errorStr.contains("handled by the client")) {
+      return SupabaseFailure("لا يوجد اتصال بالإنترنت، يرجى التحقق من الشبكة.");
     }
+
+    // لو الخطأ من نوع PostgrestException بس سببه برضه اتصال
+    if (error is PostgrestException) {
+      return SupabaseFailure("مشكلة في الوصول للسيرفر، تأكد من اتصالك.");
+    }
+
+    return SupabaseFailure("حدث خطأ غير متوقع، يرجى المحاولة مرة أخرى.");
   }
 }

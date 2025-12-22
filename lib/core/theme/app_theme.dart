@@ -155,3 +155,10 @@ TextStyle textStyle25RegularWhite = TextStyle(
   fontFamily: 'Cairo',
 
 );
+TextStyle textStyle28BoldWhite = TextStyle(
+  fontSize: 28,
+  fontWeight: FontWeight.w700,
+  color: AppColors.black,
+  fontFamily: 'Cairo',
+
+);
