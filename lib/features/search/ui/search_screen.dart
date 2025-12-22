@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:go_router/go_router.dart';
-import 'package:hotel_guide/core/router/routers.dart';
-import 'package:hotel_guide/core/theme/app_theme.dart';
-import 'package:hotel_guide/core/theme/colors.dart';
 import 'package:hotel_guide/features/search/logic/cubit/search_state.dart';
 import 'package:hotel_guide/features/search/ui/widget/custom_appbar_search.dart';
-
 import '../../../core/helpers/widget/custom_item.dart';
+import '../../../core/helpers/contact/build_error_widget.dart';
+import '../../../core/helpers/contact/build_not_found_search.dart';
 import '../logic/cubit/search_cubit.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -45,20 +41,22 @@ class _SearchScreenState extends State<SearchScreen> {
                   }
 
                   if (state is SearchFailure) {
-                    return Center(child: Text(state.message));
+                    return buildNoConnectionWidget(
+                      onRetry: () {
+                        context.read<SearchCubit>().loadHotels();
+                      },
+                    );
                   }
-
                   if (state is SearchSuccess) {
                     final hotels = state.hotels;
 
                     if (hotels.isEmpty) {
-                      return const Center(child: Text("No hotels found"));
+                      return Center(child: BuildNotFoundSearch());
                     }
 
                     return ListView.builder(
                       itemCount: hotels.length,
                       itemBuilder: (context, index) {
-                        final hotel = hotels[index];
                         return CustomItem(
                           hotelModel: state.hotels[index],
                           isContinar: false,

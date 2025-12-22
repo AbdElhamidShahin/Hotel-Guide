@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/network/supabase_failure.dart';
 import 'search_state.dart';
 import '../../data/repo/search_repo.dart';
 import '../../../../core/network/hotel_model.dart';
@@ -16,7 +17,8 @@ class SearchCubit extends Cubit<SearchState> {
       allHotels = await repo.fetchHotels();
       emit(SearchSuccess(allHotels));
     } catch (e) {
-      emit(SearchFailure(e.toString()));
+      final failure = SupabaseFailure.fromGenericError(e);
+      emit(SearchFailure(failure.errorMessage));
     }
   }
 
