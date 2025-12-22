@@ -1,184 +1,181 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:hotel_guide/core/theme/app_theme.dart';
 import 'package:snackly/snackly.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../network/hotel_model.dart';
 import '../../router/routers.dart';
-import '../../theme/app_theme.dart';
 import '../../theme/colors.dart';
 import '../../../features/favorite/logic/cubit/favorite_cubit.dart';
 import '../../../features/favorite/logic/cubit/favorite_state.dart';
 
 class CustomItem extends StatelessWidget {
   final HotelModel hotelModel;
-  final  bool isContinar ;
-  CustomItem({super.key, required this.hotelModel, required this.isContinar});
+  final bool isContinar;
+
+  const CustomItem({
+    super.key,
+    required this.hotelModel,
+    required this.isContinar,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<FavoriteCubit, FavoriteState>(
-      listener: (context, state) {},
+    return BlocBuilder<FavoriteCubit, FavoriteState>(
       builder: (context, state) {
         final favoriteCubit = context.read<FavoriteCubit>();
         final isCurrentlyFavorite = favoriteCubit.isFavorite(hotelModel);
+
         return Container(
-          height: 132,
-          margin: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
+          height: 250.h,
+          margin: EdgeInsets.only(bottom: 8.h, left: 16.w, right: 16.w),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(12.r),
             boxShadow: [
               BoxShadow(
-                color: Colors.grey.withOpacity(0.1),
-                blurRadius: 10,
-                spreadRadius: 2,
-                offset: const Offset(0, 4),
+                color: Colors.black.withOpacity(0.06),
+                blurRadius: 15,
+                offset: const Offset(0, 5),
               ),
             ],
           ),
           child: InkWell(
-            borderRadius: BorderRadius.circular(16),
-            onTap: () {
-              context.go(routes.customDetailsScreen, extra: hotelModel);
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Row(
-                textDirection: TextDirection.rtl,
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(12), // Radios 12
-                    child: Image.network(
-                      hotelModel.imageUrl,
-                      width: 150, // العرض: 150
-                      height: 108, // الطول: 108
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => Container(
-                        width: 150,
-                        height: 108,
-                        color: Colors.grey[200],
-                        child: Center(
-                          child: Image.asset(
-                            "assets/images/logo/logo.png",
-                            width: 150, // العرض: 150
-                            height: 108, // الطول: 108
-                            fit: BoxFit.cover,
+            borderRadius: BorderRadius.circular(12.r),
+            onTap: () =>
+                context.go(routes.customDetailsScreen, extra: hotelModel),
+            child: Row(
+              textDirection: TextDirection.rtl,
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: Stack(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(12.r),
+                          bottomRight: Radius.circular(12.r),
+                        ),
+                        child: Image.network(
+                          hotelModel.imageUrl,
+                          width: double.infinity,
+                          height: double.infinity,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => Container(
+                            color: Colors.grey[200],
+                            child: const Icon(Icons.image_not_supported),
                           ),
                         ),
                       ),
-                    ),
-                  ),
-
-                  const SizedBox(width: 12),
-
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          textDirection: TextDirection.rtl,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                hotelModel.name,
-                                style: TextStyle(
-                                  fontFamily: 'Cairo',
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.black6,
-                                ),
-                                textDirection: TextDirection.rtl,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
+                      Positioned(
+                        top: 10.h,
+                        right: 10.w,
+                        child: GestureDetector(
+                          onTap: () async {
+                            await favoriteCubit.toggleFavorite(hotelModel);
+                            Snackly.success(
+                              context: context,
+                              title: isCurrentlyFavorite
+                                  ? "تم الحذف"
+                                  : "تمت الإضافة",
+                              style: SnackbarStyle.filled,
+                            );
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.5),
+                              shape: BoxShape.circle,
                             ),
-                            const SizedBox(width: 8),
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Icon(
-                                  Icons.star_rounded,
-                                  color: Colors.amber,
-                                  size: 24,
-                                ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  "${hotelModel.rating}",
-                                  style: textStyle12BoldBlack,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-
-                        const SizedBox(height: 4),
-
-                        Text(
-                          "${hotelModel.locationUrl}",
-                          style: textStyle10BoldGray,
-                          textDirection: TextDirection.rtl,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-
-                        Row(
-                          textDirection: TextDirection.rtl,
-                          crossAxisAlignment: CrossAxisAlignment.baseline,
-                          textBaseline: TextBaseline.alphabetic,
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [  Text(
-                            "month",
-                            style: textStyle18BoldGray.copyWith(
-                              fontSize: 14,
-                              color: AppColors.gray3.withOpacity(0.60),
+                            child: Icon(
+                              isCurrentlyFavorite
+                                  ? Icons.star_rounded
+                                  : Icons.star_outline_rounded,
+                              color: Colors.white,
+                              size: 25.sp,
                             ),
                           ),
-                            Text(
-                              "EGP ${hotelModel.price}/",
-                              style: textStyle18BoldGray.copyWith(
-                                fontSize: 16,
-                                color: AppColors.gray3,
-                              ),
-                            ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
 
+                Expanded(
+                  flex: 1,
+                  child: Padding(
+                    padding: EdgeInsets.all(12.w),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          hotelModel.name.toUpperCase(),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.right,
+                          style: textStyle16BoldWhite.copyWith(
+                            color: AppColors.ShadowPurple,
+                          ),
+                        ),
+                        SizedBox(height: 12.h),
+                        Text(
+                          hotelModel.description ?? "",
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.right,
+                          style: textStyle14RegularNightfall.copyWith(
+                            color: AppColors.ShadowPurple.withOpacity(0.7),
+                          ),
+                        ),
+                        SizedBox(height: 8.h),
+                        Text(
+                          textDirection: TextDirection.rtl,
+                          "يبدأ من ${hotelModel.price} EGP /\nاليوم",
+                          style: textStyle16BoldWhite.copyWith(
+                            color: AppColors.colorText,
+                          ),
+                        ),
 
-                            Spacer(),
-                            isContinar
-                                ? Container(
-                              width: 38,
-                              height: 38,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.red.withOpacity(0.05),
-                              ),
-                              child: IconButton(
-                                icon: Icon(
-                                  isCurrentlyFavorite ? Icons.favorite_rounded : Icons.favorite_border,
-                                  color: isCurrentlyFavorite ? Colors.redAccent : Colors.black,
-                                  size: 24,
+                        SizedBox(height: 8.h),
+                        Container(
+                          height: 45.h,
+                          width: double.infinity,
+                          padding: EdgeInsets.symmetric(horizontal: 16.w),
+                          decoration: BoxDecoration(
+                            color: AppColors.primary,
+                            borderRadius: BorderRadius.circular(30.r),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            textDirection: TextDirection.rtl,
+                            children: [
+                              Text(
+                                "إحجز الآن",
+                                style: textStyle16BoldWhite.copyWith(
+                                  fontSize: 16.sp,
+                                  fontFamily: 'Cairo',
                                 ),
-                                onPressed: () async {
-                                  final wasFavorite = isCurrentlyFavorite;
-                                  await favoriteCubit.toggleFavorite(hotelModel);
-                                  Snackly.success(
-                                    context: context,
-                                    title: wasFavorite ? "تم الحذف من المفضلة" : "تم الإضافة إلى المفضلة",
-                                    style: SnackbarStyle.filled,
-                                  );
-                                },
-                                padding: EdgeInsets.zero,
-                                constraints: const BoxConstraints(),
                               ),
-                            )
-                                : SizedBox(),                          ],
+
+                              SizedBox(width: 24.w),
+                              SvgPicture.asset(
+                                "assets/icons/send.svg",
+                                height: 24.h,
+                                width: 24.w,
+                                color: Colors.white,
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         );

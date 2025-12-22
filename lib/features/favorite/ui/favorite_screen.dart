@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart'; // لإمكانية العودة بالـ goRouter
+import 'package:hotel_guide/core/router/routers.dart';
 
+import '../../../core/helpers/contact/build_favorite_notfound.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/colors.dart'; // نفترض وجود AppColors
 import '../logic/cubit/favorite_cubit.dart';
@@ -10,55 +12,6 @@ import '../../../core/helpers/widget/custom_item.dart';
 
 class FavoriteScreen extends StatelessWidget {
   const FavoriteScreen({super.key});
-  Widget _buildEmptyState(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(40.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.favorite_border, size: 100, color: Colors.red.shade200),
-            const SizedBox(height: 20),
-            Text(
-              'قائمة المفضلة فارغة!',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: AppColors.black,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 10),
-            Text(
-              'ابدأ بإضافة الفنادق التي تعجبك إلى مفضلتك لتظهر هنا.',
-              style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 30),
-            ElevatedButton(
-              onPressed: () {
-                context.pop();
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red.shade400,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 30,
-                  vertical: 12,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              child: const Text(
-                'اكتشف الفنادق',
-                style: TextStyle(fontSize: 16, color: Colors.white),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +48,12 @@ class FavoriteScreen extends StatelessWidget {
           final favoriteItems = state is FavoriteUpdated ? state.favorites : [];
 
           if (favoriteItems.isEmpty) {
-            return _buildEmptyState(context);
+            return buildFavoriteNotFoundWidget(onRetry: (){
+
+
+              context.go(routes.homeScreen);
+
+            });
           }
 
           return RefreshIndicator(

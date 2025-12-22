@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/router/routers.dart';
@@ -11,7 +12,7 @@ class CustomAppbarSearch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 18),
+      padding: EdgeInsets.symmetric(horizontal: 18.w),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -41,38 +42,35 @@ class CustomAppbarSearch extends StatelessWidget {
                   ),
 
                   prefixIcon: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 18),
+                    padding: EdgeInsets.symmetric(horizontal: 18.w),
+                    child: SvgPicture.asset("assets/icons/filter-search.svg"),
+                  ),
+                  suffixIconConstraints: BoxConstraints(
+                    minHeight: 20.h,
+                    minWidth: 20.w,
+                  ),
+                  suffixIcon: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 12.w),
                     child: SvgPicture.asset(
-                      "assets/icons/Filter_alt.svg",
-                      width: 30,
-                      height: 30,
-                      color: AppColors.black4,
+                      "assets/icons/search-normal.svg",
+                      color: AppColors.primary,
                     ),
                   ),
-
-                  suffixIcon: Icon(
-                    Icons.search_sharp,
-                    color: AppColors.black4,
-                    weight: 0.2,
-                    size: 28,
-                  ),
-
-                  filled: true,
                   fillColor: Colors.transparent,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(50),
                     borderSide: BorderSide.none,
                   ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    vertical: 14,
-                    horizontal: 20,
+                  contentPadding: EdgeInsets.symmetric(
+                    vertical: 14.h,
+                    horizontal: 20.w,
                   ),
                 ),
               ),
             ),
           ),
 
-          SizedBox(width: 12),
+          SizedBox(width: 12.w),
           IconButton(
             onPressed: () {
               context.go(routes.homeScreen);

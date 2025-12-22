@@ -53,6 +53,7 @@ dependencies:
   snackly: ^0.0.9
   image_picker: ^1.2.1
   flutter_native_splash: ^2.4.7
+  connectivity_plus: ^7.0.0
 
 dev_dependencies:
   flutter_test:
