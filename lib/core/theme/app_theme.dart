@@ -128,7 +128,7 @@ TextStyle textStyle16BoldWhite = TextStyle(
   fontFamily: 'Cairo',
 
 );
-TextStyle textStyle12RegularShadowPurple = TextStyle(
+TextStyle textStyle18RegularShadowPurple = TextStyle(
   fontSize: 18,
   fontWeight: FontWeight.w400,
   color: AppColors.ShadowPurple,
