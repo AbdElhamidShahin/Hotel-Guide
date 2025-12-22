@@ -882,6 +882,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.1"
+  unused_assets_removal:
+    dependency: "direct main"
+    description:
+      name: unused_assets_removal
+      sha256: "1d7ef8798b01389361f73cfff56ff83ab069e32fedf6fadcf7d45b5baf051bbd"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.6"
   url_launcher:
     dependency: transitive
     description:
