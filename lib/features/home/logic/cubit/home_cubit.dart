@@ -6,24 +6,20 @@ import '../../../../core/network/city_model.dart';
 import '../../../../core/network/hotel_model.dart';
 import '../../data/repo/home_repo.dart';
 
-// home_cubit.dart
 
-// home_cubit.dart
 class HomeCubit extends Cubit<HomeState> {
   final HomeRepository repository;
 
-  List<CityModel> allCities = []; // المخزن الرئيسي للداتا
+  List<CityModel> allCities = [];
 
   HomeCubit(this.repository) : super(CitiesInitial());
 
-  // بننادي دي مرة واحدة بس في الـ initState بتاع الصفحة
   Future<void> fetchInitialData() async {
     emit(HomeLoading());
     try {
       allCities = await repository.getCitiesWithHotels();
 
       if (allCities.isNotEmpty) {
-        // بنعرض مدن أول مدينة كدايفولت
         emit(HomeLoaded(
           cities: allCities,
           selectedHotels: allCities[0].hotels,
@@ -37,11 +33,8 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
-  // لما يضغط على مدينة مش بنروح للـ API.. بنفلتر من اللستة اللي معانا
-// home_cubit.dart
 
   void updateSelectedCity(int cityId) {
-    // حماية: لو اللستة لسه فاضية، ميعملش حاجة
     if (allCities.isEmpty) return;
 
     try {
@@ -52,7 +45,6 @@ class HomeCubit extends Cubit<HomeState> {
         selectedCityId: cityId,
       ));
     } catch (e) {
-      // لو ملقاش الـ ID ميعملش Crash
       print("City not found: $cityId");
     }
   }

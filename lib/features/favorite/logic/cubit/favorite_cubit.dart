@@ -47,12 +47,9 @@ class FavoriteCubit extends Cubit<FavoriteState> {
     }
   }
 
+
   Future<void> loadFavorites() async {
     try {
-      if (!isClosed) {
-        emit(FavoriteLoading());
-      }
-
       final prefs = await SharedPreferences.getInstance();
       final data = prefs.getStringList('favorites');
 
@@ -60,23 +57,12 @@ class FavoriteCubit extends Cubit<FavoriteState> {
         _favorites = data
             .map((e) => HotelModel.fromJson(jsonDecode(e)))
             .toList();
-        if (!isClosed) {
-          emit(FavoriteUpdated(List.from(_favorites)));
-        }
+        emit(FavoriteUpdated(List.from(_favorites)));
       } else {
-        if (!isClosed) {
-          emit(FavoriteUpdated([]));
-        }
+        emit(FavoriteUpdated([]));
       }
     } catch (e) {
-      if (!isClosed) {
-        emit(FavoriteError('Failed to load favorites'));
-      }
+      emit(FavoriteError('Failed to load favorites'));
     }
-  }
-
-  @override
-  Future<void> close() {
-    return super.close();
   }
 }

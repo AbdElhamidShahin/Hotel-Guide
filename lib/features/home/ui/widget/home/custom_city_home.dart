@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hotel_guide/core/router/routers.dart';
+import 'package:hotel_guide/core/theme/app_theme.dart';
 
+import '../../../../../core/helpers/contact/build_error_widget.dart'
+    show buildNoConnectionMiniWidget;
 import '../../../../../core/network/city_model.dart';
-import '../../../../../core/network/hotel_model.dart';
 import '../../../logic/cubit/home_cubit.dart';
 import '../../../logic/cubit/home_state.dart';
 
@@ -18,7 +23,11 @@ class CustomCityHome extends StatelessWidget {
         }
 
         if (state is HomeError) {
-          return Center(child: Text("حدث خطأ: ${state.message}"));
+          return buildNoConnectionMiniWidget(
+            onRetry: () {
+              context.read<HomeCubit>().fetchInitialData();
+            },
+          );
         }
 
         if (state is HomeLoaded) {
@@ -28,7 +37,6 @@ class CustomCityHome extends StatelessWidget {
 
           return Column(
             children: [
-              // لستة المدن (Grid)
               GridView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
@@ -45,25 +53,18 @@ class CustomCityHome extends StatelessWidget {
                 ),
                 itemBuilder: (context, index) {
                   final city = state.cities[index];
-                  // بنعرف لو المدينة دي هي اللي تم اختيارها عشان نغير شكلها (اختياري)
-                  bool isSelected = state.selectedCityId == city.id;
-
                   return CustomCityHomeItem(
                     city: city,
-                    isSelected: isSelected, // ضفنا خاصية التحديد
                     onTap: () {
-                      // لما يضغط، الـ Cubit بيغير لستة الفنادق المعروضة فوراً
                       context.read<HomeCubit>().updateSelectedCity(city.id);
+
+                      context.go(routes.cityHotelsScreen, extra: city);
                     },
                   );
                 },
               ),
 
               const Divider(height: 30),
-
-              // هنا تقدر تعرض لستة الفنادق بناءً على المدينة المختارة
-              // state.selectedHotels هي اللستة اللي جاية من الكيوبيت حالياً
-              _buildHotelsList(state.selectedHotels),
             ],
           );
         }
@@ -72,54 +73,23 @@ class CustomCityHome extends StatelessWidget {
       },
     );
   }
-
-  // ودجت بسيطة لعرض الفنادق تحت المدن
-  Widget _buildHotelsList(List<HotelModel> hotels) {
-    if (hotels.isEmpty) return const Text("لا توجد فنادق في هذه المدينة");
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: hotels.length,
-      itemBuilder: (context, index) => ListTile(
-        title: Text(hotels[index].name),
-        subtitle: Text("${hotels[index].price} EGP"),
-        leading: Image.network(
-          hotels[index].imageUrl,
-          width: 50,
-          fit: BoxFit.cover,
-        ),
-      ),
-    );
-  }
 }
 
 class CustomCityHomeItem extends StatelessWidget {
-  const CustomCityHomeItem({
-    super.key,
-    required this.city,
-    this.onTap,
-    this.isSelected = false,
-  });
+  const CustomCityHomeItem({super.key, required this.city, this.onTap});
 
   final CityModel city;
   final VoidCallback? onTap;
-  final bool isSelected; // تم الإضافة
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
-        // استخدمنا AnimatedContainer عشان شكل الاختيار يبقى شيك
         duration: const Duration(milliseconds: 300),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          border: isSelected
-              ? Border.all(color: Colors.blue, width: 3) // برواز أزرق لو مختارة
-              : null,
-        ),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(isSelected ? 17 : 20),
+          borderRadius: BorderRadius.circular(17),
           child: Stack(
             children: [
               // Image
@@ -132,17 +102,16 @@ class CustomCityHomeItem extends StatelessWidget {
                 ),
               ),
 
-              // Dark Overlay
-              Container(color: Colors.black.withOpacity(0.3)),
+              Container(color: Colors.black.withOpacity(0.4)),
 
-              // City Name
-              Center(
-                child: Text(
-                  city.name,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+              Positioned(
+                bottom: 10,
+                right: 0,
+                left: 0,
+                child: Center(
+                  child: Text(
+                    city.name,
+                    style: textStyle22BoldPrimary.copyWith(fontSize: 20.sp),
                   ),
                 ),
               ),

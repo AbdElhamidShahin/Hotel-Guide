@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
 import 'package:hotel_guide/features/home/ui/widget/home/ai_booking_banner.dart';
 import 'package:hotel_guide/features/home/ui/widget/home/booking_search_form.dart';
@@ -22,11 +23,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  @override
   void initState() {
     super.initState();
     context.read<HomeCubit>().fetchInitialData();
-
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               SizedBox(height: 24),
-              SizedBox(height: 440, child: CustomRatingListview()),
+              SizedBox(height: 440, child: CustomRatingListview(cityId: 1)),
               TopRatingWidget(name: 'إستكشف مصر'),
               SizedBox(height: 16),
 
@@ -69,9 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               SizedBox(height: 12),
 
-              SizedBox(height: 200,
-                  child: CustomCityHome()),
-
+              SizedBox(height: 355.h, child: SingleChildScrollView(child: CustomCityHome())),
 
               SizedBox(height: 8),
               Padding(
