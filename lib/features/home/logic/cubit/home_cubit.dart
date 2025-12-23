@@ -2,51 +2,58 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // لازم تعمل امبورت لملف الـ Failure بتاعك
 import 'package:hotel_guide/core/network/supabase_failure.dart';
 import 'package:hotel_guide/features/home/logic/cubit/home_state.dart';
+import '../../../../core/network/city_model.dart';
 import '../../../../core/network/hotel_model.dart';
 import '../../data/repo/home_repo.dart';
 
+// home_cubit.dart
+
+// home_cubit.dart
 class HomeCubit extends Cubit<HomeState> {
   final HomeRepository repository;
 
+  List<CityModel> allCities = []; // المخزن الرئيسي للداتا
+
   HomeCubit(this.repository) : super(CitiesInitial());
-  Map<int, List<HotelModel>> _cachedHotelsByCity = {}; // cache
 
-  Future<void> fetchCitiesWithHotels(int cityId ) async {
-    if (_cachedHotelsByCity.containsKey(cityId)) {
-    emit(HotelsLoaded(_cachedHotelsByCity[cityId]!));
-    return;
-  }
-    emit(CitiesLoading());
+  // بننادي دي مرة واحدة بس في الـ initState بتاع الصفحة
+  Future<void> fetchInitialData() async {
+    emit(HomeLoading());
     try {
-      final cities = await repository.getCitiesWithHotels();
-      emit(CitiesLoaded(cities));
-    } catch (e) {
-      if (e is SupabaseFailure) {
-        emit(CitiesError(e.errorMessage));
+      allCities = await repository.getCitiesWithHotels();
+
+      if (allCities.isNotEmpty) {
+        // بنعرض مدن أول مدينة كدايفولت
+        emit(HomeLoaded(
+          cities: allCities,
+          selectedHotels: allCities[0].hotels,
+          selectedCityId: allCities[0].id,
+        ));
       } else {
-        emit(CitiesError("خطأ غير متوقع: ${e.toString()}"));
+        emit(HomeError("لا توجد بيانات"));
       }
+    } catch (e) {
+      emit(HomeError(e.toString()));
     }
   }
-  Future<void> fetchHotelsByCity(int cityId) async {
-    emit(CitiesLoading());
+
+  // لما يضغط على مدينة مش بنروح للـ API.. بنفلتر من اللستة اللي معانا
+// home_cubit.dart
+
+  void updateSelectedCity(int cityId) {
+    // حماية: لو اللستة لسه فاضية، ميعملش حاجة
+    if (allCities.isEmpty) return;
+
     try {
-      final hotels = await repository.getHotelsByCity(cityId);
-      _cachedHotelsByCity[cityId] = hotels;
-
-      for (var hotel in hotels) {
-        print("Hotel Details: Name=${hotel.name}, Rating=${hotel.rating}");
-      }
-
-      emit(HotelsLoaded(hotels));
+      final selectedCity = allCities.firstWhere((c) => c.id == cityId);
+      emit(HomeLoaded(
+        cities: allCities,
+        selectedHotels: selectedCity.hotels,
+        selectedCityId: cityId,
+      ));
     } catch (e) {
-      if (e is SupabaseFailure) {
-        emit(CitiesError(e.errorMessage));
-      } else {
-        emit(CitiesError("خطأ غير متوقع: ${e.toString()}"));
-      }
+      // لو ملقاش الـ ID ميعملش Crash
+      print("City not found: $cityId");
     }
-
-
   }
 }

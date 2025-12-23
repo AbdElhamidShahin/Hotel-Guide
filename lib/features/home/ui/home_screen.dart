@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
 import 'package:hotel_guide/features/home/ui/widget/home/ai_booking_banner.dart';
 import 'package:hotel_guide/features/home/ui/widget/home/booking_search_form.dart';
@@ -10,10 +11,22 @@ import 'package:hotel_guide/features/home/ui/widget/custom_welcome_header.dart';
 import 'package:hotel_guide/features/home/ui/widget/top_rating_widget.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../logic/cubit/home_cubit.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.name});
   final String name;
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  void initState() {
+    super.initState();
+    context.read<HomeCubit>().fetchInitialData();
+
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,7 +37,7 @@ class HomeScreen extends StatelessWidget {
             children: [
               CustomAppbarHome(),
               SizedBox(height: 16),
-              CustomWelcomeHeader(name: name),
+              CustomWelcomeHeader(name: widget.name),
               SizedBox(height: 14),
               AiBookingBanner(),
               SizedBox(height: 24),
@@ -56,7 +69,8 @@ class HomeScreen extends StatelessWidget {
               ),
               SizedBox(height: 12),
 
-              CustomCityHome(),
+              SizedBox(height: 200,
+                  child: CustomCityHome()),
 
 
               SizedBox(height: 8),

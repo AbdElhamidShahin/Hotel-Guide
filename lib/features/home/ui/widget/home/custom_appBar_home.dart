@@ -79,7 +79,7 @@ class CustomAppbarHome extends StatelessWidget {
                     ),
                     const Spacer(),
                     Image.asset(
-                      "assets/images/logo_new.png",
+                      "assets/images/logo/logo_new.png",
                       height: 60.h,
                       width: 70.w,
                       fit: BoxFit.contain,
