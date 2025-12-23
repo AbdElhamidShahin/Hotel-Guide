@@ -102,7 +102,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
               Customtextfeild(
                 controller: _addressController,
                 label: 'العنوان',
-                hintText: 'العجيزي - مساكن الشباب',
+                hintText: 'القاهره',
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'الرجاء إدخال العنوان';
@@ -110,95 +110,15 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
                   return null;
                 },
               ),
-              const SizedBox(height: 15),
 
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    const Text(
-                      'رقم الهاتف',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                        color: AppColors.black,
-                        fontFamily: 'Cairo',
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Container(
-                      height: 55,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: AppColors.borderGrey),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: TextFormField(
-                              controller: _phoneController,
-                              textAlign: TextAlign.right,
-                              keyboardType: TextInputType.phone,
-                              decoration: const InputDecoration(
-                                hintText: "XXXX-XXX-XXXX",
-                                hintStyle: TextStyle(
-                                  color: AppColors.hintTextGrey,
-                                  fontSize: 16,
-                                ),
-                                border: InputBorder.none,
-                                contentPadding: EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                ),
-                              ),
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'الرجاء إدخال رقم الهاتف';
-                                }
-                                return null;
-                              },
-                            ),
-                          ),
-                          Container(
-                            height: 30,
-                            width: 1,
-                            color: AppColors.borderGrey,
-                          ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12),
-                            child: Row(
-                              children: const [
-                                Text("🇪🇬", style: TextStyle(fontSize: 24)),
-                                SizedBox(width: 8),
-                                Text(
-                                  "+20",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Icon(
-                                  Icons.keyboard_arrow_down,
-                                  color: Colors.black,
-                                  size: 20,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
 
               const SizedBox(height: 40),
               SizedBox(
                 width: 260,
                 height: 60,
                 child: CustomButton(
-                  color: AppColors.mainOrange,
-                  text: 'تعديل الملف',
+                  color: AppColors.primary,
+                  text: 'تحديث الملف الشخصي',
                   onTap: () async {
                     if (_formKey.currentState!.validate()) {
                       await UserDataManager.saveUserData(
