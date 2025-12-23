@@ -10,44 +10,36 @@ import '../../../../core/router/routers.dart';
 import '../../logic/cubit/home_state.dart';
 import 'custom_rating_listview_item.dart';
 
-class CustomRatingListview extends StatefulWidget {
+class CustomRatingListview extends StatelessWidget {
   const CustomRatingListview({super.key});
 
   @override
-  State<CustomRatingListview> createState() => _CustomRatingListviewState();
-}
-
-class _CustomRatingListviewState extends State<CustomRatingListview> {
-  @override
   bool get wantKeepAlive => true;
-
-  void initState() {
-    super.initState();
-    BlocProvider.of<HomeCubit>(context).fetchHotelsByCity(2);
-  }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<HomeCubit, HomeState>(
       builder: (BuildContext context, state) {
-        if (state is CitiesLoading) {
+        if (state is HomeLoading) {
           return const Center(child: CircularProgressIndicator());
         }
 
-        if (state is CitiesError) {
+        if (state is HomeError) {
           return Center(child: Text("حدث خطأ: ${state.message}"));
         }
 
-        if (state is HotelsLoaded) {
-          if (state.hotels.isEmpty) {
+        if (state is HomeLoaded) {
+          if (state.selectedHotels.isEmpty) {
             return const Center(child: Text("لا توجد فنادق لهذه المدينة"));
           }
 
           return ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: state.hotels.length,
+            itemCount: state.selectedHotels.length,
             itemBuilder: (context, index) {
-              return CustomRatingListviewItem(hotelModel: state.hotels[index]);
+              return CustomRatingListviewItem(
+                hotelModel: state.selectedHotels[index],
+              );
             },
           );
         }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hotel_guide/core/helpers/widget/custom_item.dart';
 import 'package:hotel_guide/core/router/routers.dart';
 import 'package:hotel_guide/features/favorite/ui/favorite_screen.dart';
 import 'package:hotel_guide/features/home/logic/cubit/home_cubit.dart';
@@ -62,6 +63,15 @@ abstract class AppRouter {
         },
       ),
       GoRoute(
+        path: routes.customItem,
+        builder: (BuildContext context, GoRouterState state) {
+          return CustomItem(
+            hotelModel: state.extra as HotelModel,
+            isContinar: false,
+          );
+        },
+      ),
+      GoRoute(
         path: routes.searchScreen,
         builder: (BuildContext context, GoRouterState state) =>
             MultiBlocProvider(
@@ -95,42 +105,40 @@ abstract class AppRouter {
             child: const MenuScreen(),
             transitionDuration: const Duration(milliseconds: 1000),
             reverseTransitionDuration: const Duration(milliseconds: 1000),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+                  final curvedAnimation = CurvedAnimation(
+                    parent: animation,
+                    curve: Curves.easeOutBack,
+                    reverseCurve: Curves.easeInBack,
+                  );
+                  final slide = Tween<Offset>(
+                    begin: const Offset(-1.0, 0.0),
+                    end: Offset.zero,
+                  ).animate(curvedAnimation);
 
-              final curvedAnimation = CurvedAnimation(
-                parent: animation,
-                curve: Curves.easeOutBack,
-                reverseCurve: Curves.easeInBack,
-              );
-              final slide = Tween<Offset>(
-                begin: const Offset(-1.0, 0.0),
-                end: Offset.zero,
-              ).animate(curvedAnimation);
+                  final scale = Tween<double>(
+                    begin: 0.88,
+                    end: 1.0,
+                  ).animate(curvedAnimation);
+                  final opacity = Tween<double>(
+                    begin: 0.0,
+                    end: 1.0,
+                  ).animate(curvedAnimation);
 
-              final scale = Tween<double>(
-                begin: 0.88,
-                end: 1.0,
-              ).animate(curvedAnimation);
-              final opacity = Tween<double>(
-                begin: 0.0,
-                end: 1.0,
-              ).animate(curvedAnimation);
-
-              return FadeTransition(
-                opacity: opacity,
-                child: ScaleTransition(
-                  scale: scale,
-                  alignment: Alignment.centerLeft,
-                  child: SlideTransition(
-                    position: slide,
-                    child: child,
-                  ),
-                ),
-              );
-            },
+                  return FadeTransition(
+                    opacity: opacity,
+                    child: ScaleTransition(
+                      scale: scale,
+                      alignment: Alignment.centerLeft,
+                      child: SlideTransition(position: slide, child: child),
+                    ),
+                  );
+                },
           );
         },
-      ),   StatefulShellRoute.indexedStack(
+      ),
+      StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
           return MainAppShell(navigationShell: navigationShell);
         },
