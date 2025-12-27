@@ -61,9 +61,16 @@ abstract class AppRouter {
       GoRoute(
         path: routes.customDetailsScreen,
         builder: (BuildContext context, GoRouterState state) {
-          return CustomDetailsScreen(hotelModel: state.extra as HotelModel);
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider.value(value: getIt<FavoriteCubit>()),
+              BlocProvider(create: (context) => getIt<HomeCubit>()),
+            ],
+            child: CustomDetailsScreen(hotelModel: state.extra as HotelModel),
+          );
         },
-      ),      GoRoute(
+      ),
+      GoRoute(
         path: routes.cityHotelsScreen,
         builder: (context, state) {
           final city = state.extra as CityModel;
@@ -87,9 +94,7 @@ abstract class AppRouter {
         builder: (BuildContext context, GoRouterState state) =>
             MultiBlocProvider(
               providers: [
-                BlocProvider.value(
-                  value: getIt<FavoriteCubit>(),
-                ),
+                BlocProvider.value(value: getIt<FavoriteCubit>()),
                 BlocProvider<SearchCubit>(
                   create: (_) => getIt<SearchCubit>()..loadHotels(),
                 ),
@@ -179,8 +184,10 @@ abstract class AppRouter {
             routes: [
               GoRoute(
                 path: routes.favoritesScreen,
-                builder: (context, state) => BlocProvider.value( // تغيير هنا
-                  value: getIt<FavoriteCubit>(), // نستخدم النسخة المسجلة في getIt
+                builder: (context, state) => BlocProvider.value(
+                  // تغيير هنا
+                  value:
+                      getIt<FavoriteCubit>(), // نستخدم النسخة المسجلة في getIt
                   child: const FavoriteScreen(),
                 ),
               ),

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hotel_guide/core/theme/app_theme.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
+import 'package:hotel_guide/features/home/ui/widget/custom_rating_listview.dart';
 import 'package:hotel_guide/features/home/ui/widget/details/accommodation_tile.dart';
 import 'package:hotel_guide/features/home/ui/widget/details/custom_app_bar_details.dart';
 import 'package:hotel_guide/features/home/ui/widget/details/custom_list_view_imageall.dart';
@@ -12,11 +14,24 @@ import 'package:hotel_guide/features/home/ui/widget/details/divider.dart';
 import 'package:hotel_guide/features/home/ui/widget/details/rating_screen.dart';
 import 'package:hotel_guide/features/home/ui/widget/details/show_hotel_description.dart';
 
+import '../../../core/helpers/widget/custom_item.dart';
 import '../../../core/network/hotel_model.dart';
+import '../logic/cubit/home_cubit.dart';
 
-class CustomDetailsScreen extends StatelessWidget {
+class CustomDetailsScreen extends StatefulWidget {
   const CustomDetailsScreen({super.key, required this.hotelModel});
   final HotelModel hotelModel;
+
+  @override
+  State<CustomDetailsScreen> createState() => _CustomDetailsScreenState();
+}
+
+class _CustomDetailsScreenState extends State<CustomDetailsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<HomeCubit>().fetchInitialData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,13 +41,13 @@ class CustomDetailsScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              CustomAppBarDetails(title: hotelModel.name),
+              CustomAppBarDetails(title: widget.hotelModel.name),
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(20),
                   child: Image.network(
-                    hotelModel.imageUrl,
+                    widget.hotelModel.imageUrl,
                     width: double.infinity,
                     height: 230,
                     fit: BoxFit.cover,
@@ -43,19 +58,19 @@ class CustomDetailsScreen extends StatelessWidget {
               SizedBox(height: 20.h),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.w),
-                child: CustomNameDetails(name: hotelModel.name),
+                child: CustomNameDetails(name: widget.hotelModel.name),
               ),
 
               AccommodationCard(
-                address: hotelModel.location,
-                price: hotelModel.price,
+                address: widget.hotelModel.location,
+                price: widget.hotelModel.price,
               ),
               SizedBox(height: 16),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
 
                 child: Text(
-                  hotelModel.description,
+                  widget.hotelModel.description,
                   maxLines: 9,
                   textDirection: TextDirection.rtl,
                   overflow: TextOverflow.ellipsis,
@@ -72,8 +87,8 @@ class CustomDetailsScreen extends StatelessWidget {
                   child: GestureDetector(
                     onTap: () => showHotelDescription(
                       context,
-                      hotelModel.description,
-                      hotelModel.name,
+                      widget.hotelModel.description,
+                      widget.hotelModel.name,
                     ),
                     child: Text(
                       "شاهد المزيد ",
@@ -94,27 +109,24 @@ class CustomDetailsScreen extends StatelessWidget {
                 child: Center(child: RatingScreen()),
               ),
 
-              Row(
-                children: [
+              SizedBox(height: 12.h),
 
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+              Center(
                 child: Text(
-                  "صور الفندق",
-                  style: TextStyle(
-                    color: AppColors.black7,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Cairo',
-                    fontSize: 16,
+                  "فنادق مشابهة",
+                  style: textStyle22BoldPrimary.copyWith(
+                    color: AppColors.primary,
                   ),
                 ),
               ),
-              //
-              SizedBox(height: 12),
-              CustomListViewImageAll(hotelModel: hotelModel),
-              SizedBox(height: 16),
+              SizedBox(height: 20.h),
+
+              SizedBox(
+                height: 300.h,
+                width: double.infinity,
+                child: CustomSimilarHotelsListview(cityId: 1),
+              ),
+              SizedBox(height: 40.h),
             ],
           ),
         ),

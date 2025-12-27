@@ -1,79 +1,98 @@
 import 'package:flutter/material.dart';
-import 'package:hotel_guide/core/network/hotel_model.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hotel_guide/core/helpers/widget/custom_item.dart';
+import 'package:hotel_guide/features/home/logic/cubit/home_cubit.dart';
+import '../../../logic/cubit/home_state.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class CustomListViewImageAll extends StatelessWidget {
-  const CustomListViewImageAll({super.key, required this.hotelModel});
+class CustomSimilarHotelsListview extends StatefulWidget {
+  final int cityId;
+  const CustomSimilarHotelsListview({super.key, required this.cityId});
 
-  final HotelModel hotelModel;
+  @override
+  State<CustomSimilarHotelsListview> createState() =>
+      _CustomSimilarHotelsListviewState();
+}
 
-  final List<String> defaultImages = const [
-    'assets/images/Offers.jpg',
-    'assets/images/Offers.jpg',
-    'assets/images/Offers.jpg',
-    'assets/images/Offers.jpg',
+class _CustomSimilarHotelsListviewState
+    extends State<CustomSimilarHotelsListview> {
+  final PageController _pageController = PageController(viewportFraction: 0.85);
+  int _currentPage = 0;
 
-  ];
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final List<String> imageUrls = hotelModel.imageUrlAll
-        .split(';')
-        .map((url) => url.trim())
-        .where((url) => url.isNotEmpty && url.startsWith('http'))
-        .toList();
-
-    final List<String> finalImages =
-    imageUrls.isNotEmpty ? imageUrls : defaultImages;
-
-    return SizedBox(
-      height: 160,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        reverse: true,
-        itemCount: finalImages.length,
-        itemBuilder: (context, index) {
-          final imageUrl = finalImages[index];
-
-          // نعرض صورة الشبكة لو موجودة، وإلا الصورة الافتراضية
-          return Padding(
-            padding: const EdgeInsets.only(right: 16.0),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: imageUrl.startsWith('http')
-                  ? Image.network(
-                imageUrl,
-                width: 200,
-                height: 160,
-                fit: BoxFit.cover,
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return Container(
-                    width: 200,
-                    height: 160,
-                    color: Colors.grey.shade300,
-                    child: const Center(
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    ),
-                  );
-                },
-                errorBuilder: (context, error, stackTrace) {
-                  return Image.asset(
-                    defaultImages[index % defaultImages.length],
-                    width: 200,
-                    height: 160,
-                    fit: BoxFit.cover,
-                  );
-                },
+    return BlocBuilder<HomeCubit, HomeState>(
+      builder: (BuildContext context, state) {
+        if (state is HomeLoaded) {
+          final specificCityHotels = state.cities
+              .firstWhere(
+                (city) => city.id == widget.cityId,
+                orElse: () => state.cities[0],
               )
-                  : Image.asset(
-                imageUrl,
-                width: 200,
-                height: 160,
-                fit: BoxFit.cover,
+              .hotels;
+
+          if (specificCityHotels.isEmpty) return const SizedBox.shrink();
+
+          return Column(
+            children: [
+              SizedBox(
+                height: 250.h,
+                width: double.infinity,
+                child: PageView.builder(
+                  controller: _pageController,
+                  itemCount: specificCityHotels.length,
+                  reverse: true,
+                  physics: const BouncingScrollPhysics(),
+                  onPageChanged: (int page) {
+                    setState(() {
+                      _currentPage = page;
+                    });
+                  },
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8.w),
+                      child: CustomItem(
+                        hotelModel: specificCityHotels[index],
+                        isContinar: false,
+                      ),
+                    );
+                  },
+                ),
               ),
-            ),
+              SizedBox(height: 12.h),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(
+                  specificCityHotels.length,
+                  (index) => buildDot(index),
+                ).reversed.toList(),
+              ),
+            ],
           );
-        },
+        }
+        return const SizedBox.shrink();
+      },
+    );
+  }
+
+  Widget buildDot(int index) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
+      margin: EdgeInsets.symmetric(horizontal: 4.w),
+      height: 8.h,
+      width: _currentPage == index ? 22.w : 8.w,
+      decoration: BoxDecoration(
+        color: _currentPage == index
+            ? const Color(0xFF2D2D44)
+            : Colors.grey.shade400,
+        borderRadius: BorderRadius.circular(5),
       ),
     );
   }
