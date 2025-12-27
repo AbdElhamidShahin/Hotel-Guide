@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hotel_guide/core/theme/app_theme.dart';
 import '../../../../core/theme/colors.dart';
 
 class CustomButton extends StatelessWidget {
@@ -20,7 +21,7 @@ class CustomButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: onTap,
       style: ElevatedButton.styleFrom(
-        minimumSize:  Size(260, 60),
+        minimumSize:  Size(260, 70),
 
         backgroundColor: color,
         elevation: 0,
@@ -33,12 +34,7 @@ class CustomButton extends StatelessWidget {
       child: Text(
         text ?? '',
         textAlign: TextAlign.center,
-        style: TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.w600,
-          color: AppColors.black4,
-          fontFamily: 'Cairo',
-        ),
+        style: textStyle18BoldGray.copyWith(color: AppColors.white)
       ),
     );
   }

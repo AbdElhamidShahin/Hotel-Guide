@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hotel_guide/core/helpers/widget/custom_item.dart';
+import 'package:hotel_guide/core/network/city_model.dart';
 import 'package:hotel_guide/core/router/routers.dart';
 import 'package:hotel_guide/features/favorite/ui/favorite_screen.dart';
 import 'package:hotel_guide/features/home/logic/cubit/home_cubit.dart';
@@ -12,6 +14,7 @@ import '../../AuthWrapper.dart';
 import '../../features/favorite/logic/cubit/favorite_cubit.dart';
 import '../../features/home/ui/custom_details_screen.dart';
 import '../../features/home/ui/home_screen.dart';
+import '../../features/home/ui/widget/home/city_hotels_screen.dart';
 import '../../features/login/logic/cubit/login_cubit.dart';
 import '../../features/login/ui/login_screen.dart';
 import '../../features/notification/ui/notification_screen.dart';
@@ -58,7 +61,32 @@ abstract class AppRouter {
       GoRoute(
         path: routes.customDetailsScreen,
         builder: (BuildContext context, GoRouterState state) {
-          return CustomDetailsScreen(hotelModel: state.extra as HotelModel);
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider.value(value: getIt<FavoriteCubit>()),
+              BlocProvider(create: (context) => getIt<HomeCubit>()),
+            ],
+            child: CustomDetailsScreen(hotelModel: state.extra as HotelModel),
+          );
+        },
+      ),
+      GoRoute(
+        path: routes.cityHotelsScreen,
+        builder: (context, state) {
+          final city = state.extra as CityModel;
+          return BlocProvider.value(
+            value: getIt<FavoriteCubit>(),
+            child: CityHotelsScreen(city: city),
+          );
+        },
+      ),
+      GoRoute(
+        path: routes.customItem,
+        builder: (BuildContext context, GoRouterState state) {
+          return CustomItem(
+            hotelModel: state.extra as HotelModel,
+            isContinar: false,
+          );
         },
       ),
       GoRoute(
@@ -66,12 +94,7 @@ abstract class AppRouter {
         builder: (BuildContext context, GoRouterState state) =>
             MultiBlocProvider(
               providers: [
-                BlocProvider<FavoriteCubit>(
-                  create: (_) =>
-                      getIt<
-                        FavoriteCubit
-                      >(), // أو FavoriteCubit() لو مش مستخدم getIt
-                ),
+                BlocProvider.value(value: getIt<FavoriteCubit>()),
                 BlocProvider<SearchCubit>(
                   create: (_) => getIt<SearchCubit>()..loadHotels(),
                 ),
@@ -95,42 +118,40 @@ abstract class AppRouter {
             child: const MenuScreen(),
             transitionDuration: const Duration(milliseconds: 1000),
             reverseTransitionDuration: const Duration(milliseconds: 1000),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+                  final curvedAnimation = CurvedAnimation(
+                    parent: animation,
+                    curve: Curves.easeOutBack,
+                    reverseCurve: Curves.easeInBack,
+                  );
+                  final slide = Tween<Offset>(
+                    begin: const Offset(-1.0, 0.0),
+                    end: Offset.zero,
+                  ).animate(curvedAnimation);
 
-              final curvedAnimation = CurvedAnimation(
-                parent: animation,
-                curve: Curves.easeOutBack,
-                reverseCurve: Curves.easeInBack,
-              );
-              final slide = Tween<Offset>(
-                begin: const Offset(-1.0, 0.0),
-                end: Offset.zero,
-              ).animate(curvedAnimation);
+                  final scale = Tween<double>(
+                    begin: 0.88,
+                    end: 1.0,
+                  ).animate(curvedAnimation);
+                  final opacity = Tween<double>(
+                    begin: 0.0,
+                    end: 1.0,
+                  ).animate(curvedAnimation);
 
-              final scale = Tween<double>(
-                begin: 0.88,
-                end: 1.0,
-              ).animate(curvedAnimation);
-              final opacity = Tween<double>(
-                begin: 0.0,
-                end: 1.0,
-              ).animate(curvedAnimation);
-
-              return FadeTransition(
-                opacity: opacity,
-                child: ScaleTransition(
-                  scale: scale,
-                  alignment: Alignment.centerLeft,
-                  child: SlideTransition(
-                    position: slide,
-                    child: child,
-                  ),
-                ),
-              );
-            },
+                  return FadeTransition(
+                    opacity: opacity,
+                    child: ScaleTransition(
+                      scale: scale,
+                      alignment: Alignment.centerLeft,
+                      child: SlideTransition(position: slide, child: child),
+                    ),
+                  );
+                },
           );
         },
-      ),   StatefulShellRoute.indexedStack(
+      ),
+      StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
           return MainAppShell(navigationShell: navigationShell);
         },
@@ -159,13 +180,14 @@ abstract class AppRouter {
               ),
             ],
           ),
-
           StatefulShellBranch(
             routes: [
               GoRoute(
                 path: routes.favoritesScreen,
-                builder: (context, state) => BlocProvider(
-                  create: (context) => getIt<FavoriteCubit>(),
+                builder: (context, state) => BlocProvider.value(
+                  // تغيير هنا
+                  value:
+                      getIt<FavoriteCubit>(), // نستخدم النسخة المسجلة في getIt
                   child: const FavoriteScreen(),
                 ),
               ),

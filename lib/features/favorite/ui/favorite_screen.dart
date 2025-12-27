@@ -3,7 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart'; // لإمكانية العودة بالـ goRouter
 import 'package:hotel_guide/core/router/routers.dart';
 
+import '../../../core/helpers/contact/build_error_widget.dart';
 import '../../../core/helpers/contact/build_favorite_notfound.dart';
+import '../../../core/helpers/widget/custom_appbar_widget.dart';
+import '../../../core/network/hotel_model.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/colors.dart'; // نفترض وجود AppColors
 import '../logic/cubit/favorite_cubit.dart';
@@ -16,25 +19,8 @@ class FavoriteScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        centerTitle: true,
-        title: Text(
-          'المفضلة',
-          style: textStyle18BoldGray.copyWith(
-            fontWeight: FontWeight.w600,
-            color: AppColors.black6,
-          ),
-        ),
+      appBar: CustomAppbarWidget(name: "المفضله"),
 
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.arrow_forward, color: Colors.black),
-            onPressed: () {},
-          ),
-        ],
-      ),
       body: BlocBuilder<FavoriteCubit, FavoriteState>(
         builder: (context, state) {
           if (state is FavoriteLoading) {
@@ -42,18 +28,22 @@ class FavoriteScreen extends StatelessWidget {
           }
 
           if (state is FavoriteError) {
-            return Center(child: Text(state.message));
+            return buildNoConnectionWidget(
+              onRetry: () {
+                context.read<FavoriteCubit>().loadFavorites();
+              },
+            );
           }
 
-          final favoriteItems = state is FavoriteUpdated ? state.favorites : [];
-
+          final List<HotelModel> favoriteItems = (state is FavoriteUpdated)
+              ? state.favorites
+              : [];
           if (favoriteItems.isEmpty) {
-            return buildFavoriteNotFoundWidget(onRetry: (){
-
-
-              context.go(routes.homeScreen);
-
-            });
+            return buildFavoriteNotFoundWidget(
+              onRetry: () {
+                context.go(routes.homeScreen);
+              },
+            );
           }
 
           return RefreshIndicator(
