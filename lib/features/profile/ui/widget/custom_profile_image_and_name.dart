@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hotel_guide/core/router/routers.dart';
+import 'package:hotel_guide/core/theme/colors.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../../core/helpers/local_storage_account.dart';
@@ -134,24 +135,24 @@ class _CustomProfileImageAndNameState extends State<CustomProfileImageAndName> {
 
               if (widget.showAddIcon)
                 Positioned(
-                  bottom: 5,
-                  right: 5,
+                  bottom: 2,
+                  right: 2,
                   child: GestureDetector(
                     onTap: _pickImage,
                     child: Container(
-                      height: 42,
-                      width: 42,
+                      height: 50,
+                      width: 50,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFFFBD59),
+                        color:AppColors.primary,
                         shape: BoxShape.circle,
                         border: Border.all(
-                          color: const Color(0xFF222222),
+                          color:  Colors.white,
                           width: 3,
                         ),
                       ),
                       child: const Icon(
                         Icons.add,
-                        color: Colors.black,
+                        color: Colors.white,
                         size: 26,
                       ),
                     ),

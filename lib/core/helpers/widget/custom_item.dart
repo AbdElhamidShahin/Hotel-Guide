@@ -31,7 +31,7 @@ class CustomItem extends StatelessWidget {
 
         return Container(
           height: 250.h,
-          margin: EdgeInsets.only(bottom: 8.h, left: 16.w, right: 16.w),
+          margin: EdgeInsets.only(bottom: 8.h, left: 8.w, right: 8.w),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(12.r),
@@ -113,8 +113,9 @@ class CustomItem extends StatelessWidget {
                       children: [
                         Text(
                           hotelModel.name.toUpperCase(),
-                          maxLines: 2,
+                          maxLines: 1,
                           overflow: TextOverflow.ellipsis,
+                          textDirection: TextDirection.rtl,
                           textAlign: TextAlign.right,
                           style: textStyle16BoldWhite.copyWith(
                             color: AppColors.ShadowPurple,
@@ -132,6 +133,8 @@ class CustomItem extends StatelessWidget {
                         ),
                         SizedBox(height: 8.h),
                         Text(
+                          maxLines: 2,
+
                           textDirection: TextDirection.rtl,
                           "يبدأ من ${hotelModel.price} EGP /\nاليوم",
                           style: textStyle16BoldWhite.copyWith(
@@ -140,35 +143,40 @@ class CustomItem extends StatelessWidget {
                         ),
 
                         SizedBox(height: 8.h),
-                        Container(
-                          height: 45.h,
-                          width: double.infinity,
-                          padding: EdgeInsets.symmetric(horizontal: 16.w),
-                          decoration: BoxDecoration(
-                            color: AppColors.primary,
-                            borderRadius: BorderRadius.circular(30.r),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
-                            textDirection: TextDirection.rtl,
-                            children: [
-                              Text(
-                                "إحجز الآن",
-                                style: textStyle16BoldWhite.copyWith(
-                                  fontSize: 16.sp,
-                                  fontFamily: 'Cairo',
-                                ),
-                              ),
+                        GestureDetector(onTap: () {
+                          context.go(routes.customDetailsScreen,extra: hotelModel);
 
-                              SizedBox(width: 24.w),
-                              SvgPicture.asset(
-                                "assets/icons/send.svg",
-                                height: 24.h,
-                                width: 24.w,
-                                color: Colors.white,
-                              ),
-                            ],
+                        },
+                          child: Container(
+                            height: 45.h,
+                            width: double.infinity,
+                            padding: EdgeInsets.symmetric(horizontal: 16.w),
+                            decoration: BoxDecoration(
+                              color: AppColors.primary,
+                              borderRadius: BorderRadius.circular(30.r),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              textDirection: TextDirection.rtl,
+                              children: [
+                                Text(
+                                  "إحجز الآن",
+                                  style: textStyle16BoldWhite.copyWith(
+                                    fontSize: 16.sp,
+                                    fontFamily: 'Cairo',
+                                  ),
+                                ),
+
+                                SizedBox(width: 24.w),
+                                SvgPicture.asset(
+                                  "assets/icons/send.svg",
+                                  height: 24.h,
+                                  width: 24.w,
+                                  color: Colors.white,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ],
