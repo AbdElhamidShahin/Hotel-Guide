@@ -11,10 +11,10 @@ void main() async {
   await ScreenUtil.ensureScreenSize();
   await Supabase.initialize(
     url: 'https://oavjmvbwyrkixfnlzmcg.supabase.co',
-    anonKey: '***REMOVED***',
+    anonKey:
+        '***REMOVED***',
   );
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(HotelApp());
 }
-
