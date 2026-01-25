@@ -5,7 +5,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'core/di/injection.dart';
 import 'firebase_options.dart';
 import 'hotel_app.dart';
-
+import 'package:intl/date_symbol_data_local.dart'; // مهم جداً
 void main() async {
   setupGetIt();
   await ScreenUtil.ensureScreenSize();
@@ -15,6 +15,7 @@ void main() async {
         '***REMOVED***',
   );
   WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting('ar_SA', null);
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(HotelApp());
 }
