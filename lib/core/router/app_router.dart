@@ -21,6 +21,8 @@ import '../../features/notification/ui/notification_screen.dart';
 import '../../features/on_boarding/ui/on_boarding_screen.dart';
 import '../../features/profile/ui/edit_account_screen.dart';
 import '../../features/profile/ui/profile_screen.dart';
+import '../../features/room/ui/custom_room.dart';
+import '../../features/room/ui/rooms_screen_list-view.dart';
 import '../../features/sign_up/ui/sign_up_screen.dart';
 
 import '../../main_app_shell.dart';
@@ -108,6 +110,17 @@ abstract class AppRouter {
         builder: (BuildContext context, GoRouterState state) {
           final data = state.extra as Map<String, dynamic>?;
           return EditAccountScreen(name: data?['name'] ?? '');
+        },
+      ),
+      GoRoute(
+        path: routes.RoomsScreenListView,
+        builder: (BuildContext context, GoRouterState state) {
+          return RoomsScreenListView();
+        },
+      ),      GoRoute(
+        path: routes.CustomRoom,
+        builder: (BuildContext context, GoRouterState state) {
+          return CustomRoom();
         },
       ),
       GoRoute(
