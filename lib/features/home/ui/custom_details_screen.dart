@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:hotel_guide/core/theme/app_theme.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
 import 'package:hotel_guide/features/home/ui/widget/custom_rating_listview.dart';
 import 'package:hotel_guide/features/home/ui/widget/details/accommodation_tile.dart';
 import 'package:hotel_guide/features/home/ui/widget/details/custom_app_bar_details.dart';
 import 'package:hotel_guide/features/home/ui/widget/details/custom_list_view_imageall.dart';
+import 'package:hotel_guide/features/home/ui/widget/details/custom_rooms_and_location_details_screen.dart';
 import 'package:hotel_guide/features/home/ui/widget/details/custom_service_details.dart';
 import 'package:hotel_guide/features/home/ui/widget/details/custom_service_details_list_view.dart';
 import 'package:hotel_guide/features/home/ui/widget/details/custom_name_details.dart';
@@ -110,7 +112,8 @@ class _CustomDetailsScreenState extends State<CustomDetailsScreen> {
               ),
 
               SizedBox(height: 12.h),
-
+              CustomRoomsAndLocationDetailsScreen(),
+              SizedBox(height: 150.h),
               Center(
                 child: Text(
                   "فنادق مشابهة",
@@ -119,7 +122,7 @@ class _CustomDetailsScreenState extends State<CustomDetailsScreen> {
                   ),
                 ),
               ),
-              SizedBox(height: 20.h),
+              SizedBox(height: 50.h),
 
               SizedBox(
                 height: 300.h,
