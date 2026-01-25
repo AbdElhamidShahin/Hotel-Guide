@@ -16,4 +16,5 @@ class routes {
   static const String cityHotelsScreen = "/cityHotelsScreen";
   static const String RoomsScreenListView = "/RoomsScreenListView";
   static const String CustomRoom = "/CustomRoom";
+  static const String BookingDetailsPage = "/BookingDetailsPage";
 }
