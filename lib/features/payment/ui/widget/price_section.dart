@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hotel_guide/core/theme/app_theme.dart';
+import 'package:hotel_guide/core/theme/colors.dart';
 
 class PriceSection extends StatelessWidget {
   final int days;
@@ -21,9 +24,16 @@ class PriceSection extends StatelessWidget {
     return Column(
       children: [
         _row("المدة : $days أيام", subTotal),
+        SizedBox(height: 12.h),
         _row("ضرائب", taxes),
+        SizedBox(height: 12.h),
+
         _row("خدمات", services),
+        SizedBox(height: 12.h),
+
         const Divider(),
+        SizedBox(height: 12.h),
+
         _row("الإجمالي", total, isTotal: true),
       ],
     );
@@ -33,12 +43,21 @@ class PriceSection extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(title,
-            style: TextStyle(
-              fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
-            )),
-        Text("${value.toInt()} EGP",
-            style: const TextStyle(fontWeight: FontWeight.bold)),
+        Text(
+          title,
+          style: isTotal
+              ? textStyle20RegularPrimary.copyWith(
+                  color: AppColors.black6,
+                  fontWeight: FontWeight.w600,
+                )
+              : textStyle18RegularShadowPurple.copyWith(
+                  color: AppColors.Grayscale,
+                ),
+        ),
+        Text(
+          "${value.toInt()} EGP",
+          style: textStyle20BoldShadowPurple.copyWith(color: AppColors.black6),
+        ),
       ],
     );
   }
