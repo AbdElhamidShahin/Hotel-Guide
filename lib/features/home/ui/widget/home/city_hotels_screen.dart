@@ -10,7 +10,7 @@ class CityHotelsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppbarWidget(name: city.name),
+      appBar: CustomAppbarWidget(name: city.name, onTap: () {}),
       body: city.hotels.isEmpty
           ? const Center(child: Text("لا توجد فنادق في هذه المدينة"))
           : ListView.builder(

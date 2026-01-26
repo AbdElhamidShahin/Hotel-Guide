@@ -7,8 +7,10 @@ import '../../theme/colors.dart';
 
 class CustomAppbarWidget extends StatelessWidget
     implements PreferredSizeWidget {
-  const CustomAppbarWidget({super.key, required this.name});
+  const CustomAppbarWidget({super.key, required this.name, required this.onTap});
   final String name;
+  final VoidCallback onTap;
+
 
   @override
   Widget build(BuildContext context) {
@@ -40,9 +42,7 @@ class CustomAppbarWidget extends StatelessWidget
                   color: Colors.black,
                   size: 28.sp,
                 ),
-                onPressed: () {
-                  context.go(routes.homeScreen);
-                },
+                onPressed: onTap
               ),
             ),
           ],

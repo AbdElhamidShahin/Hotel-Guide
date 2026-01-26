@@ -35,7 +35,7 @@ class RoomDetailsPage extends StatelessWidget {
     ];
 
     return Scaffold(
-      appBar: CustomAppbarWidget(name: "الغرفة"),
+      appBar: CustomAppbarWidget(name: "الغرفة",  onTap: (){},),
 
       backgroundColor: Colors.white,
       body: SafeArea(
