@@ -32,7 +32,7 @@ import '../network/hotel_model.dart';
 
 abstract class AppRouter {
   static final router = GoRouter(
-    initialLocation: routes.homeScreen,
+    initialLocation: routes.BookingDetailsPage,
     routes: [
       GoRoute(
         path: routes.authWrapper,
