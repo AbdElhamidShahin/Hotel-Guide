@@ -1,6 +1,8 @@
 import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hotel_guide/core/theme/app_theme.dart';
+import 'package:hotel_guide/core/theme/colors.dart';
 
 class CounterRow extends StatelessWidget {
   final String title;
@@ -23,30 +25,51 @@ class CounterRow extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(title, style: TextStyle(fontSize: 16.sp)),
+          Text(
+            title,
+            style: textStyle22BoldPrimary.copyWith(
+              color: AppColors.ShadowPurple,
+            ),
+          ),
           Row(
             children: [
-              _circleBtn(Icons.remove, onRemove),
+              _circleBtn(Icons.add, onAdd, AppColors.primary, AppColors.white),
+
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 15.w),
-                child: Text('$value',
-                    style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold)),
+                child: Text(
+                  '$value',
+                  style: TextStyle(
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
-              _circleBtn(Icons.add, onAdd),
+              _circleBtn(
+                Icons.remove,
+                onRemove,
+                AppColors.primary.withOpacity(0.1),
+                AppColors.primary,
+              ),
             ],
-          )
+          ),
         ],
       ),
     );
   }
 
-  Widget _circleBtn(IconData icon, VoidCallback onTap) {
+  Widget _circleBtn(
+    IconData icon,
+    VoidCallback onTap,
+    Color color,
+    Color colorIcon,
+  ) {
     return GestureDetector(
       onTap: onTap,
       child: CircleAvatar(
-        radius: 16,
-        backgroundColor: const Color(0xFF2D2D3F),
-        child: Icon(icon, size: 18, color: Colors.white),
+        radius: 20,
+        backgroundColor: color,
+        child: Icon(icon, size: 24, color: colorIcon),
       ),
     );
   }

@@ -20,6 +20,7 @@ class BookingCalendar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: AppColors.calenderColor,
         borderRadius: BorderRadius.circular(8.r),
@@ -39,12 +40,12 @@ class BookingCalendar extends StatelessWidget {
         onRangeSelected: onSelect,
         calendarStyle: CalendarStyle(
           rangeStartDecoration: BoxDecoration(
-            color: AppColors.ShadowPurple,
+            color: AppColors.primary,
             shape: BoxShape.circle,
           ),
-          rangeHighlightColor: AppColors.ShadowPurple.withOpacity(0.5),
-          rangeEndDecoration: const BoxDecoration(
-            color: AppColors.ShadowPurple,
+          rangeHighlightColor: Colors.transparent,
+          rangeEndDecoration: BoxDecoration(
+            color: AppColors.primary,
             shape: BoxShape.circle,
           ),
           todayTextStyle: const TextStyle(color: Colors.black),
