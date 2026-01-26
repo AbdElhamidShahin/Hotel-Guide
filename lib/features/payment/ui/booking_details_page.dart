@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
 import 'package:hotel_guide/features/payment/ui/widget/booking_calendar.dart';
 import 'package:hotel_guide/features/payment/ui/widget/booking_card.dart';
@@ -124,7 +125,14 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                 title: "المحفظة الإلكترونية",
                 selected: selectedPayment == 'wallet',
                 onTap: () => setState(() => selectedPayment = 'wallet'),
-                trailing: const Icon(Icons.account_balance_wallet_outlined),
+                trailing: Container(
+                  padding: EdgeInsets.all(12.r),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30.r),
+                    color: AppColors.ShadowPurple.withOpacity(0.1),
+                  ),
+                  child: SvgPicture.asset("assets/icons/empty-wallet.svg"),
+                ),
               ),
 
               SizedBox(height: 12.h),
@@ -134,15 +142,15 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                 selected: selectedPayment == 'card',
                 onTap: () => setState(() => selectedPayment = 'card'),
                 trailing: Row(
-                  children: const [
-                    Icon(Icons.credit_card, color: Colors.blue),
-                    SizedBox(width: 6),
-                    Icon(Icons.payment, color: Colors.orange),
+                  children: [
+                    SvgPicture.asset("assets/icons/MasterCard.svg"),
+                    SizedBox(width: 8.w,),
+                    SvgPicture.asset("assets/icons/Visa.svg"),
                   ],
                 ),
               ),
 
-              SizedBox(height: 40.h),
+              SizedBox(height: 80.h),
             ],
           ),
         ),
