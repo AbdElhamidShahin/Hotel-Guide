@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
 import 'package:hotel_guide/features/payment/ui/widget/booking_calendar.dart';
 import 'package:hotel_guide/features/payment/ui/widget/booking_card.dart';
 import 'package:hotel_guide/features/payment/ui/widget/counter_row.dart';
+import 'package:hotel_guide/features/payment/ui/widget/custom_wallet_item.dart';
 import 'package:hotel_guide/features/payment/ui/widget/payment_summary_section.dart';
 import 'package:hotel_guide/features/payment/ui/widget/price_section.dart';
+import 'package:hotel_guide/features/payment/ui/widget/show_all_card_bottom_sheet.dart';
+import 'package:hotel_guide/features/payment/ui/widget/show_all_wallet_bottom_sheet.dart';
 import '../../../core/helpers/widget/custom_appbar_widget.dart';
+import '../../../core/router/routers.dart';
 import '../../../core/theme/app_theme.dart';
 
 class BookingDetailsPage extends StatefulWidget {
@@ -30,7 +35,7 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
 
   // Payment
   String selectedPayment = 'wallet';
-
+  bool selected = true;
   // Calendar
   DateTime focusedDay = DateTime.now();
   DateTime? rangeStart = DateTime.now();
@@ -47,7 +52,12 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppbarWidget(name: "الغرفه"),
+      appBar: CustomAppbarWidget(
+        name: "الغرفه",
+        onTap: () {
+          context.go(routes.BookingDetailsPage);
+        },
+      ),
       body: Directionality(
         textDirection: TextDirection.rtl,
         child: SingleChildScrollView(
@@ -124,7 +134,10 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
               PaymentTile(
                 title: "المحفظة الإلكترونية",
                 selected: selectedPayment == 'wallet',
-                onTap: () => setState(() => selectedPayment = 'wallet'),
+                onTap: () {
+                  setState(() => selectedPayment = 'wallet');
+                  showAllWalletBottomSheet(context);
+                },
                 trailing: Container(
                   padding: EdgeInsets.all(12.r),
                   decoration: BoxDecoration(
@@ -140,11 +153,15 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
               PaymentTile(
                 title: "البطاقة البنكية",
                 selected: selectedPayment == 'card',
-                onTap: () => setState(() => selectedPayment = 'card'),
+                onTap: () {
+                  setState(() => selectedPayment = 'card');
+                  showAllCardBottomSheet(context);
+                },
+
                 trailing: Row(
                   children: [
                     SvgPicture.asset("assets/icons/MasterCard.svg"),
-                    SizedBox(width: 8.w,),
+                    SizedBox(width: 8.w),
                     SvgPicture.asset("assets/icons/Visa.svg"),
                   ],
                 ),

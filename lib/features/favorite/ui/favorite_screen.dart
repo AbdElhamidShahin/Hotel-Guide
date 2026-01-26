@@ -19,7 +19,7 @@ class FavoriteScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppbarWidget(name: "المفضله"),
+      appBar: CustomAppbarWidget(name: "المفضله",  onTap: (){},),
 
       body: BlocBuilder<FavoriteCubit, FavoriteState>(
         builder: (context, state) {
