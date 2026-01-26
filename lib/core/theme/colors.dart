@@ -35,6 +35,7 @@ class AppColors {
   static const Color redaccent = Color(0xFFD63B3B);
   static const Color LightRed = Color(0xFFFF7D86);
   static const Color calenderColor = Color(0xFFF9F9F9);
+  static const Color Purple = Color(0xFF8A38F5);
 
 
 

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hotel_guide/core/theme/app_theme.dart';
+import 'package:hotel_guide/core/theme/colors.dart';
 
 class PaymentTile extends StatelessWidget {
   final String title;
@@ -20,27 +22,46 @@ class PaymentTile extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.all(14.w),
+        padding: EdgeInsets.all(8.w),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
+          color: Colors.white,
+
+          borderRadius: BorderRadius.circular(16.r),
           border: Border.all(
-            color: selected ? const Color(0xFF8E7CFF) : Colors.grey[300]!,
+            color: selected ? AppColors.Purple : Colors.transparent,
           ),
-        ),
-        child: Row(
-          children: [
-            Icon(
-              selected
-                  ? Icons.radio_button_checked
-                  : Icons.radio_button_off,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 1,
+              offset: const Offset(0, 6),
             ),
-            const Spacer(),
-            Text(title),
-            if (trailing != null) ...[
-              SizedBox(width: 8.w),
-              trailing!,
-            ]
           ],
+        ),
+        child: Directionality(
+          textDirection: TextDirection.ltr,
+          child: Row(
+            children: [
+              if (trailing != null) ...[SizedBox(width: 8.w),
+                trailing!],
+
+              const Spacer(),
+              Text(
+                title,
+                style: textStyle20RegularPrimary.copyWith(
+                  color: AppColors.ShadowPurple,
+                ),
+              ),
+              SizedBox(width: 12.w),
+              Icon(
+                selected
+                    ? Icons.radio_button_checked_sharp
+                    : Icons.radio_button_off,
+                size: 22.sp,
+                color: selected ? AppColors.Purple : Colors.grey,
+              ),
+            ],
+          ),
         ),
       ),
     );
