@@ -67,7 +67,7 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                 },
               ),
 
-              SizedBox(height: 25.h),
+              SizedBox(height: 60.h),
 
               CounterRow(
                 title: "عدد الغرف",
