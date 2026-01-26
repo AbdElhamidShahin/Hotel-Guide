@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hotel_guide/core/theme/colors.dart';
 import 'package:hotel_guide/features/payment/ui/widget/booking_calendar.dart';
 import 'package:hotel_guide/features/payment/ui/widget/booking_card.dart';
 import 'package:hotel_guide/features/payment/ui/widget/counter_row.dart';
 import 'package:hotel_guide/features/payment/ui/widget/payment_summary_section.dart';
 import 'package:hotel_guide/features/payment/ui/widget/price_section.dart';
 import '../../../core/helpers/widget/custom_appbar_widget.dart';
-
+import '../../../core/theme/app_theme.dart';
 
 class BookingDetailsPage extends StatefulWidget {
   const BookingDetailsPage({super.key});
@@ -34,10 +35,9 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
   DateTime? rangeStart = DateTime.now();
   DateTime? rangeEnd = DateTime.now().add(const Duration(days: 1));
 
-  int get totalDays =>
-      rangeStart != null && rangeEnd != null
-          ? rangeEnd!.difference(rangeStart!).inDays + 1
-          : 1;
+  int get totalDays => rangeStart != null && rangeEnd != null
+      ? rangeEnd!.difference(rangeStart!).inDays + 1
+      : 1;
 
   double get subTotal => pricePerNight * totalDays * rooms;
   double get totalPrice => subTotal + taxes + services;
@@ -150,11 +150,10 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
     );
   }
 
-
   Widget _sectionTitle(String title) {
     return Text(
       title,
-      style: TextStyle(fontSize: 17.sp, fontWeight: FontWeight.bold),
+      style: textStyle20BoldShadowPurple.copyWith(color: AppColors.black6),
     );
   }
 }
