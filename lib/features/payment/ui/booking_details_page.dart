@@ -109,7 +109,7 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                 total: totalPrice,
               ),
 
-              SizedBox(height: 30.h),
+              SizedBox(height: 80.h),
 
               _sectionTitle("حجوزاتي"),
               SizedBox(height: 15.h),
