@@ -1,15 +1,9 @@
-// core/helpers/contact/custom_show_snackbar.dart
 
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
 
-// ✅ يجب تعريف هذا النوع في ملف الـ SnackBar الأصلي لديك ليعمل
-// enum ContentType { success, failure, help, warning }
-// (نفترض أنه مُعرَّف في مكان آخر)
-
 void showCustomSnackbar(BuildContext context, ContentType messageType,
     String title, String message) {
-  // تحديد اللون والرمز بناءً على النوع
   Color backgroundColor;
   IconData icon;
 

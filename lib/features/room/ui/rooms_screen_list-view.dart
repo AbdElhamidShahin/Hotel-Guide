@@ -12,7 +12,8 @@ class RoomsScreenListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppbarWidget(name: "الغرف"),
+      appBar: CustomAppbarWidget(name: "الغرف",
+      onTap: (){},),
 
       body: Padding(
         padding: const EdgeInsets.all(20.0),
