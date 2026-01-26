@@ -19,7 +19,6 @@ import '../../features/login/logic/cubit/login_cubit.dart';
 import '../../features/login/ui/login_screen.dart';
 import '../../features/notification/ui/notification_screen.dart';
 import '../../features/on_boarding/ui/on_boarding_screen.dart';
-import '../../features/payment/ui/booking_details_page.dart';
 import '../../features/profile/ui/edit_account_screen.dart';
 import '../../features/profile/ui/profile_screen.dart';
 import '../../features/room/ui/custom_room.dart';
@@ -32,7 +31,7 @@ import '../network/hotel_model.dart';
 
 abstract class AppRouter {
   static final router = GoRouter(
-    initialLocation: routes.BookingDetailsPage,
+    initialLocation: routes.homeScreen,
     routes: [
       GoRoute(
         path: routes.authWrapper,
@@ -122,11 +121,6 @@ abstract class AppRouter {
         path: routes.CustomRoom,
         builder: (BuildContext context, GoRouterState state) {
           return CustomRoom();
-        },
-      ),  GoRoute(
-        path: routes.BookingDetailsPage,
-        builder: (BuildContext context, GoRouterState state) {
-          return BookingDetailsPage();
         },
       ),
       GoRoute(
