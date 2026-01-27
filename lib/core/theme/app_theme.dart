@@ -51,6 +51,11 @@ TextStyle textStyle18BoldGray = TextStyle(
   fontWeight: FontWeight.w700,
   color: AppColors.gray3,
   fontFamily: 'Cairo',
+);TextStyle textStyle36BoldWhite = TextStyle(
+  fontSize: 36.sp,
+  fontWeight: FontWeight.w700,
+  color: AppColors.white,
+  fontFamily: 'Cairo',
 );
 TextStyle textStyle12BoldBlack = TextStyle(
   fontSize: 12,
