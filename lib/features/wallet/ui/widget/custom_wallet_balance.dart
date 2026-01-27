@@ -5,7 +5,8 @@ import 'package:hotel_guide/core/theme/app_theme.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
 
 class CustomWalletBalance extends StatefulWidget {
-  CustomWalletBalance({super.key});
+  final Function(String) onTabChanged;
+  CustomWalletBalance({super.key, required this.onTabChanged});
 
   @override
   State<CustomWalletBalance> createState() => _CustomWalletBalanceState();
@@ -110,6 +111,7 @@ class _CustomWalletBalanceState extends State<CustomWalletBalance> {
                           selectedPayment == 'history',
                           () {
                             setState(() => selectedPayment = 'history');
+                            widget.onTabChanged('history');
                           },
                         ),
                         Container(
@@ -123,6 +125,7 @@ class _CustomWalletBalanceState extends State<CustomWalletBalance> {
                           selectedPayment == 'refund',
                           () {
                             setState(() => selectedPayment = 'refund');
+                            widget.onTabChanged('refund');
                           },
                         ),
                         Container(
@@ -136,6 +139,7 @@ class _CustomWalletBalanceState extends State<CustomWalletBalance> {
                           selectedPayment == 'topup',
                           () {
                             setState(() => selectedPayment = 'topup');
+                            widget.onTabChanged('topup');
                           },
                         ),
                       ],
