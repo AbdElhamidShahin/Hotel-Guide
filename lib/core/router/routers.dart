@@ -17,4 +17,5 @@ class routes {
   static const String RoomsScreenListView = "/RoomsScreenListView";
   static const String CustomRoom = "/CustomRoom";
   static const String BookingDetailsPage = "/BookingDetailsPage";
+  static const String WalletScreen = "/WalletScreen";
 }
