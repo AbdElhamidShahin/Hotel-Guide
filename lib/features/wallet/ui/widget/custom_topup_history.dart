@@ -31,7 +31,6 @@ class _CustomTopupHistoryState extends State<CustomTopupHistory> {
               color: AppColors.black7,
             ),
           ),
-          
         ),
         PaymentTile(
           title: "المحفظة الإلكترونية",
