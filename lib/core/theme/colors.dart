@@ -24,6 +24,7 @@ class AppColors {
   static const Color primary = Color(0xFF2D2B3E);
   static const Color colorText = Color(0xFF51526C);
   static const Color ShadowPurple = Color(0xFF575472);
+  static const Color PurplePrimary = Color(0xFF3E3C53);
   static const Color RoyalPurple = Color(0xFF6547D0);
   static const Color Gray = Color(0xFF6C7278);
   static const Color GrayLight = Color(0xFFE9E9E9);
@@ -36,6 +37,9 @@ class AppColors {
   static const Color LightRed = Color(0xFFFF7D86);
   static const Color calenderColor = Color(0xFFF9F9F9);
   static const Color Purple = Color(0xFF8A38F5);
+  static const Color Green = Color(0xFF26CC73);
+  static const Color AccentsOrange = Color(0xFFFF8D28);
+  static const Color AccentsPurple = Color(0xFF958FFF);
 
 
 

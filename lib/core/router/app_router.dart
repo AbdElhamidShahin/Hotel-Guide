@@ -25,6 +25,7 @@ import '../../features/room/ui/custom_room.dart';
 import '../../features/room/ui/rooms_screen_list-view.dart';
 import '../../features/sign_up/ui/sign_up_screen.dart';
 
+import '../../features/wallet/ui/wallet_screen.dart';
 import '../../main_app_shell.dart';
 import '../di/injection.dart';
 import '../network/hotel_model.dart';
@@ -117,7 +118,8 @@ abstract class AppRouter {
         builder: (BuildContext context, GoRouterState state) {
           return RoomsScreenListView();
         },
-      ),      GoRoute(
+      ),
+      GoRoute(
         path: routes.CustomRoom,
         builder: (BuildContext context, GoRouterState state) {
           return CustomRoom();
@@ -188,8 +190,8 @@ abstract class AppRouter {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: routes.notification,
-                builder: (context, state) => NotificationScreenListView(),
+                path: routes.WalletScreen,
+                builder: (context, state) => WalletScreen(),
               ),
             ],
           ),
@@ -252,8 +254,8 @@ abstract class AppRouter {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: routes.notification,
-                builder: (context, state) => NotificationScreenListView(),
+                path: routes.WalletScreen,
+                builder: (context, state) => WalletScreen(),
               ),
             ],
           ),

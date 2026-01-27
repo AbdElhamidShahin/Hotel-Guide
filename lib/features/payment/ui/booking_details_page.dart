@@ -35,8 +35,6 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
 
   // Payment
   String selectedPayment = 'wallet';
-  bool selected = true;
-  // Calendar
   DateTime focusedDay = DateTime.now();
   DateTime? rangeStart = DateTime.now();
   DateTime? rangeEnd = DateTime.now().add(const Duration(days: 1));
