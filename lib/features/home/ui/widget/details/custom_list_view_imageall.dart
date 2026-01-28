@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hotel_guide/core/helpers/widget/custom_item.dart';
+import 'package:hotel_guide/core/router/routers.dart';
 import 'package:hotel_guide/features/home/logic/cubit/home_cubit.dart';
 import '../../../logic/cubit/home_state.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -27,58 +29,63 @@ class _CustomSimilarHotelsListviewState
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<HomeCubit, HomeState>(
-      builder: (BuildContext context, state) {
-        if (state is HomeLoaded) {
-          final specificCityHotels = state.cities
-              .firstWhere(
-                (city) => city.id == widget.cityId,
-                orElse: () => state.cities[0],
-              )
-              .hotels;
+    return GestureDetector(
+      // onTap: () {
+      //   context.go(routes.customDetailsScreen, extra: hotelModel),
+      // },
+      child: BlocBuilder<HomeCubit, HomeState>(
+        builder: (BuildContext context, state) {
+          if (state is HomeLoaded) {
+            final specificCityHotels = state.cities
+                .firstWhere(
+                  (city) => city.id == widget.cityId,
+                  orElse: () => state.cities[0],
+                )
+                .hotels;
 
-          if (specificCityHotels.isEmpty) return const SizedBox.shrink();
+            if (specificCityHotels.isEmpty) return const SizedBox.shrink();
 
-          return Column(
-            children: [
-              SizedBox(
-                height: 250.h,
-                width: double.infinity,
-                child: PageView.builder(
-                  controller: _pageController,
-                  itemCount: specificCityHotels.length,
-                  reverse: true,
-                  physics: const BouncingScrollPhysics(),
-                  onPageChanged: (int page) {
-                    setState(() {
-                      _currentPage = page;
-                    });
-                  },
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8.w),
-                      child: CustomItem(
-                        hotelModel: specificCityHotels[index],
-                        isContinar: false,
-                      ),
-                    );
-                  },
+            return Column(
+              children: [
+                SizedBox(
+                  height: 250.h,
+                  width: double.infinity,
+                  child: PageView.builder(
+                    controller: _pageController,
+                    itemCount: specificCityHotels.length,
+                    reverse: true,
+                    physics: const BouncingScrollPhysics(),
+                    onPageChanged: (int page) {
+                      setState(() {
+                        _currentPage = page;
+                      });
+                    },
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 8.w),
+                        child: CustomItem(
+                          hotelModel: specificCityHotels[index],
+                          isContinar: false,
+                        ),
+                      );
+                    },
+                  ),
                 ),
-              ),
-              SizedBox(height: 12.h),
+                SizedBox(height: 12.h),
 
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(
-                  specificCityHotels.length,
-                  (index) => buildDot(index),
-                ).reversed.toList(),
-              ),
-            ],
-          );
-        }
-        return const SizedBox.shrink();
-      },
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(
+                    specificCityHotels.length,
+                    (index) => buildDot(index),
+                  ).reversed.toList(),
+                ),
+              ],
+            );
+          }
+          return const SizedBox.shrink();
+        },
+      ),
     );
   }
 

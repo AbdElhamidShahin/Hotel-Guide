@@ -14,6 +14,7 @@ import 'package:hotel_guide/features/payment/ui/widget/show_all_wallet_bottom_sh
 import '../../../core/helpers/widget/custom_appbar_widget.dart';
 import '../../../core/router/routers.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../room/ui/widget/room_details_page.dart';
 
 class BookingDetailsPage extends StatefulWidget {
   const BookingDetailsPage({super.key});
@@ -53,7 +54,7 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
       appBar: CustomAppbarWidget(
         name: "الغرفه",
         onTap: () {
-          context.go(routes.BookingDetailsPage);
+          context.go(routes.RoomDetailsPage);
         },
       ),
       body: Directionality(

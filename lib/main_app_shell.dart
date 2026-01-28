@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hotel_guide/core/theme/colors.dart'; // Assuming AppColors.black and AppColors.orangeGold exist here
@@ -17,40 +18,36 @@ class MainAppShell extends StatelessWidget {
   }
 
   Widget _buildNavItem({
-    required String defaultAsset,
-    required String selectedAsset,
+    required String iconAsset,
     required int index,
     required bool hasBadge,
   }) {
     final bool isSelected = navigationShell.currentIndex == index;
 
-    final Color iconColor = isSelected ? AppColors.orangeGold : Colors.grey.shade600;
-
-
-
-    Widget iconWidget = SvgPicture.asset(
-      isSelected ? selectedAsset : defaultAsset,
-      height: 32,
-      width: 32,
-      colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
-    );
+    final Color iconColor = isSelected
+        ? AppColors.white
+        : AppColors.ShadowPurple;
+    final Color bgColor = isSelected
+        ? AppColors.ShadowPurple
+        : Colors.transparent;
 
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 250),
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
+      duration: const Duration(milliseconds: 100),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(color: bgColor, shape: BoxShape.circle),
+      child: SvgPicture.asset(
+        iconAsset,
+        height: 28.h,
+        width: 28.w,
+        colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
       ),
-      child: iconWidget,
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: navigationShell.currentIndex == 3
-          ? false
-          : true,
+      canPop: navigationShell.currentIndex == 3 ? false : true,
       onPopInvoked: (bool didPop) {
         if (didPop) return;
 
@@ -86,10 +83,8 @@ class MainAppShell extends StatelessWidget {
               // Index 0: المستخدم
               BottomNavigationBarItem(
                 icon: _buildNavItem(
-                  defaultAsset:
-                  'assets/icons/Icons_bar/user-alt-1-svgrepo-com.svg',
-                  selectedAsset:
-                  'assets/icons/icon_bar_active/user-svgrepo-com.svg',
+                  iconAsset:
+                      'assets/icons/Icons_bar/user-alt-1-svgrepo-com.svg',
                   index: 0,
                   hasBadge: false,
                 ),
@@ -97,10 +92,7 @@ class MainAppShell extends StatelessWidget {
               ),
               BottomNavigationBarItem(
                 icon: _buildNavItem(
-                  defaultAsset:
-                  'assets/icons/Icons_bar/bell-bing-svgrepo-com.svg',
-                  selectedAsset:
-                  'assets/icons/icon_bar_active/bell-bing-svgrepo-com.svg',
+                  iconAsset: 'assets/icons/Icons_bar/empty-wallet.svg',
                   index: 1,
                   hasBadge: true,
                 ),
@@ -108,10 +100,7 @@ class MainAppShell extends StatelessWidget {
               ),
               BottomNavigationBarItem(
                 icon: _buildNavItem(
-                  defaultAsset:
-                  'assets/icons/Icons_bar/favorite-heart-like-love-alert-notification-svgrepo-com.svg',
-                  selectedAsset:
-                  'assets/icons/icon_bar_active/favorite-filled-svgrepo-com.svg',
+                  iconAsset: 'assets/icons/Icons_bar/notification-favorite.svg',
                   index: 2,
                   hasBadge: false,
                 ),
@@ -119,10 +108,8 @@ class MainAppShell extends StatelessWidget {
               ),
               BottomNavigationBarItem(
                 icon: _buildNavItem(
-                  defaultAsset:
-                  'assets/icons/Icons_bar/home-angle-2-svgrepo-com.svg',
-                  selectedAsset:
-                  'assets/icons/icon_bar_active/home-angle-2-svgrepo-com.svg',
+                  iconAsset:
+                      'assets/icons/Icons_bar/home-angle-2-svgrepo-com.svg',
                   index: 3,
                   hasBadge: true,
                 ),
@@ -134,6 +121,7 @@ class MainAppShell extends StatelessWidget {
       ),
     );
   }
+
   //
-//
+  //
 }

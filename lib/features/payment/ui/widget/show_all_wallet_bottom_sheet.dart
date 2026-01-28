@@ -70,14 +70,14 @@ void showAllWalletBottomSheet(BuildContext context) {
                 ),
                 SizedBox(height: 30.h),
                 GestureDetector(
-                  onTap: () {
+                  onTap: () {     showCustomSnackbar(
+                    context,
+                    ContentType.success,
+                    'تم الدفع بنجاح ✅',
+                    '',
+                  );
                     context.go(routes.BookingDetailsPage);
-                    showCustomSnackbar(
-                      context,
-                      ContentType.success,
-                      'تم الدفع بنجاح ✅',
-                      '',
-                    );
+
                   },
                   child: Container(
                     width: MediaQuery.of(context).size.width * 0.8,

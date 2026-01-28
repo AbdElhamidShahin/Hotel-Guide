@@ -5,7 +5,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'core/di/injection.dart';
 import 'firebase_options.dart';
 import 'hotel_app.dart';
-import 'package:intl/date_symbol_data_local.dart'; // مهم جداً
+import 'package:intl/date_symbol_data_local.dart';
 void main() async {
   setupGetIt();
   await ScreenUtil.ensureScreenSize();

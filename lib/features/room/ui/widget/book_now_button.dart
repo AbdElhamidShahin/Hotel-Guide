@@ -12,34 +12,29 @@ class BookNowButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: (){
-
-        context.go(routes.BookingDetailsPage);
-      },
-      child: Container(
-        width: 183.w,
-        height: 65.h,
-        margin: EdgeInsets.symmetric(horizontal: 30.w, vertical: 20.h),
-        child: ElevatedButton(
-          onPressed: () {        context.go(routes.BookingDetailsPage);
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.primaryDark,
-            padding: EdgeInsets.symmetric(vertical: 12.h),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12.r),
-            ),
+    return Container(
+      width: 183.w,
+      height: 65.h,
+      margin: EdgeInsets.symmetric(horizontal: 30.w, vertical: 20.h),
+      child: ElevatedButton(
+        onPressed: () {
+          context.go(routes.BookingDetailsPage);
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.primaryDark,
+          padding: EdgeInsets.symmetric(vertical: 12.h),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.r),
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text("إحجز الآن", style: textStyle22BoldPrimary),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text("إحجز الآن", style: textStyle22BoldPrimary),
 
-              SizedBox(width: 8.w),
-              SvgPicture.asset("assets/icons/send.svg"),
-            ],
-          ),
+            SizedBox(width: 8.w),
+            SvgPicture.asset("assets/icons/send.svg"),
+          ],
         ),
       ),
     );
