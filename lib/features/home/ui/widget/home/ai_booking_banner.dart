@@ -18,7 +18,7 @@ class AiBookingBanner extends StatelessWidget {
           child: Stack(
             children: [
               Image.asset(
-                "assets/images/backGroundImageHome.jpg",
+                "assets/Onpording/OnPoarding1.jpg",
                 width: double.infinity,
                 height: double.infinity,
                 fit: BoxFit.cover,
