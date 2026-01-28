@@ -28,8 +28,8 @@ class BookingCard extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(15.r),
-              child: Image.network(
-                'https://t3.ftcdn.net/jpg/00/29/13/38/360_F_29133877_bfA2n7A3Q3W8IaV1ZCByWdG8qcZGLqep.jpg', // استبدلها برابط صورتك
+              child: Image.asset(
+                'assets/images/onBoardingImage.jpg',
                 width: 100.w,
                 height: 100.w,
                 fit: BoxFit.cover,

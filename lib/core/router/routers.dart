@@ -10,7 +10,7 @@ class routes {
   static const String accountScreen = "/AccountScreen";
   static const String searchScreen = "/searchScreen";
   static const String editAccountScreen = "/EditAccountScreen";
-  static const String notification = "/notification";
+  static const String notification = "/NotificationScreenListView";
   static const String menuScreen = "/menu";
   static const String customItem = "/customItem";
   static const String cityHotelsScreen = "/cityHotelsScreen";
@@ -18,4 +18,7 @@ class routes {
   static const String CustomRoom = "/CustomRoom";
   static const String BookingDetailsPage = "/BookingDetailsPage";
   static const String WalletScreen = "/WalletScreen";
+  static const String RoomDetailsPage = "/RoomDetailsPage";
+  static const String CustomDetailsScreen = "/CustomDetailsScreen";
+  // static const String ShowCitysListVeiw = "/ShowCitysListVeiw";
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hotel_guide/core/router/routers.dart';
 import 'package:hotel_guide/features/room/ui/widget/book_now_button.dart';
 
 import '../../../../core/helpers/widget/custom_appbar_widget.dart';
@@ -35,7 +37,9 @@ class RoomDetailsPage extends StatelessWidget {
     ];
 
     return Scaffold(
-      appBar: CustomAppbarWidget(name: "الغرفة",  onTap: (){},),
+      appBar: CustomAppbarWidget(name: "الغرفة",  onTap: (){
+        context.go(routes.RoomsScreenListView);
+      },),
 
       backgroundColor: Colors.white,
       body: SafeArea(

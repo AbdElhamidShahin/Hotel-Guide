@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hotel_guide/core/theme/app_theme.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
 import 'package:hotel_guide/features/home/ui/widget/custom_rating_listview.dart';
@@ -18,6 +19,7 @@ import 'package:hotel_guide/features/home/ui/widget/details/show_hotel_descripti
 
 import '../../../core/helpers/widget/custom_item.dart';
 import '../../../core/network/hotel_model.dart';
+import '../../../core/router/routers.dart';
 import '../logic/cubit/home_cubit.dart';
 
 class CustomDetailsScreen extends StatefulWidget {
@@ -127,7 +129,12 @@ class _CustomDetailsScreenState extends State<CustomDetailsScreen> {
               SizedBox(
                 height: 300.h,
                 width: double.infinity,
-                child: CustomSimilarHotelsListview(cityId: 1),
+                child: GestureDetector(
+
+                    onTap: () {
+                      context.go(routes.customDetailsScreen, extra: widget.hotelModel);
+                    },
+                    child: CustomSimilarHotelsListview(cityId: 1)),
               ),
               SizedBox(height: 40.h),
             ],

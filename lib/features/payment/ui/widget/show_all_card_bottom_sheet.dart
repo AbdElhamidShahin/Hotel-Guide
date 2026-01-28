@@ -34,11 +34,12 @@ void showAllCardBottomSheet(BuildContext context) {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      IconButton(onPressed: () {
-                        context.go(routes.BookingDetailsPage);
-
-
-                      }, icon: Icon(Icons.close)),
+                      IconButton(
+                        onPressed: () {
+                          context.go(routes.BookingDetailsPage);
+                        },
+                        icon: Icon(Icons.close),
+                      ),
                       Text(
                         "البطاقة البنكية",
                         style: textStyle20RegularPrimary.copyWith(

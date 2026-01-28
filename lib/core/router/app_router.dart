@@ -15,14 +15,17 @@ import '../../features/favorite/logic/cubit/favorite_cubit.dart';
 import '../../features/home/ui/custom_details_screen.dart';
 import '../../features/home/ui/home_screen.dart';
 import '../../features/home/ui/widget/home/city_hotels_screen.dart';
+import '../../features/home/ui/widget/home/show_citys_list_veiw.dart';
 import '../../features/login/logic/cubit/login_cubit.dart';
 import '../../features/login/ui/login_screen.dart';
 import '../../features/notification/ui/notification_screen.dart';
 import '../../features/on_boarding/ui/on_boarding_screen.dart';
+import '../../features/payment/ui/booking_details_page.dart';
 import '../../features/profile/ui/edit_account_screen.dart';
 import '../../features/profile/ui/profile_screen.dart';
 import '../../features/room/ui/custom_room.dart';
 import '../../features/room/ui/rooms_screen_list-view.dart';
+import '../../features/room/ui/widget/room_details_page.dart';
 import '../../features/sign_up/ui/sign_up_screen.dart';
 
 import '../../features/wallet/ui/wallet_screen.dart';
@@ -113,18 +116,43 @@ abstract class AppRouter {
           return EditAccountScreen(name: data?['name'] ?? '');
         },
       ),
-      GoRoute(
-        path: routes.RoomsScreenListView,
-        builder: (BuildContext context, GoRouterState state) {
-          return RoomsScreenListView();
-        },
-      ),
+
       GoRoute(
         path: routes.CustomRoom,
         builder: (BuildContext context, GoRouterState state) {
           return CustomRoom();
         },
       ),
+
+      GoRoute(
+        path: routes.BookingDetailsPage,
+        builder: (BuildContext context, GoRouterState state) {
+          return BookingDetailsPage();
+        },
+      ),
+      GoRoute(
+        path: routes.RoomDetailsPage,
+        builder: (BuildContext context, GoRouterState state) {
+          return RoomDetailsPage();
+        },
+      ),
+      GoRoute(
+        path: routes.notification,
+        builder: (BuildContext context, GoRouterState state) {
+          return NotificationScreenListView();
+        },
+      ),      GoRoute(
+        path: routes.RoomsScreenListView,
+        builder: (BuildContext context, GoRouterState state) {
+          return RoomsScreenListView();
+        },
+      ),
+      // GoRoute(
+      //   path: routes.ShowCitysListVeiw,
+      //   builder: (BuildContext context, GoRouterState state) {
+      //     return ShowCitysListVeiw(count: null,);
+      //   },
+      // ),
       GoRoute(
         path: routes.menuScreen,
         pageBuilder: (context, state) {
