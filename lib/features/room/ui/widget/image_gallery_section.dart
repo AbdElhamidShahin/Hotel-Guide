@@ -15,8 +15,8 @@ class _ImageGallerySectionState extends State<ImageGallerySection> {
   final List<String> images = [
     'assets/images/1686f7773fafd4ad2711763e02dd037e6522c12a.jpg',
     'assets/images/1686f7773fafd4ad2711763e02dd037e6522c12a.jpg',
-    'assets/images/backGroundImageHome.jpg',
-    'assets/images/backGroundImageHome.jpg',
+    'assets/Onpording/OnPoarding1.jpg',
+    'assets/Onpording/OnPoarding1.jpg',
   ];
 
   int selectedIndex = 0;
@@ -60,7 +60,7 @@ class _ImageGallerySectionState extends State<ImageGallerySection> {
         SizedBox(height: 16.h),
 
         Padding(
-          padding:  EdgeInsets.symmetric(horizontal: 24.w),
+          padding: EdgeInsets.symmetric(horizontal: 24.w),
           child: Container(
             padding: EdgeInsets.all(16.w),
             decoration: BoxDecoration(
@@ -159,7 +159,9 @@ class _ImageGallerySectionState extends State<ImageGallerySection> {
               ),
               Text(
                 "صور الغرفة",
-                style: textStyle1Regularprimary.copyWith(fontWeight: FontWeight.w600)
+                style: textStyle1Regularprimary.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               const Divider(),
               Expanded(
@@ -214,10 +216,7 @@ class _ImageGallerySectionState extends State<ImageGallerySection> {
         borderRadius: BorderRadius.circular(12.r),
         border: isSelected
             ? Border.all(color: AppColors.primaryDark, width: 2)
-            : Border.all(
-                color: Colors.transparent,
-                width: 2,
-              ),
+            : Border.all(color: Colors.transparent, width: 2),
         image: DecorationImage(
           image: AssetImage(url),
           fit: BoxFit.cover,
@@ -232,9 +231,7 @@ class _ImageGallerySectionState extends State<ImageGallerySection> {
       child: isLast && count != null
           ? Container(
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(
-                  0.5,
-                ),
+                color: Colors.black.withOpacity(0.5),
                 borderRadius: BorderRadius.circular(12.r),
               ),
               child: Center(

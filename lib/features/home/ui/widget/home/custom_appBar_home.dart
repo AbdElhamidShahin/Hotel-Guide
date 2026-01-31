@@ -68,13 +68,18 @@ class CustomAppbarHome extends StatelessWidget {
                       ),
                     ),
                     SizedBox(width: 20.w),
-                    SvgPicture.asset(
-                      "assets/icons/notification.svg",
-                      height: 30.h,
-                      width: 30.w,
-                      colorFilter: const ColorFilter.mode(
-                        Colors.white,
-                        BlendMode.srcIn,
+                    GestureDetector(
+                      onTap: () {
+                        context.go(routes.notification);
+                      },
+                      child: SvgPicture.asset(
+                        "assets/icons/notification.svg",
+                        height: 30.h,
+                        width: 30.w,
+                        colorFilter: const ColorFilter.mode(
+                          Colors.white,
+                          BlendMode.srcIn,
+                        ),
                       ),
                     ),
                     const Spacer(),

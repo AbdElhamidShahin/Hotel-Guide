@@ -21,6 +21,8 @@
 //               cubit.clearFilters();
 //               Navigator.pop(context);
 //             },
+//
+//
 //             child: const Text("مسح الكل", style: TextStyle(color: Colors.red)),
 //           )
 //         ],

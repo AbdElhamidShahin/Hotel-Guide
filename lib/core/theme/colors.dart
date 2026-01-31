@@ -6,21 +6,17 @@ class AppColors {
   static const Color white = Color(0xFFFFFFFF);
   static const Color blueSoft = Color(0xFFCFDBEC);
   static const Color warningColor = Color(0xFFC8C8F4);
-
   static const Color yellowGold = Color(0xFFFFC15F);
   static const Color orangeGold = Color(0xFFFFBD54);
-
   static const Color black = Color(0xFF000000);
   static const Color black2 = Color(0xFF343434);
   static const Color black4 = Color(0xFF222222);
   static const Color black6 = Color(0xFF171725);
   static const Color black7 = Color(0xFF101010);
-
   static const Color mainOrange = Color(0xFFFFBD59);
   static const Color borderGrey = Color(0xFFE0E0E0);
   static const Color hintTextGrey = Color(0xFFD9D9D9);
   static const Color Grayscale = Color(0xFF66707A);
-
   static const Color primary = Color(0xFF2D2B3E);
   static const Color colorText = Color(0xFF51526C);
   static const Color ShadowPurple = Color(0xFF575472);
@@ -40,18 +36,6 @@ class AppColors {
   static const Color Green = Color(0xFF26CC73);
   static const Color AccentsOrange = Color(0xFFFF8D28);
   static const Color AccentsPurple = Color(0xFF958FFF);
-
-
-
-
-
-
-
-
-
-
-
-
 
   static const Color primaryPurple = Color(0xFF6A4C93);
   static const Color darkBlue = Color(0xFF2D2D3F);

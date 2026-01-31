@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hotel_guide/core/helpers/widget/custom_item.dart';
+import 'package:hotel_guide/core/network/hotel_model.dart';
+import 'package:hotel_guide/core/router/routers.dart';
 import 'package:hotel_guide/features/home/logic/cubit/home_cubit.dart';
 import '../../../logic/cubit/home_state.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomSimilarHotelsListview extends StatefulWidget {
   final int cityId;
-  const CustomSimilarHotelsListview({super.key, required this.cityId});
+  final HotelModel hotelModel;
+  const CustomSimilarHotelsListview({
+    super.key,
+    required this.cityId,
+    required this.hotelModel,
+  });
 
   @override
   State<CustomSimilarHotelsListview> createState() =>
@@ -55,11 +63,19 @@ class _CustomSimilarHotelsListviewState
                     });
                   },
                   itemBuilder: (context, index) {
-                    return Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8.w),
-                      child: CustomItem(
-                        hotelModel: specificCityHotels[index],
-                        isContinar: false,
+                    return GestureDetector(
+                      onTap: () {
+                        context.push(
+                          routes.customDetailsScreen,
+                          extra: specificCityHotels[index],
+                        );
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 8.w),
+                        child: CustomItem(
+                          hotelModel: specificCityHotels[index],
+                          isContinar: false,
+                        ),
                       ),
                     );
                   },

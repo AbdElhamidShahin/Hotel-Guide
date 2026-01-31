@@ -4,8 +4,9 @@ import 'package:hotel_guide/core/theme/app_theme.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
 
 class TopRatingWidget extends StatelessWidget {
-  const TopRatingWidget({super.key, required this.name});
+  TopRatingWidget({super.key, required this.name, required this.onTap});
   final String name;
+  final   VoidCallback onTap;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -13,7 +14,7 @@ class TopRatingWidget extends StatelessWidget {
       child: Row(
         children: [
           GestureDetector(
-            onTap: () {},
+            onTap: onTap,
             child: Row(
               children: [
                 SvgPicture.asset(
