@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -71,7 +70,7 @@ class SignUpScreen extends StatelessWidget {
                         children: [
                           SizedBox(height: 24.h),
                           Image.asset(
-                            "assets/images/logo-light.png",
+                            "assets/images/logo/logo-light.png",
                             height: 173.h,
                             width: 173.w,
                           ),
@@ -79,7 +78,10 @@ class SignUpScreen extends StatelessWidget {
 
                           Text(
                             "بوابتك لتجربة فندقية استثنائية",
-                            style: textStyle30BoldPrimary,
+                            style: textStyle30BoldPrimary.copyWith(
+                              fontSize: 26.sp,
+                            ),
+                            maxLines: 1,
                           ),
                           SizedBox(height: 20.h),
                           BlocListener<SignUpCubit, SignUpState>(

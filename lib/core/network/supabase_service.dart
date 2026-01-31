@@ -6,7 +6,7 @@ class SupabaseService {
   Future<List<Map<String, dynamic>>> getCitiesWithHotels() async {
     try {
       final response = await client
-          .from('cities')
+          .from('citiy')
           .select('*, hotel(*)');
       return List<Map<String, dynamic>>.from(response);
     } catch (e) {

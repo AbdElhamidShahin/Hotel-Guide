@@ -41,13 +41,16 @@ class BookingCalendar extends StatelessWidget {
         calendarStyle: CalendarStyle(
           rangeStartDecoration: BoxDecoration(
             color: AppColors.primary,
-            shape: BoxShape.circle,
+            shape: BoxShape.rectangle,
+            borderRadius: BorderRadius.circular(8.r),
           ),
-          rangeHighlightColor: Colors.transparent,
+          rangeHighlightColor: AppColors.primary.withOpacity(.2),
           rangeEndDecoration: BoxDecoration(
             color: AppColors.primary,
-            shape: BoxShape.circle,
+            shape: BoxShape.rectangle,
+            borderRadius: BorderRadius.circular(10.r),
           ),
+
           todayTextStyle: const TextStyle(color: Colors.black),
           todayDecoration: const BoxDecoration(color: Colors.transparent),
         ),

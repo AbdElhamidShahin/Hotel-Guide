@@ -94,11 +94,14 @@ class _RatingDialogState extends State<RatingDialog> {
               child: Image.asset("assets/images/wave.png"),
             ),
             Positioned(
-              top: 35,
-              right: 135,
-              child: Text(
-                emojis[(rating - 0).clamp(0, 4)],
-                style: const TextStyle(fontSize: 65),
+              top: 35.h,
+              right: 0.w,
+              left: 0.w,
+              child: Center(
+                child: Text(
+                  emojis[(rating - 0).clamp(0, 4)],
+                  style: const TextStyle(fontSize: 65),
+                ),
               ),
             ),
           ],

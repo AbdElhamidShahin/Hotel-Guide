@@ -95,6 +95,10 @@ class _CustomWelcomeHeaderState extends State<CustomWelcomeHeader> {
           Text(
             ".كل ما تحتاجه للإقامة المثالية أصبح بين يديك الآن",
             style: textStyle17MediumBlack,
+            textDirection: TextDirection.rtl,
+            textAlign: TextAlign.start,
+            maxLines: 1,
+
           ),
         ],
       ),
