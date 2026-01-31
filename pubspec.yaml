@@ -117,10 +117,18 @@ flutter:
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
 flutter_native_splash:
+  color: "#2D2B3E" # اضف لون الخلفية هنا (مثلاً أبيض)
   android: true
   ios: true
   web: true
-  image: "assets/images/logo/Frame 3.png"
+  image: "assets/images/logo/Frame 4.png"
 
   android_12:
-    image: "assets/images/logo/Frame 3.png"
+    color: "#2D2B3E" # اضف لون الخلفية هنا (مثلاً أبيض)
+    image: "assets/images/logo/Frame 4.png"
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/logo/logo-light.png"
+  min_sdk_android: 21

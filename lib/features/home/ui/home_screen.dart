@@ -122,7 +122,6 @@ class _HomeScreenState extends State<HomeScreen> {
               SizedBox(height: 12),
 
               SizedBox(
-                height: 355.h,
                 child: SingleChildScrollView(
                   child: CustomCityHome(itemCount: 4),
                 ),

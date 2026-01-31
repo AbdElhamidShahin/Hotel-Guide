@@ -141,7 +141,8 @@ abstract class AppRouter {
         builder: (BuildContext context, GoRouterState state) {
           return NotificationScreenListView();
         },
-      ),      GoRoute(
+      ),
+      GoRoute(
         path: routes.RoomsScreenListView,
         builder: (BuildContext context, GoRouterState state) {
           return RoomsScreenListView();
