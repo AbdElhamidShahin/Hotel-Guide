@@ -58,7 +58,7 @@ class LoginScreen extends StatelessWidget {
                   child: Column(
                     children: [
                       Image.asset(
-                        "assets/images/logo-light.png",
+                        "assets/images/logo/logo-light.png",
                         height: 173.h,
                         width: 173.w,
                       ),

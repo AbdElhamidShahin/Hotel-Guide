@@ -129,13 +129,12 @@ class _CustomDetailsScreenState extends State<CustomDetailsScreen> {
               SizedBox(
                 height: 300.h,
                 width: double.infinity,
-                child: GestureDetector(
-
-                    onTap: () {
-                      context.go(routes.customDetailsScreen, extra: widget.hotelModel);
-                    },
-                    child: CustomSimilarHotelsListview(cityId: 1)),
+                child: CustomSimilarHotelsListview(
+                  cityId: 1,
+                  hotelModel: widget.hotelModel,
+                ),
               ),
+
               SizedBox(height: 40.h),
             ],
           ),
