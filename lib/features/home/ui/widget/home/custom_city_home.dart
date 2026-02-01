@@ -9,6 +9,7 @@ import 'package:hotel_guide/core/theme/app_theme.dart';
 
 import '../../../../../core/helpers/contact/build_error_widget.dart';
 import '../../../../../core/network/city_model.dart';
+import '../../../../../core/network/model/city.dart';
 import '../../../logic/cubit/home_cubit.dart';
 import '../../../logic/cubit/home_state.dart';
 
@@ -26,7 +27,7 @@ class CustomCityHome extends StatelessWidget {
         if (state is HomeError) {
           return buildNoConnectionMiniWidget(
             onRetry: () {
-              context.read<HomeCubit>().fetchInitialData();
+              context.read<HomeCubit>().getHotelsAndCities();
             },
           );
         }
@@ -59,9 +60,13 @@ class CustomCityHome extends StatelessWidget {
                   return CustomCityHomeItem(
                     city: city,
                     onTap: () {
-                      context.read<HomeCubit>().updateSelectedCity(city.id);
-
-                      context.go(routes.cityHotelsScreen, extra: city);
+                      final cityHotels = state.hotels
+                          .where((h) => h.cityName == city.name)
+                          .toList();
+                      context.push(
+                        routes.cityHotelsScreen,
+                        extra: {'city': city, 'hotels': cityHotels},
+                      );
                     },
                   );
                 },
