@@ -7,6 +7,7 @@ import 'package:hotel_guide/core/network/hotel_model.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
 import 'package:snackly/snackly.dart';
 import '../../../../core/di/injection.dart';
+import '../../../../core/network/model/hotel.dart';
 import '../../../../core/router/routers.dart';
 import '../../../../core/theme/app_theme.dart';
 import 'package:provider/provider.dart';
@@ -51,7 +52,7 @@ class CustomRatingListviewItem extends StatelessWidget {
                         ClipRRect(
                           borderRadius: BorderRadius.circular(20),
                           child: Image.network(
-                            hotelModel.imageUrl,
+                            hotelModel.images[0],
                             width: 320.h,
                             height: 300.h,
 

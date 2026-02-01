@@ -19,6 +19,7 @@ import 'package:hotel_guide/features/home/ui/widget/details/show_hotel_descripti
 
 import '../../../core/helpers/widget/custom_item.dart';
 import '../../../core/network/hotel_model.dart';
+import '../../../core/network/model/hotel.dart';
 import '../../../core/router/routers.dart';
 import '../logic/cubit/home_cubit.dart';
 
@@ -34,7 +35,7 @@ class _CustomDetailsScreenState extends State<CustomDetailsScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<HomeCubit>().fetchInitialData();
+    context.read<HomeCubit>().getHotelsAndCities();
   }
 
   @override
@@ -51,7 +52,7 @@ class _CustomDetailsScreenState extends State<CustomDetailsScreen> {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(20),
                   child: Image.network(
-                    widget.hotelModel.imageUrl,
+                    widget.hotelModel.images[0],
                     width: double.infinity,
                     height: 230,
                     fit: BoxFit.cover,
@@ -66,8 +67,8 @@ class _CustomDetailsScreenState extends State<CustomDetailsScreen> {
               ),
 
               AccommodationCard(
-                address: widget.hotelModel.location,
-                price: widget.hotelModel.price,
+                address: widget.hotelModel.address,
+                price: "${widget.hotelModel.priceStartsFrom}",
               ),
               SizedBox(height: 16),
               Padding(
@@ -130,8 +131,8 @@ class _CustomDetailsScreenState extends State<CustomDetailsScreen> {
                 height: 300.h,
                 width: double.infinity,
                 child: CustomSimilarHotelsListview(
-                  cityId: 1,
                   hotelModel: widget.hotelModel,
+                  cityName: '550e8400-e29b-41d4-a716-446655440001',
                 ),
               ),
 

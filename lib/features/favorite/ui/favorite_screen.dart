@@ -7,6 +7,7 @@ import '../../../core/helpers/contact/build_error_widget.dart';
 import '../../../core/helpers/contact/build_favorite_notfound.dart';
 import '../../../core/helpers/widget/custom_appbar_widget.dart';
 import '../../../core/network/hotel_model.dart';
+import '../../../core/network/model/hotel.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/colors.dart'; // نفترض وجود AppColors
 import '../logic/cubit/favorite_cubit.dart';
