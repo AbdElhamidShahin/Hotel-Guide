@@ -15,7 +15,6 @@ import '../../features/favorite/logic/cubit/favorite_cubit.dart';
 import '../../features/home/ui/custom_details_screen.dart';
 import '../../features/home/ui/home_screen.dart';
 import '../../features/home/ui/widget/home/city_hotels_screen.dart';
-import '../../features/home/ui/widget/home/show_citys_list_veiw.dart';
 import '../../features/login/logic/cubit/login_cubit.dart';
 import '../../features/login/ui/login_screen.dart';
 import '../../features/notification/ui/notification_screen.dart';
@@ -31,7 +30,26 @@ import '../../features/sign_up/ui/sign_up_screen.dart';
 import '../../features/wallet/ui/wallet_screen.dart';
 import '../../main_app_shell.dart';
 import '../di/injection.dart';
+import '../network/hotel_bloc.dart';
 import '../network/hotel_model.dart';
+import '../network/model/city.dart';
+import '../network/model/hotel.dart';
+
+class AppRoutes {
+  static const String home = '/';
+  static const String details = '/details';
+
+  static Route<dynamic> generateRoute(RouteSettings settings) {
+    switch (settings.name) {
+      case home:
+        return MaterialPageRoute(builder: (_) => const HomeScreen(name: ''));
+      default:
+        return MaterialPageRoute(
+          builder: (_) => const Scaffold(body: Text('Error')),
+        );
+    }
+  }
+}
 
 abstract class AppRouter {
   static final router = GoRouter(
@@ -82,7 +100,7 @@ abstract class AppRouter {
           final city = state.extra as CityModel;
           return BlocProvider.value(
             value: getIt<FavoriteCubit>(),
-            child: CityHotelsScreen(city: city),
+            child: CityHotelsScreen(city: city, hotels: []),
           );
         },
       ),
@@ -229,9 +247,7 @@ abstract class AppRouter {
               GoRoute(
                 path: routes.favoritesScreen,
                 builder: (context, state) => BlocProvider.value(
-                  // تغيير هنا
-                  value:
-                      getIt<FavoriteCubit>(), // نستخدم النسخة المسجلة في getIt
+                  value: getIt<FavoriteCubit>(),
                   child: const FavoriteScreen(),
                 ),
               ),
@@ -246,7 +262,8 @@ abstract class AppRouter {
                   final data = state.extra as Map<String, dynamic>?;
 
                   return BlocProvider(
-                    create: (context) => getIt<HomeCubit>(),
+                    create: (context) =>
+                        getIt<HomeCubit>()..getHotelsAndCities(),
                     child: HomeScreen(name: data?["name"] ?? ""),
                   );
                 },
@@ -258,7 +275,6 @@ abstract class AppRouter {
 
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
-          // يستخدم MainAppShell الجديد الذي يدعم 4 فروع
           return MainAppShell(navigationShell: navigationShell);
         },
         branches: [
@@ -308,7 +324,8 @@ abstract class AppRouter {
                   final data = state.extra as Map<String, dynamic>?;
 
                   return BlocProvider(
-                    create: (context) => getIt<HomeCubit>(),
+                    create: (context) =>
+                        getIt<HomeCubit>()..getHotelsAndCities(),
                     child: HomeScreen(name: data?["name"] ?? ""),
                   );
                 },

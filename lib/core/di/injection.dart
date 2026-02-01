@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
+import 'package:hotel_guide/core/network/SupabaseService.dart';
 import 'package:hotel_guide/features/login/data/repo/login_repostry.dart';
 import 'package:hotel_guide/features/search/logic/cubit/search_cubit.dart';
 import 'package:hotel_guide/features/sign_up/data/repo/sign_up_repo.dart';
@@ -13,24 +14,21 @@ import '../../features/login/data/repo/login_repoImpl.dart';
 import '../../features/login/logic/cubit/login_cubit.dart';
 import '../../features/search/data/repo/search_repo.dart';
 import '../../features/search/data/repo/search_repo_iplm.dart';
-import '../network/supabase_service.dart';
 
 final getIt = GetIt.instance;
 
 Future<void> setupGetIt() async {
-  /// fire base
+  /// Firebase & Services
   getIt.registerLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance);
-
-  ///supabase
   getIt.registerLazySingleton<SupabaseService>(() => SupabaseService());
 
-  ///login
+  /// Login
   getIt.registerLazySingleton<LoginRepostry>(
     () => AuthRepositoryImpl(getIt<FirebaseAuth>()),
   );
   getIt.registerFactory<LoginCubit>(() => LoginCubit(getIt<LoginRepostry>()));
 
-  ///signup
+  /// Signup
   getIt.registerLazySingleton<SignUpRepostry>(
     () => SignUpRepoimpl(getIt<FirebaseAuth>()),
   );
@@ -38,18 +36,19 @@ Future<void> setupGetIt() async {
     () => SignUpCubit(getIt<SignUpRepostry>()),
   );
 
-  ///home
-  getIt.registerLazySingleton<HomeRepository>(() => HomeRepoImpl(getIt()));
-  getIt.registerFactory<HomeCubit>(() => HomeCubit(getIt()));
+  /// Home & Hotel
+  getIt.registerLazySingleton<HomeRepository>(
+    () => HomeRepoImpl(getIt<SupabaseService>()),
+  );
 
-  ///favorite
-  getIt.registerSingleton<FavoriteCubit>(FavoriteCubit());
+  getIt.registerFactory<HomeCubit>(() => HomeCubit(getIt<HomeRepository>()));
 
-  ///Search
-  getIt.registerFactory<SearchRepo>(() => SearchRepoIplm(getIt<SupabaseService>()));
+  /// Favorite
+  getIt.registerLazySingleton<FavoriteCubit>(() => FavoriteCubit());
+
+  /// Search
+  getIt.registerFactory<SearchRepo>(
+    () => SearchRepoIplm(getIt<SupabaseService>()),
+  );
   getIt.registerFactory<SearchCubit>(() => SearchCubit(getIt<SearchRepo>()));
-
-
-
-
 }

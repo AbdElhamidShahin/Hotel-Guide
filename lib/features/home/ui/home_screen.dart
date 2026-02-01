@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hotel_guide/core/network/hotel_bloc.dart';
 import 'package:hotel_guide/core/router/routers.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
 import 'package:hotel_guide/features/home/ui/widget/home/ai_booking_banner.dart';
@@ -28,7 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<HomeCubit>().fetchInitialData();
+    context.read<HomeCubit>().getHotelsAndCities();
   }
 
   @override
@@ -61,7 +62,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               SizedBox(height: 24),
-              SizedBox(height: 440, child: CustomRatingListview(cityId: 1)),
+              SizedBox(
+                height: 440,
+                child: CustomRatingListview(
+                  cityId: "8a7ee754-037c-4a87-bda6-8a61527982a3",
+                ),
+              ),
+
               TopRatingWidget(
                 name: 'إستكشف مصر',
                 onTap: () {
@@ -126,7 +133,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: CustomCityHome(itemCount: 4),
                 ),
               ),
-
               SizedBox(height: 8),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),

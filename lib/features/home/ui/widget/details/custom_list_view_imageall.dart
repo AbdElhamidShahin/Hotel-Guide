@@ -2,21 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hotel_guide/core/helpers/widget/custom_item.dart';
-import 'package:hotel_guide/core/network/hotel_model.dart';
 import 'package:hotel_guide/core/router/routers.dart';
 import 'package:hotel_guide/features/home/logic/cubit/home_cubit.dart';
+import '../../../../../core/network/model/hotel.dart';
 import '../../../logic/cubit/home_state.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomSimilarHotelsListview extends StatefulWidget {
-  final int cityId;
+  final String cityName;
   final HotelModel hotelModel;
   const CustomSimilarHotelsListview({
     super.key,
-    required this.cityId,
+    required this.cityName,
     required this.hotelModel,
   });
-
   @override
   State<CustomSimilarHotelsListview> createState() =>
       _CustomSimilarHotelsListviewState();
@@ -38,12 +37,13 @@ class _CustomSimilarHotelsListviewState
     return BlocBuilder<HomeCubit, HomeState>(
       builder: (BuildContext context, state) {
         if (state is HomeLoaded) {
-          final specificCityHotels = state.cities
-              .firstWhere(
-                (city) => city.id == widget.cityId,
-                orElse: () => state.cities[0],
+          final specificCityHotels = state.hotels
+              .where(
+                (hotel) =>
+                    hotel.cityName == widget.cityName &&
+                    hotel.id != widget.hotelModel.id,
               )
-              .hotels;
+              .toList();
 
           if (specificCityHotels.isEmpty) return const SizedBox.shrink();
 
