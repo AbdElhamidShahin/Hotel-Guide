@@ -32,13 +32,18 @@ class SupabaseService {
 
   Future<List<Map<String, dynamic>>> fetchRooms(String hotelId) async {
     try {
+      print("📡 [Supabase]: جاري الاتصال بجدول rooms للفندق: $hotelId");
+
       final response = await _client
           .from('rooms')
           .select()
           .eq('hotel_id', hotelId);
+
+      print("📥 [Supabase Raw Response]: $response"); // لو طبع [] يبقى الـ ID ملوش داتا هناك
       return response as List<Map<String, dynamic>>;
     } catch (e) {
-      throw Exception('فشل جلب الغرف: $e');
+      print("⚠️ [Supabase Error]: $e");
+      throw e;
     }
   }
 }
