@@ -7,6 +7,7 @@ import 'package:snackly/snackly.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../network/hotel_model.dart';
+import '../../network/model/hotel.dart';
 import '../../router/routers.dart';
 import '../../theme/colors.dart';
 import '../../../features/favorite/logic/cubit/favorite_cubit.dart';
@@ -60,7 +61,7 @@ class CustomItem extends StatelessWidget {
                           bottomRight: Radius.circular(12.r),
                         ),
                         child: Image.network(
-                          hotelModel.imageUrl,
+                          hotelModel.images[0],
                           width: double.infinity,
                           height: double.infinity,
                           fit: BoxFit.cover,
@@ -136,17 +137,20 @@ class CustomItem extends StatelessWidget {
                           maxLines: 2,
 
                           textDirection: TextDirection.rtl,
-                          "يبدأ من ${hotelModel.price} EGP /\nاليوم",
+                          "يبدأ من ${hotelModel.priceStartsFrom} EGP /\nاليوم",
                           style: textStyle16BoldWhite.copyWith(
                             color: AppColors.colorText,
                           ),
                         ),
 
                         SizedBox(height: 8.h),
-                        GestureDetector(onTap: () {
-                          context.go(routes.customDetailsScreen,extra: hotelModel);
-
-                        },
+                        GestureDetector(
+                          onTap: () {
+                            context.go(
+                              routes.customDetailsScreen,
+                              extra: hotelModel,
+                            );
+                          },
                           child: Container(
                             height: 45.h,
                             width: double.infinity,
