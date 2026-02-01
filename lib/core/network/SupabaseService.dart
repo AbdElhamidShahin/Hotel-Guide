@@ -29,4 +29,16 @@ class SupabaseService {
       rethrow;
     }
   }
+
+  Future<List<Map<String, dynamic>>> fetchRooms(String hotelId) async {
+    try {
+      final response = await _client
+          .from('rooms')
+          .select()
+          .eq('hotel_id', hotelId);
+      return response as List<Map<String, dynamic>>;
+    } catch (e) {
+      throw Exception('فشل جلب الغرف: $e');
+    }
+  }
 }
