@@ -7,6 +7,7 @@ import 'package:hotel_guide/core/router/routers.dart';
 import 'package:hotel_guide/features/favorite/ui/favorite_screen.dart';
 import 'package:hotel_guide/features/home/logic/cubit/home_cubit.dart';
 import 'package:hotel_guide/features/home/ui/menu_screen.dart';
+import 'package:hotel_guide/features/room/logic/room_cubit.dart';
 import 'package:hotel_guide/features/search/logic/cubit/search_cubit.dart';
 import 'package:hotel_guide/features/search/ui/search_screen.dart';
 import 'package:hotel_guide/features/sign_up/logic/cubit/sign_up_cubit.dart';
@@ -34,6 +35,7 @@ import '../network/hotel_bloc.dart';
 import '../network/hotel_model.dart';
 import '../network/model/city.dart';
 import '../network/model/hotel.dart';
+import '../network/model/room.dart';
 
 class AppRoutes {
   static const String home = '/';
@@ -89,6 +91,7 @@ abstract class AppRouter {
             providers: [
               BlocProvider.value(value: getIt<FavoriteCubit>()),
               BlocProvider(create: (context) => getIt<HomeCubit>()),
+              BlocProvider(create: (context) => getIt<RoomCubit>()),
             ],
             child: CustomDetailsScreen(hotelModel: state.extra as HotelModel),
           );
@@ -97,10 +100,14 @@ abstract class AppRouter {
       GoRoute(
         path: routes.cityHotelsScreen,
         builder: (context, state) {
-          final city = state.extra as CityModel;
+          final extraData = state.extra as Map<String, dynamic>;
+
+          final city = extraData['city'] as CityModel;
+          final hotels = extraData['hotels'] as List<HotelModel>;
+
           return BlocProvider.value(
             value: getIt<FavoriteCubit>(),
-            child: CityHotelsScreen(city: city, hotels: []),
+            child: CityHotelsScreen(city: city, hotels: hotels),
           );
         },
       ),
@@ -138,32 +145,44 @@ abstract class AppRouter {
       GoRoute(
         path: routes.CustomRoom,
         builder: (BuildContext context, GoRouterState state) {
-          return CustomRoom();
+          final room = state.extra as Room;
+
+          return BlocProvider(
+            create: (context) => getIt<RoomCubit>(),
+            child: CustomRoom(room: room),
+          );
         },
       ),
-
+      GoRoute(
+        path: routes.RoomDetailsPage,
+        builder: (context, state) {
+          final room = state.extra as Room;
+          return RoomDetailsPage(room: room);
+        },
+      ),
       GoRoute(
         path: routes.BookingDetailsPage,
         builder: (BuildContext context, GoRouterState state) {
           return BookingDetailsPage();
         },
       ),
-      GoRoute(
-        path: routes.RoomDetailsPage,
-        builder: (BuildContext context, GoRouterState state) {
-          return RoomDetailsPage();
-        },
-      ),
+
       GoRoute(
         path: routes.notification,
         builder: (BuildContext context, GoRouterState state) {
           return NotificationScreenListView();
         },
       ),
+      // في AppRouter
       GoRoute(
         path: routes.RoomsScreenListView,
-        builder: (BuildContext context, GoRouterState state) {
-          return RoomsScreenListView();
+        builder: (context, state) {
+          final String hotelId = (state.extra as String?) ?? "";
+
+          return BlocProvider.value(
+            value: getIt<RoomCubit>(),
+            child: RoomsScreenListView(hotelId: hotelId),
+          );
         },
       ),
       // GoRoute(

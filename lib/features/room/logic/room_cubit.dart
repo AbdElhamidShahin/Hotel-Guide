@@ -1,19 +1,29 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hotel_guide/core/network/supabase_failure.dart';
-import 'package:hotel_guide/features/room/data/room_repo.dart';
-import 'package:hotel_guide/features/room/logic/room_state.dart';
+import 'package:flutter_bloc/flutter_bloc.dart'; // تأكد من وجود ده
+import '../data/room_repo.dart';
+import 'room_state.dart';
 
-class RoomCubit extends Cubit<RoomState> {
+class RoomCubit extends Cubit<RoomState> { // لازم يكون فيه extends Cubit
+  final RoomRepo repository; // تأكد من تعريف الـ repository هنا
+
   RoomCubit(this.repository) : super(RoomInitial());
-  final RoomRepo repository;
 
   Future<void> getRoomsHotel(String hotelId) async {
+    // السطر ده لازم يطبع فوراً أول ما الشاشة تفتح
+    print("🔥🔥 [TEST]: getRoomsHotel called with ID: $hotelId");
+
+    if (isClosed) return;
     emit(RoomLoading());
+
     try {
-      final room = await repository.getRooms(hotelId);
-      emit(RoomLoaded(room));
+      print("📡 [TEST]: Calling Repository...");
+      final rooms = await repository.getRooms(hotelId);
+
+      print("✅ [TEST]: Success! Found ${rooms.length} rooms.");
+
+      if (!isClosed) emit(RoomLoaded(rooms));
     } catch (error) {
-      emit(RoomError(error.toString()));
+      print("❌ [TEST]: Error caught: $error");
+      if (!isClosed) emit(RoomError(error.toString()));
     }
   }
 }
