@@ -8,13 +8,13 @@ import 'hotel_app.dart';
 import 'package:intl/date_symbol_data_local.dart';
 void main() async {
   setupGetIt();
-  await ScreenUtil.ensureScreenSize();
+  await ScreenUtil.ensureScreenSize();WidgetsFlutterBinding.ensureInitialized();
   await Supabase.initialize(
+
     url: 'https://oavjmvbwyrkixfnlzmcg.supabase.co',
     anonKey:
         '***REMOVED***',
   );
-  WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('ar_SA', null);
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(HotelApp());

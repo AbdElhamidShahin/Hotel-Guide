@@ -47,7 +47,7 @@ dependencies:
   awesome_snackbar_content: ^0.1.7
   emailjs: ^4.0.0
   iconoir_flutter: ^7.11.0
-  supabase_flutter: ^2.10.3
+  supabase_flutter: ^2.12.0
   flutter_launcher_icons: ^0.14.4
   shared_preferences: ^2.5.3
   snackly: ^0.0.9

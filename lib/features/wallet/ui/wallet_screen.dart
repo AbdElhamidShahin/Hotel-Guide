@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hotel_guide/core/theme/app_theme.dart';
@@ -12,6 +13,7 @@ import '../../../core/helpers/widget/custom_appbar_widget.dart';
 import '../../payment/ui/widget/payment_summary_section.dart';
 import '../../payment/ui/widget/show_all_card_bottom_sheet.dart';
 import '../../payment/ui/widget/show_all_wallet_bottom_sheet.dart';
+import '../date/wallet_cubit.dart';
 
 class WalletScreen extends StatefulWidget {
   WalletScreen({super.key});
@@ -21,6 +23,11 @@ class WalletScreen extends StatefulWidget {
 }
 
 class _WalletScreenState extends State<WalletScreen> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<WalletCubit>().fetchWalletData();
+  }
   String currentView = 'history';
   Widget build(BuildContext context) {
     return SafeArea(
@@ -50,13 +57,13 @@ class _WalletScreenState extends State<WalletScreen> {
 Widget _buildSelectedView(currentView) {
   switch (currentView) {
     case 'history':
-      return const CustomWalletHistory();
+      return  CustomWalletHistory();
     case 'refund':
       return const CustomRefundHistory();
     case 'topup':
       return CustomTopupHistory();
 
     default:
-      return const CustomWalletHistory();
+      return  CustomWalletHistory();
   }
 }

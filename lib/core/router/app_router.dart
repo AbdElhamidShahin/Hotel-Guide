@@ -20,6 +20,7 @@ import '../../features/login/logic/cubit/login_cubit.dart';
 import '../../features/login/ui/login_screen.dart';
 import '../../features/notification/ui/notification_screen.dart';
 import '../../features/on_boarding/ui/on_boarding_screen.dart';
+import '../../features/payment/logic/booking_cubit.dart';
 import '../../features/payment/ui/booking_details_page.dart';
 import '../../features/profile/ui/edit_account_screen.dart';
 import '../../features/profile/ui/profile_screen.dart';
@@ -28,6 +29,7 @@ import '../../features/room/ui/rooms_screen_list-view.dart';
 import '../../features/room/ui/widget/room_details_page.dart';
 import '../../features/sign_up/ui/sign_up_screen.dart';
 
+import '../../features/wallet/date/wallet_cubit.dart';
 import '../../features/wallet/ui/wallet_screen.dart';
 import '../../main_app_shell.dart';
 import '../di/injection.dart';
@@ -36,22 +38,6 @@ import '../network/hotel_model.dart';
 import '../network/model/city.dart';
 import '../network/model/hotel.dart';
 import '../network/model/room.dart';
-
-class AppRoutes {
-  static const String home = '/';
-  static const String details = '/details';
-
-  static Route<dynamic> generateRoute(RouteSettings settings) {
-    switch (settings.name) {
-      case home:
-        return MaterialPageRoute(builder: (_) => const HomeScreen(name: ''));
-      default:
-        return MaterialPageRoute(
-          builder: (_) => const Scaffold(body: Text('Error')),
-        );
-    }
-  }
-}
 
 abstract class AppRouter {
   static final router = GoRouter(
@@ -160,10 +146,16 @@ abstract class AppRouter {
           return RoomDetailsPage(room: room);
         },
       ),
+// في ملف app_router.dart
+// في ملف app_router.dart
       GoRoute(
         path: routes.BookingDetailsPage,
-        builder: (BuildContext context, GoRouterState state) {
-          return BookingDetailsPage();
+        builder: (context, state) {
+          final room = state.extra as Room; // استخراج الغرفة من الـ extra
+          return BlocProvider(
+            create: (context) => getIt<BookingCubit>(),
+            child: BookingDetailsPage(room: room), // تمريرها للشاشة
+          );
         },
       ),
 
@@ -173,8 +165,13 @@ abstract class AppRouter {
           return NotificationScreenListView();
         },
       ),
-      // في AppRouter
       GoRoute(
+        path: routes.WalletScreen,
+        builder: (context, state) => BlocProvider(
+          create: (context) => getIt<WalletCubit>(),
+          child:  WalletScreen(),
+        ),
+      ),      GoRoute(
         path: routes.RoomsScreenListView,
         builder: (context, state) {
           final String hotelId = (state.extra as String?) ?? "";

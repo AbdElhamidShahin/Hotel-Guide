@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../data/repo/login_repostry.dart';
 import 'login_state.dart';
 
@@ -19,34 +19,27 @@ class LoginCubit extends Cubit<LoginState> {
     emit(LoginLoading());
 
     try {
-      final userCredential = await _loginRepository.login(
+      final response = await _loginRepository.login(
         emailController.text.trim(),
         passwordController.text.trim(),
       );
 
-      if (userCredential.user != null) {
+      if (response.user != null) {
         emit(LoginSuccess("تم تسجيل الدخول بنجاح. مرحباً بعودتك! ✨"));
       }
-    } on FirebaseAuthException catch (e) {
-      print("Firebase Error Code: ${e.code}");
+    } on AuthException catch (e) {
+      // معالجة أخطاء سوبابيز
+      String errorMessage = e.message;
 
-      String errorMessage;
-
-      if (e.code == 'user-not-found') {
-        errorMessage = "لا يوجد حساب بهذا البريد الإلكتروني. سجّل الآن! 📝";
-      } else if (e.code == 'wrong-password' || e.code == 'invalid-credential') {
+      if (errorMessage.contains('Invalid login credentials')) {
         errorMessage = "البريد الإلكتروني أو كلمة المرور غير صحيحة. 🔑";
-      } else if (e.code == 'network-request-failed') {
-        errorMessage = "فشلت عملية تسجيل الدخول. تأكد من اتصالك بالإنترنت. 🌐";
-      } else {
-        errorMessage = "حدث خطأ غير متوقع. يرجى المحاولة لاحقاً. 🚧";
+      } else if (errorMessage.contains('Email not confirmed')) {
+        errorMessage = "يرجى تأكيد بريدك الإلكتروني أولاً. 📧";
       }
 
       emit(LoginError(errorMessage));
     } catch (e) {
-      print("General Error: $e");
-      emit(LoginError("حدث خطأ غير متوقع. نعتذر، يرجى المحاولة لاحقاً. 🚧"));
+      emit(LoginError("حدث خطأ غير متوقع. يرجى المحاولة لاحقاً. 🚧"));
     }
   }
-
 }

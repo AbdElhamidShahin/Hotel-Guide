@@ -13,7 +13,8 @@ class CustomRoomsListViewItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.go(routes.CustomRoom, extra: room);      },
+        context.go(routes.CustomRoom, extra: room);
+      },
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),
         child: Stack(
@@ -36,7 +37,7 @@ class CustomRoomsListViewItem extends StatelessWidget {
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
                 child: Text(
-                  "غرفة سوبر لوكس بسريرين",
+                  room.name,
                   style: textStyle16BoldWhite,
                   maxLines: 2,
                   textDirection: TextDirection.rtl,
