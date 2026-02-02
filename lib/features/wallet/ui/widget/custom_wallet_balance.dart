@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hotel_guide/core/theme/app_theme.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
 
-class CustomWalletBalance extends StatefulWidget {
+import '../../date/wallet_cubit.dart' show WalletCubit;
+import '../../date/wallet_state.dart';
+
+class CustomWalletBalance extends StatelessWidget {
   final Function(String) onTabChanged;
   CustomWalletBalance({super.key, required this.onTabChanged});
-
-  @override
-  State<CustomWalletBalance> createState() => _CustomWalletBalanceState();
-}
-
-class _CustomWalletBalanceState extends State<CustomWalletBalance> {
-  String selectedPayment = 'history';
 
   @override
   Widget build(BuildContext context) {
@@ -99,51 +96,61 @@ class _CustomWalletBalanceState extends State<CustomWalletBalance> {
                       style: textStyle16RegularGray.copyWith(
                         color: AppColors.white,
                       ),
+                    ),// استبدل Text("33,000 EGP") بـ BlocBuilder
+                    BlocBuilder<WalletCubit, WalletState>(
+                      builder: (context, state) {
+                        if (state is WalletLoaded) {
+                          return Text(
+                            "${state.balance.toStringAsFixed(0)} EGP",
+                            style: textStyle36BoldWhite,
+                          );
+                        }
+                        return Text("... EGP", style: textStyle36BoldWhite);
+                      },
                     ),
-                    Text("33,000 EGP", style: textStyle36BoldWhite),
                     SizedBox(height: 16.h),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        _CustomCoulmnWallet(
-                          "assets/icons/refresh-circle.svg",
-                          "سجل المعاملات",
-                          selectedPayment == 'history',
-                          () {
-                            setState(() => selectedPayment = 'history');
-                            widget.onTabChanged('history');
-                          },
-                        ),
-                        Container(
-                          height: 32.h,
-                          color: Colors.white,
-                          width: 1.5,
-                        ),
-                        _CustomCoulmnWallet(
-                          "assets/icons/money-recive.svg",
-                          "الإسترداد",
-                          selectedPayment == 'refund',
-                          () {
-                            setState(() => selectedPayment = 'refund');
-                            widget.onTabChanged('refund');
-                          },
-                        ),
-                        Container(
-                          height: 32.h,
-                          color: Colors.white,
-                          width: 1.5,
-                        ),
-                        _CustomCoulmnWallet(
-                          "assets/icons/empty-wallet-add.svg",
-                          "شحن رصيد",
-                          selectedPayment == 'topup',
-                          () {
-                            setState(() => selectedPayment = 'topup');
-                            widget.onTabChanged('topup');
-                          },
-                        ),
-                      ],
-                    ),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //   children: [
+                    //     _CustomCoulmnWallet(
+                    //       "assets/icons/refresh-circle.svg",
+                    //       "سجل المعاملات",
+                    //       selectedPayment == 'history',
+                    //       () {
+                    //         setState(() => selectedPayment = 'history');
+                    //         widget.onTabChanged('history');
+                    //       },
+                    //     ),
+                    //     Container(
+                    //       height: 32.h,
+                    //       color: Colors.white,
+                    //       width: 1.5,
+                    //     ),
+                    //     _CustomCoulmnWallet(
+                    //       "assets/icons/money-recive.svg",
+                    //       "الإسترداد",
+                    //       selectedPayment == 'refund',
+                    //       () {
+                    //         setState(() => selectedPayment = 'refund');
+                    //         widget.onTabChanged('refund');
+                    //       },
+                    //     ),
+                    //     Container(
+                    //       height: 32.h,
+                    //       color: Colors.white,
+                    //       width: 1.5,
+                    //     ),
+                    //     _CustomCoulmnWallet(
+                    //       "assets/icons/empty-wallet-add.svg",
+                    //       "شحن رصيد",
+                    //       selectedPayment == 'topup',
+                    //       () {
+                    //         setState(() => selectedPayment = 'topup');
+                    //         widget.onTabChanged('topup');
+                    //       },
+                    //     ),
+                    //   ],
+                    // ),
                   ],
                 ),
               ),
