@@ -3,7 +3,6 @@ import '../../../../core/network/model/hotel.dart';
 import '../../../../core/network/supabase_failure.dart';
 import 'search_state.dart';
 import '../../data/repo/search_repo.dart';
-import '../../../../core/network/hotel_model.dart';
 
 class SearchCubit extends Cubit<SearchState> {
   final SearchRepo repo;

@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
-import 'package:hotel_guide/core/network/hotel_bloc.dart';
-import 'package:hotel_guide/core/router/routers.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
 import 'package:hotel_guide/features/home/ui/widget/home/ai_booking_banner.dart';
-import 'package:hotel_guide/features/home/ui/widget/home/booking_search_form.dart';
 import 'package:hotel_guide/features/home/ui/widget/home/custom_appBar_home.dart';
 import 'package:hotel_guide/features/home/ui/widget/home/custom_city_home.dart';
 import 'package:hotel_guide/features/home/ui/widget/home/custom_offers_home.dart';
