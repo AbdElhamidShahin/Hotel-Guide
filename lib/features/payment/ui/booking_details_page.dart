@@ -11,6 +11,7 @@ import 'package:hotel_guide/features/payment/ui/widget/price_section.dart';
 import 'package:hotel_guide/features/payment/ui/widget/show_all_card_bottom_sheet.dart';
 import 'package:hotel_guide/features/payment/ui/widget/show_all_wallet_bottom_sheet.dart';
 import '../../../core/helpers/widget/custom_appbar_widget.dart';
+import '../../../core/network/model/booking.dart';
 import '../../../core/network/model/room.dart';
 import '../../../core/router/routers.dart';
 import '../../../core/theme/app_theme.dart';
@@ -128,7 +129,6 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
               _sectionTitle("تفاصيل الدفع"),
               SizedBox(height: 15.h),
 
-              // عرض تفاصيل السعر
               PriceSection(
                 days: totalDays,
                 subTotal: subTotal,
@@ -141,41 +141,47 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
 
               _sectionTitle("الغرفة المختارة"),
               SizedBox(height: 15.h),
-              // يمكنك تمرير بيانات الغرفة للـ BookingCard لو أردت عرض صورتها واسمها
               const BookingCard(),
 
               SizedBox(height: 30.h),
 
               _sectionTitle("وسائل الدفع"),
               SizedBox(height: 15.h),
-
-              // خيار المحفظة
               _buildPaymentTile(
                 title: "المحفظة الإلكترونية",
                 isSelected: selectedPayment == 'wallet',
                 onTap: () {
                   setState(() => selectedPayment = 'wallet');
-                  if (rangeStart != null && rangeEnd != null) {
-                    showAllWalletBottomSheet(
-                      context: context,
-                      bookingCubit: context.read<BookingCubit>(),
+                  if (rangeStart != null && rangeEnd != null) { //تحقق من التواريخ
+                    final bookingInfo = BookingModel(
                       hotelName: widget.room.name,
                       totalPrice: totalPrice,
                       roomId: widget.room.id.toString(),
                       startDate: rangeStart!,
                       endDate: rangeEnd!,
-                      rooms: rooms,
+                      roomCount: rooms,
                       adults: adults,
                       children: children,
+                      totalDays: totalDays,
+                      userId: '',
+                      paymentMethod: 'wallet',
+                    );
+
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                      builder: (modalContext) => BlocProvider.value(
+                        value: context.read<BookingCubit>(),
+                        child: WalletBottomSheet(bookingData: bookingInfo),
+                      ),
                     );
                   }
                 },
                 icon: "assets/icons/empty-wallet.svg",
               ),
-
               SizedBox(height: 12.h),
 
-              // خيار البطاقة البنكية
               _buildPaymentTile(
                 title: "البطاقة البنكية",
                 isSelected: selectedPayment == 'card',
@@ -194,7 +200,6 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
     );
   }
 
-  // ويدجت عنوان الأقسام
   Widget _sectionTitle(String title) {
     return Text(
       title,
@@ -202,7 +207,6 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
     );
   }
 
-  // بناء عنصر اختيار الدفع لتقليل تكرار الكود
   Widget _buildPaymentTile({
     required String title,
     required bool isSelected,
@@ -231,10 +235,15 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                 border: Border.all(color: AppColors.primary),
                 color: isSelected ? AppColors.primary : Colors.transparent,
               ),
-              child: isSelected ? Icon(Icons.check, size: 12.r, color: Colors.white) : null,
+              child: isSelected
+                  ? Icon(Icons.check, size: 12.r, color: Colors.white)
+                  : null,
             ),
             SizedBox(width: 12.w),
-            Text(title, style: textStyle16RegularGray.copyWith(color: Colors.black)),
+            Text(
+              title,
+              style: textStyle16RegularGray.copyWith(color: Colors.black),
+            ),
             const Spacer(),
             if (isCard)
               Row(

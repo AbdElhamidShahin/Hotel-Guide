@@ -146,8 +146,8 @@ abstract class AppRouter {
           return RoomDetailsPage(room: room);
         },
       ),
-// في ملف app_router.dart
-// في ملف app_router.dart
+      // في ملف app_router.dart
+      // في ملف app_router.dart
       GoRoute(
         path: routes.BookingDetailsPage,
         builder: (context, state) {
@@ -169,9 +169,10 @@ abstract class AppRouter {
         path: routes.WalletScreen,
         builder: (context, state) => BlocProvider(
           create: (context) => getIt<WalletCubit>(),
-          child:  WalletScreen(),
+          child: WalletScreen(),
         ),
-      ),      GoRoute(
+      ),
+      GoRoute(
         path: routes.RoomsScreenListView,
         builder: (context, state) {
           final String hotelId = (state.extra as String?) ?? "";
@@ -336,7 +337,6 @@ abstract class AppRouter {
               GoRoute(
                 path: routes.homeScreen,
                 builder: (context, state) {
-                  // استلام البيانات من extra
                   final data = state.extra as Map<String, dynamic>?;
 
                   return BlocProvider(
