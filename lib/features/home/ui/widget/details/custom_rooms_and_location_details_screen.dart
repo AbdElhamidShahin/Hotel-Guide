@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart' show SvgPicture;
 import 'package:go_router/go_router.dart';
+import 'package:hotel_guide/core/network/model/hotel.dart';
 import 'package:hotel_guide/core/router/routers.dart';
 
 import '../../../../../core/theme/app_theme.dart';
 import '../../../../../core/theme/colors.dart';
 
 class CustomRoomsAndLocationDetailsScreen extends StatelessWidget {
-  const CustomRoomsAndLocationDetailsScreen({super.key});
-
+  const CustomRoomsAndLocationDetailsScreen({super.key, required this.hotelModel});
+final HotelModel hotelModel;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -44,7 +45,7 @@ class CustomRoomsAndLocationDetailsScreen extends StatelessWidget {
         SizedBox(width: 12.w),
         GestureDetector(
           onTap: () {
-            context.go(routes.RoomsScreenListView);
+            context.go(routes.RoomsScreenListView,extra: hotelModel.id);
           },
 
           child: Container(

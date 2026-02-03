@@ -6,6 +6,7 @@ import 'package:hotel_guide/core/router/routers.dart';
 import 'package:hotel_guide/features/room/ui/widget/book_now_button.dart';
 
 import '../../../../core/helpers/widget/custom_appbar_widget.dart';
+import '../../../../core/network/model/room.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../home/ui/widget/details/custom_name_details.dart';
@@ -20,8 +21,8 @@ class FacilityModel {
 }
 
 class RoomDetailsPage extends StatelessWidget {
-  const RoomDetailsPage({super.key});
-
+  const RoomDetailsPage({super.key, required this.room});
+  final Room room;
   @override
   Widget build(BuildContext context) {
     final List<FacilityModel> facilitiesFromApi = [
@@ -35,11 +36,16 @@ class RoomDetailsPage extends StatelessWidget {
       FacilityModel(title: "تلفزيون بشاشة مسطحة", isAvailable: true),
       FacilityModel(title: "يمنع التدخين داخل الغرفة", isAvailable: false),
     ];
-
+    final List<FacilityModel> facilities = room.facilities.entries.map((entry) {
+      return FacilityModel(title: entry.key, isAvailable: entry.value);
+    }).toList();
     return Scaffold(
-      appBar: CustomAppbarWidget(name: "الغرفة",  onTap: (){
-        context.go(routes.RoomsScreenListView);
-      },),
+      appBar: CustomAppbarWidget(
+        name: "الغرفة",
+        onTap: () {
+          context.go(routes.RoomsScreenListView);
+        },
+      ),
 
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -57,11 +63,9 @@ class RoomDetailsPage extends StatelessWidget {
                       children: [
                         SizedBox(height: 32.h),
 
-                        CustomNameDetails(name: "غرفة مزدوجة بسريرين"),
-
+                        CustomNameDetails(name: room.name),
                         SizedBox(height: 12.h),
-                        const ImageGallerySection(),
-                        SizedBox(height: 32.h),
+                        ImageGallerySection(images: room.gallery),
                         Row(
                           children: [
                             _buildInfoChip(
@@ -87,7 +91,7 @@ class RoomDetailsPage extends StatelessWidget {
                         Wrap(
                           spacing: 8.w,
                           runSpacing: 10.h,
-                          children: facilitiesFromApi.map((facility) {
+                          children: facilities.map((facility) {
                             return FacilityItem(facility: facility);
                           }).toList(),
                         ),
@@ -96,8 +100,7 @@ class RoomDetailsPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                const BookNowButton(),
-              ],
+                BookNowButton(room: room),              ],
             ),
           ),
         ),

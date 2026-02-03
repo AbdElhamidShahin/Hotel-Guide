@@ -2,7 +2,6 @@ import '../../../../core/network/SupabaseService.dart';
 import '../../../../core/network/model/city.dart';
 import '../../../../core/network/model/hotel.dart';
 import '../../../../core/network/supabase_failure.dart';
-
 import 'home_repo.dart';
 
 class HomeRepoImpl implements HomeRepository {

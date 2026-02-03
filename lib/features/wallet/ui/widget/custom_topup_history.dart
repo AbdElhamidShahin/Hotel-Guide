@@ -37,7 +37,7 @@ class _CustomTopupHistoryState extends State<CustomTopupHistory> {
           selected: selectedPayment == 'wallet',
           onTap: () {
             setState(() => selectedPayment = 'wallet');
-            showAllWalletBottomSheet(context);
+            // showAllWalletBottomSheet(context);
           },
           trailing: Container(
             padding: EdgeInsets.all(12.r),

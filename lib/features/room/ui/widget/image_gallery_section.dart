@@ -5,20 +5,16 @@ import 'package:hotel_guide/core/theme/app_theme.dart';
 import '../../../../core/theme/colors.dart';
 
 class ImageGallerySection extends StatefulWidget {
-  const ImageGallerySection({super.key});
+  const ImageGallerySection({super.key, required this.images, this.vrUrl});
+
+  final List<String> images;
+  final String? vrUrl;
 
   @override
   State<ImageGallerySection> createState() => _ImageGallerySectionState();
 }
 
 class _ImageGallerySectionState extends State<ImageGallerySection> {
-  final List<String> images = [
-    'assets/images/1686f7773fafd4ad2711763e02dd037e6522c12a.jpg',
-    'assets/images/1686f7773fafd4ad2711763e02dd037e6522c12a.jpg',
-    'assets/Onpording/OnPoarding1.jpg',
-    'assets/Onpording/OnPoarding1.jpg',
-  ];
-
   int selectedIndex = 0;
 
   @override
@@ -35,11 +31,13 @@ class _ImageGallerySectionState extends State<ImageGallerySection> {
                 borderRadius: BorderRadius.circular(12.r),
                 child: AnimatedSwitcher(
                   duration: const Duration(milliseconds: 300),
-                  child: Image.asset(
-                    images[selectedIndex],
+                  child: Image.network(
+                    widget.images[selectedIndex],
                     key: ValueKey<int>(selectedIndex),
                     fit: BoxFit.cover,
                     width: double.infinity,
+                    errorBuilder: (context, error, stackTrace) =>
+                        const Center(child: Icon(Icons.broken_image, size: 50)),
                   ),
                 ),
               ),
@@ -49,7 +47,7 @@ class _ImageGallerySectionState extends State<ImageGallerySection> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List.generate(
-                  images.length,
+                  widget.images.length,
                   (index) => _buildDot(index == selectedIndex),
                 ),
               ),
@@ -76,7 +74,7 @@ class _ImageGallerySectionState extends State<ImageGallerySection> {
             child: GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: 4,
+              itemCount: widget.images.length > 4 ? 4 : widget.images.length,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 mainAxisSpacing: 12.h,
@@ -84,7 +82,7 @@ class _ImageGallerySectionState extends State<ImageGallerySection> {
                 childAspectRatio: 1.6,
               ),
               itemBuilder: (context, index) {
-                bool isLast = (index == 3);
+                bool isLast = (index == 3 && widget.images.length > 4);
                 return GestureDetector(
                   onTap: () {
                     if (isLast) {
@@ -96,40 +94,19 @@ class _ImageGallerySectionState extends State<ImageGallerySection> {
                     }
                   },
                   child: _buildThumbnail(
-                    images[index],
+                    widget.images[index],
                     isSelected: selectedIndex == index,
                     isLast: isLast,
-                    count: isLast ? "+11" : null,
+                    count: isLast ? "+${widget.images.length - 3}" : null,
                   ),
                 );
               },
             ),
           ),
         ),
+        SizedBox(height: 24.h),
 
-        SizedBox(height: 32.h),
-
-        Container(
-          width: 365.w,
-          decoration: BoxDecoration(
-            color: AppColors.primary,
-            borderRadius: BorderRadius.circular(30.r),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SvgPicture.asset("assets/icons/AR-view-see-through-eye.svg"),
-                SizedBox(width: 12),
-                Text(
-                  "مشاهدة الغرفة بالواقع الإفتراضي",
-                  style: textStyle22BoldPrimary.copyWith(fontSize: 19),
-                ),
-              ],
-            ),
-          ),
-        ),
+        if (widget.vrUrl != null && widget.vrUrl!.isNotEmpty) _buildVRButton(),
       ],
     );
   }
@@ -167,7 +144,7 @@ class _ImageGallerySectionState extends State<ImageGallerySection> {
               Expanded(
                 child: GridView.builder(
                   padding: EdgeInsets.all(16.w),
-                  itemCount: 15,
+                  itemCount: widget.images.length,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 10.w,
@@ -177,8 +154,8 @@ class _ImageGallerySectionState extends State<ImageGallerySection> {
                   itemBuilder: (context, index) {
                     return ClipRRect(
                       borderRadius: BorderRadius.circular(10.r),
-                      child: Image.asset(
-                        images[index % images.length],
+                      child: Image.network(
+                        widget.images[index],
                         fit: BoxFit.cover,
                       ),
                     );
@@ -217,35 +194,62 @@ class _ImageGallerySectionState extends State<ImageGallerySection> {
         border: isSelected
             ? Border.all(color: AppColors.primaryDark, width: 2)
             : Border.all(color: Colors.transparent, width: 2),
-        image: DecorationImage(
-          image: AssetImage(url),
-          fit: BoxFit.cover,
-          colorFilter: isSelected
-              ? null
-              : ColorFilter.mode(
-                  Colors.black.withOpacity(0.1),
-                  BlendMode.darken,
-                ),
-        ),
       ),
-      child: isLast && count != null
-          ? Container(
-              decoration: BoxDecoration(
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(10.r),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            Image.network(
+              url,
+              fit: BoxFit.cover,
+              color: isSelected ? null : Colors.black.withOpacity(0.1),
+              colorBlendMode: isSelected ? null : BlendMode.darken,
+            ),
+            if (isLast && count != null)
+              Container(
                 color: Colors.black.withOpacity(0.5),
-                borderRadius: BorderRadius.circular(12.r),
-              ),
-              child: Center(
-                child: Text(
-                  count,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.bold,
+                child: Center(
+                  child: Text(
+                    count,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
-            )
-          : null,
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildVRButton() {
+    return Padding(
+      padding: EdgeInsets.only(top: 32.h),
+      child: Container(
+        width: 365.w,
+        decoration: BoxDecoration(
+          color: AppColors.primary,
+          borderRadius: BorderRadius.circular(30.r),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SvgPicture.asset("assets/icons/AR-view-see-through-eye.svg"),
+              const SizedBox(width: 12),
+              Text(
+                "مشاهدة الغرفة بالواقع الإفتراضي",
+                style: textStyle22BoldPrimary.copyWith(fontSize: 19.sp),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

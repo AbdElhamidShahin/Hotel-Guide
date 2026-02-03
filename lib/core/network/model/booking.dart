@@ -1,31 +1,43 @@
-class Booking {
-  final String id;
-  final String userId; // Firebase UID
+class BookingModel {
+  final String roomId;
+  final String userId;
   final String hotelName;
-  final DateTime checkIn;
-  final DateTime checkOut;
-  final double totalAmount;
-  final String status;
+  final DateTime startDate;
+  final DateTime endDate;
+  final double totalPrice;
+  final String paymentMethod;
+  final int roomCount;
+  final int adults;
+  final int children;
+  final int totalDays;
 
-  Booking({
-    required this.id,
+  BookingModel({
+    required this.roomId,
     required this.userId,
     required this.hotelName,
-    required this.checkIn,
-    required this.checkOut,
-    required this.totalAmount,
-    required this.status,
+    required this.startDate,
+    required this.endDate,
+    required this.totalPrice,
+    required this.paymentMethod,
+    required this.roomCount,
+    required this.adults,
+    required this.children,
+    required this.totalDays,
   });
 
-  factory Booking.fromJson(Map<String, dynamic> json) {
-    return Booking(
-      id: json['id'],
-      userId: json['user_id'],
-      hotelName: json['hotels']['name'],
-      checkIn: DateTime.parse(json['check_in']),
-      checkOut: DateTime.parse(json['check_out']),
-      totalAmount: (json['total_amount'] as num).toDouble(),
-      status: json['booking_status'],
+  BookingModel copyWith({String? userId, String? paymentMethod}) {
+    return BookingModel(
+      roomId: roomId,
+      hotelName: hotelName,
+      startDate: startDate,
+      endDate: endDate,
+      totalPrice: totalPrice,
+      roomCount: roomCount,
+      adults: adults,
+      children: children,
+      totalDays: totalDays,
+      userId: userId ?? this.userId,
+      paymentMethod: paymentMethod ?? this.paymentMethod,
     );
   }
 }
