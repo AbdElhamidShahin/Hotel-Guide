@@ -4,6 +4,7 @@ class routes {
   static const String loginScreen = "/loginScreen";
   static const String signUpScreen = "/SignUpScreen";
   static const String homeScreen = "/homeScreen";
+  static const String walletScreen = "/walletScreen";
   static const String favoritesScreen = "/favorites";
   static const String customDetailsScreen = "/customDetailsScreen";
   static const String verificationScreen = "/VerificationScreen";
@@ -17,6 +18,5 @@ class routes {
   static const String RoomsScreenListView = "/RoomsScreenListView";
   static const String CustomRoom = "/CustomRoom";
   static const String BookingDetailsPage = "/BookingDetailsPage";
-  static const String WalletScreen = "/WalletScreen";
   static const String RoomDetailsPage = "/RoomDetailsPage";
-  static const String walletScreen = '/walletScreen';}
+}
