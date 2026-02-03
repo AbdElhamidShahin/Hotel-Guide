@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hotel_guide/core/helpers/widget/custom_item.dart';
-import 'package:hotel_guide/core/network/city_model.dart';
 import 'package:hotel_guide/core/router/routers.dart';
 import 'package:hotel_guide/features/favorite/ui/favorite_screen.dart';
 import 'package:hotel_guide/features/home/logic/cubit/home_cubit.dart';
@@ -33,8 +32,6 @@ import '../../features/wallet/date/wallet_cubit.dart';
 import '../../features/wallet/ui/wallet_screen.dart';
 import '../../main_app_shell.dart';
 import '../di/injection.dart';
-import '../network/hotel_bloc.dart';
-import '../network/hotel_model.dart';
 import '../network/model/city.dart';
 import '../network/model/hotel.dart';
 import '../network/model/room.dart';
@@ -165,13 +162,7 @@ abstract class AppRouter {
           return NotificationScreenListView();
         },
       ),
-      GoRoute(
-        path: routes.WalletScreen,
-        builder: (context, state) => BlocProvider(
-          create: (context) => getIt<WalletCubit>(),
-          child: WalletScreen(),
-        ),
-      ),
+
       GoRoute(
         path: routes.RoomsScreenListView,
         builder: (context, state) {
@@ -183,12 +174,7 @@ abstract class AppRouter {
           );
         },
       ),
-      // GoRoute(
-      //   path: routes.ShowCitysListVeiw,
-      //   builder: (BuildContext context, GoRouterState state) {
-      //     return ShowCitysListVeiw(count: null,);
-      //   },
-      // ),
+
       GoRoute(
         path: routes.menuScreen,
         pageBuilder: (context, state) {
@@ -254,8 +240,11 @@ abstract class AppRouter {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: routes.WalletScreen,
-                builder: (context, state) => WalletScreen(),
+                path: routes.walletScreen,
+                builder: (context, state) => BlocProvider(
+                  create: (context) => getIt<WalletCubit>(),
+                  child: WalletScreen(),
+                ),
               ),
             ],
           ),
@@ -267,67 +256,6 @@ abstract class AppRouter {
                   value: getIt<FavoriteCubit>(),
                   child: const FavoriteScreen(),
                 ),
-              ),
-            ],
-          ),
-
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: routes.homeScreen,
-                builder: (context, state) {
-                  final data = state.extra as Map<String, dynamic>?;
-
-                  return BlocProvider(
-                    create: (context) =>
-                        getIt<HomeCubit>()..getHotelsAndCities(),
-                    child: HomeScreen(name: data?["name"] ?? ""),
-                  );
-                },
-              ),
-            ],
-          ),
-        ],
-      ),
-
-      StatefulShellRoute.indexedStack(
-        builder: (context, state, navigationShell) {
-          return MainAppShell(navigationShell: navigationShell);
-        },
-        branches: [
-          // Index 0: Profile Screen (الشكل الأول)
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: routes.accountScreen,
-                builder: (context, state) {
-                  // استلام البيانات من extra
-                  final data = state.extra as Map<String, dynamic>?;
-
-                  return BlocProvider(
-                    create: (context) => getIt<HomeCubit>(),
-                    child: AccountScreen(name: data?["name"] ?? ""),
-                  );
-                },
-              ),
-            ],
-          ),
-
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: routes.WalletScreen,
-                builder: (context, state) => WalletScreen(),
-              ),
-            ],
-          ),
-
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: routes.favoritesScreen,
-                builder: (context, state) =>
-                    const Center(child: Text('Favorites Screen (Index 2)')),
               ),
             ],
           ),

@@ -1,19 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-<<<<<<< HEAD
-=======
 import 'package:hotel_guide/features/wallet/date/wallet_state.dart';
->>>>>>> 995711ec243f7d10854e56398e5e762129575847
 import 'package:hotel_guide/features/wallet/ui/widget/custom_refund_history.dart';
 import 'package:hotel_guide/features/wallet/ui/widget/custom_topup_history.dart';
 import 'package:hotel_guide/features/wallet/ui/widget/custom_wallet_balance.dart';
 import 'package:hotel_guide/features/wallet/ui/widget/custom_wallet_history.dart';
 import '../../../core/helpers/widget/custom_appbar_widget.dart';
-<<<<<<< HEAD
-=======
 import '../date/wallet_cubit.dart';
->>>>>>> 995711ec243f7d10854e56398e5e762129575847
 
 class WalletScreen extends StatefulWidget {
   WalletScreen({super.key});

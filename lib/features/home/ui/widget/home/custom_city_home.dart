@@ -1,14 +1,11 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hotel_guide/core/router/routers.dart';
 import 'package:hotel_guide/core/theme/app_theme.dart';
-
 import '../../../../../core/helpers/contact/build_error_widget.dart';
-import '../../../../../core/network/city_model.dart';
 import '../../../../../core/network/model/city.dart';
 import '../../../logic/cubit/home_cubit.dart';
 import '../../../logic/cubit/home_state.dart';
