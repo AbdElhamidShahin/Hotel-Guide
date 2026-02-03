@@ -1,20 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hotel_guide/core/theme/app_theme.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
 
+import '../../../../core/network/model/profile_model.dart';
+import '../../date/wallet_cubit.dart' show WalletCubit;
+import '../../date/wallet_state.dart';
+import 'custom_topup_history.dart';
+
 class CustomWalletBalance extends StatefulWidget {
   final Function(String) onTabChanged;
-  CustomWalletBalance({super.key, required this.onTabChanged});
+  CustomWalletBalance({
+    super.key,
+    required this.onTabChanged,
+    required this.profileModel,
+  });
+  final UserProfileModel profileModel;
 
   @override
   State<CustomWalletBalance> createState() => _CustomWalletBalanceState();
 }
 
 class _CustomWalletBalanceState extends State<CustomWalletBalance> {
-  String selectedPayment = 'history';
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -33,20 +42,7 @@ class _CustomWalletBalanceState extends State<CustomWalletBalance> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Container(
-                //   decoration: BoxDecoration(
-                //     color: AppColors.ShadowPurple,
-                //     borderRadius: BorderRadius.circular(50.r),
-                //   ),
-                //   child: IconButton(
-                //     onPressed: () {},
-                //     icon: Icon(
-                //       Icons.share_outlined,
-                //       size: 28.sp,
-                //       color: Colors.white,
-                //     ),
-                //   ),
-                // ),
+
                 Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(60.r),
@@ -63,7 +59,7 @@ class _CustomWalletBalanceState extends State<CustomWalletBalance> {
             ),
             SizedBox(height: 12.h),
             Text(
-              "Abdo Shahin",
+              widget.profileModel.fullName,
               style: textStyle23SemiBoldBlack.copyWith(color: Colors.white),
             ),
             SizedBox(height: 12.h),
@@ -74,12 +70,24 @@ class _CustomWalletBalanceState extends State<CustomWalletBalance> {
                 borderRadius: BorderRadius.circular(60.r),
                 color: AppColors.ShadowPurple,
               ),
-              child: Text(
-                "ID  224476353",
-                style: textStyle20BoldShadowPurple.copyWith(
-                  color: AppColors.white,
-                ),
-                textAlign: TextAlign.center,
+              child: Row(
+                children: [
+                  Text(
+                    "ID  ",
+                    style: textStyle22RegularWhite.copyWith(
+                      color: AppColors.white,
+                    ),
+                  ),
+                  Text(
+                    widget.profileModel.id.length > 8
+                        ? widget.profileModel.id.substring(0, 8).toUpperCase()
+                        : widget.profileModel.id,
+                    style: textStyle20BoldShadowPurple.copyWith(
+                      color: AppColors.white.withOpacity(0.6),
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
               ),
             ),
             SizedBox(height: 16.h),
@@ -100,7 +108,12 @@ class _CustomWalletBalanceState extends State<CustomWalletBalance> {
                         color: AppColors.white,
                       ),
                     ),
-                    Text("33,000 EGP", style: textStyle36BoldWhite),
+
+                    Text(
+                      "${widget.profileModel.walletBalance}",
+                      style: textStyle36BoldWhite,
+                    ),
+
                     SizedBox(height: 16.h),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

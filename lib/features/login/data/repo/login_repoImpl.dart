@@ -1,21 +1,16 @@
-
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'login_repostry.dart';
-class AuthRepositoryImpl implements LoginRepostry {
-  final FirebaseAuth _auth;
 
-  AuthRepositoryImpl(this._auth);
+class AuthRepositoryImpl implements LoginRepostry {
+  final SupabaseClient _supabaseClient;
+
+  AuthRepositoryImpl(this._supabaseClient);
 
   @override
-  Future<UserCredential> login(String email, String password) async {
-    try {
-      final userCredential = await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      return userCredential;
-    } on FirebaseAuthException {
-      rethrow;
-    }
+  Future<AuthResponse> login(String email, String password) async {
+    return await _supabaseClient.auth.signInWithPassword(
+      email: email,
+      password: password,
+    );
   }
 }

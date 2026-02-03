@@ -21,6 +21,7 @@ import '../../../core/helpers/widget/custom_item.dart';
 import '../../../core/network/hotel_model.dart';
 import '../../../core/network/model/hotel.dart';
 import '../../../core/router/routers.dart';
+import '../../room/logic/room_cubit.dart';
 import '../logic/cubit/home_cubit.dart';
 
 class CustomDetailsScreen extends StatefulWidget {
@@ -36,6 +37,7 @@ class _CustomDetailsScreenState extends State<CustomDetailsScreen> {
   void initState() {
     super.initState();
     context.read<HomeCubit>().getHotelsAndCities();
+    context.read<RoomCubit>().getRoomsHotel(widget.hotelModel.id);
   }
 
   @override
@@ -115,7 +117,9 @@ class _CustomDetailsScreenState extends State<CustomDetailsScreen> {
               ),
 
               SizedBox(height: 12.h),
-              CustomRoomsAndLocationDetailsScreen(),
+              CustomRoomsAndLocationDetailsScreen(
+                hotelModel: widget.hotelModel,
+              ),
               SizedBox(height: 150.h),
               Center(
                 child: Text(
