@@ -5,8 +5,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hotel_guide/core/theme/app_theme.dart';
 import 'package:snackly/snackly.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../network/hotel_model.dart';
 import '../../network/model/hotel.dart';
 import '../../router/routers.dart';
 import '../../theme/colors.dart';

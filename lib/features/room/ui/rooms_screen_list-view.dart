@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hotel_guide/core/network/hotel_model.dart';
 import 'package:hotel_guide/features/room/ui/widget/custom_rooms_list_view_item.dart';
 import '../../../core/helpers/widget/custom_appbar_widget.dart';
 import '../../../core/router/routers.dart';

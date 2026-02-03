@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hotel_guide/core/network/hotel_model.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
 import 'package:snackly/snackly.dart';
 import '../../../../core/di/injection.dart';

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hotel_guide/core/helpers/widget/custom_item.dart';
-import 'package:hotel_guide/core/network/city_model.dart';
 import 'package:hotel_guide/core/router/routers.dart';
 import 'package:hotel_guide/features/favorite/ui/favorite_screen.dart';
 import 'package:hotel_guide/features/home/logic/cubit/home_cubit.dart';
@@ -26,12 +25,9 @@ import '../../features/room/ui/custom_room.dart';
 import '../../features/room/ui/rooms_screen_list-view.dart';
 import '../../features/room/ui/widget/room_details_page.dart';
 import '../../features/sign_up/ui/sign_up_screen.dart';
-
 import '../../features/wallet/ui/wallet_screen.dart';
 import '../../main_app_shell.dart';
 import '../di/injection.dart';
-import '../network/hotel_bloc.dart';
-import '../network/hotel_model.dart';
 import '../network/model/city.dart';
 import '../network/model/hotel.dart';
 

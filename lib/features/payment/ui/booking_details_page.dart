@@ -6,7 +6,6 @@ import 'package:hotel_guide/core/theme/colors.dart';
 import 'package:hotel_guide/features/payment/ui/widget/booking_calendar.dart';
 import 'package:hotel_guide/features/payment/ui/widget/booking_card.dart';
 import 'package:hotel_guide/features/payment/ui/widget/counter_row.dart';
-import 'package:hotel_guide/features/payment/ui/widget/custom_wallet_item.dart';
 import 'package:hotel_guide/features/payment/ui/widget/payment_summary_section.dart';
 import 'package:hotel_guide/features/payment/ui/widget/price_section.dart';
 import 'package:hotel_guide/features/payment/ui/widget/show_all_card_bottom_sheet.dart';
@@ -14,7 +13,6 @@ import 'package:hotel_guide/features/payment/ui/widget/show_all_wallet_bottom_sh
 import '../../../core/helpers/widget/custom_appbar_widget.dart';
 import '../../../core/router/routers.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../room/ui/widget/room_details_page.dart';
 
 class BookingDetailsPage extends StatefulWidget {
   const BookingDetailsPage({super.key});
