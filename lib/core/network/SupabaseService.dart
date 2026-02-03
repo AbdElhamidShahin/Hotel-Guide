@@ -23,7 +23,9 @@ class SupabaseService {
 
   Future<void> createBooking(Map<String, dynamic> bookingData) async {
     try {
-      await _client.from('bookings').insert(bookingData);
+      await _client
+          .from('bookings')
+          .insert(bookingData); // بنعمل هنا ادراج لجدول البيانات
     } catch (e) {
       print("Supabase Error: $e");
       rethrow;
@@ -32,20 +34,14 @@ class SupabaseService {
 
   Future<List<Map<String, dynamic>>> fetchRooms(String hotelId) async {
     try {
-      print("📡 [Supabase]: جاري الاتصال بجدول rooms للفندق: $hotelId");
-
       final response = await _client
           .from('rooms')
           .select()
           .eq('hotel_id', hotelId);
 
-      print("📥 [Supabase Raw Response]: $response"); // لو طبع [] يبقى الـ ID ملوش داتا هناك
       return response as List<Map<String, dynamic>>;
     } catch (e) {
-      print("⚠️ [Supabase Error]: $e");
       throw e;
     }
   }
-
-
 }
