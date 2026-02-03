@@ -4,12 +4,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hotel_guide/core/router/routers.dart';
 
+import '../../../../core/network/model/room.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/colors.dart';
 
 class BookNowButton extends StatelessWidget {
-  const BookNowButton({super.key});
-
+  const BookNowButton({super.key, required this.room,});
+  final Room room;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -18,7 +19,7 @@ class BookNowButton extends StatelessWidget {
       margin: EdgeInsets.symmetric(horizontal: 30.w, vertical: 20.h),
       child: ElevatedButton(
         onPressed: () {
-          context.go(routes.BookingDetailsPage);
+          context.go(routes.BookingDetailsPage, extra: room);
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primaryDark,

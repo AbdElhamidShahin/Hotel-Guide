@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
@@ -6,44 +7,59 @@ import 'package:hotel_guide/core/theme/colors.dart';
 import 'package:hotel_guide/features/payment/ui/widget/booking_calendar.dart';
 import 'package:hotel_guide/features/payment/ui/widget/booking_card.dart';
 import 'package:hotel_guide/features/payment/ui/widget/counter_row.dart';
-import 'package:hotel_guide/features/payment/ui/widget/custom_wallet_item.dart';
-import 'package:hotel_guide/features/payment/ui/widget/payment_summary_section.dart';
 import 'package:hotel_guide/features/payment/ui/widget/price_section.dart';
 import 'package:hotel_guide/features/payment/ui/widget/show_all_card_bottom_sheet.dart';
 import 'package:hotel_guide/features/payment/ui/widget/show_all_wallet_bottom_sheet.dart';
 import '../../../core/helpers/widget/custom_appbar_widget.dart';
+import '../../../core/network/model/booking.dart';
+import '../../../core/network/model/room.dart';
 import '../../../core/router/routers.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../room/ui/widget/room_details_page.dart';
+import '../logic/booking_cubit.dart';
 
 class BookingDetailsPage extends StatefulWidget {
-  const BookingDetailsPage({super.key});
+  const BookingDetailsPage({super.key, required this.room});
+  final Room room;
 
   @override
   State<BookingDetailsPage> createState() => _BookingDetailsPageState();
 }
 
 class _BookingDetailsPageState extends State<BookingDetailsPage> {
-  // Prices
-  final double pricePerNight = 1000;
+  // الثوابت الإضافية (يمكنك جعلها ديناميكية أيضاً لو أردت)
   final double taxes = 500;
   final double services = 300;
 
-  // Counters
+  // العدادات
   int rooms = 1;
   int adults = 2;
   int children = 1;
 
-  // Payment
+  // الدفع والتاريخ
   String selectedPayment = 'wallet';
   DateTime focusedDay = DateTime.now();
   DateTime? rangeStart = DateTime.now();
   DateTime? rangeEnd = DateTime.now().add(const Duration(days: 1));
 
-  int get totalDays => rangeStart != null && rangeEnd != null
-      ? rangeEnd!.difference(rangeStart!).inDays + 1
-      : 1;
+  // متغير السعر الذي سيتم تخصيصه من الـ Room
+  late double pricePerNight;
 
+  @override
+  void initState() {
+    super.initState();
+    // تخصيص السعر القادم من الغرفة عند بدء الشاشة
+    pricePerNight = widget.room.price.toDouble();
+  }
+
+  // حساب عدد الأيام بناءً على النطاق المختار
+  int get totalDays {
+    if (rangeStart != null && rangeEnd != null) {
+      return rangeEnd!.difference(rangeStart!).inDays + 1;
+    }
+    return 1;
+  }
+
+  // حساب المبالغ المالية
   double get subTotal => pricePerNight * totalDays * rooms;
   double get totalPrice => subTotal + taxes + services;
 
@@ -52,9 +68,9 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: CustomAppbarWidget(
-        name: "الغرفه",
+        name: "تفاصيل الحجز",
         onTap: () {
-          context.go(routes.RoomDetailsPage);
+          context.pop(); // العودة للخلف بشكل سليم
         },
       ),
       body: Directionality(
@@ -64,6 +80,7 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // قسم التقويم
               BookingCalendar(
                 focusedDay: focusedDay,
                 rangeStart: rangeStart,
@@ -77,8 +94,9 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                 },
               ),
 
-              SizedBox(height: 60.h),
+              SizedBox(height: 30.h),
 
+              // قسم العدادات
               CounterRow(
                 title: "عدد الغرف",
                 value: rooms,
@@ -119,9 +137,9 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                 total: totalPrice,
               ),
 
-              SizedBox(height: 80.h),
+              SizedBox(height: 30.h),
 
-              _sectionTitle("حجوزاتي"),
+              _sectionTitle("الغرفة المختارة"),
               SizedBox(height: 15.h),
               const BookingCard(),
 
@@ -129,44 +147,52 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
 
               _sectionTitle("وسائل الدفع"),
               SizedBox(height: 15.h),
-
-              PaymentTile(
+              _buildPaymentTile(
                 title: "المحفظة الإلكترونية",
-                selected: selectedPayment == 'wallet',
+                isSelected: selectedPayment == 'wallet',
                 onTap: () {
                   setState(() => selectedPayment = 'wallet');
-                  showAllWalletBottomSheet(context);
-                },
-                trailing: Container(
-                  padding: EdgeInsets.all(12.r),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30.r),
-                    color: AppColors.ShadowPurple.withOpacity(0.1),
-                  ),
-                  child: SvgPicture.asset("assets/icons/empty-wallet.svg"),
-                ),
-              ),
+                  if (rangeStart != null && rangeEnd != null) { //تحقق من التواريخ
+                    final bookingInfo = BookingModel(
+                      hotelName: widget.room.name,
+                      totalPrice: totalPrice,
+                      roomId: widget.room.id.toString(),
+                      startDate: rangeStart!,
+                      endDate: rangeEnd!,
+                      roomCount: rooms,
+                      adults: adults,
+                      children: children,
+                      totalDays: totalDays,
+                      userId: '',
+                      paymentMethod: 'wallet',
+                    );
 
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
+                      builder: (modalContext) => BlocProvider.value(
+                        value: context.read<BookingCubit>(),
+                        child: WalletBottomSheet(bookingData: bookingInfo),
+                      ),
+                    );
+                  }
+                },
+                icon: "assets/icons/empty-wallet.svg",
+              ),
               SizedBox(height: 12.h),
 
-              PaymentTile(
+              _buildPaymentTile(
                 title: "البطاقة البنكية",
-                selected: selectedPayment == 'card',
+                isSelected: selectedPayment == 'card',
                 onTap: () {
                   setState(() => selectedPayment = 'card');
                   showAllCardBottomSheet(context);
                 },
-
-                trailing: Row(
-                  children: [
-                    SvgPicture.asset("assets/icons/MasterCard.svg"),
-                    SizedBox(width: 8.w),
-                    SvgPicture.asset("assets/icons/Visa.svg"),
-                  ],
-                ),
+                isCard: true,
               ),
 
-              SizedBox(height: 80.h),
+              SizedBox(height: 40.h),
             ],
           ),
         ),
@@ -178,6 +204,67 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
     return Text(
       title,
       style: textStyle20BoldShadowPurple.copyWith(color: AppColors.black6),
+    );
+  }
+
+  Widget _buildPaymentTile({
+    required String title,
+    required bool isSelected,
+    required VoidCallback onTap,
+    String? icon,
+    bool isCard = false,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.all(16.r),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12.r),
+          border: Border.all(
+            color: isSelected ? AppColors.primary : Colors.grey.shade200,
+            width: isSelected ? 2 : 1,
+          ),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 20.r,
+              height: 20.r,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: AppColors.primary),
+                color: isSelected ? AppColors.primary : Colors.transparent,
+              ),
+              child: isSelected
+                  ? Icon(Icons.check, size: 12.r, color: Colors.white)
+                  : null,
+            ),
+            SizedBox(width: 12.w),
+            Text(
+              title,
+              style: textStyle16RegularGray.copyWith(color: Colors.black),
+            ),
+            const Spacer(),
+            if (isCard)
+              Row(
+                children: [
+                  SvgPicture.asset("assets/icons/MasterCard.svg", width: 30.w),
+                  SizedBox(width: 8.w),
+                  SvgPicture.asset("assets/icons/Visa.svg", width: 30.w),
+                ],
+              )
+            else if (icon != null)
+              Container(
+                padding: EdgeInsets.all(8.r),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8.r),
+                  color: AppColors.ShadowPurple.withOpacity(0.1),
+                ),
+                child: SvgPicture.asset(icon, width: 20.w),
+              ),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -7,6 +7,7 @@ import 'package:hotel_guide/core/router/routers.dart';
 import 'package:hotel_guide/features/favorite/ui/favorite_screen.dart';
 import 'package:hotel_guide/features/home/logic/cubit/home_cubit.dart';
 import 'package:hotel_guide/features/home/ui/menu_screen.dart';
+import 'package:hotel_guide/features/room/logic/room_cubit.dart';
 import 'package:hotel_guide/features/search/logic/cubit/search_cubit.dart';
 import 'package:hotel_guide/features/search/ui/search_screen.dart';
 import 'package:hotel_guide/features/sign_up/logic/cubit/sign_up_cubit.dart';
@@ -19,6 +20,7 @@ import '../../features/login/logic/cubit/login_cubit.dart';
 import '../../features/login/ui/login_screen.dart';
 import '../../features/notification/ui/notification_screen.dart';
 import '../../features/on_boarding/ui/on_boarding_screen.dart';
+import '../../features/payment/logic/booking_cubit.dart';
 import '../../features/payment/ui/booking_details_page.dart';
 import '../../features/profile/ui/edit_account_screen.dart';
 import '../../features/profile/ui/profile_screen.dart';
@@ -27,6 +29,7 @@ import '../../features/room/ui/rooms_screen_list-view.dart';
 import '../../features/room/ui/widget/room_details_page.dart';
 import '../../features/sign_up/ui/sign_up_screen.dart';
 
+import '../../features/wallet/date/wallet_cubit.dart';
 import '../../features/wallet/ui/wallet_screen.dart';
 import '../../main_app_shell.dart';
 import '../di/injection.dart';
@@ -34,22 +37,7 @@ import '../network/hotel_bloc.dart';
 import '../network/hotel_model.dart';
 import '../network/model/city.dart';
 import '../network/model/hotel.dart';
-
-class AppRoutes {
-  static const String home = '/';
-  static const String details = '/details';
-
-  static Route<dynamic> generateRoute(RouteSettings settings) {
-    switch (settings.name) {
-      case home:
-        return MaterialPageRoute(builder: (_) => const HomeScreen(name: ''));
-      default:
-        return MaterialPageRoute(
-          builder: (_) => const Scaffold(body: Text('Error')),
-        );
-    }
-  }
-}
+import '../network/model/room.dart';
 
 abstract class AppRouter {
   static final router = GoRouter(
@@ -89,6 +77,7 @@ abstract class AppRouter {
             providers: [
               BlocProvider.value(value: getIt<FavoriteCubit>()),
               BlocProvider(create: (context) => getIt<HomeCubit>()),
+              BlocProvider(create: (context) => getIt<RoomCubit>()),
             ],
             child: CustomDetailsScreen(hotelModel: state.extra as HotelModel),
           );
@@ -97,10 +86,14 @@ abstract class AppRouter {
       GoRoute(
         path: routes.cityHotelsScreen,
         builder: (context, state) {
-          final city = state.extra as CityModel;
+          final extraData = state.extra as Map<String, dynamic>;
+
+          final city = extraData['city'] as CityModel;
+          final hotels = extraData['hotels'] as List<HotelModel>;
+
           return BlocProvider.value(
             value: getIt<FavoriteCubit>(),
-            child: CityHotelsScreen(city: city, hotels: []),
+            child: CityHotelsScreen(city: city, hotels: hotels),
           );
         },
       ),
@@ -138,22 +131,34 @@ abstract class AppRouter {
       GoRoute(
         path: routes.CustomRoom,
         builder: (BuildContext context, GoRouterState state) {
-          return CustomRoom();
-        },
-      ),
+          final room = state.extra as Room;
 
-      GoRoute(
-        path: routes.BookingDetailsPage,
-        builder: (BuildContext context, GoRouterState state) {
-          return BookingDetailsPage();
+          return BlocProvider(
+            create: (context) => getIt<RoomCubit>(),
+            child: CustomRoom(room: room),
+          );
         },
       ),
       GoRoute(
         path: routes.RoomDetailsPage,
-        builder: (BuildContext context, GoRouterState state) {
-          return RoomDetailsPage();
+        builder: (context, state) {
+          final room = state.extra as Room;
+          return RoomDetailsPage(room: room);
         },
       ),
+      // في ملف app_router.dart
+      // في ملف app_router.dart
+      GoRoute(
+        path: routes.BookingDetailsPage,
+        builder: (context, state) {
+          final room = state.extra as Room; // استخراج الغرفة من الـ extra
+          return BlocProvider(
+            create: (context) => getIt<BookingCubit>(),
+            child: BookingDetailsPage(room: room), // تمريرها للشاشة
+          );
+        },
+      ),
+
       GoRoute(
         path: routes.notification,
         builder: (BuildContext context, GoRouterState state) {
@@ -161,9 +166,21 @@ abstract class AppRouter {
         },
       ),
       GoRoute(
+        path: routes.WalletScreen,
+        builder: (context, state) => BlocProvider(
+          create: (context) => getIt<WalletCubit>(),
+          child: WalletScreen(),
+        ),
+      ),
+      GoRoute(
         path: routes.RoomsScreenListView,
-        builder: (BuildContext context, GoRouterState state) {
-          return RoomsScreenListView();
+        builder: (context, state) {
+          final String hotelId = (state.extra as String?) ?? "";
+
+          return BlocProvider.value(
+            value: getIt<RoomCubit>(),
+            child: RoomsScreenListView(hotelId: hotelId),
+          );
         },
       ),
       // GoRoute(
@@ -320,7 +337,6 @@ abstract class AppRouter {
               GoRoute(
                 path: routes.homeScreen,
                 builder: (context, state) {
-                  // استلام البيانات من extra
                   final data = state.extra as Map<String, dynamic>?;
 
                   return BlocProvider(
