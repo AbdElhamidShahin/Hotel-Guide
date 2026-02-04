@@ -37,11 +37,12 @@ Future<void> setupGetIt() async {
   getIt.registerFactory<LoginCubit>(() => LoginCubit(getIt<LoginRepostry>()));
 
   /// Signup
-  getIt.registerLazySingleton<SignUpRepostry>(
-    () => SignUpRepoimpl(getIt<FirebaseAuth>()),
+  getIt.registerLazySingleton<SignUpRepository>(
+        () => SignUpRepoImpl(),
   );
+
   getIt.registerFactory<SignUpCubit>(
-    () => SignUpCubit(getIt<SignUpRepostry>()),
+        () => SignUpCubit(getIt<SignUpRepository>()),
   );
 
   /// Home & Hotel

@@ -29,7 +29,6 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
   // الثوابت الإضافية (يمكنك جعلها ديناميكية أيضاً لو أردت)
   final double taxes = 500;
   final double services = 300;
-
   // العدادات
   int rooms = 1;
   int adults = 2;
@@ -150,33 +149,25 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
               _buildPaymentTile(
                 title: "المحفظة الإلكترونية",
                 isSelected: selectedPayment == 'wallet',
+
                 onTap: () {
                   setState(() => selectedPayment = 'wallet');
-                  if (rangeStart != null && rangeEnd != null) { //تحقق من التواريخ
-                    final bookingInfo = BookingModel(
-                      hotelName: widget.room.name,
-                      totalPrice: totalPrice,
-                      roomId: widget.room.id.toString(),
-                      startDate: rangeStart!,
-                      endDate: rangeEnd!,
-                      roomCount: rooms,
-                      adults: adults,
-                      children: children,
-                      totalDays: totalDays,
-                      userId: '',
-                      paymentMethod: 'wallet',
-                    );
 
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      backgroundColor: Colors.transparent,
-                      builder: (modalContext) => BlocProvider.value(
-                        value: context.read<BookingCubit>(),
-                        child: WalletBottomSheet(bookingData: bookingInfo),
-                      ),
-                    );
-                  }
+                  final bookingInfo = BookingModel(
+                    hotelName: widget.room.name,
+                    totalPrice: totalPrice,
+                    roomId: widget.room.id.toString(),
+                    startDate: rangeStart ?? DateTime.now(),
+                    endDate: rangeEnd ?? DateTime.now(),
+                    roomCount: rooms,
+                    adults: adults,
+                    children: children,
+                    totalDays: totalDays,
+                    userId: '',
+                    paymentMethod: 'wallet',
+                  );
+
+                  showWalletBottomSheet(context, bookingInfo);
                 },
                 icon: "assets/icons/empty-wallet.svg",
               ),
