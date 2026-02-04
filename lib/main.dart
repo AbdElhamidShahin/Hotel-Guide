@@ -6,11 +6,12 @@ import 'core/di/injection.dart';
 import 'firebase_options.dart';
 import 'hotel_app.dart';
 import 'package:intl/date_symbol_data_local.dart';
+
 void main() async {
   setupGetIt();
-  await ScreenUtil.ensureScreenSize();WidgetsFlutterBinding.ensureInitialized();
+  await ScreenUtil.ensureScreenSize();
+  WidgetsFlutterBinding.ensureInitialized();
   await Supabase.initialize(
-
     url: 'https://oavjmvbwyrkixfnlzmcg.supabase.co',
     anonKey:
         '***REMOVED***',

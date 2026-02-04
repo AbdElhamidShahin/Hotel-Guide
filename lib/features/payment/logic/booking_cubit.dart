@@ -6,8 +6,11 @@ import 'booking_state.dart';
 class BookingCubit extends Cubit<BookingStates> {
   final BookingRepository repository;
   String selectedWallet = 'orange';
+  BookingModel? currentBookingData;
   BookingCubit(this.repository) : super(BookingInitial());
-
+  void updateBookingData(BookingModel data) {
+    currentBookingData = data;
+  }
   Future<void> confirmBooking(BookingModel booking) async {
     if (booking.paymentMethod != 'AQUA') {
     emit(BookingError("نعتذر، محفظة AQUA هي المتاحة فقط حالياً."));

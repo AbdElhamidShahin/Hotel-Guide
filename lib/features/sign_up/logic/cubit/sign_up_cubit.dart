@@ -1,23 +1,26 @@
 import 'package:bloc/bloc.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:hotel_guide/features/sign_up/data/repo/sign_up_repo.dart';
-import 'package:hotel_guide/features/sign_up/logic/cubit/sign_up_state.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../data/repo/sign_up_repo.dart';
+import 'sign_up_state.dart';
 
 class SignUpCubit extends Cubit<SignUpState> {
-  final SignUpRepostry _signUpRepostry;
+  final SignUpRepository _signUpRepository;
+
   final TextEditingController nameController = TextEditingController();
-  final TextEditingController confirmPasswordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  SignUpCubit(this._signUpRepostry) : super(SignUpInitial());
+  SignUpCubit(this._signUpRepository) : super(SignUpInitial());
 
   Future<void> signUpUser() async {
     if (!formKey.currentState!.validate()) return;
 
-    if (passwordController.text.trim() != confirmPasswordController.text.trim()) {
+    if (passwordController.text.trim() !=
+        confirmPasswordController.text.trim()) {
       emit(SignUpError("كلمة المرور وتأكيدها غير متطابقين. ❌"));
       return;
     }
@@ -25,45 +28,41 @@ class SignUpCubit extends Cubit<SignUpState> {
     emit(SignUpLoading());
 
     try {
-      final userCredential = await _signUpRepostry.signUp(
-        emailController.text.trim(),
-        passwordController.text.trim(),
-        nameController.text.trim(),
-        confirmPasswordController.text.trim(),
+      final response = await _signUpRepository.signUp(
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+        name: nameController.text.trim(),
       );
 
-      final user = userCredential.user;
-
-      if (user != null) {
+      if (response.user != null) {
+        if (response.session == null) {
+          emit(SignUpEmailNotVerified());
+        } else {
+          await Future.delayed(const Duration(seconds: 1));
           emit(SignUpSuccess("تم إنشاء الحساب بنجاح!"));
+        }
       }
-    } on FirebaseAuthException catch (e) {
-      print("Firebase Error Code: ${e.code}");
-      String errorMessage = _mapFirebaseAuthErrorToArabic(e.code);
-      emit(SignUpError(errorMessage));
+    } on AuthException catch (e) {
+      print("Supabase Error: ${e.message}");
+      emit(SignUpError(_mapSupabaseError(e.message)));
     } catch (e) {
       print("General Error: $e");
-      emit(SignUpError("حدث خطأ غير متوقع. نعتذر، يرجى المحاولة لاحقاً. 🚧"));
+      emit(SignUpError("حدث خطأ غير متوقع. حاول مرة أخرى. 🚧"));
     }
   }
 
-  String _mapFirebaseAuthErrorToArabic(String errorCode) {
-    switch (errorCode) {
-      case 'invalid-credential':
-        return "البريد الإلكتروني أو كلمة المرور غير صحيحة. 🔑";
-      case 'user-not-found':
-      case 'wrong-password':
-        return "البريد الإلكتروني أو كلمة المرور غير صحيحة. 🔑";
-      case 'email-already-in-use':
-        return "البريد الإلكتروني مستخدم بالفعل. ⚠️";
-      case 'invalid-email':
-        return "صيغة البريد الإلكتروني غير صحيحة. 📧";
-      case 'weak-password':
-        return "كلمة المرور ضعيفة. اختر كلمة مرور أقوى 🔒";
-      case 'network-request-failed':
-        return "فشل الاتصال بالشبكة. تأكد من اتصالك بالإنترنت. 🌐";
-      default:
-        return "فشلت عملية التسجيل. يرجى المحاولة لاحقاً. 🚧";
+  String _mapSupabaseError(String message) {
+    message = message.toLowerCase();
+    if (message.contains("user already registered") ||
+        message.contains("already exists")) {
+      return "البريد الإلكتروني مستخدم بالفعل. ⚠️";
+    } else if (message.contains("password should be at least")) {
+      return "كلمة المرور يجب أن تكون 6 أحرف على الأقل. 🔒";
+    } else if (message.contains("invalid email")) {
+      return "صيغة البريد الإلكتروني غير صحيحة. 📧";
+    } else if (message.contains("network")) {
+      return "مشكلة في الاتصال بالإنترنت. 🌐";
     }
+    return "فشل إنشاء الحساب: $message";
   }
 }
