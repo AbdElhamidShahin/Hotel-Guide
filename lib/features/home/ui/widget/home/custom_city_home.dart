@@ -68,8 +68,6 @@ class CustomCityHome extends StatelessWidget {
                   );
                 },
               ),
-
-              const Divider(height: 30),
             ],
           );
         }

@@ -25,17 +25,6 @@ class RoomDetailsPage extends StatelessWidget {
   final Room room;
   @override
   Widget build(BuildContext context) {
-    final List<FacilityModel> facilitiesFromApi = [
-      FacilityModel(title: "تكييف", isAvailable: true),
-      FacilityModel(title: "تدفئة", isAvailable: true),
-      FacilityModel(title: "مروحة", isAvailable: true),
-      FacilityModel(title: "تلفزيون بشاشة مسطحة", isAvailable: true),
-      FacilityModel(title: "تلفزيون بشاشة مسطحة", isAvailable: true),
-      FacilityModel(title: "تدفئة", isAvailable: true),
-      FacilityModel(title: "مروحة", isAvailable: true),
-      FacilityModel(title: "تلفزيون بشاشة مسطحة", isAvailable: true),
-      FacilityModel(title: "يمنع التدخين داخل الغرفة", isAvailable: false),
-    ];
     final List<FacilityModel> facilities = room.facilities.entries.map((entry) {
       return FacilityModel(title: entry.key, isAvailable: entry.value);
     }).toList();
@@ -100,7 +89,8 @@ class RoomDetailsPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                BookNowButton(room: room),              ],
+                BookNowButton(room: room),
+              ],
             ),
           ),
         ),

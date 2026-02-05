@@ -21,7 +21,8 @@ void showWalletBottomSheet(BuildContext context, BookingModel bookingData) {
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
-    builder: (context) { // استخدمنا Context العادي هنا لسهولة التعامل
+    builder: (context) {
+      // استخدمنا Context العادي هنا لسهولة التعامل
       return Container(
         height: MediaQuery.of(context).size.height * 0.6,
         decoration: BoxDecoration(
@@ -42,7 +43,9 @@ void showWalletBottomSheet(BuildContext context, BookingModel bookingData) {
                   ),
                   Text(
                     "المحفظة الإلكترونية",
-                    style: textStyle20RegularPrimary.copyWith(color: AppColors.black6),
+                    style: textStyle20RegularPrimary.copyWith(
+                      color: AppColors.black6,
+                    ),
                   ),
                 ],
               ),
@@ -78,17 +81,16 @@ void showWalletBottomSheet(BuildContext context, BookingModel bookingData) {
 
             const Spacer(),
 
-            // زر التأكيد
             Padding(
               padding: EdgeInsets.only(bottom: 30.h),
               child: GestureDetector(
-                onTap: () {
+                onTap: () async {
                   if (bookingCubit.selectedWallet != 'AQUA') {
                     showCustomSnackbar(
                       context,
                       ContentType.warning,
                       'تنبيه',
-                      'عفواً، الدفع عن طريق أورنج كاش غير متاح حالياً. يرجى استخدام محفظة AQUA.',
+                      'يرجى اختيار محفظة AQUA',
                     );
                     return;
                   }
@@ -101,17 +103,35 @@ void showWalletBottomSheet(BuildContext context, BookingModel bookingData) {
                     paymentMethod: bookingCubit.selectedWallet,
                   );
 
-                  bookingCubit.confirmBooking(finalBooking);
-
-                  // استماع بسيط للنجاح
-                  Navigator.pop(context);
-                  context.go(routes.homeScreen);
-                  showCustomSnackbar(
-                    context,
-                    ContentType.success,
-                    'تم الحجز بنجاح ✅',
-                    '',
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (context) =>
+                        const Center(child: CircularProgressIndicator()),
                   );
+
+                  await bookingCubit.confirmBooking(finalBooking);
+
+                  if (context.mounted) Navigator.pop(context);
+
+                  if (bookingCubit.state is BookingSuccess) {
+                    Navigator.pop(context);
+                    context.go(routes.homeScreen);
+                    showCustomSnackbar(
+                      context,
+                      ContentType.success,
+                      'تم الحجز بنجاح ✅',
+                      'تم خصم المبلغ من محفظتك',
+                    );
+                  } else if (bookingCubit.state is BookingError) {
+                    final error = (bookingCubit.state as BookingError).message;
+                    showCustomSnackbar(
+                      context,
+                      ContentType.failure,
+                      'عفواً، رصيد محفظتك غير كافي لإتمام الحجز',
+                      error,
+                    );
+                  }
                 },
                 child: Container(
                   width: MediaQuery.of(context).size.width * 0.85,
@@ -123,7 +143,9 @@ void showWalletBottomSheet(BuildContext context, BookingModel bookingData) {
                   child: Center(
                     child: Text(
                       "تأكيد دفع ${bookingData.totalPrice.toInt()} EGP",
-                      style: textStyle20BoldShadowPurple.copyWith(color: Colors.white),
+                      style: textStyle20BoldShadowPurple.copyWith(
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ),

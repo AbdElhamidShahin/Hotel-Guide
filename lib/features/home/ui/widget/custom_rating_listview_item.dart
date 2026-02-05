@@ -81,7 +81,7 @@ class CustomRatingListviewItem extends StatelessWidget {
                     ),
                     Positioned(
                       top: 0.h,
-                      left: 12.w,
+                      left: 20.w,
                       child: Container(
                         height: 50.h,
                         width: 50.w,
