@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hotel_guide/core/network/SupabaseService.dart';
 import 'package:hotel_guide/features/login/data/repo/login_repostry.dart';
@@ -26,7 +25,6 @@ final getIt = GetIt.instance;
 
 Future<void> setupGetIt() async {
   /// Firebase & Services
-  getIt.registerLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance);
   getIt.registerLazySingleton<SupabaseService>(() => SupabaseService());
 
   /// Login
