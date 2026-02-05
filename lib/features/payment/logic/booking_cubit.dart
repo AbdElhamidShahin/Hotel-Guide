@@ -1,4 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../../core/network/model/booking.dart';
+import '../data/repo.dart';
+import 'booking_state.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../core/network/model/booking.dart';
 import '../data/repo.dart';
 import 'booking_state.dart';
@@ -11,19 +17,35 @@ class BookingCubit extends Cubit<BookingStates> {
   void updateBookingData(BookingModel data) {
     currentBookingData = data;
   }
+
   Future<void> confirmBooking(BookingModel booking) async {
     if (booking.paymentMethod != 'AQUA') {
-    emit(BookingError("نعتذر، محفظة AQUA هي المتاحة فقط حالياً."));
-    return;
-  }
+      emit(BookingError("نعتذر، محفظة AQUA هي المتاحة فقط حالياً."));
+      return;
+    }
+
     emit(BookingLoading());
 
     try {
       await repository.confirmBooking(booking);
+      final user = Supabase.instance.client.auth.currentUser;
+      final walletData = await Supabase.instance.client
+          .from('profiles')
+          .select('wallet_balance')
+          .eq('user_id', user!.id)
+          .single();
 
+      double balance = (walletData['wallet_balance'] as num).toDouble();
+
+      if (balance < booking.totalPrice) {
+        emit(BookingError("عفواً، رصيد محفظتك غير كافي لإتمام الحجز."));
+        return;
+      }
+
+      await repository.confirmBooking(booking);
       emit(BookingSuccess());
     } catch (e) {
-      emit(BookingError(e.toString()));
+      emit(BookingError(""));
     }
   }
 
@@ -32,5 +54,3 @@ class BookingCubit extends Cubit<BookingStates> {
     emit(BookingInitial());
   }
 }
-
-//بيكلم ال repo عشان ينفذ الحجز في الداتا بيز

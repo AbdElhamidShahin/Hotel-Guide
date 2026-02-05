@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
@@ -15,7 +14,6 @@ import '../../../core/network/model/booking.dart';
 import '../../../core/network/model/room.dart';
 import '../../../core/router/routers.dart';
 import '../../../core/theme/app_theme.dart';
-import '../logic/booking_cubit.dart';
 
 class BookingDetailsPage extends StatefulWidget {
   const BookingDetailsPage({super.key, required this.room});
@@ -26,31 +24,25 @@ class BookingDetailsPage extends StatefulWidget {
 }
 
 class _BookingDetailsPageState extends State<BookingDetailsPage> {
-  // الثوابت الإضافية (يمكنك جعلها ديناميكية أيضاً لو أردت)
   final double taxes = 500;
   final double services = 300;
-  // العدادات
   int rooms = 1;
   int adults = 2;
   int children = 1;
 
-  // الدفع والتاريخ
   String selectedPayment = 'wallet';
   DateTime focusedDay = DateTime.now();
   DateTime? rangeStart = DateTime.now();
   DateTime? rangeEnd = DateTime.now().add(const Duration(days: 1));
 
-  // متغير السعر الذي سيتم تخصيصه من الـ Room
   late double pricePerNight;
 
   @override
   void initState() {
     super.initState();
-    // تخصيص السعر القادم من الغرفة عند بدء الشاشة
     pricePerNight = widget.room.price.toDouble();
   }
 
-  // حساب عدد الأيام بناءً على النطاق المختار
   int get totalDays {
     if (rangeStart != null && rangeEnd != null) {
       return rangeEnd!.difference(rangeStart!).inDays + 1;
@@ -58,7 +50,6 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
     return 1;
   }
 
-  // حساب المبالغ المالية
   double get subTotal => pricePerNight * totalDays * rooms;
   double get totalPrice => subTotal + taxes + services;
 
@@ -69,7 +60,7 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
       appBar: CustomAppbarWidget(
         name: "تفاصيل الحجز",
         onTap: () {
-          context.pop(); // العودة للخلف بشكل سليم
+          context.go(routes.RoomDetailsPage, extra: widget.room);
         },
       ),
       body: Directionality(
@@ -95,7 +86,6 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
 
               SizedBox(height: 30.h),
 
-              // قسم العدادات
               CounterRow(
                 title: "عدد الغرف",
                 value: rooms,
@@ -140,7 +130,7 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
 
               _sectionTitle("الغرفة المختارة"),
               SizedBox(height: 15.h),
-              const BookingCard(),
+               BookingCard(room: widget.room,),
 
               SizedBox(height: 30.h),
 
