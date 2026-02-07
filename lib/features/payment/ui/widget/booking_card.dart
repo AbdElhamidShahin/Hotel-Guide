@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hotel_guide/core/theme/app_theme.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
+import '../../../../core/network/model/room_model.dart';
 
 class BookingCard extends StatelessWidget {
-  const BookingCard({super.key});
+  final Room room;
+
+  const BookingCard({super.key, required this.room});
 
   @override
   Widget build(BuildContext context) {
@@ -28,11 +31,17 @@ class BookingCard extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(15.r),
-              child: Image.asset(
-                'assets/images/onBoardingImage.jpg',
+              child: Image.network(
+                room.gallery[0],
                 width: 100.w,
                 height: 100.w,
                 fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => Image.asset(
+                  'assets/images/onBoardingImage.jpg',
+                  width: 100.w,
+                  height: 100.w,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
             SizedBox(width: 16.w),
@@ -42,7 +51,7 @@ class BookingCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Pyramids Gate Hotel",
+                    room.name,
                     style: textStyle16mediumWhite.copyWith(
                       color: AppColors.black7,
                     ),
@@ -51,13 +60,13 @@ class BookingCard extends StatelessWidget {
                   Row(
                     children: [
                       Icon(
-                        Icons.calendar_month_sharp,
+                        Icons.king_bed_outlined,
                         size: 18.sp,
                         color: Colors.grey,
                       ),
                       SizedBox(width: 4.w),
                       Text(
-                        "19 مارس 2026",
+                        room.bedType ?? "غرفة مميزة",
                         style: textStyle14RegularNightfall.copyWith(
                           color: AppColors.gray2,
                         ),
@@ -71,9 +80,9 @@ class BookingCard extends StatelessWidget {
                         color: AppColors.primary,
                       ),
                       children: [
-                        const TextSpan(text: "يبدأ من "),
+                        const TextSpan(text: "السعر "),
                         TextSpan(
-                          text: "1000EGP",
+                          text: "${room.price} EGP",
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 14.sp,
@@ -86,9 +95,6 @@ class BookingCard extends StatelessWidget {
                 ],
               ),
             ),
-
-            // 3. سهم الانتقال
-            Icon(Icons.arrow_forward_ios, size: 28.sp, color: AppColors.black7),
           ],
         ),
       ),

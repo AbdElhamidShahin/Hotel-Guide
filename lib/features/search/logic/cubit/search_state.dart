@@ -1,4 +1,4 @@
-import '../../../../core/network/model/hotel.dart';
+import '../../../../core/network/model/hotel_model.dart';
 
 abstract class SearchState {}
 

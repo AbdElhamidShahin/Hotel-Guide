@@ -6,7 +6,7 @@ import 'package:hotel_guide/core/theme/app_theme.dart';
 import 'package:snackly/snackly.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../network/model/hotel.dart';
+import '../../network/model/hotel_model.dart';
 import '../../router/routers.dart';
 import '../../theme/colors.dart';
 import '../../../features/favorite/logic/cubit/favorite_cubit.dart';

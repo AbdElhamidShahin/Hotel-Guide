@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
 import 'package:snackly/snackly.dart';
 import '../../../../core/di/injection.dart';
-import '../../../../core/network/model/hotel.dart';
+import '../../../../core/network/model/hotel_model.dart';
 import '../../../../core/router/routers.dart';
 import '../../../../core/theme/app_theme.dart';
 import 'package:provider/provider.dart';
@@ -81,7 +81,7 @@ class CustomRatingListviewItem extends StatelessWidget {
                     ),
                     Positioned(
                       top: 0.h,
-                      left: 12.w,
+                      left: 20.w,
                       child: Container(
                         height: 50.h,
                         width: 50.w,

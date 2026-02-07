@@ -16,7 +16,7 @@ import 'package:hotel_guide/features/home/ui/widget/details/divider.dart';
 import 'package:hotel_guide/features/home/ui/widget/details/rating_screen.dart';
 import 'package:hotel_guide/features/home/ui/widget/details/show_hotel_description.dart';
 
-import '../../../core/network/model/hotel.dart';
+import '../../../core/network/model/hotel_model.dart';
 
 import '../../room/logic/room_cubit.dart';
 import '../logic/cubit/home_cubit.dart';
@@ -133,7 +133,7 @@ class _CustomDetailsScreenState extends State<CustomDetailsScreen> {
                 width: double.infinity,
                 child: CustomSimilarHotelsListview(
                   hotelModel: widget.hotelModel,
-                  cityName: '550e8400-e29b-41d4-a716-446655440001',
+                  cityId: 'e1d53167-c06b-410b-81dc-d5694a9f81dc',
                 ),
               ),
 

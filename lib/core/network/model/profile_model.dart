@@ -5,6 +5,7 @@ class UserProfileModel {
   final String? phoneNumber;
   final String? avatarUrl;
   final double walletBalance;
+  final double balance;
 
   UserProfileModel({
     required this.id,
@@ -13,6 +14,7 @@ class UserProfileModel {
     this.phoneNumber,
     this.avatarUrl,
     this.walletBalance = 0.0,
+    this.balance = 0.0,
   });
 
   factory UserProfileModel.fromMap(Map<String, dynamic> map) {
@@ -23,6 +25,7 @@ class UserProfileModel {
       phoneNumber: map['phone_number'],
       avatarUrl: map['avatar_url'],
       walletBalance: (map['wallet_balance'] ?? 0.0).toDouble(),
+      balance: (map['wallet_balance'] ?? 0.0).toDouble(),
     );
   }
 
@@ -34,6 +37,7 @@ class UserProfileModel {
       'phone_number': phoneNumber,
       'avatar_url': avatarUrl,
       'wallet_balance': walletBalance,
+      'balance': balance,
     };
   }
 
@@ -42,6 +46,7 @@ class UserProfileModel {
     String? phoneNumber,
     String? avatarUrl,
     double? walletBalance,
+    double? balance,
   }) {
     return UserProfileModel(
       id: id,
@@ -50,6 +55,7 @@ class UserProfileModel {
       phoneNumber: phoneNumber ?? this.phoneNumber,
       avatarUrl: avatarUrl ?? this.avatarUrl,
       walletBalance: walletBalance ?? this.walletBalance,
+      balance: balance ?? this.balance,
     );
   }
 }

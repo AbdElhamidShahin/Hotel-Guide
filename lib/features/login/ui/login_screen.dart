@@ -67,6 +67,8 @@ class LoginScreen extends StatelessWidget {
                       Text(
                         "بوابتك لتجربة فندقية استثنائية",
                         style: textStyle30BoldPrimary,
+
+                        maxLines: 1,
                       ),
                       SizedBox(height: 20.h),
                       BlocListener<LoginCubit, LoginState>(
@@ -132,7 +134,8 @@ class LoginScreen extends StatelessWidget {
                                     SizedBox(height: 50.h),
 
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         TextButton(
                                           onPressed: () {
@@ -140,17 +143,16 @@ class LoginScreen extends StatelessWidget {
                                           },
                                           child: Text(
                                             'إنشاء حساب',
-                                            style:  textStyle16BoldWhite
+                                            style: textStyle16BoldWhite
                                                 .copyWith(
-                                              color: AppColors
-                                                  .ShadowPurple,
-                                            ), ),
+                                                  color: AppColors.ShadowPurple,
+                                                ),
+                                          ),
                                         ),
                                         Text(
                                           'لا تمتلك حساب؟',
                                           style: textStyle16RegularGray,
-                                          ),
-
+                                        ),
                                       ],
                                     ),
                                   ],

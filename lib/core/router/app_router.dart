@@ -27,24 +27,22 @@ import '../../features/room/ui/custom_room.dart';
 import '../../features/room/ui/rooms_screen_list-view.dart';
 import '../../features/room/ui/widget/room_details_page.dart';
 import '../../features/sign_up/ui/sign_up_screen.dart';
-
 import '../../features/wallet/date/wallet_cubit.dart';
 import '../../features/wallet/ui/wallet_screen.dart';
 import '../../main_app_shell.dart';
 import '../di/injection.dart';
-import '../network/model/city.dart';
-import '../network/model/hotel.dart';
-import '../network/model/room.dart';
+import '../network/model/city_model.dart';
+import '../network/model/hotel_model.dart';
+import '../network/model/room_model.dart';
 
 abstract class AppRouter {
   static final router = GoRouter(
-    initialLocation: routes.homeScreen,
+    initialLocation: routes.authWrapper,
     routes: [
       GoRoute(
         path: routes.authWrapper,
         builder: (BuildContext context, GoRouterState state) => BlocProvider(
           create: (context) => getIt<HomeCubit>(),
-
           child: const AuthWrapper(),
         ),
       ),
@@ -143,15 +141,13 @@ abstract class AppRouter {
           return RoomDetailsPage(room: room);
         },
       ),
-      // في ملف app_router.dart
-      // في ملف app_router.dart
       GoRoute(
         path: routes.BookingDetailsPage,
         builder: (context, state) {
-          final room = state.extra as Room; // استخراج الغرفة من الـ extra
+          final room = state.extra as Room;
           return BlocProvider(
             create: (context) => getIt<BookingCubit>(),
-            child: BookingDetailsPage(room: room), // تمريرها للشاشة
+            child: BookingDetailsPage(room: room),
           );
         },
       ),

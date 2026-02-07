@@ -1,4 +1,4 @@
-import 'package:hotel_guide/core/network/model/room.dart';
+import 'package:hotel_guide/core/network/model/room_model.dart';
 
 abstract class RoomState {}
 

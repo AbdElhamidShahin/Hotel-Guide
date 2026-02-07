@@ -1,6 +1,5 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
-import 'package:hotel_guide/core/network/SupabaseService.dart';
+import 'package:hotel_guide/core/network/service/SupabaseService.dart';
 import 'package:hotel_guide/features/login/data/repo/login_repostry.dart';
 import 'package:hotel_guide/features/room/data/room_repo.dart';
 import 'package:hotel_guide/features/room/logic/room_cubit.dart';
@@ -26,7 +25,6 @@ final getIt = GetIt.instance;
 
 Future<void> setupGetIt() async {
   /// Firebase & Services
-  getIt.registerLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance);
   getIt.registerLazySingleton<SupabaseService>(() => SupabaseService());
 
   /// Login
@@ -37,11 +35,12 @@ Future<void> setupGetIt() async {
   getIt.registerFactory<LoginCubit>(() => LoginCubit(getIt<LoginRepostry>()));
 
   /// Signup
-  getIt.registerLazySingleton<SignUpRepostry>(
-    () => SignUpRepoimpl(getIt<FirebaseAuth>()),
+  getIt.registerLazySingleton<SignUpRepository>(
+        () => SignUpRepoImpl(),
   );
+
   getIt.registerFactory<SignUpCubit>(
-    () => SignUpCubit(getIt<SignUpRepostry>()),
+        () => SignUpCubit(getIt<SignUpRepository>()),
   );
 
   /// Home & Hotel

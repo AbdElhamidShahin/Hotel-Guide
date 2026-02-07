@@ -4,7 +4,7 @@ class BookingModel {
   final String hotelName;
   final DateTime startDate;
   final DateTime endDate;
-  final double totalPrice;
+  final double totalAmount;
   final String paymentMethod;
   final int roomCount;
   final int adults;
@@ -17,7 +17,7 @@ class BookingModel {
     required this.hotelName,
     required this.startDate,
     required this.endDate,
-    required this.totalPrice,
+    required this.totalAmount,
     required this.paymentMethod,
     required this.roomCount,
     required this.adults,
@@ -25,13 +25,29 @@ class BookingModel {
     required this.totalDays,
   });
 
-  BookingModel copyWith({String? userId, String? paymentMethod}) {
+  Map<String, dynamic> toRpcParams() {
+    return {
+      'p_user_id': userId,
+      'p_hotel_name': hotelName,
+      'p_room_id': roomId,
+      'p_total_amount': totalAmount,
+      'p_check_in': startDate.toIso8601String(),
+      'p_check_out': endDate.toIso8601String(),
+      'p_payment_method': paymentMethod,
+    };
+  }
+
+  BookingModel copyWith({
+    String? userId,
+    String? paymentMethod,
+    double? totalAmount,
+  }) {
     return BookingModel(
       roomId: roomId,
       hotelName: hotelName,
       startDate: startDate,
       endDate: endDate,
-      totalPrice: totalPrice,
+      totalAmount: totalAmount ?? this.totalAmount,
       roomCount: roomCount,
       adults: adults,
       children: children,
