@@ -28,7 +28,6 @@ class LoginCubit extends Cubit<LoginState> {
         emit(LoginSuccess("تم تسجيل الدخول بنجاح. مرحباً بعودتك! ✨"));
       }
     } on AuthException catch (e) {
-      // معالجة أخطاء سوبابيز
       String errorMessage = e.message;
 
       if (errorMessage.contains('Invalid login credentials')) {

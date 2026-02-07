@@ -10,8 +10,8 @@ import 'package:hotel_guide/features/payment/ui/widget/price_section.dart';
 import 'package:hotel_guide/features/payment/ui/widget/show_all_card_bottom_sheet.dart';
 import 'package:hotel_guide/features/payment/ui/widget/show_all_wallet_bottom_sheet.dart';
 import '../../../core/helpers/widget/custom_appbar_widget.dart';
-import '../../../core/network/model/booking.dart';
-import '../../../core/network/model/room.dart';
+import '../../../core/network/model/booking_model.dart';
+import '../../../core/network/model/room_model.dart';
 import '../../../core/router/routers.dart';
 import '../../../core/theme/app_theme.dart';
 

@@ -27,16 +27,14 @@ class SupabaseFailure extends Failure {
   factory SupabaseFailure.fromGenericError(Object? error) {
     String errorStr = error.toString();
 
-    // تشخيص أخطاء الاتصال بشكل أوسع
     if (errorStr.contains("SocketException") ||
         errorStr.contains("Connection failed") ||
         errorStr.contains("ClientException") ||
-        errorStr.contains("TimeoutException") || // مهم جداً عشان الـ timeout اللي ضفناه
+        errorStr.contains("TimeoutException") ||
         errorStr.contains("handled by the client")) {
       return SupabaseFailure("لا يوجد اتصال بالإنترنت، يرجى التحقق من الشبكة.");
     }
 
-    // لو الخطأ من نوع PostgrestException بس سببه برضه اتصال
     if (error is PostgrestException) {
       return SupabaseFailure("مشكلة في الوصول للسيرفر، تأكد من اتصالك.");
     }

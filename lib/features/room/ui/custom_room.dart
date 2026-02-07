@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hotel_guide/features/room/ui/widget/room_details_page.dart';
 
-import '../../../core/network/model/room.dart';
+import '../../../core/network/model/room_model.dart';
 
 class CustomRoom extends StatelessWidget {
   const CustomRoom({super.key, required this.room});

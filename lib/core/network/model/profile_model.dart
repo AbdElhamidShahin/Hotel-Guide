@@ -5,7 +5,7 @@ class UserProfileModel {
   final String? phoneNumber;
   final String? avatarUrl;
   final double walletBalance;
-  final double balance; // أضفنا هذا الحقل لأنه موجود في قاعدة البيانات وصورة الجداول
+  final double balance;
 
   UserProfileModel({
     required this.id,
@@ -24,7 +24,6 @@ class UserProfileModel {
       email: map['email'] ?? '',
       phoneNumber: map['phone_number'],
       avatarUrl: map['avatar_url'],
-      // بنخلي الـ balance والـ walletBalance يقرأوا من نفس عمود الداتابيز للتأكيد
       walletBalance: (map['wallet_balance'] ?? 0.0).toDouble(),
       balance: (map['wallet_balance'] ?? 0.0).toDouble(),
     );

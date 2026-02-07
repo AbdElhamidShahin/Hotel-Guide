@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../core/network/model/hotel.dart';
-import '../../../../core/network/supabase_failure.dart';
+import '../../../../core/network/model/hotel_model.dart';
+import '../../../../core/network/failure/supabase_failure.dart';
 import 'search_state.dart';
 import '../../data/repo/search_repo.dart';
 

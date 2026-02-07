@@ -1,8 +1,8 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../../../core/network/SupabaseService.dart';
-import '../../../../core/network/model/hotel.dart';
-import '../../../../core/network/supabase_failure.dart';
+import '../../../../core/network/service/SupabaseService.dart';
+import '../../../../core/network/model/hotel_model.dart';
+import '../../../../core/network/failure/supabase_failure.dart';
 import 'search_repo.dart';
 
 class SearchRepoIplm implements SearchRepo {

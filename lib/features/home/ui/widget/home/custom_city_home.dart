@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hotel_guide/core/router/routers.dart';
 import 'package:hotel_guide/core/theme/app_theme.dart';
 import '../../../../../core/helpers/contact/build_error_widget.dart';
-import '../../../../../core/network/model/city.dart';
+import '../../../../../core/network/model/city_model.dart';
 import '../../../logic/cubit/home_cubit.dart';
 import '../../../logic/cubit/home_state.dart';
 

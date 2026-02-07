@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart' show SvgPicture;
 import 'package:go_router/go_router.dart';
-import 'package:hotel_guide/core/network/model/hotel.dart';
+import 'package:hotel_guide/core/network/model/hotel_model.dart';
 import 'package:hotel_guide/core/router/routers.dart';
 
 import '../../../../../core/theme/app_theme.dart';

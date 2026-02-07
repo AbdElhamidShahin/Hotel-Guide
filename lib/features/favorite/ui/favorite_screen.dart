@@ -5,7 +5,7 @@ import 'package:hotel_guide/core/router/routers.dart';
 import '../../../core/helpers/contact/build_error_widget.dart';
 import '../../../core/helpers/contact/build_favorite_notfound.dart';
 import '../../../core/helpers/widget/custom_appbar_widget.dart';
-import '../../../core/network/model/hotel.dart';
+import '../../../core/network/model/hotel_model.dart';
 import '../logic/cubit/favorite_cubit.dart';
 import '../logic/cubit/favorite_state.dart';
 import '../../../core/helpers/widget/custom_item.dart';

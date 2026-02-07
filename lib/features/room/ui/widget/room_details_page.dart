@@ -6,7 +6,7 @@ import 'package:hotel_guide/core/router/routers.dart';
 import 'package:hotel_guide/features/room/ui/widget/book_now_button.dart';
 
 import '../../../../core/helpers/widget/custom_appbar_widget.dart';
-import '../../../../core/network/model/room.dart';
+import '../../../../core/network/model/room_model.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../home/ui/widget/details/custom_name_details.dart';

@@ -1,11 +1,11 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../../../core/network/model/booking.dart';
+import '../../../core/network/model/booking_model.dart';
 import '../data/repo.dart';
 import 'booking_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../../../core/network/model/booking.dart';
+import '../../../core/network/model/booking_model.dart';
 import '../data/repo.dart';
 import 'booking_state.dart';
 

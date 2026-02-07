@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hotel_guide/core/router/routers.dart';
-import 'package:hotel_guide/core/theme/colors.dart';
 import 'package:hotel_guide/features/on_boarding/ui/widget/build_dot.dart';
 import 'package:hotel_guide/features/on_boarding/ui/widget/custom_elevated_button.dart';
 import '../../../core/theme/app_theme.dart';
