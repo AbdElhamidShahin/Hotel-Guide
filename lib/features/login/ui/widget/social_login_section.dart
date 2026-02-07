@@ -12,16 +12,19 @@ class SocialLoginSection extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        IconSocial("assets/icons/google.svg"),
+        IconSocial("assets/icons/google.svg", 'التسجيل حساب جوجل'),
 
         SizedBox(height: 8.w),
-        IconSocial("assets/icons/2021_Facebook_icon 1.svg"),
+        IconSocial(
+          "assets/icons/2021_Facebook_icon 1.svg",
+          'التسجيل حساب فيس بوك',
+        ),
       ],
     );
   }
 }
 
-Widget IconSocial(String image) {
+Widget IconSocial(String image, String text) {
   return Container(
     width: double.infinity,
     height: 50.h,
@@ -37,7 +40,7 @@ Widget IconSocial(String image) {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          "التسجيل حساب جوجل",
+          text,
           style: textStyle16BoldWhite.copyWith(color: AppColors.Nightfall),
         ),
         SizedBox(width: 12.w),

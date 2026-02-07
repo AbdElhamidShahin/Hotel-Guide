@@ -27,17 +27,21 @@ class BookingCubit extends Cubit<BookingStates> {
     emit(BookingLoading());
 
     try {
-      await repository.confirmBooking(booking);
       final user = Supabase.instance.client.auth.currentUser;
+      if (user == null) {
+        emit(BookingError("المستخدم غير مسجل"));
+        return;
+      }
+
       final walletData = await Supabase.instance.client
           .from('profiles')
           .select('wallet_balance')
-          .eq('user_id', user!.id)
+          .eq('id', user.id)
           .single();
 
       double balance = (walletData['wallet_balance'] as num).toDouble();
 
-      if (balance < booking.totalPrice) {
+      if (balance < booking.totalAmount) {
         emit(BookingError("عفواً، رصيد محفظتك غير كافي لإتمام الحجز."));
         return;
       }
@@ -45,7 +49,7 @@ class BookingCubit extends Cubit<BookingStates> {
       await repository.confirmBooking(booking);
       emit(BookingSuccess());
     } catch (e) {
-      emit(BookingError(""));
+      emit(BookingError("حدث خطأ أثناء معالجة الحجز: ${e.toString()}"));
     }
   }
 
