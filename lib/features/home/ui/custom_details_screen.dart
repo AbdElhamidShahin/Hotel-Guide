@@ -16,7 +16,7 @@ import 'package:hotel_guide/features/home/ui/widget/details/divider.dart';
 import 'package:hotel_guide/features/home/ui/widget/details/rating_screen.dart';
 import 'package:hotel_guide/features/home/ui/widget/details/show_hotel_description.dart';
 
-import '../../../core/network/model/hotel.dart';
+import '../../../core/network/model/hotel_model.dart';
 
 import '../../room/logic/room_cubit.dart';
 import '../logic/cubit/home_cubit.dart';

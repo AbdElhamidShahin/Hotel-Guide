@@ -4,7 +4,7 @@ class BookingModel {
   final String hotelName;
   final DateTime startDate;
   final DateTime endDate;
-  final double totalAmount; // تم تغييره من totalPrice ليطابق الداتابيز
+  final double totalAmount;
   final String paymentMethod;
   final int roomCount;
   final int adults;
@@ -17,7 +17,7 @@ class BookingModel {
     required this.hotelName,
     required this.startDate,
     required this.endDate,
-    required this.totalAmount, // مطابقة اسم الحقل في جدول bookings
+    required this.totalAmount,
     required this.paymentMethod,
     required this.roomCount,
     required this.adults,

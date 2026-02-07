@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hotel_guide/core/theme/app_theme.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
-import '../../../../core/network/model/room.dart';
+import '../../../../core/network/model/room_model.dart';
 
 class BookingCard extends StatelessWidget {
   final Room room;

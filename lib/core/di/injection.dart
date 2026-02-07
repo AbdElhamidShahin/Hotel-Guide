@@ -1,5 +1,5 @@
 import 'package:get_it/get_it.dart';
-import 'package:hotel_guide/core/network/SupabaseService.dart';
+import 'package:hotel_guide/core/network/service/SupabaseService.dart';
 import 'package:hotel_guide/features/login/data/repo/login_repostry.dart';
 import 'package:hotel_guide/features/room/data/room_repo.dart';
 import 'package:hotel_guide/features/room/logic/room_cubit.dart';

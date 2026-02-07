@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/helpers/contact/custom_show_snackbar.dart';
-import '../../../../core/network/model/booking.dart';
+import '../../../../core/network/model/booking_model.dart';
 import '../../../../core/router/routers.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/colors.dart';

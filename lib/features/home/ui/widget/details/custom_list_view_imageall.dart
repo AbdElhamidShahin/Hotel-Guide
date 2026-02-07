@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hotel_guide/core/helpers/widget/custom_item.dart';
 import 'package:hotel_guide/core/router/routers.dart';
 import 'package:hotel_guide/features/home/logic/cubit/home_cubit.dart';
-import '../../../../../core/network/model/hotel.dart';
+import '../../../../../core/network/model/hotel_model.dart';
 import '../../../logic/cubit/home_state.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
