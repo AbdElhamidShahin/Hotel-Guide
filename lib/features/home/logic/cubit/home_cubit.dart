@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hotel_guide/features/home/logic/cubit/home_state.dart';
-import '../../../../core/network/model/city.dart';
+import '../../../../core/network/model/city_model.dart';
 import '../../data/repo/home_repo.dart';
 
 class HomeCubit extends Cubit<HomeState> {

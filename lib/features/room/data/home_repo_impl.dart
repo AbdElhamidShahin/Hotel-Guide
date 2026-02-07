@@ -1,8 +1,8 @@
-import 'package:hotel_guide/core/network/model/room.dart';
+import 'package:hotel_guide/core/network/model/room_model.dart';
 import 'package:hotel_guide/features/room/data/room_repo.dart';
 
-import '../../../core/network/SupabaseService.dart';
-import '../../../core/network/supabase_failure.dart';
+import '../../../core/network/service/SupabaseService.dart';
+import '../../../core/network/failure/supabase_failure.dart';
 
 class RoomRepoImpl implements RoomRepo {
   final SupabaseService _service;

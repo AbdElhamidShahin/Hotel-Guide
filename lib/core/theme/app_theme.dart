@@ -51,7 +51,8 @@ TextStyle textStyle18BoldGray = TextStyle(
   fontWeight: FontWeight.w700,
   color: AppColors.gray3,
   fontFamily: 'Cairo',
-);TextStyle textStyle36BoldWhite = TextStyle(
+);
+TextStyle textStyle36BoldWhite = TextStyle(
   fontSize: 36.sp,
   fontWeight: FontWeight.w700,
   color: AppColors.white,
@@ -135,27 +136,4 @@ TextStyle textStyle28BoldWhite = TextStyle(
   color: AppColors.black,
   fontFamily: 'Cairo',
 );
-class AppTextStyles {
-  static TextStyle bold18 = TextStyle(
-    fontSize: 18.sp,
-    fontWeight: FontWeight.bold,
-    color: AppColors.white,
-  );
 
-  static TextStyle medium14 = TextStyle(
-    fontSize: 14.sp,
-    fontWeight: FontWeight.w500,
-    color: AppColors.textMain,
-  );
-
-  static TextStyle regular12 = TextStyle(
-    fontSize: 12.sp,
-    color: AppColors.textSecondary,
-  );
-
-  static TextStyle buttonTextStyle = TextStyle(
-    fontSize: 16.sp,
-    fontWeight: FontWeight.bold,
-    color: AppColors.white,
-  );
-}

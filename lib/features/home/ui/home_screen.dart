@@ -59,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               SizedBox(height: 24),
               SizedBox(
-                height: 440,
+                height: 450.h,
                 child: CustomRatingListview(
                   cityId: "8a7ee754-037c-4a87-bda6-8a61527982a3",
                 ),

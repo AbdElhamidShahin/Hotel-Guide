@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/helpers/contact/custom_show_snackbar.dart';
-import '../../../../core/network/model/booking.dart';
+import '../../../../core/network/model/booking_model.dart';
 import '../../../../core/router/routers.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/colors.dart';
@@ -14,145 +14,146 @@ import '../../logic/booking_cubit.dart';
 import '../../logic/booking_state.dart';
 import 'custom_wallet_item.dart';
 
-class WalletBottomSheet extends StatelessWidget {
-  final BookingModel bookingData;
+void showWalletBottomSheet(BuildContext context, BookingModel bookingData) {
+  final bookingCubit = context.read<BookingCubit>();
 
-  const WalletBottomSheet({super.key, required this.bookingData});
-
-  @override
-  Widget build(BuildContext context) {
-    final bookingCubit = context.read<BookingCubit>();
-
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.6,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
-      ),
-      child: Column(
-        children: [
-          _buildHeader(context),
-          SizedBox(height: 20.h),
-
-          BlocBuilder<BookingCubit, BookingStates>(
-            builder: (context, state) {
-              return Column(
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (context) {
+      // استخدمنا Context العادي هنا لسهولة التعامل
+      return Container(
+        height: MediaQuery.of(context).size.height * 0.6,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+        ),
+        child: Column(
+          children: [
+            // الهيدر
+            Padding(
+              padding: EdgeInsets.all(16.r),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  CustomWalletItem(
-                    image: 'assets/images/Orange.png',
-                    title: 'أورنج كاش',
-                    cashBack: 'كاش باك 5%',
-                    selected: bookingCubit.selectedWallet == 'orange',
-                    onTap: () => bookingCubit.changeWallet('orange'),
+                  IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: const Icon(Icons.close),
                   ),
-                  SizedBox(height: 12.h),
-                  CustomWalletItem(
-                    image: 'assets/images/logo/logo-light.png',
-                    title: 'محفظة AQUA',
-                    cashBack: 'كاش باك 10%',
-                    selected: bookingCubit.selectedWallet == "AQUA",
-                    onTap: () => bookingCubit.changeWallet('AQUA'),
+                  Text(
+                    "المحفظة الإلكترونية",
+                    style: textStyle20RegularPrimary.copyWith(
+                      color: AppColors.black6,
+                    ),
                   ),
                 ],
-              );
-            },
-          ),
+              ),
+            ),
 
-          const Spacer(),
+            SizedBox(height: 20.h),
 
-          BlocListener<BookingCubit, BookingStates>(
-            listener: (context, state) {
-              if (state is BookingSuccess) {
-                showCustomSnackbar(
-                  context,
-                  ContentType.success,
-                  'تم الحجز!',
-                  'تم تأكيد حجزك في ${bookingData.hotelName}',
-                );
-                Navigator.pop(context);
-                context.go(routes.homeScreen);
-              } else if (state is BookingError) {
-                showCustomSnackbar(
-                  context,
-                  ContentType.failure,
-                  'خطأ',
-                  state.message,
-                );
-              }
-            },
-            child: _buildConfirmButton(context, bookingCubit),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildHeader(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(16.r),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          IconButton(
-            onPressed: () => Navigator.pop(context),
-            icon: const Icon(Icons.close),
-          ),
-          Text(
-            "المحفظة الإلكترونية",
-            style: textStyle20RegularPrimary.copyWith(color: AppColors.black6),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildConfirmButton(BuildContext context, BookingCubit bookingCubit) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 30.h),
-      child: GestureDetector(
-        onTap: () {
-          final cubit = context.read<BookingCubit>();
-          if (cubit.selectedWallet != 'AQUA') {
-            showCustomSnackbar(
-              context,
-              ContentType.warning,
-              'تنبيه',
-              'عفواً، الدفع عن طريق أورنج كاش غير متاح حالياً. يرجى استخدام محفظة AQUA.',
-            );
-            return;
-          }
-          final user = Supabase.instance.client.auth.currentUser;///بنتحقق ان المستخدم سجل دخول ولا لا
-          if (user == null) return;
-
-          final finalBooking = bookingData.copyWith(
-            userId: user.id,
-            paymentMethod: bookingCubit.selectedWallet,
-          );
-          bookingCubit.confirmBooking(finalBooking);
-        },
-        child: Container(
-          width: MediaQuery.of(context).size.width * 0.85,
-          height: 55.h,
-          decoration: BoxDecoration(
-            color: AppColors.primary,
-            borderRadius: BorderRadius.circular(12.r),
-          ),
-          child: Center(
-            child: BlocBuilder<BookingCubit, BookingStates>(
+            // قائمة المحافظ (استخدمت BlocBuilder عشان التحديد يشتغل)
+            BlocBuilder<BookingCubit, BookingStates>(
+              bloc: bookingCubit, // ربطناه بالكيوبيت مباشرة
               builder: (context, state) {
-                if (state is BookingLoading)
-                  return const CircularProgressIndicator(color: Colors.white);
-                return Text(
-                  "تأكيد دفع ${bookingData.totalPrice.toInt()} EGP",
-                  style: textStyle20BoldShadowPurple.copyWith(
-                    color: Colors.white,
-                  ),
+                return Column(
+                  children: [
+                    CustomWalletItem(
+                      image: 'assets/images/Orange.png',
+                      title: 'أورنج كاش',
+                      cashBack: 'كاش باك 5%',
+                      selected: bookingCubit.selectedWallet == 'orange',
+                      onTap: () => bookingCubit.changeWallet('orange'),
+                    ),
+                    SizedBox(height: 12.h),
+                    CustomWalletItem(
+                      image: 'assets/images/logo/logo-light.png',
+                      title: 'محفظة AQUA',
+                      cashBack: 'كاش باك 10%',
+                      selected: bookingCubit.selectedWallet == "AQUA",
+                      onTap: () => bookingCubit.changeWallet('AQUA'),
+                    ),
+                  ],
                 );
               },
             ),
-          ),
+
+            const Spacer(),
+
+            Padding(
+              padding: EdgeInsets.only(bottom: 30.h),
+              child: GestureDetector(
+                onTap: () async {
+                  if (bookingCubit.selectedWallet != 'AQUA') {
+                    showCustomSnackbar(
+                      context,
+                      ContentType.warning,
+                      'تنبيه',
+                      'يرجى اختيار محفظة AQUA',
+                    );
+                    return;
+                  }
+
+                  final user = Supabase.instance.client.auth.currentUser;
+                  if (user == null) return;
+
+                  final finalBooking = bookingData.copyWith(
+                    userId: user.id,
+                    paymentMethod: bookingCubit.selectedWallet,
+                  );
+
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (context) =>
+                        const Center(child: CircularProgressIndicator()),
+                  );
+
+                  await bookingCubit.confirmBooking(finalBooking);
+
+                  if (context.mounted) Navigator.pop(context);
+
+                  if (bookingCubit.state is BookingSuccess) {
+                    Navigator.pop(context);
+                    context.go(routes.homeScreen);
+                    showCustomSnackbar(
+                      context,
+                      ContentType.success,
+                      'تم الحجز بنجاح ✅',
+                      'تم خصم المبلغ من محفظتك',
+                    );
+                  } else if (bookingCubit.state is BookingError) {
+                    final error = (bookingCubit.state as BookingError).message;
+                    showCustomSnackbar(
+                      context,
+                      ContentType.failure,
+                      'عفواً، رصيد محفظتك غير كافي لإتمام الحجز',
+                      error,
+                    );
+                  }
+                },
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 0.85,
+                  height: 55.h,
+                  decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
+                  child: Center(
+                    child: Text(
+                      "تأكيد دفع ${bookingData.totalAmount.toInt()} EGP",
+                      style: textStyle20BoldShadowPurple.copyWith(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
-      ),
-    );
-  }
+      );
+    },
+  );
 }

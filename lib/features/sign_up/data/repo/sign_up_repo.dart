@@ -1,10 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-abstract class SignUpRepostry {
-  Future<UserCredential> signUp(
-    String email,
-    String password,
-    String name,
-    String confirmPassword,
-  );
+abstract class SignUpRepository {
+  Future<AuthResponse> signUp({
+    required String email,
+    required String password,
+    required String name,
+  });
 }

@@ -25,7 +25,7 @@ class SupabaseService {
     try {
       await _client
           .from('bookings')
-          .insert(bookingData); // بنعمل هنا ادراج لجدول البيانات
+          .insert(bookingData);
     } catch (e) {
       print("Supabase Error: $e");
       rethrow;

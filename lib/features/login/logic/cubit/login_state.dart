@@ -1,5 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
-
 abstract class LoginState {}
 
 class LoginInitial extends LoginState {}
@@ -18,7 +16,4 @@ class LoginError extends LoginState {
   LoginError(this.errorMessage);
 }
 
-class LoginEmailNotVerified extends LoginState {
-  final User user;
-  LoginEmailNotVerified(this.user);
-}
+class LoginEmailNotVerified extends LoginState {}

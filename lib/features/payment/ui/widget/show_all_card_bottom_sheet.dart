@@ -70,12 +70,11 @@ void showAllCardBottomSheet(BuildContext context) {
                 SizedBox(height: 30.h),
                 GestureDetector(
                   onTap: () {
-                    context.go(routes.BookingDetailsPage);
                     showCustomSnackbar(
                       context,
-                      ContentType.success,
-                      'تم الدفع بنجاح ✅',
-                      '',
+                      ContentType.warning,
+                      'تنبيه',
+                      'عفواً، الدفع عن طريق البطاقه البنكيه غير متاح حالياً. يرجى استخدام محفظة الالكترونيه.',
                     );
                   },
                   child: Container(

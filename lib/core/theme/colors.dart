@@ -14,7 +14,6 @@ class AppColors {
   static const Color black6 = Color(0xFF171725);
   static const Color black7 = Color(0xFF101010);
   static const Color mainOrange = Color(0xFFFFBD59);
-  static const Color borderGrey = Color(0xFFE0E0E0);
   static const Color hintTextGrey = Color(0xFFD9D9D9);
   static const Color Grayscale = Color(0xFF66707A);
   static const Color primary = Color(0xFF2D2B3E);
@@ -29,24 +28,12 @@ class AppColors {
   static const Color softGray = Color(0xFFD9DDDF);
   static const Color Milk = Color(0xFFEFF0F6);
   static const Color red = Color(0xFFFF3838);
-  static const Color redaccent = Color(0xFFD63B3B);
   static const Color LightRed = Color(0xFFFF7D86);
   static const Color calenderColor = Color(0xFFF9F9F9);
   static const Color Purple = Color(0xFF8A38F5);
   static const Color Green = Color(0xFF26CC73);
-  static const Color AccentsOrange = Color(0xFFFF8D28);
   static const Color AccentsPurple = Color(0xFF958FFF);
 
-  static const Color primaryPurple = Color(0xFF6A4C93);
-  static const Color darkBlue = Color(0xFF2D2D3F);
-  static const Color textGray = Color(0xFF757575);
-  static const Color lightGray = Color(0xFFF5F5F5);
-  static const Color borderGray = Color(0xFFE0E0E0);
-
   static const Color primaryDark = Color(0xFF2D2D3F);
-  static const Color accentBlue = Color(0xFF00ACC1);
-  static const Color backgroundGray = Color(0xFFF8F8F8);
-  static const Color textMain = Color(0xFF424242);
-  static const Color textSecondary = Color(0xFF757575);
   static const Color dangerRed = Color(0xFFE57373);
 }

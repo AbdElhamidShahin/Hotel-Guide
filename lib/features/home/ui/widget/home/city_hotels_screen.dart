@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../../../../core/helpers/widget/custom_appbar_widget.dart';
 import '../../../../../core/helpers/widget/custom_item.dart';
-import '../../../../../core/network/model/city.dart';
-import '../../../../../core/network/model/hotel.dart';
+import '../../../../../core/network/model/city_model.dart';
+import '../../../../../core/network/model/hotel_model.dart';
 
 class CityHotelsScreen extends StatelessWidget {
   final CityModel city;

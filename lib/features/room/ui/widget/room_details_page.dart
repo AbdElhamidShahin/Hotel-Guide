@@ -6,7 +6,7 @@ import 'package:hotel_guide/core/router/routers.dart';
 import 'package:hotel_guide/features/room/ui/widget/book_now_button.dart';
 
 import '../../../../core/helpers/widget/custom_appbar_widget.dart';
-import '../../../../core/network/model/room.dart';
+import '../../../../core/network/model/room_model.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../home/ui/widget/details/custom_name_details.dart';
@@ -25,17 +25,6 @@ class RoomDetailsPage extends StatelessWidget {
   final Room room;
   @override
   Widget build(BuildContext context) {
-    final List<FacilityModel> facilitiesFromApi = [
-      FacilityModel(title: "تكييف", isAvailable: true),
-      FacilityModel(title: "تدفئة", isAvailable: true),
-      FacilityModel(title: "مروحة", isAvailable: true),
-      FacilityModel(title: "تلفزيون بشاشة مسطحة", isAvailable: true),
-      FacilityModel(title: "تلفزيون بشاشة مسطحة", isAvailable: true),
-      FacilityModel(title: "تدفئة", isAvailable: true),
-      FacilityModel(title: "مروحة", isAvailable: true),
-      FacilityModel(title: "تلفزيون بشاشة مسطحة", isAvailable: true),
-      FacilityModel(title: "يمنع التدخين داخل الغرفة", isAvailable: false),
-    ];
     final List<FacilityModel> facilities = room.facilities.entries.map((entry) {
       return FacilityModel(title: entry.key, isAvailable: entry.value);
     }).toList();
@@ -100,7 +89,8 @@ class RoomDetailsPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                BookNowButton(room: room),              ],
+                BookNowButton(room: room),
+              ],
             ),
           ),
         ),
