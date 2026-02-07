@@ -24,9 +24,9 @@ class UserProfileModel {
       email: map['email'] ?? '',
       phoneNumber: map['phone_number'],
       avatarUrl: map['avatar_url'],
-      // استخدام .toDouble() ضروري جداً لتجنب خطأ الـ Null اللي ظهرلك
+      // بنخلي الـ balance والـ walletBalance يقرأوا من نفس عمود الداتابيز للتأكيد
       walletBalance: (map['wallet_balance'] ?? 0.0).toDouble(),
-      balance: (map['balance'] ?? 0.0).toDouble(),
+      balance: (map['wallet_balance'] ?? 0.0).toDouble(),
     );
   }
 

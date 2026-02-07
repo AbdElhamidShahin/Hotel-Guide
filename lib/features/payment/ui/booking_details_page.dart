@@ -145,7 +145,7 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
 
                   final bookingInfo = BookingModel(
                     hotelName: widget.room.name,
-                    totalPrice: totalPrice,
+                    totalAmount: totalPrice,
                     roomId: widget.room.id.toString(),
                     startDate: rangeStart ?? DateTime.now(),
                     endDate: rangeEnd ?? DateTime.now(),

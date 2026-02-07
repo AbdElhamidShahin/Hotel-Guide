@@ -142,7 +142,7 @@ void showWalletBottomSheet(BuildContext context, BookingModel bookingData) {
                   ),
                   child: Center(
                     child: Text(
-                      "تأكيد دفع ${bookingData.totalPrice.toInt()} EGP",
+                      "تأكيد دفع ${bookingData.totalAmount.toInt()} EGP",
                       style: textStyle20BoldShadowPurple.copyWith(
                         color: Colors.white,
                       ),
