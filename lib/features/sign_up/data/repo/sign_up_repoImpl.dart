@@ -10,8 +10,18 @@ class SignUpRepoImpl implements SignUpRepository {
     required String name,
   }) async {
     return await _supabase.auth.signUp(
-      email: email,
-      password: password,
+        email: email,
+        password: password,
         data: {'name': name}    );
   }
+
+
+  @override
+  Future<void> signInWithGoogle() async {
+    await _supabase.auth.signInWithOAuth(
+      OAuthProvider.google,
+      redirectTo: 'hotelapp://login-callback',
+    );
+  }
+
 }
