@@ -10,6 +10,7 @@ import 'package:hotel_guide/features/home/ui/widget/custom_rating_listview.dart'
 import 'package:hotel_guide/features/home/ui/widget/custom_welcome_header.dart';
 import 'package:hotel_guide/features/home/ui/widget/top_rating_widget.dart';
 
+import '../../../core/helpers/local_storage_account.dart';
 import '../../../core/theme/app_theme.dart';
 import '../logic/cubit/home_cubit.dart';
 
@@ -22,12 +23,26 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  String? displayUserName;
+
   @override
   void initState() {
     super.initState();
+    _setupName();
     context.read<HomeCubit>().getHotelsAndCities();
   }
-
+  Future<void> _setupName() async {
+    if (widget.name.isNotEmpty) {
+      setState(() {
+        displayUserName = widget.name;
+      });
+    } else {
+      final data = await UserDataManager.loadUserData();
+      setState(() {
+        displayUserName = data['name'] ?? 'ضيف';
+      });
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,7 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               CustomAppbarHome(),
               SizedBox(height: 16),
-              CustomWelcomeHeader(name: widget.name),
+              CustomWelcomeHeader(name: displayUserName??''),
               SizedBox(height: 14),
               AiBookingBanner(),
 

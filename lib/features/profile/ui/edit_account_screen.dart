@@ -30,6 +30,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
     super.initState();
     _nameController.text = widget.name ?? '';
     _loadIfEmpty();
+    _loadInitialData();
   }
 
   Future<void> _loadIfEmpty() async {
@@ -60,7 +61,17 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
     if (!emailRegex.hasMatch(value)) return 'أدخل عنوان بريد إلكتروني صالح';
     return null;
   }
+  String? profileImage;
 
+  Future<void> _loadInitialData() async {
+    final data = await UserDataManager.loadUserData();
+    setState(() {
+      _nameController.text = (widget.name.isNotEmpty) ? widget.name : (data['name'] ?? '');
+      _emailController.text = data['email'] ?? '';
+      _phoneController.text = data['phone'] ?? '';
+      profileImage = data['image'];
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,8 +81,9 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
           child: Column(
             children: [
               CustomProfileImageAndName(
-                showEditIcon: false,
+                showEditIcon: true,
                 showAddIcon: true,
+                imageUrl: profileImage,
                 currentImageFile: _imageFile,
                 onImagePicked: _onImagePicked,
               ),
@@ -123,7 +135,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
                     if (_formKey.currentState!.validate()) {
                       await UserDataManager.saveUserData(
                         name: _nameController.text,
-                        imagePath: _imageFile?.path,
+                        image: _imageFile?.path ?? profileImage,
                         phone: _phoneController.text,
                         email: _emailController.text,
                       );
