@@ -31,6 +31,7 @@ class _PriceRangeFilterState extends State<PriceRangeFilter> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
+        SizedBox(height: 24.h),
         Text(
           "متوسط السعر",
           style: textStyle14RegularNightfall.copyWith(
@@ -42,105 +43,96 @@ class _PriceRangeFilterState extends State<PriceRangeFilter> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              width: 150.w,
-              height: 40.h,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(6.r),
-                border: Border.all(color: const Color(0xFFD0D5DD), width: 2.0),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text(
-                      "${_currentRangeValues.end.round()} EGP ",
-                      style: textStyle18BoldGray.copyWith(fontSize: 16),
-                    ),
-                    Text(
-                      ": الى",
-                      style: textStyle14RegularNightfall.copyWith(
-                        color: AppColors.black,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            _buildPriceBox("الى", _currentRangeValues.end),
             SizedBox(width: 16.w),
+            _buildPriceBox("من", _currentRangeValues.start),
+          ],
+        ),
 
-            Container(
-              width: 150.w,
-              height: 50.h,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(6.r),
-                border: Border.all(color: const Color(0xFFD0D5DD), width: 2.0),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text(
-                      "${_currentRangeValues.start.round()} EGP ",
-                      style: textStyle18BoldGray.copyWith(fontSize: 16),
-                    ),
-                    Text(
-                      ": من",
-                      style: textStyle14RegularNightfall.copyWith(
-                        color: AppColors.black,
+        SizedBox(height: 30.h),
+
+        LayoutBuilder(
+          builder: (context, constraints) {
+            double paddingHorizontal = 24.w;
+            double availableWidth =
+                constraints.maxWidth - (paddingHorizontal * 2);
+            double startPos =
+                (_currentRangeValues.start / 5000) * availableWidth;
+            double endPos = (_currentRangeValues.end / 5000) * availableWidth;
+
+            return Column(
+              children: [
+                Container(
+                  height: 25.h,
+                  margin: EdgeInsets.symmetric(horizontal: paddingHorizontal),
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Positioned(
+                        left: startPos - 15,
+                        bottom: 0,
+                        child: Text(
+                          "${_currentRangeValues.start.round()}",
+                          style: textStyle12SemiBoldShadowPurple,
+                        ),
                       ),
-                    ),
-                  ],
+                      Positioned(
+                        left: endPos - 15,
+                        bottom: 0,
+                        child: Text(
+                          "${_currentRangeValues.end.round()}",
+                          style: textStyle12SemiBoldShadowPurple,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
+                RangeSlider(
+                  values: _currentRangeValues,
+                  min: 0,
+                  max: 5000,
+                  divisions: 100,
+                  activeColor: Color(0xFF575472),
+                  inactiveColor: Color(0xFF717375),
+                  onChanged: (RangeValues values) {
+                    setState(() => _currentRangeValues = values);
+                    widget.onChanged(values);
+                  },
+                ),
+              ],
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPriceBox(String label, double value) {
+    return Container(
+      width: 160.w,
+      height: 50.h,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(6.r),
+        border: Border.all(color: const Color(0xFFD0D5DD), width: 1.5),
+      ),
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 12.w),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Text(
+              "${value.round()} EGP ",
+              style: textStyle18BoldGray.copyWith(fontSize: 14.sp,fontWeight: FontWeight.bold),
+            ),
+            Text(
+              ": $label",
+              style: textStyle14RegularNightfall.copyWith(
+                color: AppColors.black,
               ),
             ),
           ],
         ),
-
-        SizedBox(height: 20.h),
-
-        RangeSlider(
-          values: _currentRangeValues,
-          min: 0,
-          max: 5000,
-          divisions: 100,
-          activeColor: const Color(0xFF5D5C8A),
-          inactiveColor: Colors.grey[300],
-          labels: RangeLabels(
-            "${_currentRangeValues.start.round()} EGP",
-            "${_currentRangeValues.end.round()} EGP",
-          ),
-          onChanged: (RangeValues values) {
-            setState(() => _currentRangeValues = values);
-            widget.onChanged(values);
-          },
-        ),
-
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24.w),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                "${_currentRangeValues.start.round()}EGP",
-                style: TextStyle(
-                  color: const Color(0xFF5D5C8A),
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(
-                "${_currentRangeValues.end.round()}EGP",
-                style: TextStyle(
-                  color: const Color(0xFF5D5C8A),
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
+      ),
     );
   }
 }
