@@ -27,4 +27,6 @@ class HomeRepoImpl implements HomeRepository {
       throw SupabaseFailure.fromGenericError(error);
     }
   }
+
+
 }

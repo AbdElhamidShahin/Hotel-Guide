@@ -28,7 +28,6 @@ Future<void> setupGetIt() async {
   getIt.registerLazySingleton<SupabaseService>(() => SupabaseService());
 
   /// Login
-  // مثال للتعديل في ملف الـ DI
   getIt.registerLazySingleton<LoginRepostry>(
     () => AuthRepositoryImpl(Supabase.instance.client),
   );
@@ -61,9 +60,8 @@ Future<void> setupGetIt() async {
   /// Favorite
   getIt.registerLazySingleton<FavoriteCubit>(() => FavoriteCubit());
 
-  /// Search
   getIt.registerFactory<SearchRepo>(
-    () => SearchRepoIplm(getIt<SupabaseService>()),
+        () => SearchRepoImpl(),
   );
   getIt.registerFactory<SearchCubit>(() => SearchCubit(getIt<SearchRepo>()));
 
