@@ -87,10 +87,7 @@ class SignUpScreen extends StatelessWidget {
                           BlocListener<SignUpCubit, SignUpState>(
                             listener: (context, state) async {
                               if (state is SignUpSuccess) {
-                                final name = context
-                                    .read<SignUpCubit>()
-                                    .nameController
-                                    .text;
+                                final name = context.read<SignUpCubit>().nameController.text;
                                 final email = context
                                     .read<SignUpCubit>()
                                     .emailController
@@ -107,10 +104,7 @@ class SignUpScreen extends StatelessWidget {
                                   'نجاح باهر! ✅',
                                   state.message,
                                 );
-                                context.go(
-                                  routes.homeScreen,
-                                  extra: {'name': name},
-                                );
+                                context.go(routes.homeScreen);
                               } else if (state is SignUpError) {
                                 showCustomSnackbar(
                                   context,
@@ -137,7 +131,7 @@ class SignUpScreen extends StatelessWidget {
                                     child: Column(
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.center,
+                                      CrossAxisAlignment.center,
                                       children: [
                                         const EmailAndPasswordAndName(),
 
@@ -150,10 +144,10 @@ class SignUpScreen extends StatelessWidget {
                                             onTap: isLoading
                                                 ? null
                                                 : () {
-                                                    context
-                                                        .read<SignUpCubit>()
-                                                        .signUpUser();
-                                                  },
+                                              context
+                                                  .read<SignUpCubit>()
+                                                  .signUpUser();
+                                            },
                                           ),
                                         ),
                                         SizedBox(height: 16.h),
@@ -166,7 +160,7 @@ class SignUpScreen extends StatelessWidget {
 
                                         Row(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.center,
+                                          MainAxisAlignment.center,
                                           children: [
                                             TextButton(
                                               onPressed: () {
@@ -176,9 +170,9 @@ class SignUpScreen extends StatelessWidget {
                                                 'تسجيل دخول',
                                                 style: textStyle16BoldWhite
                                                     .copyWith(
-                                                      color: AppColors
-                                                          .ShadowPurple,
-                                                    ),
+                                                  color: AppColors
+                                                      .ShadowPurple,
+                                                ),
                                               ),
                                             ),
                                             Text(

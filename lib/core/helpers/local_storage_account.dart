@@ -12,14 +12,14 @@ class UserDataManager {
     required String name,
     required String phone,
     required String email,
-    String? imagePath,
+    String? image, // غيرنا الاسم هنا ليكون عاماً
   }) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('name', name);
     await prefs.setString('phone', phone);
     await prefs.setString('email', email);
-    if (imagePath != null) {
-      await prefs.setString('imagePath', imagePath);
+    if (image != null) {
+      await prefs.setString('image', image); // تخزين الرابط أو المسار
     }
   }
 
@@ -29,7 +29,7 @@ class UserDataManager {
       'name': prefs.getString('name'),
       'phone': prefs.getString('phone'),
       'email': prefs.getString('email'),
-      'imagePath': prefs.getString('imagePath'),
+      'image': prefs.getString('image'), // استرجاع القيمة
     };
   }
 }
