@@ -54,6 +54,7 @@ dependencies:
   flutter_native_splash: ^2.4.7
   connectivity_plus: ^7.0.0
   table_calendar: ^3.2.0
+  flutter_facebook_auth: ^7.1.5
 
 dev_dependencies:
   flutter_test:
@@ -61,7 +62,7 @@ dev_dependencies:
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/images/logo/logo_new.png"
+  image_path: "assets/images/logo/Frame 4.png"
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
@@ -116,14 +117,14 @@ flutter:
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
 flutter_native_splash:
-  color: "#2D2B3E" # اضف لون الخلفية هنا (مثلاً أبيض)
+  color: "#2D2B3E"
   android: true
   ios: true
   web: true
   image: "assets/images/logo/Frame 4.png"
 
   android_12:
-    color: "#2D2B3E" # اضف لون الخلفية هنا (مثلاً أبيض)
+    color: "#2D2B3E"
     image: "assets/images/logo/Frame 4.png"
 
 flutter_launcher_icons:

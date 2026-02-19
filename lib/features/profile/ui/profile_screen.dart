@@ -16,7 +16,7 @@ class AccountScreen extends StatefulWidget {
 
 class _AccountScreenState extends State<AccountScreen> {
   String? name;
-
+  String? profileImage;
   @override
   void initState() {
     super.initState();
@@ -29,6 +29,7 @@ class _AccountScreenState extends State<AccountScreen> {
       final data = await UserDataManager.loadUserData();
       setState(() {
         name = data['name'] ?? '';
+        profileImage = data['image'];
       });
     }
   }

@@ -18,6 +18,7 @@ class CustomProfileImageAndName extends StatefulWidget {
     this.currentImageFile,
     this.onImagePicked,
     this.name,
+    this.imageUrl,
   });
 
   final bool showEditIcon;
@@ -26,6 +27,7 @@ class CustomProfileImageAndName extends StatefulWidget {
   final File? currentImageFile;
   final ImagePickedCallback? onImagePicked;
   final String? name;
+  final String? imageUrl;
   @override
   State<CustomProfileImageAndName> createState() =>
       _CustomProfileImageAndNameState();
@@ -143,12 +145,9 @@ class _CustomProfileImageAndNameState extends State<CustomProfileImageAndName> {
                       height: 50,
                       width: 50,
                       decoration: BoxDecoration(
-                        color:AppColors.primary,
+                        color: AppColors.primary,
                         shape: BoxShape.circle,
-                        border: Border.all(
-                          color:  Colors.white,
-                          width: 3,
-                        ),
+                        border: Border.all(color: Colors.white, width: 3),
                       ),
                       child: const Icon(
                         Icons.add,
