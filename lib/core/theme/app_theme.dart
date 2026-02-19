@@ -136,4 +136,10 @@ TextStyle textStyle28BoldWhite = TextStyle(
   color: AppColors.black,
   fontFamily: 'Cairo',
 );
+TextStyle textStyle12SemiBoldShadowPurple = TextStyle(
+  fontSize: 12.sp,
+  fontWeight: FontWeight.w600,
+  color: AppColors.ShadowPurple,
+  fontFamily: 'Cairo',
+);
 
