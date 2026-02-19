@@ -23,9 +23,7 @@ class SupabaseService {
 
   Future<void> createBooking(Map<String, dynamic> bookingData) async {
     try {
-      await _client
-          .from('bookings')
-          .insert(bookingData);
+      await _client.from('bookings').insert(bookingData);
     } catch (e) {
       print("Supabase Error: $e");
       rethrow;
@@ -42,6 +40,15 @@ class SupabaseService {
       return response as List<Map<String, dynamic>>;
     } catch (e) {
       throw e;
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> feathData() async {
+    try {
+      return await _client.from('hotels').select("*");
+    } catch (e) {
+      print("Supabase Error $e");
+      rethrow;
     }
   }
 }
