@@ -1,3 +1,4 @@
+// custom_appbar_search.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -7,8 +8,15 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/colors.dart';
 
 class CustomAppbarSearch extends StatelessWidget {
-  const CustomAppbarSearch({super.key, required this.onChanged});
+  const CustomAppbarSearch({
+    super.key,
+    required this.onChanged,
+    required this.onFilterTap,
+  });
+
   final ValueChanged<String> onChanged;
+  final VoidCallback onFilterTap;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -38,12 +46,14 @@ class CustomAppbarSearch extends StatelessWidget {
                 decoration: InputDecoration(
                   hintText: "...البحث عن الفنادق",
                   hintStyle: textStyle17MediumBlack.copyWith(
-                    color: Color(0xFFB7B7B7),
+                    color: const Color(0xFFB7B7B7),
                   ),
-
-                  prefixIcon: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 18.w),
-                    child: SvgPicture.asset("assets/icons/filter-search.svg"),
+                  prefixIcon: GestureDetector(
+                    onTap: onFilterTap,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 18.w),
+                      child: SvgPicture.asset("assets/icons/filter-search.svg"),
+                    ),
                   ),
                   suffixIconConstraints: BoxConstraints(
                     minHeight: 20.h,
@@ -69,7 +79,6 @@ class CustomAppbarSearch extends StatelessWidget {
               ),
             ),
           ),
-
           SizedBox(width: 12.w),
           IconButton(
             onPressed: () {
