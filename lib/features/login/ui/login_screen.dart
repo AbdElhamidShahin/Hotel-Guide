@@ -66,8 +66,9 @@ class LoginScreen extends StatelessWidget {
 
                       Text(
                         "بوابتك لتجربة فندقية استثنائية",
-                        style: textStyle30BoldPrimary,
-
+                        style: textStyle30BoldPrimary.copyWith(
+                          fontSize: 26.sp,
+                        ),
                         maxLines: 1,
                       ),
                       SizedBox(height: 30.h),
