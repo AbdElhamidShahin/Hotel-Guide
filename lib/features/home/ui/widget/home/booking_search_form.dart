@@ -11,21 +11,19 @@ class BookingSearchForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 4.0.w),
+      padding: EdgeInsets.symmetric(horizontal: 16.0.w),
       child: Container(
         width: double.infinity,
         clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8.r),
+          borderRadius: BorderRadius.circular(12.r),
           color: AppColors.primary,
         ),
 
         child: Stack(
           children: [
-            BackgroundCircle(left: -55.w, bottom: -100.h),
-            BackgroundCircle(right: -55.w, bottom: -100.h),
-            BackgroundCircle(right: -55.w, top: -100.h),
-            BackgroundCircle(left: -55.w, top: -100.h),
+            BackgroundCircle(left: -60.r, bottom: -90.r),
+            BackgroundCircle(right: -60.r, top: -90.r),
 
             Padding(
               padding: EdgeInsets.all(24.w),

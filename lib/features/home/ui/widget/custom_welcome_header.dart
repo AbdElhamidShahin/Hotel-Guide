@@ -6,7 +6,6 @@ import 'package:go_router/go_router.dart';
 import 'package:hotel_guide/core/theme/app_theme.dart';
 import '../../../../core/helpers/local_storage_account.dart';
 import '../../../../core/router/routers.dart';
-import '../../../profile/ui/widget/custom_profile_image_and_name.dart';
 
 class CustomWelcomeHeader extends StatefulWidget {
   const CustomWelcomeHeader({super.key, required this.name});
@@ -93,7 +92,8 @@ class _CustomWelcomeHeaderState extends State<CustomWelcomeHeader> {
                     child: CircleAvatar(
                       radius: 80,
                       backgroundColor: Colors.grey[800],
-                      backgroundImage: image != null && File(image!).existsSync()
+                      backgroundImage:
+                          image != null && File(image!).existsSync()
                           ? FileImage(File(image!))
                           : const AssetImage('assets/images/profile.png')
                                 as ImageProvider,
@@ -103,11 +103,12 @@ class _CustomWelcomeHeaderState extends State<CustomWelcomeHeader> {
               ),
             ],
           ),
-          SizedBox(height: 16),
+          SizedBox(height: 8.h),
           Text(
-            ".كل ما تحتاجه للإقامة المثالية أصبح بين يديك الآن",
-            style: textStyle17MediumBlack,
+            "كل ما تحتاجه للإقامة المثالية أصبح بين يديك الآن.",
+            style: textStyle17MediumBlack.copyWith(fontSize: 14.sp),
             textDirection: TextDirection.rtl,
+
             textAlign: TextAlign.start,
             maxLines: 1,
           ),
