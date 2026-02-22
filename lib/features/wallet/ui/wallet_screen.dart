@@ -27,32 +27,26 @@ class _WalletScreenState extends State<WalletScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppbarWidget(onTap: () {}, name: "المحفظة"),
-      body: SingleChildScrollView(
-        child: BlocBuilder<WalletCubit, WalletState>(
-          builder: (context, state) {
-            if (state is WalletLoaded) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  CustomWalletBalance(
-                    onTabChanged: (view) {
-                      setState(() {
-                        currentView = view;
-                      });
-                    },
-                    profileModel: state.userProfile,
-                  ),
-                  _buildSelectedView(currentView),
-                  SizedBox(height: 60.h),
-                ],
-              );
-            } else if (state is WalletLoading) {
-              return const Center(child: CircularProgressIndicator());
-            } else {
-              return Center(child: Text("حدث خطأ ما"));
-            }
-          },
-        ),
+      body: BlocBuilder<WalletCubit, WalletState>(
+        builder: (context, state) {
+          if (state is WalletLoaded) {
+            return ListView(
+              physics: const BouncingScrollPhysics(),
+              children: [
+                CustomWalletBalance(
+                  onTabChanged: (view) => setState(() => currentView = view),
+                  profileModel: state.userProfile,
+                ),
+                _buildSelectedView(currentView),
+                SizedBox(height: 30.h),
+              ],
+            );
+          } else if (state is WalletLoading) {
+            return const Center(child: CircularProgressIndicator());
+          } else {
+            return Center(child: Text("حدث خطأ ما"));
+          }
+        },
       ),
     );
   }

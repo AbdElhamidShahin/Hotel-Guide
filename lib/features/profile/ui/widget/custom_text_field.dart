@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/colors.dart';
-
 
 class Customtextfeild extends StatelessWidget {
   Customtextfeild({
@@ -25,39 +25,36 @@ class Customtextfeild extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Text(
             label,
-            style:  TextStyle(
+            style: TextStyle(
               fontWeight: FontWeight.bold,
-              fontSize: 15,
+              fontSize: 14.sp,
               color: AppColors.black,
               fontFamily: 'Cairo',
-
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 6.h),
           TextFormField(
+
             controller: controller,
             onChanged: onChanged,
             validator: validator,
             keyboardType: keyboardType,
             textAlign: TextAlign.right,
-            style: const TextStyle(
-              color: AppColors.black,
-              fontSize: 18.0,
-            ),
+            style: TextStyle(color: AppColors.black, fontSize: 16.sp),
             decoration: InputDecoration(
               filled: true,
               fillColor: Colors.white,
               hintText: hintText,
               hintStyle: textStyle15MediumGray,
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 8,
-                vertical: 18,
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: 12.w,
+                vertical: 16.h,
               ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
@@ -65,7 +62,7 @@ class Customtextfeild extends StatelessWidget {
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(6),
-                borderSide:  BorderSide(
+                borderSide: BorderSide(
                   color: AppColors.black4.withOpacity(0.7),
                   width: 1.0,
                 ),
