@@ -88,38 +88,40 @@ class CustomCityHomeItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(17),
-          child: Stack(
-            children: [
-              // Image
-              Positioned.fill(
-                child: Image.network(
-                  city.imageUrl,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) =>
-                      const Center(child: Icon(Icons.error)),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(15.r),
+        child: Stack(
+          children: [
+            // Image
+            Positioned.fill(
+              child: Image.network(
+                city.imageUrl,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) =>
+                    const Center(child: Icon(Icons.error)),
+              ),
+            ),
+
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.center,
+                  colors: [Colors.black.withOpacity(0.8), Colors.transparent],
                 ),
               ),
-
-              Container(color: Colors.black.withOpacity(0.4)),
-
-              Positioned(
-                bottom: 10,
-                right: 0,
-                left: 0,
-                child: Center(
-                  child: Text(
-                    city.name,
-                    style: textStyle22BoldPrimary.copyWith(fontSize: 20.sp),
-                  ),
+            ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: EdgeInsets.only(bottom: 12.h),
+                child: Text(
+                  city.name,
+                  style: textStyle22BoldPrimary.copyWith(fontSize: 16.sp, color: Colors.white),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

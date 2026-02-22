@@ -31,6 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _setupName();
     context.read<HomeCubit>().getHotelsAndCities();
   }
+
   Future<void> _setupName() async {
     if (widget.name.isNotEmpty) {
       setState(() {
@@ -43,6 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,110 +54,49 @@ class _HomeScreenState extends State<HomeScreen> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               CustomAppbarHome(),
-              SizedBox(height: 16),
-              CustomWelcomeHeader(name: displayUserName??''),
-              SizedBox(height: 14),
+              SizedBox(height: 16.h),
+              CustomWelcomeHeader(name: displayUserName ?? ''),
+              SizedBox(height: 14.h),
               AiBookingBanner(),
 
               // SizedBox(height: 24),
               // BookingSearchForm(),
-              SizedBox(height: 24),
-
+              SizedBox(height: 24.h),
               TopRatingWidget(name: 'الأكثر حجزًا هذا الأسبوع', onTap: () {}),
 
-              SizedBox(height: 16),
+              SizedBox(height: 16.h),
+              _buildDivider(),
 
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Divider(
-                  height: 2,
-                  color: AppColors.black.withOpacity(0.1),
-                ),
-              ),
-              SizedBox(height: 24),
+              SizedBox(height: 24.h),
               SizedBox(
-                height: 450.h,
+                height:360.h,
                 child: CustomRatingListview(
                   cityId: "8a7ee754-037c-4a87-bda6-8a61527982a3",
                 ),
-              ),
+              ),              SizedBox(height: 16.h),
 
               TopRatingWidget(
                 name: 'إستكشف مصر',
-                onTap: () {
-                  final homeCubit = context.read<HomeCubit>();
-
-                  showModalBottomSheet(
-                    context: context,
-                    isScrollControlled: true,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(20),
-                      ),
-                    ),
-                    builder: (context) => BlocProvider.value(
-                      value: homeCubit,
-                      child: DraggableScrollableSheet(
-                        expand: false,
-                        initialChildSize: 0.9,
-                        builder: (_, scrollController) => SingleChildScrollView(
-                          controller: scrollController,
-                          child: Column(
-                            children: [
-                              Container(
-                                margin: EdgeInsets.symmetric(vertical: 12.h),
-                                height: 5.h,
-                                width: 40.w,
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[300],
-                                  borderRadius: BorderRadius.circular(10.r),
-                                ),
-                              ),
-                              Text(
-                                "جميع المدن",
-                                style: textStyle1Regularprimary.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              const Divider(),
-                              SizedBox(height: 16.h),
-                              CustomCityHome(),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                },
+                onTap: () => _showCitiesBottomSheet(context),
               ),
-              SizedBox(height: 16),
+              SizedBox(height: 16.h),
 
+              _buildDivider(),
+              SizedBox(height: 12.h),
+
+              const CustomCityHome(itemCount: 4),
+              SizedBox(height: 20.h),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Divider(
-                  height: 2,
-                  color: AppColors.black.withOpacity(0.1),
-                ),
-              ),
-              SizedBox(height: 12),
-
-              SizedBox(
-                child: SingleChildScrollView(
-                  child: CustomCityHome(itemCount: 4),
-                ),
-              ),
-              SizedBox(height: 8),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
                 child: Text(
                   "!عروض ترويجية وخصومات وعروض خاصة لك",
                   style: textStyle14SemiBoldWhite.copyWith(
                     color: AppColors.black.withOpacity(0.6),
                   ),
+                  textAlign: TextAlign.right,
                 ),
               ),
-              SizedBox(height: 12),
-
+              SizedBox(height: 12.h),
               CustomOffersHome(),
             ],
           ),
@@ -163,4 +104,55 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+}
+
+Widget _buildDivider() {
+  return Padding(
+    padding: EdgeInsets.symmetric(horizontal: 24.w),
+    child: Divider(
+      height: 2.h,
+      thickness: 1.h,
+      color: AppColors.black.withOpacity(0.1),
+    ),
+  );
+}
+
+void _showCitiesBottomSheet(BuildContext context) {
+  final homeCubit = context.read<HomeCubit>();
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+    ),
+    builder: (context) => BlocProvider.value(
+      value: homeCubit,
+      child: DraggableScrollableSheet(
+        expand: false,
+        initialChildSize: 0.9,
+        builder: (_, scrollController) => Column(
+          children: [
+            Container(
+              margin: EdgeInsets.symmetric(vertical: 12.h),
+              height: 5.h,
+              width: 40.w,
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(10.r),
+              ),
+            ),
+            Text(
+              "جميع المدن",
+              style: textStyle1Regularprimary.copyWith(
+                fontWeight: FontWeight.w600,
+                fontSize: 18.sp,
+              ),
+            ),
+            const Divider(),
+            Expanded(child: CustomCityHome()),
+          ],
+        ),
+      ),
+    ),
+  );
 }
