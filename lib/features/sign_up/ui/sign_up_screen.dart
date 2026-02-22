@@ -32,7 +32,7 @@ class SignUpScreen extends StatelessWidget {
                 filter: ImageFilter.blur(
                   sigmaX: 15.0,
                   sigmaY: 15.0,
-                ), // درجة التغبيش
+                ),
                 child: Container(color: Colors.transparent),
               ),
               Container(

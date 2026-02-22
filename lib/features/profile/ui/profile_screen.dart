@@ -25,13 +25,11 @@ class _AccountScreenState extends State<AccountScreen> {
   }
 
   Future<void> _loadIfNeeded() async {
-    if (name == null || name!.isEmpty) {
       final data = await UserDataManager.loadUserData();
       setState(() {
-        name = data['name'] ?? '';
-        profileImage = data['image'];
-      });
-    }
+        name = data['name'] ?? 'مستخدم';
+        profileImage = data['image'];      });
+
   }
 
   @override
