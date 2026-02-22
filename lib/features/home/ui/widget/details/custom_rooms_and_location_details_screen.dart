@@ -10,73 +10,59 @@ import '../../../../../core/theme/app_theme.dart';
 import '../../../../../core/theme/colors.dart';
 
 class CustomRoomsAndLocationDetailsScreen extends StatelessWidget {
-  const CustomRoomsAndLocationDetailsScreen({
-    super.key,
-    required this.hotelModel,
-  });
+  const CustomRoomsAndLocationDetailsScreen({super.key, required this.hotelModel});
   final HotelModel hotelModel;
+
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-
-      children: [
-        GestureDetector(
-          onTap: () {
-            _launchUrl(hotelModel.location);
-          },
-          child: Container(
-            width: 191.w,
-            height: 60.h,
-            decoration: BoxDecoration(
-              color: AppColors.primary,
-              borderRadius: BorderRadius.circular(50),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "الموقع",
-                  style: textStyle20BoldShadowPurple.copyWith(
-                    color: AppColors.white,
-                  ),
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16.w),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Expanded(
+            child: GestureDetector(
+              onTap: () => _launchUrl(hotelModel.location),
+              child: Container(
+                height: 55.h,
+                decoration: BoxDecoration(
+                  color: AppColors.primary,
+                  borderRadius: BorderRadius.circular(50.r),
                 ),
-                SizedBox(width: 20.w),
-                SvgPicture.asset("assets/icons/map.svg"),
-              ],
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("الموقع", style: textStyle20BoldShadowPurple.copyWith(color: AppColors.white, fontSize: 16.sp)),
+                    SizedBox(width: 12.w),
+                    SvgPicture.asset("assets/icons/map.svg", height: 20.r),
+                  ],
+                ),
+              ),
             ),
           ),
-        ),
-
-        SizedBox(width: 12.w),
-        GestureDetector(
-          onTap: () {
-            context.go(routes.RoomsScreenListView, extra: hotelModel.id);
-          },
-
-          child: Container(
-            width: 191.w,
-            height: 60.h,
-            decoration: BoxDecoration(
-              color: AppColors.primary,
-              borderRadius: BorderRadius.circular(50),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "الغرف",
-                  style: textStyle20BoldShadowPurple.copyWith(
-                    color: AppColors.white,
-                  ),
+          SizedBox(width: 12.w),
+          Expanded(
+            child: GestureDetector(
+              onTap: () => context.go(routes.RoomsScreenListView, extra: hotelModel.id),
+              child: Container(
+                height: 55.h,
+                decoration: BoxDecoration(
+                  color: AppColors.primary,
+                  borderRadius: BorderRadius.circular(50.r),
                 ),
-                SizedBox(width: 20.w),
-                SvgPicture.asset("assets/icons/rooms_icon.svg"),
-              ],
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("الغرف", style: textStyle20BoldShadowPurple.copyWith(color: AppColors.white, fontSize: 16.sp)),
+                    SizedBox(width: 12.w),
+                    SvgPicture.asset("assets/icons/rooms_icon.svg", height: 20.r),
+                  ],
+                ),
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
