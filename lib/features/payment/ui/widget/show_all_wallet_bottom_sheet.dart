@@ -22,7 +22,6 @@ void showWalletBottomSheet(BuildContext context, BookingModel bookingData) {
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
     builder: (context) {
-      // استخدمنا Context العادي هنا لسهولة التعامل
       return Container(
         height: MediaQuery.of(context).size.height * 0.6,
         decoration: BoxDecoration(
@@ -31,7 +30,6 @@ void showWalletBottomSheet(BuildContext context, BookingModel bookingData) {
         ),
         child: Column(
           children: [
-            // الهيدر
             Padding(
               padding: EdgeInsets.all(16.r),
               child: Row(
@@ -53,9 +51,8 @@ void showWalletBottomSheet(BuildContext context, BookingModel bookingData) {
 
             SizedBox(height: 20.h),
 
-            // قائمة المحافظ (استخدمت BlocBuilder عشان التحديد يشتغل)
             BlocBuilder<BookingCubit, BookingStates>(
-              bloc: bookingCubit, // ربطناه بالكيوبيت مباشرة
+              bloc: bookingCubit,
               builder: (context, state) {
                 return Column(
                   children: [

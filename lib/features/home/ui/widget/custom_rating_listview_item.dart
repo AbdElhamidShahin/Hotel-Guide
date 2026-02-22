@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
+import 'package:snackly/snackly.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/network/model/hotel_model.dart';
 import '../../../../core/router/routers.dart';
@@ -111,24 +112,53 @@ class CustomRatingListviewItem extends StatelessWidget {
   Widget _buildFavoriteIcon() {
     return BlocProvider.value(
       value: getIt<FavoriteCubit>(),
+
       child: BlocBuilder<FavoriteCubit, FavoriteState>(
         builder: (context, state) {
-          final isFav = context.read<FavoriteCubit>().isFavorite(hotelModel);
-          return Container(
-            padding: EdgeInsets.all(8.r),
-            decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.3),
-              shape: BoxShape.circle,
+          final favoriteCubit = context.read<FavoriteCubit>();
+          final isFavorite = favoriteCubit.isFavorite(hotelModel);
+
+          return IconButton(
+            icon: Container(
+              padding: EdgeInsets.all(8.r),
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.3),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                isFavorite
+                    ? Icons.favorite_rounded
+                    : Icons.favorite_border_rounded,
+                color: isFavorite ? Colors.red : Colors.white,
+                size: 24.r,
+              ),
             ),
-            child: Icon(
-              isFav ? Icons.favorite_rounded : Icons.favorite_border_rounded,
-              color: isFav ? Colors.red : Colors.white,
-              size: 24.r,
-            ),
+            onPressed: () async {
+              final bool currentlyFavorite = isFavorite;
+              await favoriteCubit.toggleFavorite(hotelModel);
+
+              if (currentlyFavorite) {
+                Snackly.success(
+                  context: context,
+                  title: "تم الحذف من المفضلة",
+                  style: SnackbarStyle.filled,
+                );
+              } else {
+                Snackly.success(
+                  context: context,
+                  title: "تم الإضافة إلى المفضلة",
+                  style: SnackbarStyle.filled,
+                );
+              }
+            },
+            padding: const EdgeInsets.all(8),
+            constraints: const BoxConstraints(),
           );
         },
       ),
     );
+
+
   }
 
   Widget _buildRatingBadge() {
