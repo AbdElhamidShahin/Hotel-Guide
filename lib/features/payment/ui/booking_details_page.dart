@@ -70,7 +70,6 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // قسم التقويم
               BookingCalendar(
                 focusedDay: focusedDay,
                 rangeStart: rangeStart,
