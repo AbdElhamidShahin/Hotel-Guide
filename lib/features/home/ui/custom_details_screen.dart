@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hotel_guide/core/theme/app_theme.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
-import 'package:hotel_guide/features/home/ui/widget/custom_rating_listview.dart';
 import 'package:hotel_guide/features/home/ui/widget/details/accommodation_tile.dart';
 import 'package:hotel_guide/features/home/ui/widget/details/custom_app_bar_details.dart';
 import 'package:hotel_guide/features/home/ui/widget/details/custom_list_view_imageall.dart';
@@ -15,9 +12,7 @@ import 'package:hotel_guide/features/home/ui/widget/details/custom_name_details.
 import 'package:hotel_guide/features/home/ui/widget/details/divider.dart';
 import 'package:hotel_guide/features/home/ui/widget/details/rating_screen.dart';
 import 'package:hotel_guide/features/home/ui/widget/details/show_hotel_description.dart';
-
 import '../../../core/network/model/hotel_model.dart';
-
 import '../../room/logic/room_cubit.dart';
 import '../logic/cubit/home_cubit.dart';
 

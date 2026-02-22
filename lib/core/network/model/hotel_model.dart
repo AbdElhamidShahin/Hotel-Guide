@@ -1,6 +1,7 @@
 class HotelModel {
   final String id;
   final String cityName;
+  final String location;
   final String name;
   final String description;
   final String address;
@@ -15,6 +16,7 @@ class HotelModel {
     required this.cityName,
     required this.name,
     required this.description,
+    required this.location,
     required this.address,
     required this.rating,
     required this.reviewsCount,
@@ -30,6 +32,7 @@ class HotelModel {
           ? (json['cities']['name'] ?? 'مدينة غير معروفة')
           : (json['cityName'] ?? 'بدون مدينة'),
       name: json['name'] ?? 'اسم غير متوفر',
+      location: json['location'] ?? 'اسم غير متوفر',
       description: json['description'] ?? '',
       address: json['address'] ?? '',
       rating: (json['rating'] as num? ?? 0.0).toDouble(),
@@ -50,6 +53,7 @@ class HotelModel {
       'description': description,
       'address': address,
       'rating': rating,
+      'location': location,
       'reviews_count': reviewsCount,
       'main_images': images,
       'amenities': amenities,
