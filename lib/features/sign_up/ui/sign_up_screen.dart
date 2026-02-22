@@ -37,9 +37,9 @@ class SignUpScreen extends StatelessWidget {
               ),
               Container(
                 width: double.infinity,
-                height: MediaQuery.of(context).size.height * 0.2,
+                  height: 0.25.sh,
                 decoration: BoxDecoration(
-                  color: const Color(0x83809FB2).withOpacity(0.3),
+                  color: const Color(0x83809FB2).withOpacity(0.1),
                   boxShadow: [
                     BoxShadow(
                       color: const Color(0xFF83809F).withOpacity(0.5),
@@ -65,16 +65,16 @@ class SignUpScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 24.0),
+                      padding: EdgeInsets.symmetric(horizontal: 24.0.w),
                       child: Column(
                         children: [
-                          SizedBox(height: 24.h),
+                          SizedBox(height: 20.h),
                           Image.asset(
                             "assets/images/logo/logo-light.png",
-                            height: 173.h,
-                            width: 173.w,
+                            height: 150.h,
+                            width: 150.w,
                           ),
-                          SizedBox(height: 20.h),
+                          SizedBox(height: 15.h),
 
                           Text(
                             "بوابتك لتجربة فندقية استثنائية",
@@ -134,11 +134,9 @@ class SignUpScreen extends StatelessWidget {
                                       CrossAxisAlignment.center,
                                       children: [
                                         const EmailAndPasswordAndName(),
-
-                                        SizedBox(height: 30.h),
                                         SizedBox(
                                           width: double.infinity,
-                                          height: 63.h,
+                                          height: 56.h,
                                           child: CustomButton(
                                             text: 'إنشاء حساب',
                                             onTap: isLoading
@@ -150,13 +148,13 @@ class SignUpScreen extends StatelessWidget {
                                             },
                                           ),
                                         ),
-                                        SizedBox(height: 16.h),
+                                        SizedBox(height: 20.h),
 
                                         DividerWithText(),
                                         SizedBox(height: 20.h),
 
                                         SocialLoginSection(),
-                                        SizedBox(height: 50.h),
+                                        SizedBox(height: 30.h),
 
                                         Row(
                                           mainAxisAlignment:
@@ -182,7 +180,7 @@ class SignUpScreen extends StatelessWidget {
                                             ),
                                           ],
                                         ),
-                                        SizedBox(height: 50.h),
+                                        SizedBox(height: 40.h),
                                       ],
                                     ),
                                   ),
