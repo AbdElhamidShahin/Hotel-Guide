@@ -103,33 +103,25 @@ class _CustomDetailsScreenState extends State<CustomDetailsScreen> {
 
               DividerWidget(),
 
-              SizedBox(
-                height: 150.h,
-                child: Center(child: RatingScreen()),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 24.h),
+                child: const RatingScreen(),
               ),
 
-              SizedBox(height: 12.h),
-              CustomRoomsAndLocationDetailsScreen(
-                hotelModel: widget.hotelModel,
-              ),
-              SizedBox(height: 150.h),
+              SizedBox(height: 16.h),
+              CustomRoomsAndLocationDetailsScreen(hotelModel: widget.hotelModel),
+              SizedBox(height: 50.h),
               Center(
                 child: Text(
                   "فنادق مشابهة",
-                  style: textStyle22BoldPrimary.copyWith(
-                    color: AppColors.primary,
-                  ),
+                  style: textStyle22BoldPrimary.copyWith(color: AppColors.primary),
                 ),
               ),
-              SizedBox(height: 50.h),
+              SizedBox(height: 24.h),
 
-              SizedBox(
-                height: 300.h,
-                width: double.infinity,
-                child: CustomSimilarHotelsListview(
-                  hotelModel: widget.hotelModel,
-                  cityId: 'e1d53167-c06b-410b-81dc-d5694a9f81dc',
-                ),
+              CustomSimilarHotelsListview(
+                hotelModel: widget.hotelModel,
+                cityId: 'e1d53167-c06b-410b-81dc-d5694a9f81dc',
               ),
 
               SizedBox(height: 40.h),
