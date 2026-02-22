@@ -1,4 +1,4 @@
-import 'dart:async'; // ضروري جداً للـ StreamSubscription
+import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -26,8 +26,8 @@ class SignUpCubit extends Cubit<SignUpState> {
       if (session != null && data.event == AuthChangeEvent.signedIn) {
         final user = session.user;
 
-        final String name = user.userMetadata?['full_name'] ?? "مستخدم جديد";
-        final String imageUrl = user.userMetadata?['avatar_url'] ?? ""; // سحب الصورة هنا
+        final String name = user.userMetadata?['full_name'] ?? user.userMetadata?['name'] ?? "مستخدم جديد";
+        final String imageUrl = user.userMetadata?['avatar_url'] ?? "";
         final String email = user.email ?? "";
 
         await UserDataManager.saveUserData(

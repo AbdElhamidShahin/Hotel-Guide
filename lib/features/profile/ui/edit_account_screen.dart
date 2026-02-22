@@ -135,7 +135,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
                     if (_formKey.currentState!.validate()) {
                       await UserDataManager.saveUserData(
                         name: _nameController.text,
-                        image: _imageFile?.path ?? profileImage,
+                        image: _imageFile?.path ?? profileImage ?? "",
                         phone: _phoneController.text,
                         email: _emailController.text,
                       );

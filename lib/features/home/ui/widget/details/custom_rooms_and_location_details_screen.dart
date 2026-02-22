@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart' show SvgPicture;
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hotel_guide/core/network/model/hotel_model.dart';
 import 'package:hotel_guide/core/router/routers.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../../core/theme/app_theme.dart';
 import '../../../../../core/theme/colors.dart';
 
 class CustomRoomsAndLocationDetailsScreen extends StatelessWidget {
-  const CustomRoomsAndLocationDetailsScreen({super.key, required this.hotelModel});
-final HotelModel hotelModel;
+  const CustomRoomsAndLocationDetailsScreen({
+    super.key,
+    required this.hotelModel,
+  });
+  final HotelModel hotelModel;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -18,7 +22,9 @@ final HotelModel hotelModel;
 
       children: [
         GestureDetector(
-          onTap: () {},
+          onTap: () {
+            _launchUrl(hotelModel.location);
+          },
           child: Container(
             width: 191.w,
             height: 60.h,
@@ -45,7 +51,7 @@ final HotelModel hotelModel;
         SizedBox(width: 12.w),
         GestureDetector(
           onTap: () {
-            context.go(routes.RoomsScreenListView,extra: hotelModel.id);
+            context.go(routes.RoomsScreenListView, extra: hotelModel.id);
           },
 
           child: Container(
@@ -72,5 +78,11 @@ final HotelModel hotelModel;
         ),
       ],
     );
+  }
+}
+
+Future<void> _launchUrl(String urlString) async {
+  if (!await launchUrl(Uri.parse(urlString))) {
+    throw Exception("Could not launch $urlString");
   }
 }

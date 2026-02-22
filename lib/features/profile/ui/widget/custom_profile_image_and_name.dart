@@ -52,7 +52,23 @@ class _CustomProfileImageAndNameState extends State<CustomProfileImageAndName> {
       image = userData['imagePath'];
     });
   }
+  ImageProvider _buildProfileImage() {
+    if (widget.currentImageFile != null) {
+      return FileImage(widget.currentImageFile!);
+    }
+    if (image != null && image!.isNotEmpty) {
+      if (image!.startsWith('http')) {
+        return NetworkImage(image!);
+      } else {
+        File file = File(image!);
+        if (file.existsSync()) {
+          return FileImage(file);
+        }
+      }
+    }
 
+    return const AssetImage('assets/images/profile.png');
+  }
   Future<void> _pickImage() async {
     try {
       final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
@@ -128,10 +144,7 @@ class _CustomProfileImageAndNameState extends State<CustomProfileImageAndName> {
                 child: CircleAvatar(
                   radius: 80,
                   backgroundColor: Colors.grey[800],
-                  backgroundImage: image != null && File(image!).existsSync()
-                      ? FileImage(File(image!))
-                      : const AssetImage('assets/images/profile.png')
-                            as ImageProvider,
+                  backgroundImage: _buildProfileImage(),
                 ),
               ),
 
