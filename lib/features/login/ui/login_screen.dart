@@ -28,9 +28,9 @@ class LoginScreen extends StatelessWidget {
             children: [
               Container(
                 width: double.infinity,
-                height: MediaQuery.of(context).size.height * 0.2,
+              height: 0.25.sh,
                 decoration: BoxDecoration(
-                  color: const Color(0x83809FB2).withOpacity(0.3),
+                  color: const Color(0x83809FB2).withOpacity(0.1),
                   boxShadow: [
                     BoxShadow(
                       color: const Color(0xFF83809F).withOpacity(0.5),
@@ -59,18 +59,19 @@ class LoginScreen extends StatelessWidget {
                     children: [
                       Image.asset(
                         "assets/images/logo/logo-light.png",
-                        height: 173.h,
-                        width: 173.w,
+                        height: 150.r,
+                        width: 150.r,
                       ),
-                      SizedBox(height: 20.h),
+                      SizedBox(height: 15.h),
 
                       Text(
                         "بوابتك لتجربة فندقية استثنائية",
-                        style: textStyle30BoldPrimary,
-
+                        style: textStyle30BoldPrimary.copyWith(
+                          fontSize: 26.sp,
+                        ),
                         maxLines: 1,
                       ),
-                      SizedBox(height: 20.h),
+                      SizedBox(height: 30.h),
                       BlocListener<LoginCubit, LoginState>(
                         listener: (context, state) {
                           if (state is LoginSuccess) {
@@ -113,7 +114,7 @@ class LoginScreen extends StatelessWidget {
                                     SizedBox(height: 30.h),
                                     SizedBox(
                                       width: double.infinity,
-                                      height: 63.h,
+                                      height: 56.h,
                                       child: CustomButton(
                                         text: 'تسجيل الدخول',
                                         onTap: isLoading
@@ -125,13 +126,13 @@ class LoginScreen extends StatelessWidget {
                                               },
                                       ),
                                     ),
-                                    SizedBox(height: 16.h),
+                                    SizedBox(height: 20.h),
 
                                     DividerWithText(),
                                     SizedBox(height: 20.h),
 
                                     SocialLoginSection(),
-                                    SizedBox(height: 50.h),
+                                    SizedBox(height: 30.h),
 
                                     Row(
                                       mainAxisAlignment:
@@ -155,6 +156,7 @@ class LoginScreen extends StatelessWidget {
                                         ),
                                       ],
                                     ),
+                                    SizedBox(height: 40.h),
                                   ],
                                 ),
                               ),
@@ -163,7 +165,6 @@ class LoginScreen extends StatelessWidget {
                         ),
                       ),
 
-                      SizedBox(height: 50.h),
                     ],
                   ),
                 ),

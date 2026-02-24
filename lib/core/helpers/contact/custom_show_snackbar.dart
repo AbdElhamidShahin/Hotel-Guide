@@ -1,37 +1,36 @@
-
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-void showCustomSnackbar(BuildContext context, ContentType messageType,
-    String title, String message) {
-  Color backgroundColor;
-  IconData icon;
+void showCustomSnackbar(
+  BuildContext context,
+  ContentType messageType,
+  String title,
+  String message,
+) {
+  late OverlayEntry overlayEntry;
 
-  if (messageType == ContentType.success) {
-    backgroundColor = Colors.green.shade700;
-    icon = Icons.check_circle;
-  } else if (messageType == ContentType.failure) {
-    backgroundColor = Colors.red.shade700;
-    icon = Icons.error;
-  } else { // التعامل مع Warning و Help
-    backgroundColor = Colors.orange.shade700;
-    icon = Icons.warning;
-  }
-
-  final snackBar = SnackBar(
-    // ✅ يجب استخدام AwesomeSnackbarContent
-    content: AwesomeSnackbarContent(
-      title: title,
-      message: message,
-      contentType: messageType,
+  overlayEntry = OverlayEntry(
+    builder: (context) => Positioned(
+      top: 50.h,
+      left: 20.w,
+      right: 20.w,
+      child: Material(
+        color: Colors.transparent,
+        child: AwesomeSnackbarContent(
+          title: title,
+          message: message,
+          contentType: messageType,
+        ),
+      ),
     ),
-    // ✅ ضبط سلوك الـ SnackBar
-    behavior: SnackBarBehavior.floating,
-    backgroundColor: Colors.transparent,
-    elevation: 0,
   );
 
-  ScaffoldMessenger.of(context)
-    ..hideCurrentSnackBar()
-    ..showSnackBar(snackBar);
+  Overlay.of(context).insert(overlayEntry);
+
+  Future.delayed(const Duration(seconds: 3), () {
+    if (overlayEntry.mounted) {
+      overlayEntry.remove();
+    }
+  });
 }

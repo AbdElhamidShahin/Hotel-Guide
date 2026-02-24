@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hotel_guide/core/router/routers.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
@@ -87,7 +88,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
                 currentImageFile: _imageFile,
                 onImagePicked: _onImagePicked,
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12.h),
 
               Customtextfeild(
                 controller: _nameController,
@@ -100,7 +101,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
                   return null;
                 },
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: 8.h),
 
               Customtextfeild(
                 controller: _emailController,
@@ -109,7 +110,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
                 keyboardType: TextInputType.emailAddress,
                 validator: _validateEmail,
               ),
-              const SizedBox(height: 8),
+               SizedBox(height: 8.h),
 
               Customtextfeild(
                 controller: _addressController,
@@ -124,10 +125,10 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
               ),
 
 
-              const SizedBox(height: 40),
+               SizedBox(height: 40.h),
               SizedBox(
-                width: 260,
-                height: 60,
+                width: 0.85.sw,
+                height: 55.h,
                 child: CustomButton(
                   color: AppColors.primary,
                   text: 'تحديث الملف الشخصي',
@@ -150,7 +151,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
                   },
                 ),
               ),
-              const SizedBox(height: 60),
+               SizedBox(height: 40.h),
             ],
           ),
         ),

@@ -10,12 +10,11 @@ class CustomOffersHome extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: 153,
+      height: 160.h,
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            spreadRadius: 2,
+            color: Colors.black12,
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),
@@ -24,35 +23,31 @@ class CustomOffersHome extends StatelessWidget {
       child: Stack(
         children: [
           Positioned.fill(
-            child: Image.asset(
-              'assets/images/Offers.jpg',
-              fit: BoxFit.cover,
-              color: Colors.black.withOpacity(0.6),
-              colorBlendMode: BlendMode.darken,
-            ),
+            child: Image.asset('assets/images/Offers.jpg', fit: BoxFit.cover),
           ),
+          Container(color: Colors.black.withOpacity(0.5)),
+
           Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding: EdgeInsets.all(15.r),
             child: Row(
               children: [
                 Container(
-                  width: 143.w,
-                  height: 45.h,
+                  width: 120.w,
+                  height: 40.h,
                   decoration: BoxDecoration(
                     color: AppColors.primary,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(10.r),
                   ),
                   child: Center(
                     child: Text(
                       'إكتشف العروض',
                       style: textStyle14SemiBoldWhite.copyWith(
-                        color: AppColors.white,
+                        fontSize: 12.sp,
                       ),
-                      textDirection: TextDirection.rtl,
                     ),
                   ),
                 ),
-                const SizedBox(width: 20),
+                SizedBox(width: 15.w),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -61,22 +56,15 @@ class CustomOffersHome extends StatelessWidget {
                       Text(
                         'عروض نهاية العام',
                         style: textStyle20RegularWhite.copyWith(
-                          color: AppColors.white.withOpacity(0.82),
                           fontWeight: FontWeight.bold,
                         ),
-                        textAlign: TextAlign.right,
-                        textDirection: TextDirection.rtl,
                       ),
-                      SizedBox(height: 12),
+                      SizedBox(height: 8.h),
                       Text(
                         'استمتع بآخر لحظات الصيف بخصم بنسبة 15% على الأقل.',
-                        style: textStyle14SemiBoldWhite.copyWith(
-                          color: AppColors.white.withOpacity(0.7),
-                        ),
+                        style: textStyle14SemiBoldWhite.copyWith(fontSize: 13.sp, color: Colors.white.withOpacity(0.9)),
                         textAlign: TextAlign.right,
-                        textDirection: TextDirection.rtl,
                       ),
-                      SizedBox(height: 19),
                     ],
                   ),
                 ),

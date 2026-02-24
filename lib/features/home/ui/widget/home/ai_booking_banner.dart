@@ -11,9 +11,9 @@ class AiBookingBanner extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.0.w),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(6.r),
+        borderRadius: BorderRadius.circular(12.r),
         child: SizedBox(
-          height: 97.h,
+          height: 110.h,
           width: double.infinity,
           child: Stack(
             children: [
@@ -31,7 +31,7 @@ class AiBookingBanner extends StatelessWidget {
                     end: Alignment.topCenter,
                     colors: [
                       AppColors.primary,
-                      AppColors.primary.withOpacity(0.4),
+                      AppColors.primary.withOpacity(0.5),
                     ],
                     stops: const [0.22, 1.0],
                   ),
@@ -44,44 +44,39 @@ class AiBookingBanner extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Image.asset(
-                      "assets/images/clickOn.png",
-                      width: 65.w,
-                      height: 55.h,
-                    ),
-
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Center(
-                          child: Row(
+                    Image.asset("assets/images/clickOn.png", width: 50.r, height: 50.r),
+                    SizedBox(width: 10.w),
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Row(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Image.asset(
                                 "assets/images/iconCahtRobot.png",
-                                width: 40.w,
-                                height: 40.h,
+                                width: 25.r,
+                                height: 25.r,
                                 color: AppColors.white,
                               ),
                               Text(
                                 "  أحجز فندقك خلال ثواني",
                                 style: textStyle16BoldWhite.copyWith(
-                                  fontSize: 24,
+                                  fontSize: 20.sp,
                                 ),
                               ),
                             ],
                           ),
-                        ),
-                        SizedBox(height: 8.h,),
-                        Text(
-                          "خلي الذكاء الإصطناعي يساعدك في عملية البحث",
-                          style: textStyle14RegularNightfall.copyWith(
-                            color: AppColors.white.withOpacity(0.7),
+                          SizedBox(height: 8.h,),
+                          Text(
+                            "خلي الذكاء الإصطناعي يساعدك في عملية البحث",
+                            style: textStyle14RegularNightfall.copyWith(
+                              color: AppColors.white.withOpacity(0.7),fontSize: 13.sp
+                            ),textAlign: TextAlign.right,
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ],
                 ),

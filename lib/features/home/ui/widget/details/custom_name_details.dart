@@ -20,14 +20,14 @@ class CustomNameDetails extends StatelessWidget {
       child: Stack(
         children: [
           Positioned(
-            left: -60.w,
-            bottom: -12.h,
+            left: -50.r,
+            bottom: -20.r,
             child: Container(
-              width: 100.w,
-              height: 100.h,
+              width: 100.r,
+              height: 100.r,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.SlateBlueLight,
+                color: AppColors.SlateBlueLight.withOpacity(0.5),
               ),
             ),
           ),

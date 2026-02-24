@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hotel_guide/core/router/routers.dart';
 import 'package:hotel_guide/features/profile/ui/widget/build_sttings_item.dart';
@@ -25,11 +26,11 @@ class _AccountScreenState extends State<AccountScreen> {
   }
 
   Future<void> _loadIfNeeded() async {
-      final data = await UserDataManager.loadUserData();
-      setState(() {
-        name = data['name'] ?? 'مستخدم';
-        profileImage = data['image'];      });
-
+    final data = await UserDataManager.loadUserData();
+    setState(() {
+      name = data['name'] ?? 'مستخدم';
+      profileImage = data['image'];
+    });
   }
 
   @override
@@ -44,11 +45,12 @@ class _AccountScreenState extends State<AccountScreen> {
           Expanded(
             child: ListView(
               padding: EdgeInsets.zero,
+              physics: const BouncingScrollPhysics(),
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 15,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 20.w,
+                    vertical: 15.h,
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -56,58 +58,44 @@ class _AccountScreenState extends State<AccountScreen> {
                       GestureDetector(
                         onTap: () {},
                         child: Container(
-                          width: 65,
-                          height: 35,
-                          padding: const EdgeInsets.all(3.0),
+                          width: 60.w,
+                          height: 32.h,
+                          padding: EdgeInsets.all(2.r),
                           decoration: BoxDecoration(
-                            color: Colors.transparent,
-                            borderRadius: BorderRadius.circular(30),
-                            border: Border.all(color: Colors.grey, width: 2.5),
+                            borderRadius: BorderRadius.circular(30.r),
+                            border: Border.all(color: Colors.grey.shade400, width: 2.w),
                           ),
-                          child: Stack(
-                            children: [
-                              AnimatedAlign(
-                                duration: const Duration(milliseconds: 250),
-                                curve: Curves.easeInOut,
-                                alignment: isDarkMode
-                                    ? Alignment.centerRight
-                                    : Alignment.centerLeft,
-                                child: Container(
-                                  width: 26,
-                                  height: 26,
-                                  decoration: const BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Color(0xFF181A20),
-                                  ),
-                                  child: const Icon(
-                                    Icons.wb_sunny_outlined,
-                                    color: Colors.white,
-                                    size: 17,
-                                  ),
-                                ),
-                              ),
-                            ],
+                          child: AnimatedAlign(
+                            duration: const Duration(milliseconds: 250),                            curve: Curves.easeInOut,
+                            alignment: isDarkMode ? Alignment.centerRight : Alignment.centerLeft,
+                            child: Container(
+                              width: 24.r,
+                              height: 24.r,
+                              decoration: const BoxDecoration(shape: BoxShape.circle, color: Color(0xFF181A20)),
+                              child: Icon(Icons.wb_sunny_outlined, color: Colors.white, size: 14.sp),
+                            ),
+
                           ),
-                        ),
+                        )
                       ),
                       Row(
                         children: [
                           Text(
                             "الوضع الليلي",
                             style: TextStyle(
-                              fontSize: 20,
+                              fontSize: 20.sp,
                               fontFamily: 'Cairo',
 
                               fontWeight: FontWeight.w600,
                               color: Colors.black,
                             ),
                           ),
-                          SizedBox(width: 8),
+                          SizedBox(width: 8.w),
                           Icon(
                             Icons.nightlight_outlined,
                             color: AppColors.black4,
 
-                            size: 24,
+                            size: 24.sp,
                           ),
                         ],
                       ),

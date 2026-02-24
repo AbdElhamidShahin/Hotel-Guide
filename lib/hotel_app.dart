@@ -7,20 +7,23 @@ class HotelApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: ScreenUtilInit(
-        designSize: const Size(440, 956),
-        minTextAdapt: true,
-        builder: (context, _) => MaterialApp.router(
-          routerConfig: AppRouter.router,
-          theme: ThemeData(
-            scaffoldBackgroundColor: Colors.white,
-            useMaterial3: true,
+    return ScreenUtilInit(
+      designSize: const Size(390, 844),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (context, child) {
+        return Directionality(
+          textDirection: TextDirection.rtl,
+          child: MaterialApp.router(
+            routerConfig: AppRouter.router,
+            theme: ThemeData(
+              scaffoldBackgroundColor: Colors.white,
+              useMaterial3: true,
+            ),
+            debugShowCheckedModeBanner: false,
           ),
-          debugShowCheckedModeBanner: false,
-        ),
-      ),
+        );
+      },
     );
   }
 }

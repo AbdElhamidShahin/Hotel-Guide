@@ -153,29 +153,29 @@ class CustomItem extends StatelessWidget {
                           child: Container(
                             height: 45.h,
                             width: double.infinity,
-                            padding: EdgeInsets.symmetric(horizontal: 16.w),
+                            padding: EdgeInsets.symmetric(horizontal: 12.w),
                             decoration: BoxDecoration(
                               color: AppColors.primary,
                               borderRadius: BorderRadius.circular(30.r),
                             ),
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween, 
                               textDirection: TextDirection.rtl,
                               children: [
-                                Text(
-                                  "إحجز الآن",
-                                  style: textStyle16BoldWhite.copyWith(
-                                    fontSize: 16.sp,
-                                    fontFamily: 'Cairo',
+                                Flexible(
+                                  child: Text(
+                                    "إحجز الآن",overflow: TextOverflow.ellipsis,
+                                    style: textStyle16BoldWhite.copyWith(
+                                      fontSize: 16.sp,
+                                      fontFamily: 'Cairo',
+                                    ),
                                   ),
                                 ),
 
-                                SizedBox(width: 24.w),
                                 SvgPicture.asset(
                                   "assets/icons/send.svg",
-                                  height: 24.h,
-                                  width: 24.w,
+                                  height: 20.h,
+                                  width: 20.w,
                                   color: Colors.white,
                                 ),
                               ],

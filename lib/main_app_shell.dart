@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hotel_guide/core/theme/colors.dart'; // Assuming AppColors.black and AppColors.orangeGold exist here
+import 'package:hotel_guide/core/theme/colors.dart';
 
 class MainAppShell extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
@@ -24,22 +24,21 @@ class MainAppShell extends StatelessWidget {
   }) {
     final bool isSelected = navigationShell.currentIndex == index;
 
-    final Color iconColor = isSelected
-        ? AppColors.white
-        : AppColors.ShadowPurple;
-    final Color bgColor = isSelected
-        ? AppColors.ShadowPurple
-        : Colors.transparent;
-
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 100),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(color: bgColor, shape: BoxShape.circle),
+      duration: const Duration(milliseconds: 200),
+      padding: EdgeInsets.all(10.r),
+      decoration: BoxDecoration(
+        color: isSelected ? AppColors.ShadowPurple : Colors.transparent,
+        shape: BoxShape.circle,
+      ),
       child: SvgPicture.asset(
         iconAsset,
-        height: 28.h,
-        width: 28.w,
-        colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+        height: 24.r,
+        width: 24.r,
+        colorFilter: ColorFilter.mode(
+          isSelected ? AppColors.white : AppColors.ShadowPurple,
+          BlendMode.srcIn,
+        ),
       ),
     );
   }
