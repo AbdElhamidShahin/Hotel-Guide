@@ -37,7 +37,7 @@ import '../network/model/room_model.dart';
 
 abstract class AppRouter {
   static final router = GoRouter(
-    initialLocation: routes.searchScreen,
+    initialLocation: routes.authWrapper,
     routes: [
       GoRoute(
         path: routes.authWrapper,
