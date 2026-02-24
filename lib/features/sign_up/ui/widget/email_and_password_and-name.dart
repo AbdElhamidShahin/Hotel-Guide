@@ -36,22 +36,10 @@ class _EmailAndPasswordState extends State<EmailAndPasswordAndName> {
             return null;
           },
           controller: context.read<SignUpCubit>().nameController,
-
-          suffixIcon: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10.w),
-            child: Icon(
-              Icons.person_outline_sharp,
-
-              size: 30,
-              color: AppColors.primary,
-            ),
-          ),
+          suffixIcon: _buildSuffixIcon(Icons.person_outline_sharp),
         ),
-        SizedBox(height: 30.h),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: Text("البريد الإلكتروني", style: textStyle16RegularGray),
-        ),
+        SizedBox(height: 16.h),
+        _buildLabel("البريد الإلكتروني"),
         AppTextFormFeild(
           hintText: "examble@gmail.com",
           validator: (value) {
@@ -64,21 +52,10 @@ class _EmailAndPasswordState extends State<EmailAndPasswordAndName> {
           },
           controller: context.read<SignUpCubit>().emailController,
 
-          suffixIcon: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10.w),
-            child: Icon(
-              Icons.email_outlined,
-
-              size: 30,
-              color: AppColors.primary,
-            ),
-          ),
+          suffixIcon: _buildSuffixIcon(Icons.email_outlined),
         ),
-        SizedBox(height: 30.h),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: Text("كلمة المرور", style: textStyle16RegularGray),
-        ),
+        SizedBox(height: 16.h),
+        _buildLabel("كلمة المرور"),
         AppTextFormFeild(
           validator: (value) {
             if (value == null || value.isEmpty) {
@@ -93,29 +70,13 @@ class _EmailAndPasswordState extends State<EmailAndPasswordAndName> {
           controller: context.read<SignUpCubit>().passwordController,
           hintText: "******",
           isObscureText: isObscureText,
-          suffixIcon: GestureDetector(
-            onTap: () {
-              setState(() {
-                isObscureText = !isObscureText;
-              });
-            },
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10.w),
-              child: Icon(
-                isObscureText
-                    ? Icons.visibility_off_outlined
-                    : Icons.visibility_outlined,
-                size: 30,
-                color: AppColors.primary,
-              ),
-            ),
+          suffixIcon: _buildPasswordIcon(
+            isObscureText,
+            () => setState(() => isObscureText = !isObscureText),
           ),
         ),
-        SizedBox(height: 30.h),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: Text("تأكيد كلمة المرور", style: textStyle16RegularGray),
-        ),
+        SizedBox(height: 16.h),
+        _buildLabel("تأكيد كلمة المرور"),
         AppTextFormFeild(
           validator: (value) {
             if (value == null || value.isEmpty) {
@@ -130,26 +91,41 @@ class _EmailAndPasswordState extends State<EmailAndPasswordAndName> {
           controller: context.read<SignUpCubit>().confirmPasswordController,
           hintText: "******",
           isObscureText: isObscureText2,
-          suffixIcon: GestureDetector(
-            onTap: () {
-              setState(() {
-                isObscureText2 = !isObscureText2;
-              });
-            },
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10.w),
-              child: Icon(
-                isObscureText2
-                    ? Icons.visibility_off_outlined
-                    : Icons.visibility_outlined,
-                size: 30,
-                color: AppColors.primary,
-              ),
-            ),
+          suffixIcon: _buildPasswordIcon(
+            isObscureText2,
+            () => setState(() => isObscureText2 = !isObscureText2),
           ),
         ),
-        SizedBox(height: 24.h),
+        SizedBox(height: 20.h),
       ],
     );
   }
+}
+
+Widget _buildLabel(String text) {
+  return Padding(
+    padding: EdgeInsets.only(bottom: 6.h, top: 10.h),
+    child: Text(text, style: textStyle16RegularGray.copyWith(fontSize: 14.sp)),
+  );
+}
+
+Widget _buildSuffixIcon(IconData icon) {
+  return Padding(
+    padding: EdgeInsets.symmetric(horizontal: 12.w),
+    child: Icon(icon, size: 22.r, color: AppColors.primary),
+  );
+}
+
+Widget _buildPasswordIcon(bool obscure, VoidCallback onTap) {
+  return GestureDetector(
+    onTap: onTap,
+    child: Padding(
+      padding: EdgeInsets.symmetric(horizontal: 12.w),
+      child: Icon(
+        obscure ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+        size: 22.r,
+        color: AppColors.primary,
+      ),
+    ),
+  );
 }

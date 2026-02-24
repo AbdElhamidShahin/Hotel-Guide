@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
 import '../../../../../core/router/routers.dart';
+import 'background_circles.dart';
 
 class CustomAppbarHome extends StatelessWidget {
   const CustomAppbarHome({super.key});
@@ -13,88 +14,48 @@ class CustomAppbarHome extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.w),
       child: Container(
-        height: 73.h,
+        height: 80.h,
         width: double.infinity,
         clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8.r),
+          borderRadius: BorderRadius.circular(12.r),
           color: AppColors.primary,
         ),
         child: Stack(
           children: [
-            Positioned(
-              left: -55.w,
-              bottom: -100.h,
-              child: Container(
-                width: 190.w,
-                height: 190.h,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.SlateBlueLight,
-                ),
-              ),
-            ),
-            Positioned(
-              right: -55.w,
-              bottom: -100.h,
-              child: Container(
-                width: 190.w,
-                height: 190.h,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.SlateBlueLight,
-                ),
-              ),
-            ),
+            BackgroundCircle(left: -70.r, bottom: -110.r),
+            BackgroundCircle(right: -70.r, bottom: -110.r),
 
             Center(
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 12.w),
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
                 child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    GestureDetector(
-                      onTap: () {
-                        context.go(routes.searchScreen);
-                      },
-                      child: SvgPicture.asset(
-                        "assets/icons/search-normal.svg",
-                        height: 30.h,
-                        width: 30.w,
-                        colorFilter: const ColorFilter.mode(
-                          Colors.white,
-                          BlendMode.srcIn,
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 20.w),
-                    GestureDetector(
-                      onTap: () {
-                        context.go(routes.notification);
-                      },
-                      child: SvgPicture.asset(
-                        "assets/icons/notification.svg",
-                        height: 30.h,
-                        width: 30.w,
-                        colorFilter: const ColorFilter.mode(
-                          Colors.white,
-                          BlendMode.srcIn,
-                        ),
-                      ),
-                    ),
+                    _buildAppBarIcon(context, "assets/icons/search-normal.svg", routes.searchScreen),
+                    SizedBox(width: 12.w),
+                    _buildAppBarIcon(context, "assets/icons/notification.svg", routes.notification),
                     const Spacer(),
                     Image.asset(
                       "assets/images/logo/logo_new.png",
-                      height: 60.h,
-                      width: 70.w,
+                      height: 55.h,
+                      width: 65.w,
                       fit: BoxFit.contain,
                     ),
                   ],
                 ),
               ),
-            ),
-          ],
+            ),          ],
         ),
+      ),
+    );
+  }Widget _buildAppBarIcon(BuildContext context, String icon, String route) {
+    return GestureDetector(
+      onTap: () => context.go(route),
+      child: SvgPicture.asset(
+        icon,
+        height: 28.r,
+        width: 28.r,
+        colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
       ),
     );
   }

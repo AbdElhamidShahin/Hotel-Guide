@@ -39,19 +39,18 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
           controller: context.read<LoginCubit>().emailController,
 
           suffixIcon: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10.w),
+            padding: EdgeInsets.symmetric(horizontal: 12.w),
             child: Icon(
               Icons.email_outlined,
 
-              size: 30,
+              size: 24.r,
               color: AppColors.primary,
             ),
           ),
         ),
-        SizedBox(height: 30.h),
 
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
+          padding: EdgeInsets.only(bottom: 8.h, top: 16.h),
           child: Text("كلمة المرور", style: textStyle16RegularGray),
         ),
         AppTextFormFeild(

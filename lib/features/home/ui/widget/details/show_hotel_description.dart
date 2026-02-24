@@ -10,7 +10,7 @@ void showHotelDescription(
 ) {
   showModalBottomSheet(
     context: context,
-    isScrollControlled: true,
+    isScrollControlled: true,showDragHandle: true,
     backgroundColor: Colors.transparent,
     builder: (context) {
       return SizedBox(
@@ -21,9 +21,9 @@ void showHotelDescription(
 
             Container(
               height: MediaQuery.of(context).size.height * 0.75,
-              decoration: const BoxDecoration(
+              decoration:  BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(30)),
+                borderRadius: BorderRadius.all(Radius.circular(25.r)),
               ),
               child: Column(
                 children: [

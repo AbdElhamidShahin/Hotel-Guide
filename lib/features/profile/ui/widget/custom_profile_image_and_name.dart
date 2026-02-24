@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hotel_guide/core/router/routers.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
@@ -52,6 +53,7 @@ class _CustomProfileImageAndNameState extends State<CustomProfileImageAndName> {
       image = userData['imagePath'];
     });
   }
+
   ImageProvider _buildProfileImage() {
     if (widget.currentImageFile != null) {
       return FileImage(widget.currentImageFile!);
@@ -69,6 +71,7 @@ class _CustomProfileImageAndNameState extends State<CustomProfileImageAndName> {
 
     return const AssetImage('assets/images/profile.png');
   }
+
   Future<void> _pickImage() async {
     try {
       final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
@@ -84,12 +87,16 @@ class _CustomProfileImageAndNameState extends State<CustomProfileImageAndName> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(top: 50, bottom: 20, left: 20, right: 20),
+      padding: EdgeInsets.only(
+        top: 40.h,
+        bottom: 20.h,
+        left: 20.w,
+        right: 20.w,
+      ),
       width: double.infinity,
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           colors: [Color(0xFF010101), Color(0xFF2C2C2C)],
-          stops: [0.05, 1.0],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ),
@@ -101,48 +108,27 @@ class _CustomProfileImageAndNameState extends State<CustomProfileImageAndName> {
             children: [
               if (widget.showEditIcon)
                 IconButton(
-                  onPressed: () {
-                    context.go(
-                      routes.editAccountScreen,
-                      extra: {'name': name ?? widget.name ?? ''},
-                    );
-                  },
-                  icon: Icon(
-                    Icons.settings_outlined,
-                    color: Colors.white.withOpacity(0.7),
-                    size: 32,
-                  ),
+                  onPressed: () => context.go(routes.editAccountScreen, extra: {'name': name ?? widget.name ?? ''}),
+                  icon: Icon(Icons.settings_outlined, color: Colors.white.withOpacity(0.7), size: 28.r), // .r للـ icons
                 )
               else
-                const SizedBox(width: 48),
-
+                SizedBox(width: 48.w),
               IconButton(
-                onPressed: () {
-                  context.go(routes.homeScreen);
-                },
-                icon: Icon(
-                  Icons.arrow_forward,
-                  color: Colors.white.withOpacity(0.7),
-                  size: 28,
-                ),
+                onPressed: () => context.go(routes.homeScreen),
+                icon: Icon(Icons.arrow_forward, color: Colors.white.withOpacity(0.7), size: 28.r),
               ),
             ],
           ),
 
-          const SizedBox(height: 10),
-
+          SizedBox(height: 10.h),
           Stack(
-            clipBehavior: Clip.none,
             alignment: Alignment.bottomRight,
             children: [
               Container(
-                padding: const EdgeInsets.all(3),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: Colors.white, width: 2),
-                ),
+                padding: EdgeInsets.all(3.r),
+                decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: Colors.white, width: 2.w)),
                 child: CircleAvatar(
-                  radius: 80,
+                  radius: 70.r,
                   backgroundColor: Colors.grey[800],
                   backgroundImage: _buildProfileImage(),
                 ),
@@ -150,42 +136,35 @@ class _CustomProfileImageAndNameState extends State<CustomProfileImageAndName> {
 
               if (widget.showAddIcon)
                 Positioned(
-                  bottom: 2,
-                  right: 2,
+                  bottom: 5.h,
+                  right: 5.w,
                   child: GestureDetector(
                     onTap: _pickImage,
                     child: Container(
-                      height: 50,
-                      width: 50,
+                      height: 45.r,
+                      width: 45.r,
                       decoration: BoxDecoration(
                         color: AppColors.primary,
                         shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 3),
-                      ),
-                      child: const Icon(
-                        Icons.add,
-                        color: Colors.white,
-                        size: 26,
-                      ),
+                        border: Border.all(color: Colors.white, width: 2.w),                      ),
+                      child: Icon(Icons.add, color: Colors.white, size: 24.r),
                     ),
                   ),
                 ),
             ],
           ),
 
-          const SizedBox(height: 15),
-
+          SizedBox(height: 12.h),
           Text(
             name ?? 'اسم المستخدم',
-            style: const TextStyle(
-              fontSize: 20,
+            style:  TextStyle(
+              fontSize: 20.sp,
               color: Colors.white,
               fontWeight: FontWeight.bold,
               fontFamily: 'Cairo',
             ),
           ),
 
-          const SizedBox(height: 20),
         ],
       ),
     );

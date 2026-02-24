@@ -25,8 +25,8 @@ class BackgroundCircle extends StatelessWidget {
       top: top,
       bottom: bottom,
       child: Container(
-        width: 190.w,
-        height: 190.h,
+        width: 190.r,
+        height: 190.r,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: AppColors.SlateBlueLight,

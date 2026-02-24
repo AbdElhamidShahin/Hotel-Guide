@@ -57,17 +57,19 @@ class _RatingDialogState extends State<RatingDialog> {
                       return GestureDetector(
                         onTap: () => setState(() => rating = index + 0),
                         child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 4.w),
+                          padding: EdgeInsets.symmetric(horizontal: 6.w),
                           child: SvgPicture.asset(
                             index < rating
                                 ? "assets/icons/rating/🦆 emoji _white medium star_.svg"
                                 : "assets/icons/rating/star-fill.svg",
+                            width: 32.r,
+                            height: 32.r,
                           ),
                         ),
                       );
                     }),
                   ),
-                  SizedBox(height: 32.h),
+                  SizedBox(height: 35.r),
                   ElevatedButton(
                     onPressed: () => Navigator.pop(context),
                     style: ElevatedButton.styleFrom(

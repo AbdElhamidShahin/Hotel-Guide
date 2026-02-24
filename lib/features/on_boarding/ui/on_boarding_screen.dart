@@ -39,7 +39,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
       body: Stack(
         children: [
           Positioned.fill(
-            bottom: 200.h,
+            bottom: 0.35.sh,
             child: AnimatedBuilder(
               animation: _controller,
               builder: (context, child) {
@@ -54,7 +54,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                     return Opacity(
                       opacity: (1 - pageOffset.abs()).clamp(0.0, 1.0),
                       child: Transform.translate(
-                        offset: Offset(-pageOffset * 100, 0),
+                        offset: Offset(-pageOffset * 100.w, 0),
                         child: Image.asset(
                           entry.value.image,
                           fit: BoxFit.cover,
@@ -70,8 +70,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
           ),
 
           Positioned.fill(
-            bottom: 200.h,
-            child: Container(color: Colors.black.withOpacity(0.33)),
+            bottom: 0.35.sh,            child: Container(color: Colors.black.withOpacity(0.33)),
           ),
 
           Column(
@@ -89,13 +88,13 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                     return Align(
                       alignment: Alignment.bottomCenter,
                       child: Container(
-                        height: MediaQuery.sizeOf(context).height * 0.3.h,
+                        height: MediaQuery.sizeOf(context).height * 0.35.h,
                         width: double.infinity,
-                        decoration: const BoxDecoration(
+                        decoration:  BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(30),
-                            topRight: Radius.circular(30),
+                            topLeft: Radius.circular(30.r),
+                            topRight: Radius.circular(30.r),
                           ),
                         ),
                         child: Padding(
