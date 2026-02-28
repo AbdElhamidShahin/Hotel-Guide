@@ -8,6 +8,8 @@ import 'package:hotel_guide/features/sign_up/data/repo/sign_up_repo.dart';
 import 'package:hotel_guide/features/sign_up/data/repo/sign_up_repoImpl.dart';
 import 'package:hotel_guide/features/sign_up/logic/cubit/sign_up_cubit.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../features/ai/data/ai_repo.dart';
+import '../../features/ai/logic/ai_cubit.dart';
 import '../../features/favorite/logic/cubit/favorite_cubit.dart';
 import '../../features/home/data/repo/home_repo.dart';
 import '../../features/home/data/repo/home_repo_impl.dart';
@@ -20,6 +22,7 @@ import '../../features/room/data/home_repo_impl.dart';
 import '../../features/search/data/repo/search_repo.dart';
 import '../../features/search/data/repo/search_repo_iplm.dart';
 import '../../features/wallet/date/wallet_cubit.dart';
+import '../network/service/ai_service.dart';
 
 final getIt = GetIt.instance;
 
@@ -34,12 +37,10 @@ Future<void> setupGetIt() async {
   getIt.registerFactory<LoginCubit>(() => LoginCubit(getIt<LoginRepostry>()));
 
   /// Signup
-  getIt.registerLazySingleton<SignUpRepository>(
-        () => SignUpRepoImpl(),
-  );
+  getIt.registerLazySingleton<SignUpRepository>(() => SignUpRepoImpl());
 
   getIt.registerFactory<SignUpCubit>(
-        () => SignUpCubit(getIt<SignUpRepository>()),
+    () => SignUpCubit(getIt<SignUpRepository>()),
   );
 
   /// Home & Hotel
@@ -60,9 +61,7 @@ Future<void> setupGetIt() async {
   /// Favorite
   getIt.registerLazySingleton<FavoriteCubit>(() => FavoriteCubit());
 
-  getIt.registerFactory<SearchRepo>(
-        () => SearchRepoImpl(),
-  );
+  getIt.registerFactory<SearchRepo>(() => SearchRepoImpl());
   getIt.registerFactory<SearchCubit>(() => SearchCubit(getIt<SearchRepo>()));
 
   getIt.registerFactory<WalletCubit>(() => WalletCubit());
@@ -72,6 +71,21 @@ Future<void> setupGetIt() async {
     () => BookingRepository(getIt()),
   );
 
-  getIt.registerFactory(() => BookingCubit(getIt()));
-  getIt.registerFactory(() => BookingCubit(getIt<BookingRepository>()));
+  // getIt.registerFactory(() => BookingCubit(getIt()));
+  // getIt.registerFactory(() => BookingCubit(getIt<BookingRepository>()));
+
+  getIt.registerFactory<BookingCubit>(() => BookingCubit(getIt<BookingRepository>()));
+
+  // 2. سجل خدمات الـ AI بالترتيب الصحيح (الخدمة ثم الـ Repository ثم الـ Cubit)
+  getIt.registerLazySingleton<AISearchService>(() => AISearchService());
+
+  getIt.registerLazySingleton<SearchRepository>(() => SearchRepository(getIt<AISearchService>()));
+
+  getIt.registerFactory<ChatSearchCubit>(() => ChatSearchCubit(
+    getIt<SearchRepository>(),
+    getIt<AISearchService>(),
+  ));
+
+  print('✅ تم تسجيل جميع الخدمات بنجاح!');
+
 }

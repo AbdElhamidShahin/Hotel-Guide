@@ -11,6 +11,9 @@ import 'package:hotel_guide/features/search/logic/cubit/search_cubit.dart';
 import 'package:hotel_guide/features/search/ui/search_screen.dart';
 import 'package:hotel_guide/features/sign_up/logic/cubit/sign_up_cubit.dart';
 import '../../AuthWrapper.dart';
+import '../../features/ai/data/ai_repo.dart';
+import '../../features/ai/logic/ai_cubit.dart';
+import '../../features/ai/ui/ai_screen.dart';
 import '../../features/favorite/logic/cubit/favorite_cubit.dart';
 import '../../features/home/ui/custom_details_screen.dart';
 import '../../features/home/ui/home_screen.dart';
@@ -34,6 +37,7 @@ import '../di/injection.dart';
 import '../network/model/city_model.dart';
 import '../network/model/hotel_model.dart';
 import '../network/model/room_model.dart';
+import '../network/service/ai_service.dart';
 
 abstract class AppRouter {
   static final router = GoRouter(
@@ -49,7 +53,14 @@ abstract class AppRouter {
       GoRoute(
         path: routes.onBoardingScreen,
         builder: (BuildContext context, GoRouterState state) =>
-        const OnBoardingScreen(),
+            const OnBoardingScreen(),
+      ),
+      GoRoute(
+        path: routes.AiScreen,
+        builder: (context, state) => BlocProvider(
+          create: (context) => getIt<ChatSearchCubit>(),  // now GetIt is used here
+          child: const AiScreen(),
+        ),
       ),
       GoRoute(
         path: routes.loginScreen,
@@ -180,34 +191,34 @@ abstract class AppRouter {
             reverseTransitionDuration: const Duration(milliseconds: 1000),
             transitionsBuilder:
                 (context, animation, secondaryAnimation, child) {
-              final curvedAnimation = CurvedAnimation(
-                parent: animation,
-                curve: Curves.easeOutBack,
-                reverseCurve: Curves.easeInBack,
-              );
-              final slide = Tween<Offset>(
-                begin: const Offset(-1.0, 0.0),
-                end: Offset.zero,
-              ).animate(curvedAnimation);
+                  final curvedAnimation = CurvedAnimation(
+                    parent: animation,
+                    curve: Curves.easeOutBack,
+                    reverseCurve: Curves.easeInBack,
+                  );
+                  final slide = Tween<Offset>(
+                    begin: const Offset(-1.0, 0.0),
+                    end: Offset.zero,
+                  ).animate(curvedAnimation);
 
-              final scale = Tween<double>(
-                begin: 0.88,
-                end: 1.0,
-              ).animate(curvedAnimation);
-              final opacity = Tween<double>(
-                begin: 0.0,
-                end: 1.0,
-              ).animate(curvedAnimation);
+                  final scale = Tween<double>(
+                    begin: 0.88,
+                    end: 1.0,
+                  ).animate(curvedAnimation);
+                  final opacity = Tween<double>(
+                    begin: 0.0,
+                    end: 1.0,
+                  ).animate(curvedAnimation);
 
-              return FadeTransition(
-                opacity: opacity,
-                child: ScaleTransition(
-                  scale: scale,
-                  alignment: Alignment.centerLeft,
-                  child: SlideTransition(position: slide, child: child),
-                ),
-              );
-            },
+                  return FadeTransition(
+                    opacity: opacity,
+                    child: ScaleTransition(
+                      scale: scale,
+                      alignment: Alignment.centerLeft,
+                      child: SlideTransition(position: slide, child: child),
+                    ),
+                  );
+                },
           );
         },
       ),
@@ -225,7 +236,7 @@ abstract class AppRouter {
 
                   return BlocProvider(
                     create: (context) => getIt<HomeCubit>(),
-                    child:AccountScreen(name: data?["name"]),
+                    child: AccountScreen(name: data?["name"]),
                   );
                 },
               ),
@@ -264,7 +275,7 @@ abstract class AppRouter {
 
                   return BlocProvider(
                     create: (context) =>
-                    getIt<HomeCubit>()..getHotelsAndCities(),
+                        getIt<HomeCubit>()..getHotelsAndCities(),
                     child: HomeScreen(name: data?["name"] ?? ""),
                   );
                 },

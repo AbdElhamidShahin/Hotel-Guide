@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hotel_guide/core/router/routers.dart';
 import 'package:hotel_guide/core/theme/app_theme.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
 
@@ -44,7 +46,11 @@ class AiBookingBanner extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Image.asset("assets/images/clickOn.png", width: 50.r, height: 50.r),
+                    Image.asset(
+                      "assets/images/clickOn.png",
+                      width: 50.r,
+                      height: 50.r,
+                    ),
                     SizedBox(width: 10.w),
                     Expanded(
                       child: Column(
@@ -54,11 +60,16 @@ class AiBookingBanner extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Image.asset(
-                                "assets/images/iconCahtRobot.png",
-                                width: 25.r,
-                                height: 25.r,
-                                color: AppColors.white,
+                              GestureDetector(
+                                onTap: () {
+                                  context.go(routes.AiScreen);
+                                },
+                                child: Image.asset(
+                                  "assets/images/iconCahtRobot.png",
+                                  width: 25.r,
+                                  height: 25.r,
+                                  color: AppColors.white,
+                                ),
                               ),
                               Text(
                                 "  أحجز فندقك خلال ثواني",
@@ -68,12 +79,14 @@ class AiBookingBanner extends StatelessWidget {
                               ),
                             ],
                           ),
-                          SizedBox(height: 8.h,),
+                          SizedBox(height: 8.h),
                           Text(
                             "خلي الذكاء الإصطناعي يساعدك في عملية البحث",
                             style: textStyle14RegularNightfall.copyWith(
-                              color: AppColors.white.withOpacity(0.7),fontSize: 13.sp
-                            ),textAlign: TextAlign.right,
+                              color: AppColors.white.withOpacity(0.7),
+                              fontSize: 13.sp,
+                            ),
+                            textAlign: TextAlign.right,
                           ),
                         ],
                       ),
