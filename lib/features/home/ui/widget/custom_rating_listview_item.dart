@@ -20,7 +20,9 @@ class CustomRatingListviewItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => context.go(routes.customDetailsScreen, extra: hotelModel),
+      onTap: () {
+        context.push(routes.customDetailsScreen, extra: hotelModel);
+      },
       child: Container(
         width: 240.w,
         margin: EdgeInsetsDirectional.only(start: 16.w, bottom: 10.h),
@@ -157,8 +159,6 @@ class CustomRatingListviewItem extends StatelessWidget {
         },
       ),
     );
-
-
   }
 
   Widget _buildRatingBadge() {

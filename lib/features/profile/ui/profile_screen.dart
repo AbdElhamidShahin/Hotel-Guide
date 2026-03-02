@@ -136,7 +136,7 @@ class _AccountScreenState extends State<AccountScreen> {
                   icon: Icons.login_rounded,
                   isLast: true,
                   onTap: () {
-                    context.go(routes.onBoardingScreen);
+                    context.push(routes.onBoardingScreen);
                   },
                 ),
               ],

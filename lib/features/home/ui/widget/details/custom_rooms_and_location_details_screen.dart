@@ -43,7 +43,7 @@ class CustomRoomsAndLocationDetailsScreen extends StatelessWidget {
           SizedBox(width: 12.w),
           Expanded(
             child: GestureDetector(
-              onTap: () => context.go(routes.RoomsScreenListView, extra: hotelModel.id),
+              onTap: () => context.push(routes.RoomsScreenListView, extra: hotelModel.id),
               child: Container(
                 height: 55.h,
                 decoration: BoxDecoration(

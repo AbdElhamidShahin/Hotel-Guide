@@ -12,7 +12,7 @@ class AuthWrapper extends StatelessWidget {
 
     if (session != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        context.go(routes.homeScreen);
+        context.push(routes.homeScreen);
       });
       return const SizedBox.shrink();
     } else {

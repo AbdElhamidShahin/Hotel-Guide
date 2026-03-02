@@ -33,7 +33,7 @@ class _RoomsScreenListViewState extends State<RoomsScreenListView> {
           if (context.canPop()) {
             context.pop();
           } else {
-            context.go(routes.homeScreen);
+            context.push(routes.homeScreen);
           }
         },
       ),

@@ -38,7 +38,7 @@ class FavoriteScreen extends StatelessWidget {
           if (favoriteItems.isEmpty) {
             return buildFavoriteNotFoundWidget(
               onRetry: () {
-                context.go(routes.homeScreen);
+                context.push(routes.homeScreen);
               },
             );
           }

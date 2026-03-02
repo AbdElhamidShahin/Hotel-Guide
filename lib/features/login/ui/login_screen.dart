@@ -81,7 +81,7 @@ class LoginScreen extends StatelessWidget {
                               'نجاح باهر! ✅',
                               state.message,
                             );
-                            context.go(routes.homeScreen);
+                            context.push(routes.homeScreen);
                           } else if (state is LoginError) {
                             showCustomSnackbar(
                               context,
@@ -140,7 +140,7 @@ class LoginScreen extends StatelessWidget {
                                       children: [
                                         TextButton(
                                           onPressed: () {
-                                            context.go(routes.signUpScreen);
+                                            context.push(routes.signUpScreen);
                                           },
                                           child: Text(
                                             'إنشاء حساب',

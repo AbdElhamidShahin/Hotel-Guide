@@ -108,13 +108,13 @@ class _CustomProfileImageAndNameState extends State<CustomProfileImageAndName> {
             children: [
               if (widget.showEditIcon)
                 IconButton(
-                  onPressed: () => context.go(routes.editAccountScreen, extra: {'name': name ?? widget.name ?? ''}),
+                  onPressed: () => context.push(routes.editAccountScreen, extra: {'name': name ?? widget.name ?? ''}),
                   icon: Icon(Icons.settings_outlined, color: Colors.white.withOpacity(0.7), size: 28.r), // .r للـ icons
                 )
               else
                 SizedBox(width: 48.w),
               IconButton(
-                onPressed: () => context.go(routes.homeScreen),
+                onPressed: () => context.push(routes.homeScreen),
                 icon: Icon(Icons.arrow_forward, color: Colors.white.withOpacity(0.7), size: 28.r),
               ),
             ],

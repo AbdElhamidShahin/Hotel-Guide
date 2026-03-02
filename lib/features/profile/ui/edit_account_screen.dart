@@ -146,7 +146,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
                         style: SnackbarStyle.filled,
                       );
 
-                      context.go(routes.homeScreen, extra: {'name': _nameController.text});
+                      context.push(routes.homeScreen, extra: {'name': _nameController.text});
                     }
                   },
                 ),
