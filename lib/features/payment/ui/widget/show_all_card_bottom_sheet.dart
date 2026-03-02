@@ -35,9 +35,8 @@ void showAllCardBottomSheet(BuildContext context) {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       IconButton(
-                        onPressed: () {
-                          context.go(routes.BookingDetailsPage);
-                        },
+                        onPressed: () => Navigator.pop(context),
+
                         icon: Icon(Icons.close),
                       ),
                       Text(

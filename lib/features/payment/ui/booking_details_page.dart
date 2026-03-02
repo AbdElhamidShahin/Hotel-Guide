@@ -60,7 +60,7 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
       appBar: CustomAppbarWidget(
         name: "تفاصيل الحجز",
         onTap: () {
-          context.go(routes.RoomDetailsPage, extra: widget.room);
+          context.push(routes.RoomDetailsPage, extra: widget.room);
         },
       ),
       body: Directionality(

@@ -32,7 +32,7 @@ class RoomDetailsPage extends StatelessWidget {
       appBar: CustomAppbarWidget(
         name: "الغرفة",
         onTap: () {
-          context.go(routes.RoomsScreenListView);
+          context.push(routes.RoomsScreenListView);
         },
       ),
 

@@ -16,6 +16,7 @@ import '../../../core/network/model/hotel_model.dart';
 import '../../room/logic/room_cubit.dart';
 import '../logic/cubit/home_cubit.dart';
 
+
 class CustomDetailsScreen extends StatefulWidget {
   const CustomDetailsScreen({super.key, required this.hotelModel});
   final HotelModel hotelModel;

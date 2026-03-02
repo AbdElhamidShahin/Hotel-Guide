@@ -13,7 +13,7 @@ class CustomRoomsListViewItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.go(routes.CustomRoom, extra: room);
+        context.push(routes.CustomRoom, extra: room);
       },
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),

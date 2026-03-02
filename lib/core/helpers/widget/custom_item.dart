@@ -46,7 +46,7 @@ class CustomItem extends StatelessWidget {
           child: InkWell(
             borderRadius: BorderRadius.circular(12.r),
             onTap: () =>
-                context.go(routes.customDetailsScreen, extra: hotelModel),
+                context.push(routes.customDetailsScreen, extra: hotelModel),
             child: Row(
               textDirection: TextDirection.rtl,
               children: [
@@ -145,7 +145,7 @@ class CustomItem extends StatelessWidget {
                         SizedBox(height: 8.h),
                         GestureDetector(
                           onTap: () {
-                            context.go(
+                            context.push(
                               routes.customDetailsScreen,
                               extra: hotelModel,
                             );
@@ -159,12 +159,13 @@ class CustomItem extends StatelessWidget {
                               borderRadius: BorderRadius.circular(30.r),
                             ),
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween, 
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               textDirection: TextDirection.rtl,
                               children: [
                                 Flexible(
                                   child: Text(
-                                    "إحجز الآن",overflow: TextOverflow.ellipsis,
+                                    "إحجز الآن",
+                                    overflow: TextOverflow.ellipsis,
                                     style: textStyle16BoldWhite.copyWith(
                                       fontSize: 16.sp,
                                       fontFamily: 'Cairo',

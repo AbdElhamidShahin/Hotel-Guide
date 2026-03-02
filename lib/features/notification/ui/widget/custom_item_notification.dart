@@ -1,120 +1,83 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hotel_guide/core/theme/app_theme.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
+import '../../../../core/network/model/notification_model.dart';
 
 class CustomItemNotification extends StatelessWidget {
-  const CustomItemNotification({super.key});
+  final NotificationModel notification;
+  const CustomItemNotification({super.key, required this.notification});
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Container(
-        height: 184,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
-              blurRadius: 10,
-              spreadRadius: 2,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(16),
-          onTap: () {},
-          child: Padding(
-            padding: const EdgeInsets.all(12),
-            child: Row(
-              textDirection: TextDirection.rtl,
+    String assetPath;
+
+    switch (notification.type) {
+      case NotificationType.success:
+        assetPath = 'assets/images/notification_statuses/success.svg';
+        break;
+      case NotificationType.failure:
+        assetPath = 'assets/images/notification_statuses/Falier.svg';
+        break;
+      case NotificationType.reminder:
+        assetPath = 'assets/images/notification_statuses/times.svg';
+        break;
+      case NotificationType.message:
+        assetPath = 'assets/images/notification_statuses/Email.svg';
+        break;
+    }
+
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+      padding: EdgeInsets.all(16.r),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(15.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.03),
+            blurRadius: 15,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        textDirection: TextDirection.rtl,
+        children: [
+          SvgPicture.asset(assetPath, width: 60.r, height: 60.r),
+          SizedBox(width: 12.w),
+
+          Expanded(
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              textDirection: TextDirection.rtl,
               children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Image.asset(
-                    "assets/images/1686f7773fafd4ad2711763e02dd037e6522c12a.jpg",
-                    width: 148,
-                    height: 172,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Container(
-                      width: 148,
-                      height: 172,
-                      color: Colors.grey[300],
-                      child: const Icon(Icons.image, color: Colors.grey),
-                    ),
+                Text(
+                  notification.title,
+                  style: textStyle20BoldShadowPurple.copyWith(
+                    color: AppColors.primary,
+                    fontSize: 18.sp,
                   ),
                 ),
-                const SizedBox(width: 12),
-
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      // Title
-                      Text(
-                        "عرض جديد متاح الآن!",
-                        textDirection: TextDirection.rtl,
-                        style: textStyle18BoldGray.copyWith(
-                          color: AppColors.black4,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-
-                      const SizedBox(height: 6),
-
-                      Divider(
-                        height: 1,
-                        thickness: 1,
-                        color: Colors.black.withOpacity(0.1),
-                      ),
-
-                      const SizedBox(height: 6),
-
-                      // Body Text
-                      Expanded(
-                        child: Text(
-                          "فندق The Nile Ritz-Carlton أطلق خصمًا خاصًا لفترة محدودة — احجز الآن قبل انتهاء العرض!",
-                          textDirection: TextDirection.rtl,
-                          style: textStyle15MediumGray.copyWith(
-                            color: AppColors.black.withOpacity(0.43),
-
-                            fontSize: 14,
-                          ),
-                          maxLines: 3, // Allow multiple lines
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-
-                      // Time Footer
-                      Row(
-                        textDirection: TextDirection.ltr,
-                        children: [
-                          Icon(
-                            Icons.access_time, // Clock icon
-                            size: 24,
-                            color: Colors.black.withOpacity(0.55),
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            "اليوم 14:35",
-                            textDirection: TextDirection.rtl,
-                            style: textStyle12BoldBlack.copyWith(
-                              color: Color(0xFF8B8E918C),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+                SizedBox(height: 4.h),
+                Text(
+                  notification.body,
+                  style: textStyle14RegularNightfall.copyWith(
+                    color: AppColors.ShadowPurple,
                   ),
+                  textDirection: TextDirection.rtl,
+                  maxLines: 1,
                 ),
+
+                if (notification.type == NotificationType.failure) ...[
+                  SizedBox(height: 8.h),
+                ],
               ],
             ),
           ),
-        ),
+        ],
       ),
     );
   }

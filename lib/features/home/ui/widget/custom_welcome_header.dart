@@ -49,7 +49,7 @@ class _CustomWelcomeHeaderState extends State<CustomWelcomeHeader> {
             children: [
               IconButton(
                 onPressed: () {
-                  context.go(routes.menuScreen);
+                  context.push(routes.menuScreen);
                 },
                 icon: Icon(Icons.menu_outlined, size: 34),
               ),
@@ -75,7 +75,7 @@ class _CustomWelcomeHeaderState extends State<CustomWelcomeHeader> {
               SizedBox(width: 10),
               GestureDetector(
                 onTap: () {
-                  context.go(
+                  context.push(
                     routes.accountScreen,
                     extra: {'name': name ?? widget.name ?? ''},
                   );
