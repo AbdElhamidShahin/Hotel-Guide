@@ -20,7 +20,9 @@ class _MainAppShellState extends State<MainAppShell> {
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(initialPage: widget.navigationShell.currentIndex);
+    _pageController = PageController(
+      initialPage: widget.navigationShell.currentIndex,
+    );
   }
 
   @override
@@ -30,19 +32,24 @@ class _MainAppShellState extends State<MainAppShell> {
   }
 
   void _onTap(int index) {
+    // تحديث الـ PageView بالأنيميشن
     _pageController.animateToPage(
       index,
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
     );
+    // تحديث الـ GoRouter
     widget.navigationShell.goBranch(index);
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_pageController.hasClients &&
-        _pageController.page?.round() != widget.navigationShell.currentIndex) {
-      _pageController.jumpToPage(widget.navigationShell.currentIndex);
+    // مزامنة الـ Controller لو الـ Index اتغير من بره (زي الـ Back button)
+    if (_pageController.hasClients) {
+      if (_pageController.page?.round() !=
+          widget.navigationShell.currentIndex) {
+        _pageController.jumpToPage(widget.navigationShell.currentIndex);
+      }
     }
 
     return PopScope(
@@ -56,15 +63,21 @@ class _MainAppShellState extends State<MainAppShell> {
         }
       },
       child: Scaffold(
+        // استخدمنا PageView العادي مع children لضمان الاستقرار
         body: PageView(
           controller: _pageController,
+          physics: const BouncingScrollPhysics(),
           onPageChanged: (index) {
-            widget.navigationShell.goBranch(index);
+            // نغير الـ branch فقط لما السحب ينتهي تماماً
+            if (index != widget.navigationShell.currentIndex) {
+              widget.navigationShell.goBranch(index);
+            }
           },
-          children: [
-            for (int i = 0; i < widget.navigationShell.route.branches.length; i++)
-              _buildBranch(i),
-          ],
+          // بنعرض الـ navigationShell في كل الصفحات
+          // الـ GoRouter داخلياً هيعرض الـ Widget الصح بناءً على الـ index
+          children: widget.navigationShell.route.branches.map((branch) {
+            return widget.navigationShell;
+          }).toList(),
         ),
         bottomNavigationBar: Container(
           decoration: BoxDecoration(
@@ -87,21 +100,24 @@ class _MainAppShellState extends State<MainAppShell> {
             backgroundColor: Colors.white,
             elevation: 0,
             items: [
-              _buildBottomItem('assets/icons/Icons_bar/user-alt-1-svgrepo-com.svg', 0),
+              _buildBottomItem(
+                'assets/icons/Icons_bar/user-alt-1-svgrepo-com.svg',
+                0,
+              ),
               _buildBottomItem('assets/icons/Icons_bar/empty-wallet.svg', 1),
-              _buildBottomItem('assets/icons/Icons_bar/notification-favorite.svg', 2),
-              _buildBottomItem('assets/icons/Icons_bar/home-angle-2-svgrepo-com.svg', 3),
+              _buildBottomItem(
+                'assets/icons/Icons_bar/notification-favorite.svg',
+                2,
+              ),
+              _buildBottomItem(
+                'assets/icons/Icons_bar/home-angle-2-svgrepo-com.svg',
+                3,
+              ),
             ],
           ),
         ),
       ),
     );
-  }
-
-  Widget _buildBranch(int index) {
-    return widget.navigationShell.currentIndex == index
-        ? widget.navigationShell
-        : const SizedBox.shrink();
   }
 
   BottomNavigationBarItem _buildBottomItem(String icon, int index) {
