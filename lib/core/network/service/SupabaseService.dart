@@ -1,11 +1,13 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'app_constants.dart';
+
 class SupabaseService {
   final SupabaseClient _client = Supabase.instance.client;
 
   Future<List<Map<String, dynamic>>> fetchHotels() async {
     try {
-      return await _client.from('hotels').select('*, cities(name)');
+      return await _client.from(AppTableNames.hotels).select('*, cities(name)');
     } catch (e) {
       print("Supabase Error: $e");
       rethrow;
@@ -14,7 +16,7 @@ class SupabaseService {
 
   Future<List<Map<String, dynamic>>> fetchCities() async {
     try {
-      return await _client.from('cities').select('*');
+      return await _client.from(AppTableNames.cities).select('*');
     } catch (e) {
       print("Supabase Error: $e");
       rethrow;
@@ -23,7 +25,7 @@ class SupabaseService {
 
   Future<void> createBooking(Map<String, dynamic> bookingData) async {
     try {
-      await _client.from('bookings').insert(bookingData);
+      await _client.from(AppTableNames.bookings).insert(bookingData);
     } catch (e) {
       print("Supabase Error: $e");
       rethrow;
@@ -33,7 +35,7 @@ class SupabaseService {
   Future<List<Map<String, dynamic>>> fetchRooms(String hotelId) async {
     try {
       final response = await _client
-          .from('rooms')
+          .from(AppTableNames.rooms)
           .select()
           .eq('hotel_id', hotelId);
 
@@ -45,7 +47,7 @@ class SupabaseService {
 
   Future<List<Map<String, dynamic>>> feathData() async {
     try {
-      return await _client.from('hotels').select("*");
+      return await _client.from(AppTableNames.hotels).select("*");
     } catch (e) {
       print("Supabase Error $e");
       rethrow;

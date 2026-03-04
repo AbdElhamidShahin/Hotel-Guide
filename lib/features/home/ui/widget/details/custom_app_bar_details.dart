@@ -24,9 +24,7 @@ class CustomAppBarDetails extends StatelessWidget {
           ),
           const Spacer(),
           IconButton(
-            onPressed: () {
-              context.push(routes.homeScreen);
-            },
+            onPressed: () => context.pop(),
             icon: const Icon(Icons.arrow_forward),
           ),
         ],

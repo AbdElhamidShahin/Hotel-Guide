@@ -29,12 +29,7 @@ class RoomDetailsPage extends StatelessWidget {
       return FacilityModel(title: entry.key, isAvailable: entry.value);
     }).toList();
     return Scaffold(
-      appBar: CustomAppbarWidget(
-        name: "الغرفة",
-        onTap: () {
-          context.push(routes.RoomsScreenListView);
-        },
-      ),
+      appBar: CustomAppbarWidget(name: "الغرفة", onTap: () => context.pop()),
 
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -55,6 +50,7 @@ class RoomDetailsPage extends StatelessWidget {
                         CustomNameDetails(name: room.name),
                         SizedBox(height: 12.h),
                         ImageGallerySection(images: room.gallery),
+
                         Row(
                           children: [
                             _buildInfoChip(
