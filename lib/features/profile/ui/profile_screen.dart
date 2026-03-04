@@ -63,20 +63,32 @@ class _AccountScreenState extends State<AccountScreen> {
                           padding: EdgeInsets.all(2.r),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(30.r),
-                            border: Border.all(color: Colors.grey.shade400, width: 2.w),
+                            border: Border.all(
+                              color: Colors.grey.shade400,
+                              width: 2.w,
+                            ),
                           ),
                           child: AnimatedAlign(
-                            duration: const Duration(milliseconds: 250),                            curve: Curves.easeInOut,
-                            alignment: isDarkMode ? Alignment.centerRight : Alignment.centerLeft,
+                            duration: const Duration(milliseconds: 250),
+                            curve: Curves.easeInOut,
+                            alignment: isDarkMode
+                                ? Alignment.centerRight
+                                : Alignment.centerLeft,
                             child: Container(
                               width: 24.r,
                               height: 24.r,
-                              decoration: const BoxDecoration(shape: BoxShape.circle, color: Color(0xFF181A20)),
-                              child: Icon(Icons.wb_sunny_outlined, color: Colors.white, size: 14.sp),
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Color(0xFF181A20),
+                              ),
+                              child: Icon(
+                                Icons.wb_sunny_outlined,
+                                color: Colors.white,
+                                size: 14.sp,
+                              ),
                             ),
-
                           ),
-                        )
+                        ),
                       ),
                       Row(
                         children: [

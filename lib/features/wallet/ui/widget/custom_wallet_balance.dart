@@ -1,13 +1,13 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hotel_guide/core/theme/app_theme.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
 
+import '../../../../core/helpers/custom_user_avatar.dart';
+import '../../../../core/helpers/local_storage_account.dart';
 import '../../../../core/network/model/profile_model.dart';
-import '../../date/wallet_cubit.dart' show WalletCubit;
-import '../../date/wallet_state.dart';
 import 'custom_topup_history.dart';
 
 class CustomWalletBalance extends StatefulWidget {
@@ -16,14 +16,36 @@ class CustomWalletBalance extends StatefulWidget {
     super.key,
     required this.onTabChanged,
     required this.profileModel,
+    this.name,
+    this.imageUrl, this.currentImageFile,
   });
   final UserProfileModel profileModel;
-
+  final String? name;
+  final String? imageUrl;final File? currentImageFile;
   @override
   State<CustomWalletBalance> createState() => _CustomWalletBalanceState();
 }
 
 class _CustomWalletBalanceState extends State<CustomWalletBalance> {
+  String? name;
+  String? image;
+
+  @override
+  void initState() {
+    super.initState();
+    loadUserData();
+  }
+
+  Future<void> loadUserData() async {
+    final userData = await UserDataManager.loadUserData();
+    if (mounted) {
+      setState(() {
+        name = userData['name'] ?? widget.name;
+        image = userData['image'] ?? widget.imageUrl;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -42,17 +64,16 @@ class _CustomWalletBalanceState extends State<CustomWalletBalance> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-
                 Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(60.r),
 
                     border: Border.all(color: AppColors.colorText),
                   ),
-                  child: Image.asset(
-                    height: 100.h,
-                    width: 100.w,
-                    "assets/images/profile.png",
+                  child: CustomUserAvatar(
+                    radius: 80,
+                    currentImageFile: widget.currentImageFile,
+                    imagePathOrUrl: image,
                   ),
                 ),
               ],
