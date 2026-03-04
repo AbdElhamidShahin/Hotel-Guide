@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hotel_guide/core/router/routers.dart';
 import 'package:hotel_guide/core/theme/app_theme.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
 import 'package:hotel_guide/features/notification/ui/widget/custom_item_notification.dart';
+import '../../../core/helpers/contact/build_notification_notfound.dart';
 import '../../../core/helpers/widget/custom_appbar_widget.dart';
 import '../../../core/network/model/notification_model.dart';
 import '../logic/notificatin_logic.dart';
@@ -54,17 +54,12 @@ class _NotificationScreenListViewState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppbarWidget(
-        name: "الإشعارات",
-        onTap: () {
-          context.push(routes.homeScreen);
-        },
-      ),
+      appBar: CustomAppbarWidget(name: "الإشعارات", onTap: () => context.pop()),
 
       body: BlocBuilder<NotificationCubit, List<NotificationModel>>(
         builder: (context, notifications) {
           if (notifications.isEmpty) {
-            return _buildEmptyState();
+            return BuildNotFoundNotification();
           }
 
           final groupedNotifs = _groupNotifications(notifications);
@@ -103,20 +98,6 @@ class _NotificationScreenListViewState
             ),
           );
         },
-      ),
-    );
-  }
-
-  Widget _buildEmptyState() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            "لا توجد إشعارات حالياً",
-            style: TextStyle(color: Colors.grey, fontSize: 16.sp),
-          ),
-        ],
       ),
     );
   }

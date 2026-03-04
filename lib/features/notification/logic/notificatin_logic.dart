@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../core/network/model/notification_model.dart';
+import '../../../core/network/service/app_constants.dart';
 
 class NotificationCubit extends Cubit<List<NotificationModel>> {
   NotificationCubit() : super([]);
@@ -19,12 +20,11 @@ class NotificationCubit extends Cubit<List<NotificationModel>> {
 
     try {
       final response = await Supabase.instance.client
-          .from('notifications')
+          .from(AppTableNames.notifications)
           .select()
           .eq('user_id', user.id)
           .order('created_at', ascending: false);
 
-      // التحويل الصحيح للقائمة
       final data = response as List<dynamic>;
       final List<NotificationModel> fetchedNotifs = data
           .map((e) => NotificationModel.fromJson(e))
