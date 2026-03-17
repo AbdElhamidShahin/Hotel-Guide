@@ -101,7 +101,7 @@ class _CustomProfileImageAndNameState extends State<CustomProfileImageAndName> {
                     Icons.settings_outlined,
                     color: Colors.white.withOpacity(0.7),
                     size: 28.r,
-                  ), // .r للـ icons
+                  ),
                 )
               else
                 SizedBox(width: 48.w),
