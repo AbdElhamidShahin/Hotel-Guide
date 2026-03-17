@@ -19,7 +19,7 @@ class BookNowButton extends StatelessWidget {
       margin: EdgeInsets.symmetric(horizontal: 30.w, vertical: 20.h),
       child: ElevatedButton(
         onPressed: () {
-          context.go(routes.BookingDetailsPage, extra: room);
+          context.push(routes.BookingDetailsPage, extra: room);
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primaryDark,

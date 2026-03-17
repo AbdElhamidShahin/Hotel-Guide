@@ -6,6 +6,7 @@ import 'package:hotel_guide/core/router/routers.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../../core/helpers/custom_user_avatar.dart';
 import '../../../../core/helpers/local_storage_account.dart';
 
 typedef ImagePickedCallback = void Function(File? file);
@@ -48,28 +49,12 @@ class _CustomProfileImageAndNameState extends State<CustomProfileImageAndName> {
 
   Future<void> loadUserData() async {
     final userData = await UserDataManager.loadUserData();
-    setState(() {
-      name = userData['name'] ?? widget.name;
-      image = userData['imagePath'];
-    });
-  }
-
-  ImageProvider _buildProfileImage() {
-    if (widget.currentImageFile != null) {
-      return FileImage(widget.currentImageFile!);
+    if (mounted) {
+      setState(() {
+        name = userData['name'] ?? widget.name;
+        image = userData['image'] ?? widget.imageUrl;
+      });
     }
-    if (image != null && image!.isNotEmpty) {
-      if (image!.startsWith('http')) {
-        return NetworkImage(image!);
-      } else {
-        File file = File(image!);
-        if (file.existsSync()) {
-          return FileImage(file);
-        }
-      }
-    }
-
-    return const AssetImage('assets/images/profile.png');
   }
 
   Future<void> _pickImage() async {
@@ -108,14 +93,31 @@ class _CustomProfileImageAndNameState extends State<CustomProfileImageAndName> {
             children: [
               if (widget.showEditIcon)
                 IconButton(
-                  onPressed: () => context.go(routes.editAccountScreen, extra: {'name': name ?? widget.name ?? ''}),
-                  icon: Icon(Icons.settings_outlined, color: Colors.white.withOpacity(0.7), size: 28.r), // .r للـ icons
+                  onPressed: () => context.push(
+                    routes.editAccountScreen,
+                    extra: {'name': name ?? widget.name ?? ''},
+                  ),
+                  icon: Icon(
+                    Icons.settings_outlined,
+                    color: Colors.white.withOpacity(0.7),
+                    size: 28.r,
+                  ),
                 )
               else
                 SizedBox(width: 48.w),
               IconButton(
-                onPressed: () => context.go(routes.homeScreen),
-                icon: Icon(Icons.arrow_forward, color: Colors.white.withOpacity(0.7), size: 28.r),
+                onPressed: () {
+                  if (context.canPop()) {
+                    context.pop();
+                  } else {
+                    context.go(routes.homeScreen);
+                  }
+                },
+                icon: Icon(
+                  Icons.arrow_forward,
+                  color: Colors.white.withOpacity(0.7),
+                  size: 28.r,
+                ),
               ),
             ],
           ),
@@ -126,11 +128,14 @@ class _CustomProfileImageAndNameState extends State<CustomProfileImageAndName> {
             children: [
               Container(
                 padding: EdgeInsets.all(3.r),
-                decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: Colors.white, width: 2.w)),
-                child: CircleAvatar(
-                  radius: 70.r,
-                  backgroundColor: Colors.grey[800],
-                  backgroundImage: _buildProfileImage(),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: Colors.white, width: 2.w),
+                ),
+                child: CustomUserAvatar(
+                  radius: 80,
+                  currentImageFile: widget.currentImageFile,
+                  imagePathOrUrl: image,
                 ),
               ),
 
@@ -146,7 +151,8 @@ class _CustomProfileImageAndNameState extends State<CustomProfileImageAndName> {
                       decoration: BoxDecoration(
                         color: AppColors.primary,
                         shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 2.w),                      ),
+                        border: Border.all(color: Colors.white, width: 2.w),
+                      ),
                       child: Icon(Icons.add, color: Colors.white, size: 24.r),
                     ),
                   ),
@@ -157,14 +163,13 @@ class _CustomProfileImageAndNameState extends State<CustomProfileImageAndName> {
           SizedBox(height: 12.h),
           Text(
             name ?? 'اسم المستخدم',
-            style:  TextStyle(
+            style: TextStyle(
               fontSize: 20.sp,
               color: Colors.white,
               fontWeight: FontWeight.bold,
               fontFamily: 'Cairo',
             ),
           ),
-
         ],
       ),
     );

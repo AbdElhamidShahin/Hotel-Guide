@@ -14,6 +14,7 @@ import '../../features/home/data/repo/home_repo_impl.dart';
 import '../../features/home/logic/cubit/home_cubit.dart';
 import '../../features/login/data/repo/login_repoImpl.dart';
 import '../../features/login/logic/cubit/login_cubit.dart';
+import '../../features/notification/logic/notificatin_logic.dart';
 import '../../features/payment/data/repo.dart';
 import '../../features/payment/logic/booking_cubit.dart';
 import '../../features/room/data/home_repo_impl.dart';
@@ -24,54 +25,38 @@ import '../../features/wallet/date/wallet_cubit.dart';
 final getIt = GetIt.instance;
 
 Future<void> setupGetIt() async {
-  /// Firebase & Services
+  // Services
   getIt.registerLazySingleton<SupabaseService>(() => SupabaseService());
-
-  /// Login
-  getIt.registerLazySingleton<LoginRepostry>(
-    () => AuthRepositoryImpl(Supabase.instance.client),
-  );
-  getIt.registerFactory<LoginCubit>(() => LoginCubit(getIt<LoginRepostry>()));
-
-  /// Signup
-  getIt.registerLazySingleton<SignUpRepository>(
-        () => SignUpRepoImpl(),
-  );
-
-  getIt.registerFactory<SignUpCubit>(
-        () => SignUpCubit(getIt<SignUpRepository>()),
-  );
-
-  /// Home & Hotel
-  getIt.registerLazySingleton<HomeRepository>(
-    () => HomeRepoImpl(getIt<SupabaseService>()),
-  );
-
-  getIt.registerFactory<HomeCubit>(() => HomeCubit(getIt<HomeRepository>()));
-
-  ///rooms
-
-  getIt.registerLazySingleton<RoomRepo>(
-    () => RoomRepoImpl(getIt<SupabaseService>()),
-  );
-
-  getIt.registerFactory<RoomCubit>(() => RoomCubit(getIt<RoomRepo>()));
-
-  /// Favorite
-  getIt.registerLazySingleton<FavoriteCubit>(() => FavoriteCubit());
-
-  getIt.registerFactory<SearchRepo>(
-        () => SearchRepoImpl(),
-  );
-  getIt.registerFactory<SearchCubit>(() => SearchCubit(getIt<SearchRepo>()));
-
-  getIt.registerFactory<WalletCubit>(() => WalletCubit());
   getIt.registerLazySingleton<SupabaseClient>(() => Supabase.instance.client);
 
-  getIt.registerLazySingleton<BookingRepository>(
-    () => BookingRepository(getIt()),
-  );
+  // Login
+  getIt.registerLazySingleton<LoginRepostry>(() => AuthRepositoryImpl(getIt<SupabaseClient>()));
+  getIt.registerFactory<LoginCubit>(() => LoginCubit(getIt<LoginRepostry>()));
 
-  getIt.registerFactory(() => BookingCubit(getIt()));
-  getIt.registerFactory(() => BookingCubit(getIt<BookingRepository>()));
+  // Signup
+  getIt.registerLazySingleton<SignUpRepository>(() => SignUpRepoImpl());
+  getIt.registerFactory<SignUpCubit>(() => SignUpCubit(getIt<SignUpRepository>()));
+
+  // Home
+  getIt.registerLazySingleton<HomeRepository>(() => HomeRepoImpl(getIt<SupabaseService>()));
+  getIt.registerFactory<HomeCubit>(() => HomeCubit(getIt<HomeRepository>()));
+
+  // Rooms
+  getIt.registerLazySingleton<RoomRepo>(() => RoomRepoImpl(getIt<SupabaseService>()));
+  getIt.registerFactory<RoomCubit>(() => RoomCubit(getIt<RoomRepo>()));
+
+  // Search
+  getIt.registerLazySingleton<SearchRepo>(() => SearchRepoImpl());
+  getIt.registerFactory<SearchCubit>(() => SearchCubit(getIt<SearchRepo>()));
+
+  // Payment & Booking
+  getIt.registerLazySingleton<BookingRepository>(() => BookingRepository(getIt()));
+  getIt.registerFactory<BookingCubit>(() => BookingCubit(getIt<BookingRepository>()));
+
+  // Others
+  getIt.registerLazySingleton<FavoriteCubit>(() => FavoriteCubit());
+  getIt.registerFactory<WalletCubit>(() => WalletCubit());
+
+  // Notification
+  getIt.registerLazySingleton<NotificationCubit>(() => NotificationCubit());
 }

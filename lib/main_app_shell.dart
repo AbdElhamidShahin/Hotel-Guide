@@ -5,114 +5,70 @@ import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
 
-class MainAppShell extends StatelessWidget {
+class MainAppShell extends StatefulWidget {
   final StatefulNavigationShell navigationShell;
 
   const MainAppShell({super.key, required this.navigationShell});
 
-  void _onTap(BuildContext context, int index) {
-    navigationShell.goBranch(
+  @override
+  State<MainAppShell> createState() => _MainAppShellState();
+}
+
+class _MainAppShellState extends State<MainAppShell> {
+  void _onTap(int index) {
+    widget.navigationShell.goBranch(
       index,
-      initialLocation: index == navigationShell.currentIndex,
-    );
-  }
-
-  Widget _buildNavItem({
-    required String iconAsset,
-    required int index,
-    required bool hasBadge,
-  }) {
-    final bool isSelected = navigationShell.currentIndex == index;
-
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 200),
-      padding: EdgeInsets.all(10.r),
-      decoration: BoxDecoration(
-        color: isSelected ? AppColors.ShadowPurple : Colors.transparent,
-        shape: BoxShape.circle,
-      ),
-      child: SvgPicture.asset(
-        iconAsset,
-        height: 24.r,
-        width: 24.r,
-        colorFilter: ColorFilter.mode(
-          isSelected ? AppColors.white : AppColors.ShadowPurple,
-          BlendMode.srcIn,
-        ),
-      ),
+      initialLocation: index == widget.navigationShell.currentIndex,
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: navigationShell.currentIndex == 3 ? false : true,
-      onPopInvoked: (bool didPop) {
+      canPop: widget.navigationShell.currentIndex == 3,
+      onPopInvokedWithResult: (didPop, result) {
         if (didPop) return;
-
-        if (navigationShell.currentIndex != 3) {
-          navigationShell.goBranch(3);
+        if (widget.navigationShell.currentIndex != 3) {
+          _onTap(3);
         } else {
           SystemNavigator.pop();
         }
       },
       child: Scaffold(
-        body: navigationShell,
+        body: widget.navigationShell,
+
         bottomNavigationBar: Container(
           decoration: BoxDecoration(
-            color: Theme.of(context).canvasColor,
+            color: Colors.white,
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.1),
-                spreadRadius: 0,
                 blurRadius: 8,
                 offset: const Offset(0, -2),
               ),
             ],
           ),
           child: BottomNavigationBar(
-            currentIndex: navigationShell.currentIndex,
-            onTap: (index) => _onTap(context, index),
+            currentIndex: widget.navigationShell.currentIndex,
+            onTap: _onTap,
             showSelectedLabels: false,
             showUnselectedLabels: false,
             type: BottomNavigationBarType.fixed,
             backgroundColor: Colors.white,
             elevation: 0,
             items: [
-              // Index 0: المستخدم
-              BottomNavigationBarItem(
-                icon: _buildNavItem(
-                  iconAsset:
-                      'assets/icons/Icons_bar/user-alt-1-svgrepo-com.svg',
-                  index: 0,
-                  hasBadge: false,
-                ),
-                label: '',
+              _buildBottomItem(
+                'assets/icons/Icons_bar/user-alt-1-svgrepo-com.svg',
+                0,
               ),
-              BottomNavigationBarItem(
-                icon: _buildNavItem(
-                  iconAsset: 'assets/icons/Icons_bar/empty-wallet.svg',
-                  index: 1,
-                  hasBadge: true,
-                ),
-                label: '',
+              _buildBottomItem('assets/icons/Icons_bar/empty-wallet.svg', 1),
+              _buildBottomItem(
+                'assets/icons/Icons_bar/notification-favorite.svg',
+                2,
               ),
-              BottomNavigationBarItem(
-                icon: _buildNavItem(
-                  iconAsset: 'assets/icons/Icons_bar/notification-favorite.svg',
-                  index: 2,
-                  hasBadge: false,
-                ),
-                label: '',
-              ),
-              BottomNavigationBarItem(
-                icon: _buildNavItem(
-                  iconAsset:
-                      'assets/icons/Icons_bar/home-angle-2-svgrepo-com.svg',
-                  index: 3,
-                  hasBadge: true,
-                ),
-                label: '',
+              _buildBottomItem(
+                'assets/icons/Icons_bar/home-angle-2-svgrepo-com.svg',
+                3,
               ),
             ],
           ),
@@ -121,6 +77,27 @@ class MainAppShell extends StatelessWidget {
     );
   }
 
-  //
-  //
+  BottomNavigationBarItem _buildBottomItem(String icon, int index) {
+    final bool isSelected = widget.navigationShell.currentIndex == index;
+    return BottomNavigationBarItem(
+      icon: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: EdgeInsets.all(10.r),
+        decoration: BoxDecoration(
+          color: isSelected ? AppColors.ShadowPurple : Colors.transparent,
+          shape: BoxShape.circle,
+        ),
+        child: SvgPicture.asset(
+          icon,
+          height: 24.r,
+          width: 24.r,
+          colorFilter: ColorFilter.mode(
+            isSelected ? Colors.white : AppColors.ShadowPurple,
+            BlendMode.srcIn,
+          ),
+        ),
+      ),
+      label: '',
+    );
+  }
 }

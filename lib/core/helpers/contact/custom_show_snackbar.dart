@@ -3,16 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void showCustomSnackbar(
-  BuildContext context,
-  ContentType messageType,
-  String title,
-  String message,
-) {
+    BuildContext context,
+    ContentType messageType,
+    String title,
+    String message,
+    ) {
   late OverlayEntry overlayEntry;
 
   overlayEntry = OverlayEntry(
     builder: (context) => Positioned(
-      top: 50.h,
+      // غيرنا من top لـ bottom عشان تظهر تحت
+      bottom: 50.h,
       left: 20.w,
       right: 20.w,
       child: Material(
@@ -21,6 +22,8 @@ void showCustomSnackbar(
           title: title,
           message: message,
           contentType: messageType,
+          // اختيارية: لو عايز تخلي السناك بار "عائم" أكتر
+          inMaterialBanner: true,
         ),
       ),
     ),

@@ -40,7 +40,7 @@ class MenuScreen extends StatelessWidget {
                           try {
                             context.pop();
                           } catch (e) {
-                            context.go(routes.homeScreen);
+                            context.push(routes.homeScreen);
                           }
                         },
                       ),
@@ -98,7 +98,9 @@ class MenuScreen extends StatelessWidget {
 
   Widget _buildLogoutButton(BuildContext context) {
     return OutlinedButton(
-      onPressed: () {},
+      onPressed: () {
+        context.push(routes.onBoardingScreen);
+      },
       style: OutlinedButton.styleFrom(
         side: BorderSide(color: AppColors.primary, width: 1.w),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(47)),

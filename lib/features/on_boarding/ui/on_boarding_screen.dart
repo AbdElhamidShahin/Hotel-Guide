@@ -145,7 +145,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                           : "التالي",
                       onPressed: () {
                         if (currentIndex == contents.length - 1) {
-                          context.go(routes.signUpScreen);
+                          context.push(routes.signUpScreen);
                         } else {
                           _controller.nextPage(
                             duration: const Duration(milliseconds: 500),

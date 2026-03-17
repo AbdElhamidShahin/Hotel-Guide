@@ -56,6 +56,7 @@ dependencies:
   table_calendar: ^3.2.0
   flutter_facebook_auth: ^7.1.5
   url_launcher: ^6.3.2
+  share_plus: ^12.0.1
 
 dev_dependencies:
   flutter_test:
@@ -93,6 +94,7 @@ flutter:
     - assets/Onpording/
     - assets/icons/menu_icons/
     - assets/icons/rating/
+    - assets/images/notification_statuses/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 

@@ -23,25 +23,35 @@ class SignUpCubit extends Cubit<SignUpState> {
   void _listenToAuthChanges() {
     _authSubscription = Supabase.instance.client.auth.onAuthStateChange.listen((data) async {
       final session = data.session;
-      if (session != null && data.event == AuthChangeEvent.signedIn) {
+
+      if (session != null && (data.event == AuthChangeEvent.signedIn || data.event == AuthChangeEvent.initialSession)) {
         final user = session.user;
 
-        final String name = user.userMetadata?['full_name'] ?? user.userMetadata?['name'] ?? "مستخدم جديد";
-        final String imageUrl = user.userMetadata?['avatar_url'] ?? "";
+        // 1. استخراج الاسم (تجربة كل الاحتمالات الممكنة من جوجل)
+        final String name = user.userMetadata?['full_name'] ??
+            user.userMetadata?['name'] ??
+            user.userMetadata?['display_name'] ?? "مستخدم جديد";
+
+        // 2. استخراج الصورة (جوجل تستخدم avatar_url أو picture)
+        final String imageUrl = user.userMetadata?['avatar_url'] ??
+            user.userMetadata?['picture'] ?? "";
+
         final String email = user.email ?? "";
 
+        // 3. حفظ البيانات في الـ Local Storage
         await UserDataManager.saveUserData(
           name: name,
           email: email,
           image: imageUrl,
-          phone: '',
+          phone: user.userMetadata?['phone'] ?? '',
         );
 
-        if (!isClosed) emit(SignUpSuccess("مرحباً بك يا $name! ✅"));
+        if (!isClosed) {
+          emit(SignUpSuccess("مرحباً بك يا $name! ✅"));
+        }
       }
     });
   }
-
   Future<void> signUpUser() async {
     if (!formKey.currentState!.validate()) return;
     if (passwordController.text.trim() != confirmPasswordController.text.trim()) {
