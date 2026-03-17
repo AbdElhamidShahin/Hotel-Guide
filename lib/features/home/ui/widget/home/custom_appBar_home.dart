@@ -50,7 +50,7 @@ class CustomAppbarHome extends StatelessWidget {
     );
   }Widget _buildAppBarIcon(BuildContext context, String icon, String route) {
     return GestureDetector(
-      onTap: () => context.go(route),
+      onTap: () => context.push(route),
       child: SvgPicture.asset(
         icon,
         height: 28.r,

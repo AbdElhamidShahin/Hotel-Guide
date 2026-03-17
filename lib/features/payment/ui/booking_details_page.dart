@@ -12,7 +12,6 @@ import 'package:hotel_guide/features/payment/ui/widget/show_all_wallet_bottom_sh
 import '../../../core/helpers/widget/custom_appbar_widget.dart';
 import '../../../core/network/model/booking_model.dart';
 import '../../../core/network/model/room_model.dart';
-import '../../../core/router/routers.dart';
 import '../../../core/theme/app_theme.dart';
 
 class BookingDetailsPage extends StatefulWidget {
@@ -59,9 +58,7 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
       backgroundColor: Colors.white,
       appBar: CustomAppbarWidget(
         name: "تفاصيل الحجز",
-        onTap: () {
-          context.go(routes.RoomDetailsPage, extra: widget.room);
-        },
+        onTap: () => context.pop(),
       ),
       body: Directionality(
         textDirection: TextDirection.rtl,
@@ -129,7 +126,7 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
 
               _sectionTitle("الغرفة المختارة"),
               SizedBox(height: 15.h),
-               BookingCard(room: widget.room,),
+              BookingCard(room: widget.room),
 
               SizedBox(height: 30.h),
 

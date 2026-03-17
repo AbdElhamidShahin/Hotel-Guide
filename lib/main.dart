@@ -8,7 +8,7 @@ import 'package:intl/date_symbol_data_local.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await ScreenUtil.ensureScreenSize();
-  setupGetIt();
+  await setupGetIt();
 
   await Supabase.initialize(
     url: 'https://oavjmvbwyrkixfnlzmcg.supabase.co',

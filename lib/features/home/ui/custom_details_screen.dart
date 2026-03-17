@@ -105,16 +105,20 @@ class _CustomDetailsScreenState extends State<CustomDetailsScreen> {
 
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 24.h),
-                child: const RatingScreen(),
+                child: RatingScreen(hotelModel: widget.hotelModel),
               ),
 
               SizedBox(height: 16.h),
-              CustomRoomsAndLocationDetailsScreen(hotelModel: widget.hotelModel),
+              CustomRoomsAndLocationDetailsScreen(
+                hotelModel: widget.hotelModel,
+              ),
               SizedBox(height: 50.h),
               Center(
                 child: Text(
                   "فنادق مشابهة",
-                  style: textStyle22BoldPrimary.copyWith(color: AppColors.primary),
+                  style: textStyle22BoldPrimary.copyWith(
+                    color: AppColors.primary,
+                  ),
                 ),
               ),
               SizedBox(height: 24.h),

@@ -17,6 +17,7 @@ import '../../features/home/ui/home_screen.dart';
 import '../../features/home/ui/widget/home/city_hotels_screen.dart';
 import '../../features/login/logic/cubit/login_cubit.dart';
 import '../../features/login/ui/login_screen.dart';
+import '../../features/notification/logic/notificatin_logic.dart';
 import '../../features/notification/ui/notification_screen.dart';
 import '../../features/on_boarding/ui/on_boarding_screen.dart';
 import '../../features/payment/logic/booking_cubit.dart';
@@ -49,7 +50,7 @@ abstract class AppRouter {
       GoRoute(
         path: routes.onBoardingScreen,
         builder: (BuildContext context, GoRouterState state) =>
-        const OnBoardingScreen(),
+            const OnBoardingScreen(),
       ),
       GoRoute(
         path: routes.loginScreen,
@@ -153,8 +154,11 @@ abstract class AppRouter {
 
       GoRoute(
         path: routes.notification,
-        builder: (BuildContext context, GoRouterState state) {
-          return NotificationScreenListView();
+        builder: (context, state) {
+          return BlocProvider.value(
+            value: getIt<NotificationCubit>(),
+            child: const NotificationScreenListView(),
+          );
         },
       ),
 
@@ -180,34 +184,34 @@ abstract class AppRouter {
             reverseTransitionDuration: const Duration(milliseconds: 1000),
             transitionsBuilder:
                 (context, animation, secondaryAnimation, child) {
-              final curvedAnimation = CurvedAnimation(
-                parent: animation,
-                curve: Curves.easeOutBack,
-                reverseCurve: Curves.easeInBack,
-              );
-              final slide = Tween<Offset>(
-                begin: const Offset(-1.0, 0.0),
-                end: Offset.zero,
-              ).animate(curvedAnimation);
+                  final curvedAnimation = CurvedAnimation(
+                    parent: animation,
+                    curve: Curves.easeOutBack,
+                    reverseCurve: Curves.easeInBack,
+                  );
+                  final slide = Tween<Offset>(
+                    begin: const Offset(-1.0, 0.0),
+                    end: Offset.zero,
+                  ).animate(curvedAnimation);
 
-              final scale = Tween<double>(
-                begin: 0.88,
-                end: 1.0,
-              ).animate(curvedAnimation);
-              final opacity = Tween<double>(
-                begin: 0.0,
-                end: 1.0,
-              ).animate(curvedAnimation);
+                  final scale = Tween<double>(
+                    begin: 0.88,
+                    end: 1.0,
+                  ).animate(curvedAnimation);
+                  final opacity = Tween<double>(
+                    begin: 0.0,
+                    end: 1.0,
+                  ).animate(curvedAnimation);
 
-              return FadeTransition(
-                opacity: opacity,
-                child: ScaleTransition(
-                  scale: scale,
-                  alignment: Alignment.centerLeft,
-                  child: SlideTransition(position: slide, child: child),
-                ),
-              );
-            },
+                  return FadeTransition(
+                    opacity: opacity,
+                    child: ScaleTransition(
+                      scale: scale,
+                      alignment: Alignment.centerLeft,
+                      child: SlideTransition(position: slide, child: child),
+                    ),
+                  );
+                },
           );
         },
       ),
@@ -225,7 +229,7 @@ abstract class AppRouter {
 
                   return BlocProvider(
                     create: (context) => getIt<HomeCubit>(),
-                    child:AccountScreen(name: data?["name"]),
+                    child: AccountScreen(name: data?["name"]),
                   );
                 },
               ),
@@ -264,7 +268,7 @@ abstract class AppRouter {
 
                   return BlocProvider(
                     create: (context) =>
-                    getIt<HomeCubit>()..getHotelsAndCities(),
+                        getIt<HomeCubit>()..getHotelsAndCities(),
                     child: HomeScreen(name: data?["name"] ?? ""),
                   );
                 },
