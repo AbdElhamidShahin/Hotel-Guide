@@ -7,7 +7,7 @@ class SupabaseService {
 
   Future<List<Map<String, dynamic>>> fetchHotels() async {
     try {
-      return await _client.from(AppTableNames.hotels).select('*, cities(name)');
+      return await _client.from("hotels").select('*, cities(name)');
     } catch (e) {
       print("Supabase Error: $e");
       rethrow;

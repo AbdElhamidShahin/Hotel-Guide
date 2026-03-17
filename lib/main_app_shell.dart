@@ -15,46 +15,18 @@ class MainAppShell extends StatefulWidget {
 }
 
 class _MainAppShellState extends State<MainAppShell> {
-  late PageController _pageController;
-
-  @override
-  void initState() {
-    super.initState();
-    _pageController = PageController(
-      initialPage: widget.navigationShell.currentIndex,
-    );
-  }
-
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
-  }
-
   void _onTap(int index) {
-    // تحديث الـ PageView بالأنيميشن
-    _pageController.animateToPage(
+    widget.navigationShell.goBranch(
       index,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
+      initialLocation: index == widget.navigationShell.currentIndex,
     );
-    // تحديث الـ GoRouter
-    widget.navigationShell.goBranch(index);
   }
 
   @override
   Widget build(BuildContext context) {
-    // مزامنة الـ Controller لو الـ Index اتغير من بره (زي الـ Back button)
-    if (_pageController.hasClients) {
-      if (_pageController.page?.round() !=
-          widget.navigationShell.currentIndex) {
-        _pageController.jumpToPage(widget.navigationShell.currentIndex);
-      }
-    }
-
     return PopScope(
-      canPop: widget.navigationShell.currentIndex == 3 ? false : true,
-      onPopInvoked: (bool didPop) {
+      canPop: widget.navigationShell.currentIndex == 3,
+      onPopInvokedWithResult: (didPop, result) {
         if (didPop) return;
         if (widget.navigationShell.currentIndex != 3) {
           _onTap(3);
@@ -63,29 +35,14 @@ class _MainAppShellState extends State<MainAppShell> {
         }
       },
       child: Scaffold(
-        // استخدمنا PageView العادي مع children لضمان الاستقرار
-        body: PageView(
-          controller: _pageController,
-          physics: const BouncingScrollPhysics(),
-          onPageChanged: (index) {
-            // نغير الـ branch فقط لما السحب ينتهي تماماً
-            if (index != widget.navigationShell.currentIndex) {
-              widget.navigationShell.goBranch(index);
-            }
-          },
-          // بنعرض الـ navigationShell في كل الصفحات
-          // الـ GoRouter داخلياً هيعرض الـ Widget الصح بناءً على الـ index
-          children: widget.navigationShell.route.branches.map((branch) {
-            return widget.navigationShell;
-          }).toList(),
-        ),
+        body: widget.navigationShell,
+
         bottomNavigationBar: Container(
           decoration: BoxDecoration(
-            color: Theme.of(context).canvasColor,
+            color: Colors.white,
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.1),
-                spreadRadius: 0,
                 blurRadius: 8,
                 offset: const Offset(0, -2),
               ),
@@ -121,30 +78,26 @@ class _MainAppShellState extends State<MainAppShell> {
   }
 
   BottomNavigationBarItem _buildBottomItem(String icon, int index) {
-    return BottomNavigationBarItem(
-      icon: _buildNavItem(iconAsset: icon, index: index),
-      label: '',
-    );
-  }
-
-  Widget _buildNavItem({required String iconAsset, required int index}) {
     final bool isSelected = widget.navigationShell.currentIndex == index;
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 200),
-      padding: EdgeInsets.all(10.r),
-      decoration: BoxDecoration(
-        color: isSelected ? AppColors.ShadowPurple : Colors.transparent,
-        shape: BoxShape.circle,
-      ),
-      child: SvgPicture.asset(
-        iconAsset,
-        height: 24.r,
-        width: 24.r,
-        colorFilter: ColorFilter.mode(
-          isSelected ? AppColors.white : AppColors.ShadowPurple,
-          BlendMode.srcIn,
+    return BottomNavigationBarItem(
+      icon: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: EdgeInsets.all(10.r),
+        decoration: BoxDecoration(
+          color: isSelected ? AppColors.ShadowPurple : Colors.transparent,
+          shape: BoxShape.circle,
+        ),
+        child: SvgPicture.asset(
+          icon,
+          height: 24.r,
+          width: 24.r,
+          colorFilter: ColorFilter.mode(
+            isSelected ? Colors.white : AppColors.ShadowPurple,
+            BlendMode.srcIn,
+          ),
         ),
       ),
+      label: '',
     );
   }
 }
