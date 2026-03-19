@@ -135,7 +135,9 @@ class _AccountScreenState extends State<AccountScreen> {
                 buildSttingsItem(
                   title: "الأسئلة الشائعة",
                   icon: Icons.help_outline,
-                  onTap: () {},
+                  onTap: () {
+                    context.push(routes.FaqPage);
+                  },
                 ),
                 buildSttingsItem(
                   title: "شروط الإستخدام",

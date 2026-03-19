@@ -36,4 +36,12 @@ class AppColors {
 
   static const Color primaryDark = Color(0xFF2D2D3F);
   static const Color dangerRed = Color(0xFFE57373);
+
+
+  static const background  = Color(0xFFF5F5F7);
+  static const card        = Color(0xFFFFFFFF);
+  static const textPrimary = Color(0xFF1A1A2E);
+  static const textGrey    = Color(0xFF6B6B80);
+  static const divider     = Color(0xFFE8E8EE);
+
 }

@@ -30,19 +30,27 @@ Future<void> setupGetIt() async {
   getIt.registerLazySingleton<SupabaseClient>(() => Supabase.instance.client);
 
   // Login
-  getIt.registerLazySingleton<LoginRepostry>(() => AuthRepositoryImpl(getIt<SupabaseClient>()));
+  getIt.registerLazySingleton<LoginRepostry>(
+    () => AuthRepositoryImpl(getIt<SupabaseClient>()),
+  );
   getIt.registerFactory<LoginCubit>(() => LoginCubit(getIt<LoginRepostry>()));
 
   // Signup
   getIt.registerLazySingleton<SignUpRepository>(() => SignUpRepoImpl());
-  getIt.registerFactory<SignUpCubit>(() => SignUpCubit(getIt<SignUpRepository>()));
+  getIt.registerFactory<SignUpCubit>(
+    () => SignUpCubit(getIt<SignUpRepository>()),
+  );
 
   // Home
-  getIt.registerLazySingleton<HomeRepository>(() => HomeRepoImpl(getIt<SupabaseService>()));
+  getIt.registerLazySingleton<HomeRepository>(
+    () => HomeRepoImpl(getIt<SupabaseService>()),
+  );
   getIt.registerFactory<HomeCubit>(() => HomeCubit(getIt<HomeRepository>()));
 
   // Rooms
-  getIt.registerLazySingleton<RoomRepo>(() => RoomRepoImpl(getIt<SupabaseService>()));
+  getIt.registerLazySingleton<RoomRepo>(
+    () => RoomRepoImpl(getIt<SupabaseService>()),
+  );
   getIt.registerFactory<RoomCubit>(() => RoomCubit(getIt<RoomRepo>()));
 
   // Search
@@ -50,8 +58,12 @@ Future<void> setupGetIt() async {
   getIt.registerFactory<SearchCubit>(() => SearchCubit(getIt<SearchRepo>()));
 
   // Payment & Booking
-  getIt.registerLazySingleton<BookingRepository>(() => BookingRepository(getIt()));
-  getIt.registerFactory<BookingCubit>(() => BookingCubit(getIt<BookingRepository>()));
+  getIt.registerLazySingleton<BookingRepository>(
+    () => BookingRepository(getIt()),
+  );
+  getIt.registerFactory<BookingCubit>(
+    () => BookingCubit(getIt<BookingRepository>()),
+  );
 
   // Others
   getIt.registerLazySingleton<FavoriteCubit>(() => FavoriteCubit());
