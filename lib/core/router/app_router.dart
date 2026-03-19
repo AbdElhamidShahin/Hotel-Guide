@@ -23,6 +23,7 @@ import '../../features/on_boarding/ui/on_boarding_screen.dart';
 import '../../features/payment/logic/booking_cubit.dart';
 import '../../features/payment/ui/booking_details_page.dart';
 import '../../features/profile/ui/edit_account_screen.dart';
+import '../../features/profile/ui/faq_page.dart';
 import '../../features/profile/ui/profile_screen.dart';
 import '../../features/room/ui/custom_room.dart';
 import '../../features/room/ui/rooms_screen_list-view.dart';
@@ -51,6 +52,10 @@ abstract class AppRouter {
         path: routes.onBoardingScreen,
         builder: (BuildContext context, GoRouterState state) =>
             const OnBoardingScreen(),
+      ),  GoRoute(
+        path: routes.FaqPage,
+        builder: (BuildContext context, GoRouterState state) =>
+            const FaqPage(),
       ),
       GoRoute(
         path: routes.loginScreen,
