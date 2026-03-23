@@ -1,11 +1,11 @@
-import 'package:supabase_flutter/supabase_flutter.dart';
-
+import 'sign_up_result.dart';
 
 abstract class SignUpRepository {
-  Future<AuthResponse> signUp({
+  Future<SignUpResult> signUp({
     required String email,
     required String password,
     required String name,
   });
-  Future<void> signInWithGoogle();
+
+  Future<SignUpResult> signInWithGoogle();
 }

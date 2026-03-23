@@ -25,39 +25,42 @@ import '../../features/wallet/date/wallet_cubit.dart';
 final getIt = GetIt.instance;
 
 Future<void> setupGetIt() async {
-  // Services
+  // ── Services ────────────────────────────────
   getIt.registerLazySingleton<SupabaseService>(() => SupabaseService());
   getIt.registerLazySingleton<SupabaseClient>(() => Supabase.instance.client);
 
-  // Login
+  // ── Login ────────────────────────────────────
   getIt.registerLazySingleton<LoginRepostry>(
     () => AuthRepositoryImpl(getIt<SupabaseClient>()),
   );
   getIt.registerFactory<LoginCubit>(() => LoginCubit(getIt<LoginRepostry>()));
 
-  // Signup
-  getIt.registerLazySingleton<SignUpRepository>(() => SignUpRepoImpl());
+  // ── Sign Up ──────────────────────────────────
+  getIt.registerLazySingleton<SignUpRepository>(
+    // ✅ التغيير هنا — بنحقن SupabaseClient بدل static access
+    () => SignUpRepoImpl(getIt<SupabaseClient>()),
+  );
   getIt.registerFactory<SignUpCubit>(
     () => SignUpCubit(getIt<SignUpRepository>()),
   );
 
-  // Home
+  // ── Home ─────────────────────────────────────
   getIt.registerLazySingleton<HomeRepository>(
     () => HomeRepoImpl(getIt<SupabaseService>()),
   );
   getIt.registerFactory<HomeCubit>(() => HomeCubit(getIt<HomeRepository>()));
 
-  // Rooms
+  // ── Rooms ────────────────────────────────────
   getIt.registerLazySingleton<RoomRepo>(
     () => RoomRepoImpl(getIt<SupabaseService>()),
   );
   getIt.registerFactory<RoomCubit>(() => RoomCubit(getIt<RoomRepo>()));
 
-  // Search
+  // ── Search ───────────────────────────────────
   getIt.registerLazySingleton<SearchRepo>(() => SearchRepoImpl());
   getIt.registerFactory<SearchCubit>(() => SearchCubit(getIt<SearchRepo>()));
 
-  // Payment & Booking
+  // ── Payment & Booking ────────────────────────
   getIt.registerLazySingleton<BookingRepository>(
     () => BookingRepository(getIt()),
   );
@@ -65,10 +68,8 @@ Future<void> setupGetIt() async {
     () => BookingCubit(getIt<BookingRepository>()),
   );
 
-  // Others
+  // ── Others ───────────────────────────────────
   getIt.registerLazySingleton<FavoriteCubit>(() => FavoriteCubit());
   getIt.registerFactory<WalletCubit>(() => WalletCubit());
-
-  // Notification
   getIt.registerLazySingleton<NotificationCubit>(() => NotificationCubit());
 }

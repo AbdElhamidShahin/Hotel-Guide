@@ -11,101 +11,151 @@ class EmailAndPasswordAndName extends StatefulWidget {
   const EmailAndPasswordAndName({super.key});
 
   @override
-  State<EmailAndPasswordAndName> createState() => _EmailAndPasswordState();
+  State<EmailAndPasswordAndName> createState() =>
+      _EmailAndPasswordAndNameState();
 }
 
-class _EmailAndPasswordState extends State<EmailAndPasswordAndName> {
-  bool isObscureText = true;
-  bool isObscureText2 = true;
+class _EmailAndPasswordAndNameState extends State<EmailAndPasswordAndName> {
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+
+  final _formKey = GlobalKey<FormState>();
+
+  bool _isPasswordHidden = true;
+  bool _isConfirmPasswordHidden = true;
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
+
+  void _onSubmit() {
+    if (!_formKey.currentState!.validate()) return;
+
+    context.read<SignUpCubit>().signUpUser(
+      name: _nameController.text.trim(),
+      email: _emailController.text.trim(),
+      password: _passwordController.text.trim(),
+      confirmPassword: _confirmPasswordController.text.trim(),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: Text("الإسم", style: textStyle16RegularGray),
-        ),
-        AppTextFormFeild(
-          hintText: "abdo shahin",
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return "من فضلك أدخل الاسم";
-            }
-            return null;
-          },
-          controller: context.read<SignUpCubit>().nameController,
-          suffixIcon: _buildSuffixIcon(Icons.person_outline_sharp),
-        ),
-        SizedBox(height: 16.h),
-        _buildLabel("البريد الإلكتروني"),
-        AppTextFormFeild(
-          hintText: "examble@gmail.com",
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return "من فضلك أدخل بريدك الإلكتروني";
-            } else if (!AppRegex.isEmailValid(value)) {
-              return "البريد الإلكتروني المدخل غير صحيح. تأكد من الصيغة.";
-            }
-            return null;
-          },
-          controller: context.read<SignUpCubit>().emailController,
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          _buildLabel('الإسم'),
+          AppTextFormFeild(
+            hintText: 'abdo shahin',
+            controller: _nameController,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'من فضلك أدخل الاسم';
+              }
+              return null;
+            },
+            suffixIcon: _buildSuffixIcon(Icons.person_outline_sharp),
+          ),
+          SizedBox(height: 16.h),
+          _buildLabel('البريد الإلكتروني'),
+          AppTextFormFeild(
+            hintText: 'example@gmail.com',
+            controller: _emailController,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'من فضلك أدخل بريدك الإلكتروني';
+              }
+              if (!AppRegex.isEmailValid(value)) {
+                return 'البريد الإلكتروني غير صحيح';
+              }
+              return null;
+            },
+            suffixIcon: _buildSuffixIcon(Icons.email_outlined),
+          ),
+          SizedBox(height: 16.h),
+          _buildLabel('كلمة المرور'),
+          AppTextFormFeild(
+            hintText: '******',
+            controller: _passwordController,
+            isObscureText: _isPasswordHidden,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'لا يمكن ترك كلمة المرور فارغة';
+              }
+              if (!AppRegex.hasMinLength(value)) {
+                return 'كلمة المرور يجب ألا تقل عن 8 أحرف';
+              }
+              if (!AppRegex.isPasswordValid(value)) {
+                return 'يجب أن تحتوي على أحرف كبيرة وصغيرة وأرقام ورمز خاص';
+              }
+              return null;
+            },
+            suffixIcon: _buildPasswordIcon(
+              _isPasswordHidden,
+                  () => setState(() => _isPasswordHidden = !_isPasswordHidden),
+            ),
+          ),
+          SizedBox(height: 16.h),
+          _buildLabel('تأكيد كلمة المرور'),
+          AppTextFormFeild(
+            hintText: '******',
+            controller: _confirmPasswordController,
+            isObscureText: _isConfirmPasswordHidden,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'لا يمكن ترك تأكيد كلمة المرور فارغاً';
+              }
+              if (value.trim() != _passwordController.text.trim()) {
+                return 'كلمة المرور وتأكيدها غير متطابقين ❌';
+              }
+              return null;
+            },
+            suffixIcon: _buildPasswordIcon(
+              _isConfirmPasswordHidden,
+                  () => setState(
+                      () => _isConfirmPasswordHidden = !_isConfirmPasswordHidden),
+            ),
+          ),
+          SizedBox(height: 20.h),
 
-          suffixIcon: _buildSuffixIcon(Icons.email_outlined),
-        ),
-        SizedBox(height: 16.h),
-        _buildLabel("كلمة المرور"),
-        AppTextFormFeild(
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return "لا يمكن ترك كلمة المرور فارغة.";
-            } else if (!AppRegex.hasMinLength(value)) {
-              return "كلمة المرور يجب ألا تقل عن 8 أحرف.";
-            } else if (!AppRegex.isPasswordValid(value)) {
-              return "يجب أن تحتوي كلمة المرور على أحرف كبيرة، صغيرة، أرقام، ورمز خاص.";
-            }
-            return null;
-          },
-          controller: context.read<SignUpCubit>().passwordController,
-          hintText: "******",
-          isObscureText: isObscureText,
-          suffixIcon: _buildPasswordIcon(
-            isObscureText,
-            () => setState(() => isObscureText = !isObscureText),
+      SizedBox(
+            width: double.infinity,
+            height: 56.h,
+            child: BlocBuilder<SignUpCubit, dynamic>(
+              builder: (context, state) {
+                final isLoading = state.runtimeType.toString() == 'SignUpLoading';
+                return ElevatedButton(
+                  onPressed: isLoading ? null : _onSubmit,
+                  child: isLoading
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : const Text('إنشاء حساب'),
+                );
+              },
+            ),
           ),
-        ),
-        SizedBox(height: 16.h),
-        _buildLabel("تأكيد كلمة المرور"),
-        AppTextFormFeild(
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return "لا يمكن ترك كلمة المرور فارغة.";
-            } else if (!AppRegex.hasMinLength(value)) {
-              return "كلمة المرور يجب ألا تقل عن 8 أحرف.";
-            } else if (!AppRegex.isPasswordValid(value)) {
-              return "يجب أن تحتوي كلمة المرور على أحرف كبيرة، صغيرة، أرقام، ورمز خاص.";
-            }
-            return null;
-          },
-          controller: context.read<SignUpCubit>().confirmPasswordController,
-          hintText: "******",
-          isObscureText: isObscureText2,
-          suffixIcon: _buildPasswordIcon(
-            isObscureText2,
-            () => setState(() => isObscureText2 = !isObscureText2),
-          ),
-        ),
-        SizedBox(height: 20.h),
-      ],
+        ],
+      ),
     );
   }
 }
 
+
 Widget _buildLabel(String text) {
   return Padding(
     padding: EdgeInsets.only(bottom: 6.h, top: 10.h),
-    child: Text(text, style: textStyle16RegularGray.copyWith(fontSize: 14.sp)),
+    child: Text(
+      text,
+      style: textStyle16RegularGray.copyWith(fontSize: 14.sp),
+    ),
   );
 }
 
