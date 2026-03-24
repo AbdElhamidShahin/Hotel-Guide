@@ -6,6 +6,7 @@ import 'package:hotel_guide/features/sign_up/logic/cubit/sign_up_cubit.dart';
 import '../../../../core/helpers/app_regex.dart';
 import '../../../../core/helpers/widget/custom_text_feild.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../logic/cubit/sign_up_state.dart';
 
 class EmailAndPasswordAndName extends StatefulWidget {
   const EmailAndPasswordAndName({super.key});
@@ -101,7 +102,7 @@ class _EmailAndPasswordAndNameState extends State<EmailAndPasswordAndName> {
             },
             suffixIcon: _buildPasswordIcon(
               _isPasswordHidden,
-                  () => setState(() => _isPasswordHidden = !_isPasswordHidden),
+              () => setState(() => _isPasswordHidden = !_isPasswordHidden),
             ),
           ),
           SizedBox(height: 16.h),
@@ -121,23 +122,35 @@ class _EmailAndPasswordAndNameState extends State<EmailAndPasswordAndName> {
             },
             suffixIcon: _buildPasswordIcon(
               _isConfirmPasswordHidden,
-                  () => setState(
-                      () => _isConfirmPasswordHidden = !_isConfirmPasswordHidden),
+              () => setState(
+                () => _isConfirmPasswordHidden = !_isConfirmPasswordHidden,
+              ),
             ),
           ),
           SizedBox(height: 20.h),
 
-      SizedBox(
+          SizedBox(
             width: double.infinity,
             height: 56.h,
-            child: BlocBuilder<SignUpCubit, dynamic>(
+            child: BlocBuilder<SignUpCubit, SignUpState>(
               builder: (context, state) {
-                final isLoading = state.runtimeType.toString() == 'SignUpLoading';
+                if (state is SignUpLoading) {
+                  return const Center(
+                    child: CircularProgressIndicator(color: AppColors.primary),
+                  );
+                }
                 return ElevatedButton(
-                  onPressed: isLoading ? null : _onSubmit,
-                  child: isLoading
-                      ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text('إنشاء حساب'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                    ),
+                  ),
+                  onPressed: _onSubmit,
+                  child: Text(
+                    'إنشاء حساب',
+                    style: textStyle16RegularGray.copyWith(color: Colors.white),
+                  ),
                 );
               },
             ),
@@ -148,14 +161,10 @@ class _EmailAndPasswordAndNameState extends State<EmailAndPasswordAndName> {
   }
 }
 
-
 Widget _buildLabel(String text) {
   return Padding(
     padding: EdgeInsets.only(bottom: 6.h, top: 10.h),
-    child: Text(
-      text,
-      style: textStyle16RegularGray.copyWith(fontSize: 14.sp),
-    ),
+    child: Text(text, style: textStyle16RegularGray.copyWith(fontSize: 14.sp)),
   );
 }
 
