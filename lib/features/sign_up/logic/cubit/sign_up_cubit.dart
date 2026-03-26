@@ -1,18 +1,12 @@
 import 'dart:async';
-import 'package:bloc/bloc.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../core/helpers/local_storage_account.dart';
 import '../../data/repo/sign_up_repo.dart';
 import 'sign_up_state.dart';
+
 class SignUpCubit extends Cubit<SignUpState> {
   final SignUpRepository _signUpRepository;
-
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController confirmPasswordController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   StreamSubscription<AuthState>? _authSubscription;
 
@@ -21,63 +15,74 @@ class SignUpCubit extends Cubit<SignUpState> {
   }
 
   void _listenToAuthChanges() {
-    _authSubscription = Supabase.instance.client.auth.onAuthStateChange.listen((data) async {
-      final session = data.session;
+    _authSubscription = Supabase.instance.client.auth.onAuthStateChange.listen((
+      data,
+    ) async {
+      if (data.event != AuthChangeEvent.signedIn) return;
 
-      if (session != null && (data.event == AuthChangeEvent.signedIn || data.event == AuthChangeEvent.initialSession)) {
-        final user = session.user;
+      final user = data.session?.user;
+      if (user == null || isClosed) return;
 
-        // 1. استخراج الاسم (تجربة كل الاحتمالات الممكنة من جوجل)
-        final String name = user.userMetadata?['full_name'] ??
-            user.userMetadata?['name'] ??
-            user.userMetadata?['display_name'] ?? "مستخدم جديد";
+      final String name =
+          user.userMetadata?['full_name'] ??
+          user.userMetadata?['name'] ??
+          user.userMetadata?['display_name'] ??
+          'مستخدم جديد';
 
-        // 2. استخراج الصورة (جوجل تستخدم avatar_url أو picture)
-        final String imageUrl = user.userMetadata?['avatar_url'] ??
-            user.userMetadata?['picture'] ?? "";
+      final String imageUrl =
+          user.userMetadata?['avatar_url'] ??
+          user.userMetadata?['picture'] ??
+          '';
 
-        final String email = user.email ?? "";
+      final String email = user.email ?? '';
 
-        // 3. حفظ البيانات في الـ Local Storage
-        await UserDataManager.saveUserData(
-          name: name,
-          email: email,
-          image: imageUrl,
-          phone: user.userMetadata?['phone'] ?? '',
-        );
+      await UserDataManager.saveUserData(
+        name: name,
+        email: email,
+        image: imageUrl,
+        phone: user.userMetadata?['phone'] ?? '',
+      );
 
-        if (!isClosed) {
-          emit(SignUpSuccess("مرحباً بك يا $name! ✅"));
-        }
+      if (!isClosed) {
+        emit(SignUpSuccess(name: name, email: email));
       }
     });
   }
-  Future<void> signUpUser() async {
-    if (!formKey.currentState!.validate()) return;
-    if (passwordController.text.trim() != confirmPasswordController.text.trim()) {
-      emit(SignUpError("كلمة المرور وتأكيدها غير متطابقين. ❌"));
+
+  Future<void> signUpUser({
+    required String name,
+    required String email,
+    required String password,
+    required String confirmPassword,
+  }) async {
+    if (password != confirmPassword) {
+      emit(SignUpError('كلمة المرور وتأكيدها غير متطابقين ❌'));
       return;
     }
 
     emit(SignUpLoading());
     try {
-      final response = await _signUpRepository.signUp(
-        email: emailController.text.trim(),
-        password: passwordController.text.trim(),
-        name: nameController.text.trim(),
+      final result = await _signUpRepository.signUp(
+        email: email,
+        password: password,
+        name: name,
       );
 
-      if (response.user != null) {
-        if (response.session == null) {
-          emit(SignUpEmailNotVerified());
-        } else {
-          emit(SignUpSuccess("تم إنشاء الحساب بنجاح!"));
-        }
+      await UserDataManager.saveUserData(
+        name: result.name,
+        email: result.email,
+        phone: '',
+      );
+
+      if (result.requiresEmailVerification) {
+        emit(SignUpVerificationRequired(email: result.email));
+      } else {
+        emit(SignUpSuccess(name: result.name, email: result.email));
       }
     } on AuthException catch (e) {
-      emit(SignUpError(_mapSupabaseError(e.message)));
+      emit(SignUpError(_mapError(e.message)));
     } catch (e) {
-      emit(SignUpError("حدث خطأ غير متوقع. حاول مرة أخرى. 🚧"));
+      emit(SignUpError('حدث خطأ غير متوقع، حاول مرة أخرى 🚧'));
     }
   }
 
@@ -85,17 +90,30 @@ class SignUpCubit extends Cubit<SignUpState> {
     emit(SignUpLoading());
     try {
       await _signUpRepository.signInWithGoogle();
+    } on AuthException catch (e) {
+      emit(SignUpError(_mapError(e.message)));
     } catch (e) {
-      emit(SignUpError("فشل تسجيل الدخول بجوجل 🚨"));
+      emit(SignUpError('فشل تسجيل الدخول بجوجل 🚨'));
     }
   }
 
+  String _mapError(String message) {
+    final lower = message.toLowerCase();
+    if (lower.contains('user already registered')) {
+      return 'البريد الإلكتروني مستخدم بالفعل ⚠️';
+    }
+    if (lower.contains('password should be at least')) {
+      return 'كلمة المرور ضعيفة جداً 🔒';
+    }
+    if (lower.contains('invalid email')) {
+      return 'البريد الإلكتروني غير صحيح';
+    }
+    return 'فشل العملية: $message';
+  }
 
-
-  String _mapSupabaseError(String message) {
-    message = message.toLowerCase();
-    if (message.contains("user already registered")) return "البريد الإلكتروني مستخدم بالفعل. ⚠️";
-    if (message.contains("password should be at least")) return "كلمة المرور ضعيفة جداً. 🔒";
-    return "فشل العملية: $message";
+  @override
+  Future<void> close() async {
+    await _authSubscription?.cancel();
+    return super.close();
   }
 }

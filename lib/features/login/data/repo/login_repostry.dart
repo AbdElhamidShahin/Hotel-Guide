@@ -1,5 +1,10 @@
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'login_result.dart';
 
-abstract class LoginRepostry {
-  Future<AuthResponse> login(String email, String password);
+/// ❌ قبل: LoginRepostry  ← typo في الاسم
+/// ✅ بعد: LoginRepository ← اسم صح
+///
+/// ❌ قبل: Future<AuthResponse> ← Supabase type في الـ Domain
+/// ✅ بعد: Future<LoginResult>  ← type خاص بينا
+abstract class LoginRepository {
+  Future<LoginResult> login(String email, String password);
 }
