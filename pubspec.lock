@@ -209,6 +209,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.11"
+  dio:
+    dependency: "direct main"
+    description:
+      name: dio
+      sha256: aff32c08f92787a557dd5c0145ac91536481831a01b4648136373cddb0e64f8c
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.9.2"
+  dio_web_adapter:
+    dependency: transitive
+    description:
+      name: dio_web_adapter
+      sha256: "2f9e64323a7c3c7ef69567d5c800424a11f8337b8b228bad02524c9fb3c1f340"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.2"
   ed25519_edwards:
     dependency: transitive
     description:
@@ -427,6 +443,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.2"
+  flutter_stripe:
+    dependency: "direct main"
+    description:
+      name: flutter_stripe
+      sha256: "410f025b27fe5dd03507444a947c44fe8e27eb89483620a70ed6a257b4aff1ba"
+      url: "https://pub.dev"
+    source: hosted
+    version: "12.4.0"
   flutter_svg:
     dependency: "direct main"
     description:
@@ -445,6 +469,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  freezed_annotation:
+    dependency: transitive
+    description:
+      name: freezed_annotation
+      sha256: "7294967ff0a6d98638e7acb774aac3af2550777accd8149c90af5b014e6d44d8"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.0"
   functions_client:
     dependency: transitive
     description:
@@ -978,6 +1010,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.4.1"
+  stripe_android:
+    dependency: transitive
+    description:
+      name: stripe_android
+      sha256: "270c9e400f2a0cdff58775c62a088903c743dd970da8d3bc54cd9bd9a1bb2d2c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "12.4.0"
+  stripe_ios:
+    dependency: transitive
+    description:
+      name: stripe_ios
+      sha256: d186356a101bc2e5b2a15c1bd93e39fd86aca071dc7f8af5f4bdab8b0c43c225
+      url: "https://pub.dev"
+    source: hosted
+    version: "12.4.0"
+  stripe_platform_interface:
+    dependency: transitive
+    description:
+      name: stripe_platform_interface
+      sha256: "6b2867fca1c02a83f4c39f1da16feea61073a2ccf69af1616fcc7e14a68f4a71"
+      url: "https://pub.dev"
+    source: hosted
+    version: "12.4.0"
   supabase:
     dependency: transitive
     description:
