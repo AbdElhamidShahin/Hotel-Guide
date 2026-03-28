@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
+import 'package:hotel_guide/features/payment/data/model/payment_intent_input_model.dart';
+import 'package:hotel_guide/features/payment/data/payment_repo/payment_repo_impl.dart';
+import 'package:hotel_guide/features/payment/logic/card_cubit/payment_cubit.dart';
+import 'package:hotel_guide/features/payment/logic/card_cubit/payment_state.dart';
 import 'package:hotel_guide/features/payment/ui/widget/booking_calendar.dart';
 import 'package:hotel_guide/features/payment/ui/widget/booking_card.dart';
 import 'package:hotel_guide/features/payment/ui/widget/counter_row.dart';
@@ -156,17 +161,44 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                   showWalletBottomSheet(context, bookingInfo);
                 },
                 icon: "assets/icons/empty-wallet.svg",
+                  isLoading: state is PaymentLoadingState ? true : false,
+                  ,
               ),
               SizedBox(height: 12.h),
 
-              _buildPaymentTile(
-                title: "البطاقة البنكية",
-                isSelected: selectedPayment == 'card',
-                onTap: () {
-                  setState(() => selectedPayment = 'card');
-                  showAllCardBottomSheet(context);
-                },
-                isCard: true,
+              BlocProvider(
+                create: (BuildContext context) =>
+                    PaymentCubit(PaymentRepoImpl()),
+                child: BlocConsumer<PaymentCubit, PaymentState>(
+                  builder: (BuildContext context, PaymentState state) {
+                    _buildPaymentTile(
+                      title: "البطاقة البنكية",
+                      isSelected: selectedPayment == 'card',
+                      onTap: () {
+                        setState(() => selectedPayment = 'card');
+                        showAllCardBottomSheet(context);
+                        PaymentIntentInputModel paymentIntentInputModel =
+                            PaymentIntentInputModel(
+                              amount: BookingModel.totalPrice,
+                              currency: "EGP",
+                            );
+                      },
+                      isLoading: state is PaymentLoadingState ? true : false,
+
+                      isCard: true,
+                    );
+                  },
+                  listener: (BuildContext context, PaymentState state) {
+                    if (state is PaymentSuccessState) {
+                      context.pop();
+                    }
+                    if (state is PaymentErrorState) {
+                      Navigator.of(context).pop();
+                      SnackBar snackBar = SnackBar(content: Text(state.error));
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    }
+                  },
+                ),
               ),
 
               SizedBox(height: 40.h),
@@ -190,6 +222,8 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
     required VoidCallback onTap,
     String? icon,
     bool isCard = false,
+    required bool isLoading,
+
   }) {
     return GestureDetector(
       onTap: onTap,
@@ -217,10 +251,15 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                   : null,
             ),
             SizedBox(width: 12.w),
-            Text(
+
+
+            isLoading
+                ? CircularProgressIndicator()
+                : Text(
               title,
               style: textStyle16RegularGray.copyWith(color: Colors.black),
             ),
+
             const Spacer(),
             if (isCard)
               Row(
