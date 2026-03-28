@@ -44,3 +44,4 @@ class StripeService {
     await displayPaymentSheet();
   }
 }
+
