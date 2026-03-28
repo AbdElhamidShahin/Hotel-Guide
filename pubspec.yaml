@@ -60,6 +60,7 @@ dependencies:
   equatable: ^2.0.8
   dio: ^5.9.2
   flutter_stripe: ^12.4.0
+  dart_either: ^2.1.0
 
 dev_dependencies:
   flutter_test:

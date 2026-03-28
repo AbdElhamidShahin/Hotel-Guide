@@ -97,6 +97,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.2"
+  built_collection:
+    dependency: transitive
+    description:
+      name: built_collection
+      sha256: "376e3dd27b51ea877c28d525560790aee2e6fbb5f20e2f85d5081027d94e2100"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.1.1"
   characters:
     dependency: transitive
     description:
@@ -193,6 +201,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.8"
+  dart_either:
+    dependency: "direct main"
+    description:
+      name: dart_either
+      sha256: "813687ccfd757124e980a292df54a67c35642d0312bd2d9f70595708295e88d7"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.0"
   dart_jsonwebtoken:
     dependency: transitive
     description:
