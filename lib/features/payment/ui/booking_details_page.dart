@@ -14,6 +14,7 @@ import 'package:hotel_guide/features/payment/ui/widget/counter_row.dart';
 import 'package:hotel_guide/features/payment/ui/widget/price_section.dart';
 import 'package:hotel_guide/features/payment/ui/widget/show_all_card_bottom_sheet.dart';
 import 'package:hotel_guide/features/payment/ui/widget/show_all_wallet_bottom_sheet.dart';
+import '../../../core/di/injection.dart';
 import '../../../core/helpers/widget/custom_appbar_widget.dart';
 import '../../../core/network/model/booking_model.dart';
 import '../../../core/network/model/room_model.dart';
@@ -161,30 +162,27 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                   showWalletBottomSheet(context, bookingInfo);
                 },
                 icon: "assets/icons/empty-wallet.svg",
-                  isLoading: state is PaymentLoadingState ? true : false,
-                  ,
               ),
               SizedBox(height: 12.h),
 
               BlocProvider(
-                create: (BuildContext context) =>
-                    PaymentCubit(PaymentRepoImpl()),
+                create: (context) => getIt<PaymentCubit>(),
                 child: BlocConsumer<PaymentCubit, PaymentState>(
                   builder: (BuildContext context, PaymentState state) {
-                    _buildPaymentTile(
+                    return _buildPaymentTile(
                       title: "البطاقة البنكية",
                       isSelected: selectedPayment == 'card',
                       onTap: () {
                         setState(() => selectedPayment = 'card');
-                        showAllCardBottomSheet(context);
-                        PaymentIntentInputModel paymentIntentInputModel =
-                            PaymentIntentInputModel(
-                              amount: BookingModel.totalPrice,
-                              currency: "EGP",
-                            );
-                      },
-                      isLoading: state is PaymentLoadingState ? true : false,
 
+                        // نستخدم الـ Cubit مباشرة
+                        context.read<PaymentCubit>().makePayment(
+                          paymentIntentInputModel: PaymentIntentInputModel(
+                            amount: totalPrice.toInt().toString(), // استخدم السعر المحسوب فعلياً
+                            currency: "EGP",
+                          ),
+                        );
+                      },
                       isCard: true,
                     );
                   },
@@ -222,8 +220,6 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
     required VoidCallback onTap,
     String? icon,
     bool isCard = false,
-    required bool isLoading,
-
   }) {
     return GestureDetector(
       onTap: onTap,
@@ -252,10 +248,7 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
             ),
             SizedBox(width: 12.w),
 
-
-            isLoading
-                ? CircularProgressIndicator()
-                : Text(
+            Text(
               title,
               style: textStyle16RegularGray.copyWith(color: Colors.black),
             ),

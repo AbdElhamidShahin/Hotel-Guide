@@ -15,8 +15,10 @@ import '../../features/home/data/repo/home_repo_impl.dart';
 import '../../features/home/logic/cubit/home_cubit.dart';
 import '../../features/login/data/repo/login_repostry.dart';
 import '../../features/notification/logic/notificatin_logic.dart';
+import '../../features/payment/data/payment_repo/payment_repo_impl.dart';
 import '../../features/payment/data/repo.dart';
 import '../../features/payment/logic/booking_cubit.dart';
+import '../../features/payment/logic/card_cubit/payment_cubit.dart';
 import '../../features/room/data/home_repo_impl.dart';
 import '../../features/search/data/repo/search_repo.dart';
 import '../../features/search/data/repo/search_repo_iplm.dart';
@@ -25,50 +27,47 @@ import '../../features/wallet/date/wallet_cubit.dart';
 final getIt = GetIt.instance;
 
 Future<void> setupGetIt() async {
-  // ── Services ─────────────────────────────────
+  // ── 1. الأساسيات (Core Services) ───────────────────────
   getIt.registerLazySingleton<SupabaseService>(() => SupabaseService());
+
+  // بنسجل الـ Client مرة واحدة بس في الأول
   getIt.registerLazySingleton<SupabaseClient>(() => Supabase.instance.client);
 
-  // ── Login ✅ ──────────────────────────────────
+  // ── 2. الـ Repositories (تعتمد على الـ Client) ──────────
   getIt.registerLazySingleton<LoginRepository>(
-    () => LoginRepositoryImpl(getIt<SupabaseClient>()),
+        () => LoginRepositoryImpl(getIt<SupabaseClient>()),
   );
-  getIt.registerFactory<LoginCubit>(() => LoginCubit(getIt<LoginRepository>()));
 
-  // ── Sign Up ✅ ────────────────────────────────
   getIt.registerLazySingleton<SignUpRepository>(
-    () => SignUpRepoImpl(getIt<SupabaseClient>()),
-  );
-  getIt.registerFactory<SignUpCubit>(
-    () => SignUpCubit(getIt<SignUpRepository>()),
+        () => SignUpRepoImpl(getIt<SupabaseClient>()),
   );
 
-  // ── Home ─────────────────────────────────────
   getIt.registerLazySingleton<HomeRepository>(
-    () => HomeRepoImpl(getIt<SupabaseService>()),
+        () => HomeRepoImpl(getIt<SupabaseService>()),
   );
-  getIt.registerFactory<HomeCubit>(() => HomeCubit(getIt<HomeRepository>()));
 
-  // ── Rooms ─────────────────────────────────────
   getIt.registerLazySingleton<RoomRepo>(
-    () => RoomRepoImpl(getIt<SupabaseService>()),
+        () => RoomRepoImpl(getIt<SupabaseService>()),
   );
-  getIt.registerFactory<RoomCubit>(() => RoomCubit(getIt<RoomRepo>()));
 
-  // ── Search ────────────────────────────────────
   getIt.registerLazySingleton<SearchRepo>(() => SearchRepoImpl());
-  getIt.registerFactory<SearchCubit>(() => SearchCubit(getIt<SearchRepo>()));
 
-  // ── Payment & Booking ─────────────────────────
   getIt.registerLazySingleton<BookingRepository>(
-    () => BookingRepository(getIt()),
-  );
-  getIt.registerFactory<BookingCubit>(
-    () => BookingCubit(getIt<BookingRepository>()),
+        () => BookingRepository(getIt<SupabaseClient>()), // تأكد إن الـ Constructor بياخد Client
   );
 
-  // ── Others ────────────────────────────────────
-  getIt.registerLazySingleton<FavoriteCubit>(() => FavoriteCubit());
-  getIt.registerFactory<WalletCubit>(() => WalletCubit());
-  getIt.registerLazySingleton<NotificationCubit>(() => NotificationCubit());
+  getIt.registerLazySingleton<PaymentRepoImpl>(() => PaymentRepoImpl());
+
+  // ── 3. الـ Cubits (تعتمد على الـ Repositories) ──────────
+  getIt.registerFactory(() => LoginCubit(getIt<LoginRepository>()));
+  getIt.registerFactory(() => SignUpCubit(getIt<SignUpRepository>()));
+  getIt.registerFactory(() => HomeCubit(getIt<HomeRepository>()));
+  getIt.registerFactory(() => RoomCubit(getIt<RoomRepo>()));
+  getIt.registerFactory(() => SearchCubit(getIt<SearchRepo>()));
+  getIt.registerFactory(() => BookingCubit(getIt<BookingRepository>()));
+  getIt.registerFactory(() => PaymentCubit(getIt<PaymentRepoImpl>()));
+
+  getIt.registerLazySingleton(() => FavoriteCubit());
+  getIt.registerFactory(() => WalletCubit());
+  getIt.registerLazySingleton(() => NotificationCubit());
 }

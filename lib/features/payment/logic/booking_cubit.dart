@@ -13,7 +13,15 @@ class BookingCubit extends Cubit<BookingStates> {
   void updateBookingData(BookingModel data) {
     currentBookingData = data;
   }
-
+  double calculateTotalPrice({
+    required double pricePerNight,
+    required int totalDays,
+    required int rooms,
+    double taxes = 500,
+    double services = 300,
+  }) {
+    return (pricePerNight * totalDays * rooms) + taxes + services;
+  }
   Future<void> confirmBooking(BookingModel booking) async {
     if (booking.paymentMethod != 'AQUA') {
       emit(BookingError("نعتذر، محفظة AQUA هي المتاحة فقط حالياً."));
