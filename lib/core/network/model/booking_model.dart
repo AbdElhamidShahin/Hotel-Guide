@@ -1,59 +1,62 @@
-class BookingModel {
+import 'package:equatable/equatable.dart';
+
+class BookingEntity extends Equatable {
   final String roomId;
   final String userId;
   final String hotelName;
-  final DateTime startDate;
-  final DateTime endDate;
+  final DateTime checkIn;
+  final DateTime checkOut;
   final double totalAmount;
   final String paymentMethod;
   final int roomCount;
   final int adults;
   final int children;
-  final int totalDays;
 
-  BookingModel({
+  const BookingEntity({
     required this.roomId,
     required this.userId,
     required this.hotelName,
-    required this.startDate,
-    required this.endDate,
+    required this.checkIn,
+    required this.checkOut,
     required this.totalAmount,
     required this.paymentMethod,
     required this.roomCount,
     required this.adults,
     required this.children,
-    required this.totalDays,
   });
 
-  Map<String, dynamic> toRpcParams() {
-    return {
-      'p_user_id': userId,
-      'p_hotel_name': hotelName,
-      'p_room_id': roomId,
-      'p_total_amount': totalAmount,
-      'p_check_in': startDate.toIso8601String(),
-      'p_check_out': endDate.toIso8601String(),
-      'p_payment_method': paymentMethod,
-    };
-  }
+  int get totalNights => checkOut.difference(checkIn).inDays;
 
-  BookingModel copyWith({
+  @override
+  List<Object?> get props => [
+    roomId,
+    userId,
+    hotelName,
+    checkIn,
+    checkOut,
+    totalAmount,
+    paymentMethod,
+    roomCount,
+    adults,
+    children,
+  ];
+
+  BookingEntity copyWith({
     String? userId,
     String? paymentMethod,
     double? totalAmount,
   }) {
-    return BookingModel(
+    return BookingEntity(
       roomId: roomId,
+      userId: userId ?? this.userId,
       hotelName: hotelName,
-      startDate: startDate,
-      endDate: endDate,
+      checkIn: checkIn,
+      checkOut: checkOut,
       totalAmount: totalAmount ?? this.totalAmount,
+      paymentMethod: paymentMethod ?? this.paymentMethod,
       roomCount: roomCount,
       adults: adults,
       children: children,
-      totalDays: totalDays,
-      userId: userId ?? this.userId,
-      paymentMethod: paymentMethod ?? this.paymentMethod,
     );
   }
 }
