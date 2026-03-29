@@ -1,91 +1,51 @@
-import 'package:dart_either/dart_either.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hotel_guide/core/error/failure.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../../core/network/model/booking_model.dart';
+import '../../domain/entities/booking_entity.dart';
+import '../../domain/repo/i_booking_repository.dart';
+import '../../domain/usecases/confirm_booking_usecase.dart';
 import '../data/booking_repo/booking_repo.dart';
+import '../data/confirm_booking_usecase.dart';
+import '../data/entities/booking_entity.dart';
 import 'booking_state.dart';
 
+/// ✅ Clean Cubit: zero Supabase imports, zero business logic.
+///
+/// Before: called Supabase.instance.client directly, ran balance checks,
+///         and called the repository — all mixed inside one method.
+///
+/// After:  delegates ALL logic to [ConfirmBookingUseCase] and only
+///         manages UI state in response to the result.
 class BookingCubit extends Cubit<BookingState> {
-  final BookingRepository _repository;
+  final ConfirmBookingUseCase _confirmBookingUseCase;
 
-  BookingCubit(this._repository) : super(const BookingInitial());
+  /// The currently selected wallet provider name, used by the UI only.
+  String selectedWallet = 'orange';
 
-  void changeWallet(String wallet) {
-    emit(BookingInitial(selectedWallet: wallet));
-  }
+  BookingCubit(IBookingRepository repository)
+      : _confirmBookingUseCase = ConfirmBookingUseCase(repository),
+        super(const BookingInitial());
 
-  Future<void> confirmWithWallet(BookingEntity booking) async {
-    emit(BookingLoading());
-    final user = _getCurrentUser();
-    if (user == null) {
-      emit(const BookingError('المستخدم غير مسجل'));
-      return;
+  // ── Commands ───────────────────────────────────────────────────────────
+
+  Future<void> confirmBooking(BookingEntity booking) async {
+    emit(const BookingLoading());
+    try {
+      await _confirmBookingUseCase(booking);
+      emit(const BookingSuccess());
+    } on BookingException catch (e) {
+      emit(BookingError(e.message));
+    } catch (e) {
+      emit(BookingError('حدث خطأ غير متوقع: ${e.toString()}'));
     }
-
-    final balanceResult = await _repository.getWalletBalance(user.id);
-    if (balanceResult.isLeft) {
-      emit(BookingError(_mapFailureToMessage(balanceResult.as Left().value)));
-      return;
-    }
-
-    final balance = balanceResult.asRight().value;
-    if (balance < booking.totalAmount) {
-      emit(const BookingError('عفواً، رصيد محفظتك غير كافٍ'));
-      return;
-    }
-
-    final finalBooking = booking.copyWith(
-      userId: user.id,
-      paymentMethod: 'AQUA',
-    );
-
-    final result = await _repository.confirmWithWallet(finalBooking);
-    result.fold(
-          (failure) => emit(BookingError(_mapFailureToMessage(failure))),
-          (_) => emit(BookingSuccess()),
-    );
   }
 
-  Future<void> initiateStripePayment(BookingEntity booking) async {
-    emit(StripeLoading());
-    final user = _getCurrentUser();
-    if (user == null) {
-      emit(const BookingError('المستخدم غير مسجل'));
-      return;
-    }
-
-    final finalBooking = booking.copyWith(
-      userId: user.id,
-      paymentMethod: 'stripe',
-    );
-
-    final result = await _repository.createStripePaymentIntent(finalBooking.totalAmount);
-    result.fold(
-          (failure) => emit(BookingError(_mapFailureToMessage(failure))),
-          (clientSecret) => emit(StripeReady(clientSecret, finalBooking)),
-    );
+  void changeWallet(String walletName) {
+    selectedWallet = walletName;
+    emit(const BookingInitial());
   }
 
-  Future<void> confirmStripeBooking(BookingEntity booking) async {
-    emit(BookingLoading());
-    final result = await _repository.confirmWithStripe(booking);
-    result.fold(
-          (failure) => emit(BookingError(_mapFailureToMessage(failure))),
-          (_) => emit(BookingSuccess()),
-    );
-  }
-
-  String _mapFailureToMessage(Failure failure) {
-    if (failure is ServerFailure) return failure.message;
-    return 'حدث خطأ غير متوقع';
-  }
-
-  dynamic _getCurrentUser() {
-    // Use injected Auth service ideally, but for now:
-    // return Supabase.instance.client.auth.currentUser;
-    // To avoid direct dependency, we can inject an AuthRepository later.
-    return Supabase.instance.client.auth.currentUser;
+  @override
+  Future<void> close() async {
+    return super.close();
   }
 }

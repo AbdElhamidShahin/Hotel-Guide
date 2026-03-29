@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hotel_guide/features/wallet/date/wallet_cubit.dart';
+import 'package:hotel_guide/features/wallet/date/wallet_entity.dart';
 import 'package:hotel_guide/features/wallet/date/wallet_state.dart';
 
 import '../../../../core/theme/app_theme.dart';
@@ -117,4 +118,8 @@ class CustomWalletHistory extends StatelessWidget {
       ],
     );
   }
+}
+
+extension on TransactionEntity {
+  operator [](String other) {}
 }

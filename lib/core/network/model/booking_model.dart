@@ -1,62 +1,81 @@
-import 'package:equatable/equatable.dart';
 
-class BookingEntity extends Equatable {
+import '../../../features/payment/data/entities/booking_entity.dart';
+
+/// Data-layer model. Knows about Supabase RPC params.
+///
+/// ✅ Strict separation: BookingEntity (Domain) ←→ BookingModel (Data).
+/// The Domain layer never imports this file.
+class BookingModel {
   final String roomId;
   final String userId;
   final String hotelName;
-  final DateTime checkIn;
-  final DateTime checkOut;
+  final DateTime startDate;
+  final DateTime endDate;
   final double totalAmount;
   final String paymentMethod;
   final int roomCount;
   final int adults;
   final int children;
+  final int totalDays;
 
-  const BookingEntity({
+  const BookingModel({
     required this.roomId,
     required this.userId,
     required this.hotelName,
-    required this.checkIn,
-    required this.checkOut,
+    required this.startDate,
+    required this.endDate,
     required this.totalAmount,
     required this.paymentMethod,
     required this.roomCount,
     required this.adults,
     required this.children,
+    required this.totalDays,
   });
 
-  int get totalNights => checkOut.difference(checkIn).inDays;
+  // ── Mapper: Entity → Model ─────────────────────────────────────────────
+  factory BookingModel.fromEntity(BookingEntity entity) {
+    return BookingModel(
+      roomId: entity.roomId,
+      userId: entity.userId,
+      hotelName: entity.hotelName,
+      startDate: entity.startDate,
+      endDate: entity.endDate,
+      totalAmount: entity.totalAmount,
+      paymentMethod: entity.paymentMethod,
+      roomCount: entity.roomCount,
+      adults: entity.adults,
+      children: entity.children,
+      totalDays: entity.totalDays,
+    );
+  }
 
-  @override
-  List<Object?> get props => [
-    roomId,
-    userId,
-    hotelName,
-    checkIn,
-    checkOut,
-    totalAmount,
-    paymentMethod,
-    roomCount,
-    adults,
-    children,
-  ];
-
-  BookingEntity copyWith({
-    String? userId,
-    String? paymentMethod,
-    double? totalAmount,
-  }) {
+  // ── Mapper: Model → Entity ─────────────────────────────────────────────
+  BookingEntity toEntity() {
     return BookingEntity(
       roomId: roomId,
-      userId: userId ?? this.userId,
+      userId: userId,
       hotelName: hotelName,
-      checkIn: checkIn,
-      checkOut: checkOut,
-      totalAmount: totalAmount ?? this.totalAmount,
-      paymentMethod: paymentMethod ?? this.paymentMethod,
+      startDate: startDate,
+      endDate: endDate,
+      totalAmount: totalAmount,
+      paymentMethod: paymentMethod,
       roomCount: roomCount,
       adults: adults,
       children: children,
+      totalDays: totalDays,
     );
+  }
+
+  // ── Supabase RPC serializer ────────────────────────────────────────────
+  Map<String, dynamic> toRpcParams() {
+    return {
+      'p_user_id': userId,
+      'p_hotel_name': hotelName,
+      'p_room_id': roomId,
+      'p_total_amount': totalAmount,
+      'p_check_in': startDate.toIso8601String(),
+      'p_check_out': endDate.toIso8601String(),
+      'p_payment_method': paymentMethod,
+    };
   }
 }

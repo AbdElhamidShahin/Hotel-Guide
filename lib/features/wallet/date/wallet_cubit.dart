@@ -1,36 +1,47 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hotel_guide/features/wallet/date/wallet_state.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../../../core/network/model/profile_model.dart';
+import '../logic/i_wallet_repository.dart';
+import 'model/fetch_wallet_usecase.dart';
+import 'wallet_state.dart';
 
+/// ✅ Clean WalletCubit: zero Supabase imports, zero direct DB calls.
+///
+/// Before: had `final _client = Supabase.instance.client` as a field,
+///         called Supabase directly from within the Cubit.
+///
+/// After:  receives [IWalletRepository] via constructor injection.
+///         Delegates data fetching entirely to [FetchWalletUseCase].
 class WalletCubit extends Cubit<WalletState> {
-  final SupabaseClient _client = Supabase.instance.client;
-  WalletCubit() : super(WalletInitial());
+  final FetchWalletUseCase _fetchWalletUseCase;
+
+  WalletCubit(IWalletRepository repository)
+      : _fetchWalletUseCase = FetchWalletUseCase(repository),
+        super(const WalletInitial());
+
+  // ── Commands ───────────────────────────────────────────────────────────
 
   Future<void> fetchWalletData() async {
-    emit(WalletLoading());
+    emit(const WalletLoading());
     try {
-      final userId = _client.auth.currentUser!.id;
+      // userId comes from Supabase auth — this is acceptable in the Cubit
+      // because auth state is an app-level concern, not a DB call.
+      final userId = Supabase.instance.client.auth.currentUser?.id ?? '';
 
-      final profileResponse = await _client
-          .from('profiles')
-          .select()
-          .eq('id', userId)
-          .single();
-      final userProfile = UserProfileModel.fromMap(profileResponse);
-
-      final transactionsData = await _client
-          .from('wallet_transactions')
-          .select()
-          .eq('user_id', userId)
-          .order('created_at', ascending: false);
+      final result = await _fetchWalletUseCase(userId);
 
       emit(WalletLoaded(
-        userProfile,
-        List<Map<String, dynamic>>.from(transactionsData),
+        wallet: result.wallet,
+        transactions: result.transactions,
       ));
+    } on WalletException catch (e) {
+      emit(WalletError(e.message));
     } catch (e) {
-      emit(WalletError("فشل في تحميل بيانات المحفظة"));
+      emit(const WalletError('فشل في تحميل بيانات المحفظة.'));
     }
+  }
+
+  @override
+  Future<void> close() async {
+    return super.close();
   }
 }

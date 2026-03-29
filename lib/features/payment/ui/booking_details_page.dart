@@ -1,22 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
+import 'package:hotel_guide/features/payment/data/entities/booking_entity.dart';
 import 'package:hotel_guide/features/payment/ui/widget/booking_calendar.dart';
 import 'package:hotel_guide/features/payment/ui/widget/booking_card.dart';
 import 'package:hotel_guide/features/payment/ui/widget/counter_row.dart';
 import 'package:hotel_guide/features/payment/ui/widget/price_section.dart';
+import 'package:hotel_guide/features/payment/ui/widget/show_all_card_bottom_sheet.dart';
 import 'package:hotel_guide/features/payment/ui/widget/show_all_wallet_bottom_sheet.dart';
 import '../../../core/helpers/widget/custom_appbar_widget.dart';
 import '../../../core/network/model/booking_model.dart';
 import '../../../core/network/model/room_model.dart';
 import '../../../core/theme/app_theme.dart';
-import '../domain/entities/booking_entity.dart';
-import '../logic/booking_cubit.dart';
-// ✅ الـ card bottom sheet الجديد
-import 'widget/show_all_card_bottom_sheet.dart';
 
 class BookingDetailsPage extends StatefulWidget {
   const BookingDetailsPage({super.key, required this.room});
@@ -56,26 +53,12 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
   double get subTotal => pricePerNight * totalDays * rooms;
   double get totalPrice => subTotal + taxes + services;
 
-  // ✅ بنبني BookingEntity هنا — مش BookingModel
-  BookingEntity get _currentBooking => BookingEntity(
-    roomId: widget.room.id.toString(),
-    userId: '', // بيتعبى في الـ Cubit
-    hotelName: widget.room.name,
-    checkIn: rangeStart ?? DateTime.now(),
-    checkOut: rangeEnd ?? DateTime.now(),
-    totalAmount: totalPrice,
-    paymentMethod: selectedPayment,
-    roomCount: rooms,
-    adults: adults,
-    children: children,
-  );
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: CustomAppbarWidget(
-        name: 'تفاصيل الحجز',
+        name: "تفاصيل الحجز",
         onTap: () => context.pop(),
       ),
       body: Directionality(
@@ -97,34 +80,41 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                   });
                 },
               ),
+
               SizedBox(height: 30.h),
+
               CounterRow(
-                title: 'عدد الغرف',
+                title: "عدد الغرف",
                 value: rooms,
                 onAdd: () => setState(() => rooms++),
                 onRemove: () => setState(() {
                   if (rooms > 1) rooms--;
                 }),
               ),
+
               CounterRow(
-                title: 'البالغين',
+                title: "البالغين",
                 value: adults,
                 onAdd: () => setState(() => adults++),
                 onRemove: () => setState(() {
                   if (adults > 1) adults--;
                 }),
               ),
+
               CounterRow(
-                title: 'الأطفال',
+                title: "الأطفال",
                 value: children,
                 onAdd: () => setState(() => children++),
                 onRemove: () => setState(() {
                   if (children > 0) children--;
                 }),
               ),
+
               SizedBox(height: 30.h),
-              _sectionTitle('تفاصيل الدفع'),
+
+              _sectionTitle("تفاصيل الدفع"),
               SizedBox(height: 15.h),
+
               PriceSection(
                 days: totalDays,
                 subTotal: subTotal,
@@ -132,37 +122,54 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                 services: services,
                 total: totalPrice,
               ),
+
               SizedBox(height: 30.h),
-              _sectionTitle('الغرفة المختارة'),
+
+              _sectionTitle("الغرفة المختارة"),
               SizedBox(height: 15.h),
               BookingCard(room: widget.room),
-              SizedBox(height: 30.h),
-              _sectionTitle('وسائل الدفع'),
-              SizedBox(height: 15.h),
 
-              // ── Wallet ──────────────────────────
+              SizedBox(height: 30.h),
+
+              _sectionTitle("وسائل الدفع"),
+              SizedBox(height: 15.h),
               _buildPaymentTile(
-                title: 'المحفظة الإلكترونية',
+                title: "المحفظة الإلكترونية",
                 isSelected: selectedPayment == 'wallet',
+
                 onTap: () {
                   setState(() => selectedPayment = 'wallet');
-                  showWalletBottomSheet(context, _currentBooking);
+
+                  final bookingInfo = BookingModel(
+                    hotelName: widget.room.name,
+                    totalAmount: totalPrice,
+                    roomId: widget.room.id.toString(),
+                    startDate: rangeStart ?? DateTime.now(),
+                    endDate: rangeEnd ?? DateTime.now(),
+                    roomCount: rooms,
+                    adults: adults,
+                    children: children,
+                    totalDays: totalDays,
+                    userId: '',
+                    paymentMethod: 'wallet',
+                  );
+
+                  showWalletBottomSheet(context, bookingInfo as BookingEntity);
                 },
-                icon: 'assets/icons/empty-wallet.svg',
+                icon: "assets/icons/empty-wallet.svg",
               ),
               SizedBox(height: 12.h),
 
-              // ── Card / Stripe ────────────────────
               _buildPaymentTile(
-                title: 'البطاقة البنكية',
+                title: "البطاقة البنكية",
                 isSelected: selectedPayment == 'card',
                 onTap: () {
                   setState(() => selectedPayment = 'card');
-                  // ✅ الـ bottom sheet الجديد مع Stripe حقيقي
-                  showCardBottomSheet(context, _currentBooking);
+                  showAllCardBottomSheet(context);
                 },
                 isCard: true,
               ),
+
               SizedBox(height: 40.h),
             ],
           ),
@@ -219,9 +226,9 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
             if (isCard)
               Row(
                 children: [
-                  SvgPicture.asset('assets/icons/MasterCard.svg', width: 30.w),
+                  SvgPicture.asset("assets/icons/MasterCard.svg", width: 30.w),
                   SizedBox(width: 8.w),
-                  SvgPicture.asset('assets/icons/Visa.svg', width: 30.w),
+                  SvgPicture.asset("assets/icons/Visa.svg", width: 30.w),
                 ],
               )
             else if (icon != null)

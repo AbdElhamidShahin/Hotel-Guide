@@ -1,19 +1,33 @@
-import '../../../core/network/model/profile_model.dart';
+import 'package:hotel_guide/features/wallet/date/wallet_entity.dart';
 
-abstract class WalletState {}
 
-class WalletInitial extends WalletState {}
+/// Sealed state hierarchy for [WalletCubit].
+///
+/// ✅ WalletLoaded now carries typed domain Entities, NOT raw
+///    `Map<String, dynamic>` from Supabase. The UI only sees clean objects.
+abstract class WalletState {
+  const WalletState();
+}
 
-class WalletLoading extends WalletState {}
+class WalletInitial extends WalletState {
+  const WalletInitial();
+}
+
+class WalletLoading extends WalletState {
+  const WalletLoading();
+}
 
 class WalletLoaded extends WalletState {
-  final UserProfileModel userProfile;
-  final List<Map<String, dynamic>> transactions;
+  final WalletEntity wallet;
+  final List<TransactionEntity> transactions;
 
-  WalletLoaded(this.userProfile, this.transactions);
+  const WalletLoaded({
+    required this.wallet,
+    required this.transactions,
+  });
 }
 
 class WalletError extends WalletState {
   final String message;
-  WalletError(this.message);
+  const WalletError(this.message);
 }
