@@ -1,76 +1,87 @@
+import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
-import 'package:hotel_guide/core/network/service/SupabaseService.dart';
-import 'package:hotel_guide/features/login/data/repo/login_repoImpl.dart';
-import 'package:hotel_guide/features/login/logic/cubit/login_cubit.dart';
-import 'package:hotel_guide/features/room/data/room_repo.dart';
-import 'package:hotel_guide/features/room/logic/room_cubit.dart';
-import 'package:hotel_guide/features/search/logic/cubit/search_cubit.dart';
-import 'package:hotel_guide/features/sign_up/data/repo/sign_up_repo.dart';
-import 'package:hotel_guide/features/sign_up/data/repo/sign_up_repoImpl.dart';
-import 'package:hotel_guide/features/sign_up/logic/cubit/sign_up_cubit.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../../features/favorite/logic/cubit/favorite_cubit.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
+
+// Core
 import '../../features/home/data/repo/home_repo.dart';
-import '../../features/home/data/repo/home_repo_impl.dart';
-import '../../features/home/logic/cubit/home_cubit.dart';
+import '../../features/login/data/repo/login_repoImpl.dart';
 import '../../features/login/data/repo/login_repostry.dart';
 import '../../features/notification/logic/notificatin_logic.dart';
-import '../../features/payment/data/repo.dart';
+import '../../features/payment/data/repo/booking_repo.dart';
+import '../../features/payment/data/repo/booking_repo_impe.dart';
+import '../../features/payment/data/repo/payment_repo_impl.dart';
+import '../../features/payment/data/repo/payment_repository.dart';
 import '../../features/payment/logic/booking_cubit.dart';
 import '../../features/room/data/home_repo_impl.dart';
-import '../../features/search/data/repo/search_repo.dart';
 import '../../features/search/data/repo/search_repo_iplm.dart';
+import '../../features/sign_up/data/repo/sign_up_repo.dart';
+import '../../features/sign_up/data/repo/sign_up_repoImpl.dart';
 import '../../features/wallet/date/wallet_cubit.dart';
+import '../network/service/SupabaseService.dart';
+import '../units/api_service.dart';
+import '../units/stripe_service.dart';
+
+// Features
+import '../../features/login/logic/cubit/login_cubit.dart';
+
+import '../../features/sign_up/logic/cubit/sign_up_cubit.dart';
+
+import '../../features/home/data/repo/home_repo_impl.dart';
+import '../../features/home/logic/cubit/home_cubit.dart';
+
+import '../../features/room/data/room_repo.dart';
+import '../../features/room/logic/room_cubit.dart';
+
+import '../../features/search/data/repo/search_repo.dart';
+import '../../features/search/logic/cubit/search_cubit.dart';
+
+import '../../features/favorite/logic/cubit/favorite_cubit.dart';
 
 final getIt = GetIt.instance;
 
 Future<void> setupGetIt() async {
-  // ── Services ─────────────────────────────────
-  getIt.registerLazySingleton<SupabaseService>(() => SupabaseService());
+  // Infrastructure
   getIt.registerLazySingleton<SupabaseClient>(() => Supabase.instance.client);
+  getIt.registerLazySingleton<SupabaseService>(() => SupabaseService());
 
-  // ── Login ✅ ──────────────────────────────────
-  getIt.registerLazySingleton<LoginRepository>(
-        () => LoginRepositoryImpl(getIt<SupabaseClient>()),
-  );
-  getIt.registerFactory<LoginCubit>(
-        () => LoginCubit(getIt<LoginRepository>()),
-  );
+  // ✅ ApiService و StripeService لا يحتاجان تمرير تبعيات
+  getIt.registerLazySingleton<ApiService>(() => ApiService());
+  getIt.registerLazySingleton<StripeService>(() => StripeService());
 
-  // ── Sign Up ✅ ────────────────────────────────
-  getIt.registerLazySingleton<SignUpRepository>(
-        () => SignUpRepoImpl(getIt<SupabaseClient>()),
-  );
-  getIt.registerFactory<SignUpCubit>(
-        () => SignUpCubit(getIt<SignUpRepository>()),
-  );
+  // Login
+  // تأكد أن الاسم الصحيح هو LoginRepositoryImpl (كما في ملفك)
+  getIt.registerLazySingleton<LoginRepository>(() => LoginRepositoryImpl(getIt<SupabaseClient>()));
+  getIt.registerFactory<LoginCubit>(() => LoginCubit(getIt<LoginRepository>()));
 
-  // ── Home ─────────────────────────────────────
-  getIt.registerLazySingleton<HomeRepository>(
-        () => HomeRepoImpl(getIt<SupabaseService>()),
-  );
+  // Sign Up
+  getIt.registerLazySingleton<SignUpRepository>(() => SignUpRepoImpl(getIt<SupabaseClient>()));
+  getIt.registerFactory<SignUpCubit>(() => SignUpCubit(getIt<SignUpRepository>()));
+
+  // Home – يستخدم SupabaseService
+  getIt.registerLazySingleton<HomeRepository>(() => HomeRepoImpl(getIt<SupabaseService>()));
   getIt.registerFactory<HomeCubit>(() => HomeCubit(getIt<HomeRepository>()));
 
-  // ── Rooms ─────────────────────────────────────
-  getIt.registerLazySingleton<RoomRepo>(
-        () => RoomRepoImpl(getIt<SupabaseService>()),
-  );
+  // Rooms – يستخدم SupabaseService
+  getIt.registerLazySingleton<RoomRepo>(() => RoomRepoImpl(getIt<SupabaseService>()));
   getIt.registerFactory<RoomCubit>(() => RoomCubit(getIt<RoomRepo>()));
 
-  // ── Search ────────────────────────────────────
+  // Search – SearchRepoImpl لا يأخذ باراميترات (كما في الكود)
   getIt.registerLazySingleton<SearchRepo>(() => SearchRepoImpl());
   getIt.registerFactory<SearchCubit>(() => SearchCubit(getIt<SearchRepo>()));
 
-  // ── Payment & Booking ─────────────────────────
-  getIt.registerLazySingleton<BookingRepository>(
-        () => BookingRepository(getIt()),
-  );
+  // Payment
+  getIt.registerLazySingleton<PaymentRepository>(() => PaymentRepoImpl(getIt<StripeService>()));
+  getIt.registerLazySingleton<BookingRepository>(() => BookingRepoImpl(getIt<SupabaseClient>()));
   getIt.registerFactory<BookingCubit>(
-        () => BookingCubit(getIt<BookingRepository>()),
+        () => BookingCubit(
+      paymentRepository: getIt<PaymentRepository>(),
+      bookingRepository: getIt<BookingRepository>(),
+    ),
   );
 
-  // ── Others ────────────────────────────────────
-  getIt.registerLazySingleton<FavoriteCubit>(() => FavoriteCubit());
+  // Others
+  getIt.registerFactory<FavoriteCubit>(() => FavoriteCubit());
   getIt.registerFactory<WalletCubit>(() => WalletCubit());
-  getIt.registerLazySingleton<NotificationCubit>(() => NotificationCubit());
+  getIt.registerFactory<NotificationCubit>(() => NotificationCubit());
 }

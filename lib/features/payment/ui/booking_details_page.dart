@@ -1,196 +1,265 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hotel_guide/core/router/routers.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
+import 'package:hotel_guide/features/payment/logic/booking_cubit.dart';
+import 'package:hotel_guide/features/payment/logic/booking_state.dart';
 import 'package:hotel_guide/features/payment/ui/widget/booking_calendar.dart';
 import 'package:hotel_guide/features/payment/ui/widget/booking_card.dart';
 import 'package:hotel_guide/features/payment/ui/widget/counter_row.dart';
 import 'package:hotel_guide/features/payment/ui/widget/price_section.dart';
-import 'package:hotel_guide/features/payment/ui/widget/show_all_card_bottom_sheet.dart';
 import 'package:hotel_guide/features/payment/ui/widget/show_all_wallet_bottom_sheet.dart';
 import '../../../core/helpers/widget/custom_appbar_widget.dart';
 import '../../../core/network/model/booking_model.dart';
 import '../../../core/network/model/room_model.dart';
 import '../../../core/theme/app_theme.dart';
+import '../data/model/payment_intent_input_model.dart';
 
-class BookingDetailsPage extends StatefulWidget {
+/// [BlocProvider] is hoisted to the top of this widget so [BookingCubit]
+/// is available to the entire page — not recreated per tile rebuild.
+class BookingDetailsPage extends StatelessWidget {
   const BookingDetailsPage({super.key, required this.room});
   final Room room;
 
   @override
-  State<BookingDetailsPage> createState() => _BookingDetailsPageState();
+  Widget build(BuildContext context) {
+    return BlocProvider<BookingCubit>(
+      // GetIt provides a fresh Factory instance per navigation.
+      create: (_) => GetIt.I<BookingCubit>(),
+      child: _BookingDetailsView(room: room),
+    );
+  }
 }
 
-class _BookingDetailsPageState extends State<BookingDetailsPage> {
-  final double taxes = 500;
-  final double services = 300;
-  int rooms = 1;
-  int adults = 2;
-  int children = 1;
-
-  String selectedPayment = 'wallet';
-  DateTime focusedDay = DateTime.now();
-  DateTime? rangeStart = DateTime.now();
-  DateTime? rangeEnd = DateTime.now().add(const Duration(days: 1));
-
-  late double pricePerNight;
+class _BookingDetailsView extends StatefulWidget {
+  const _BookingDetailsView({required this.room});
+  final Room room;
 
   @override
-  void initState() {
-    super.initState();
-    pricePerNight = widget.room.price.toDouble();
-  }
+  State<_BookingDetailsView> createState() => _BookingDetailsViewState();
+}
 
-  int get totalDays {
-    if (rangeStart != null && rangeEnd != null) {
-      return rangeEnd!.difference(rangeStart!).inDays + 1;
+class _BookingDetailsViewState extends State<_BookingDetailsView> {
+  // ── Constants ──────────────────────────────────────────────────────────────
+  static const double _taxes = 500;
+  static const double _services = 300;
+
+  // ── Mutable UI state ───────────────────────────────────────────────────────
+  int _rooms = 1;
+  int _adults = 2;
+  int _children = 1;
+  String _selectedPayment = 'wallet';
+  DateTime _focusedDay = DateTime.now();
+  DateTime? _rangeStart = DateTime.now();
+  DateTime? _rangeEnd = DateTime.now().add(const Duration(days: 1));
+
+  // ── Computed properties (no business logic in setState callbacks) ──────────
+  int get _totalDays {
+    if (_rangeStart != null && _rangeEnd != null) {
+      return _rangeEnd!.difference(_rangeStart!).inDays.abs() + 1;
     }
     return 1;
   }
 
-  double get subTotal => pricePerNight * totalDays * rooms;
-  double get totalPrice => subTotal + taxes + services;
+  double get _subTotal => widget.room.price.toDouble() * _totalDays * _rooms;
+
+  double get _totalPrice => _subTotal + _taxes + _services;
+
+  BookingModel get _currentBooking => BookingModel(
+    hotelName: widget.room.name,
+    totalAmount: _totalPrice,
+    roomId: widget.room.id.toString(),
+    startDate: _rangeStart ?? DateTime.now(),
+    endDate: _rangeEnd ?? DateTime.now(),
+    roomCount: _rooms,
+    adults: _adults,
+    children: _children,
+    totalDays: _totalDays,
+    userId: '', // Filled by BookingRepoImpl from the auth session.
+    paymentMethod: _selectedPayment,
+  );
+
+  // ── Helpers ────────────────────────────────────────────────────────────────
+
+  void _onWalletTap() {
+    setState(() => _selectedPayment = 'wallet');
+    showWalletBottomSheet(context, _currentBooking);
+  }
+
+  void _onCardTap() {
+    setState(() => _selectedPayment = 'card');
+    context.read<BookingCubit>().makePayment(
+      input: PaymentIntentInputModel(
+        amount: (_totalPrice * 100).toInt().toString(),
+        currency: 'usd',
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: CustomAppbarWidget(
-        name: "تفاصيل الحجز",
-        onTap: () => context.pop(),
-      ),
-      body: Directionality(
-        textDirection: TextDirection.rtl,
-        child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: 20.w),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              BookingCalendar(
-                focusedDay: focusedDay,
-                rangeStart: rangeStart,
-                rangeEnd: rangeEnd,
-                onSelect: (start, end, focused) {
-                  setState(() {
-                    rangeStart = start;
-                    rangeEnd = end;
-                    focusedDay = focused;
-                  });
-                },
-              ),
+    return BlocListener<BookingCubit, BookingStates>(
+      listener: (context, state) {
+        if (state is BookingSuccess) {
+          context.go(routes.homeScreen);
+        } else if (state is BookingError) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(state.message)));
+        }
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: CustomAppbarWidget(
+          name: 'تفاصيل الحجز',
+          onTap: () => context.pop(),
+        ),
+        body: Directionality(
+          textDirection: TextDirection.rtl,
+          child: SingleChildScrollView(
+            padding: EdgeInsets.symmetric(horizontal: 20.w),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                BookingCalendar(
+                  focusedDay: _focusedDay,
+                  rangeStart: _rangeStart,
+                  rangeEnd: _rangeEnd,
+                  onSelect: (start, end, focused) => setState(() {
+                    _rangeStart = start;
+                    _rangeEnd = end;
+                    _focusedDay = focused;
+                  }),
+                ),
 
-              SizedBox(height: 30.h),
+                SizedBox(height: 30.h),
 
-              CounterRow(
-                title: "عدد الغرف",
-                value: rooms,
-                onAdd: () => setState(() => rooms++),
-                onRemove: () => setState(() {
-                  if (rooms > 1) rooms--;
-                }),
-              ),
+                CounterRow(
+                  title: 'عدد الغرف',
+                  value: _rooms,
+                  onAdd: () => setState(() => _rooms++),
+                  onRemove: () => setState(() {
+                    if (_rooms > 1) _rooms--;
+                  }),
+                ),
 
-              CounterRow(
-                title: "البالغين",
-                value: adults,
-                onAdd: () => setState(() => adults++),
-                onRemove: () => setState(() {
-                  if (adults > 1) adults--;
-                }),
-              ),
+                CounterRow(
+                  title: 'البالغين',
+                  value: _adults,
+                  onAdd: () => setState(() => _adults++),
+                  onRemove: () => setState(() {
+                    if (_adults > 1) _adults--;
+                  }),
+                ),
 
-              CounterRow(
-                title: "الأطفال",
-                value: children,
-                onAdd: () => setState(() => children++),
-                onRemove: () => setState(() {
-                  if (children > 0) children--;
-                }),
-              ),
+                CounterRow(
+                  title: 'الأطفال',
+                  value: _children,
+                  onAdd: () => setState(() => _children++),
+                  onRemove: () => setState(() {
+                    if (_children > 0) _children--;
+                  }),
+                ),
 
-              SizedBox(height: 30.h),
+                SizedBox(height: 30.h),
 
-              _sectionTitle("تفاصيل الدفع"),
-              SizedBox(height: 15.h),
+                _SectionTitle(title: 'تفاصيل الدفع'),
+                SizedBox(height: 15.h),
 
-              PriceSection(
-                days: totalDays,
-                subTotal: subTotal,
-                taxes: taxes,
-                services: services,
-                total: totalPrice,
-              ),
+                PriceSection(
+                  days: _totalDays,
+                  subTotal: _subTotal,
+                  taxes: _taxes,
+                  services: _services,
+                  total: _totalPrice,
+                ),
 
-              SizedBox(height: 30.h),
+                SizedBox(height: 30.h),
 
-              _sectionTitle("الغرفة المختارة"),
-              SizedBox(height: 15.h),
-              BookingCard(room: widget.room),
+                _SectionTitle(title: 'الغرفة المختارة'),
+                SizedBox(height: 15.h),
+                BookingCard(room: widget.room),
 
-              SizedBox(height: 30.h),
+                SizedBox(height: 30.h),
 
-              _sectionTitle("وسائل الدفع"),
-              SizedBox(height: 15.h),
-              _buildPaymentTile(
-                title: "المحفظة الإلكترونية",
-                isSelected: selectedPayment == 'wallet',
+                _SectionTitle(title: 'وسائل الدفع'),
+                SizedBox(height: 15.h),
 
-                onTap: () {
-                  setState(() => selectedPayment = 'wallet');
+                _PaymentTile(
+                  title: 'المحفظة الإلكترونية',
+                  isSelected: _selectedPayment == 'wallet',
+                  onTap: _onWalletTap,
+                  icon: 'assets/icons/empty-wallet.svg',
+                ),
 
-                  final bookingInfo = BookingModel(
-                    hotelName: widget.room.name,
-                    totalAmount: totalPrice,
-                    roomId: widget.room.id.toString(),
-                    startDate: rangeStart ?? DateTime.now(),
-                    endDate: rangeEnd ?? DateTime.now(),
-                    roomCount: rooms,
-                    adults: adults,
-                    children: children,
-                    totalDays: totalDays,
-                    userId: '',
-                    paymentMethod: 'wallet',
-                  );
+                SizedBox(height: 12.h),
 
-                  showWalletBottomSheet(context, bookingInfo);
-                },
-                icon: "assets/icons/empty-wallet.svg",
-              ),
-              SizedBox(height: 12.h),
+                // BlocBuilder is scoped to only this tile so rebuilds are
+                // minimal — it reads the already-provided BookingCubit.
+                BlocBuilder<BookingCubit, BookingStates>(
+                  buildWhen: (_, s) =>
+                      s is BookingLoading ||
+                      s is BookingError ||
+                      s is BookingSuccess,
+                  builder: (context, state) {
+                    return _PaymentTile(
+                      title: 'البطاقة البنكية',
+                      isSelected: _selectedPayment == 'card',
+                      onTap: state is BookingLoading ? null : _onCardTap,
+                      isCard: true,
+                      isLoading: state is BookingLoading,
+                    );
+                  },
+                ),
 
-              _buildPaymentTile(
-                title: "البطاقة البنكية",
-                isSelected: selectedPayment == 'card',
-                onTap: () {
-                  setState(() => selectedPayment = 'card');
-                  showAllCardBottomSheet(context);
-                },
-                isCard: true,
-              ),
-
-              SizedBox(height: 40.h),
-            ],
+                SizedBox(height: 40.h),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
+}
 
-  Widget _sectionTitle(String title) {
+// ── Extracted widgets ──────────────────────────────────────────────────────
+
+class _SectionTitle extends StatelessWidget {
+  const _SectionTitle({required this.title});
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
     return Text(
       title,
       style: textStyle20BoldShadowPurple.copyWith(color: AppColors.black6),
     );
   }
+}
 
-  Widget _buildPaymentTile({
-    required String title,
-    required bool isSelected,
-    required VoidCallback onTap,
-    String? icon,
-    bool isCard = false,
-  }) {
+class _PaymentTile extends StatelessWidget {
+  const _PaymentTile({
+    required this.title,
+    required this.isSelected,
+    required this.onTap,
+    this.icon,
+    this.isCard = false,
+    this.isLoading = false,
+  });
+
+  final String title;
+  final bool isSelected;
+  final VoidCallback? onTap;
+  final String? icon;
+  final bool isCard;
+  final bool isLoading;
+
+  @override
+  Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -204,30 +273,25 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
         ),
         child: Row(
           children: [
-            Container(
-              width: 20.r,
-              height: 20.r,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: AppColors.primary),
-                color: isSelected ? AppColors.primary : Colors.transparent,
-              ),
-              child: isSelected
-                  ? Icon(Icons.check, size: 12.r, color: Colors.white)
-                  : null,
-            ),
+            _RadioIndicator(isSelected: isSelected),
             SizedBox(width: 12.w),
             Text(
               title,
               style: textStyle16RegularGray.copyWith(color: Colors.black),
             ),
             const Spacer(),
-            if (isCard)
+            if (isLoading)
+              SizedBox(
+                width: 20.r,
+                height: 20.r,
+                child: const CircularProgressIndicator(strokeWidth: 2),
+              )
+            else if (isCard)
               Row(
                 children: [
-                  SvgPicture.asset("assets/icons/MasterCard.svg", width: 30.w),
+                  SvgPicture.asset('assets/icons/MasterCard.svg', width: 30.w),
                   SizedBox(width: 8.w),
-                  SvgPicture.asset("assets/icons/Visa.svg", width: 30.w),
+                  SvgPicture.asset('assets/icons/Visa.svg', width: 30.w),
                 ],
               )
             else if (icon != null)
@@ -237,11 +301,32 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
                   borderRadius: BorderRadius.circular(8.r),
                   color: AppColors.ShadowPurple.withOpacity(0.1),
                 ),
-                child: SvgPicture.asset(icon, width: 20.w),
+                child: SvgPicture.asset(icon!, width: 20.w),
               ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _RadioIndicator extends StatelessWidget {
+  const _RadioIndicator({required this.isSelected});
+  final bool isSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 20.r,
+      height: 20.r,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(color: AppColors.primary),
+        color: isSelected ? AppColors.primary : Colors.transparent,
+      ),
+      child: isSelected
+          ? Icon(Icons.check, size: 12.r, color: Colors.white)
+          : null,
     );
   }
 }
