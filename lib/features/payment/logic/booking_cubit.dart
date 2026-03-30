@@ -1,56 +1,52 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../core/network/model/booking_model.dart';
-import '../data/repo.dart';
+import '../data/model/payment_intent_input_model.dart';
+import '../data/repo/booking_repo.dart';
+import '../data/repo/payment_repository.dart';
 import 'booking_state.dart';
 
 
 class BookingCubit extends Cubit<BookingStates> {
-  final BookingRepository repository;
+  final PaymentRepository _paymentRepository;
+  final BookingRepository _bookingRepository;
+
   String selectedWallet = 'orange';
-  BookingModel? currentBookingData;
-  BookingCubit(this.repository) : super(BookingInitial());
-  void updateBookingData(BookingModel data) {
-    currentBookingData = data;
+
+  BookingCubit({
+    required PaymentRepository paymentRepository,
+    required BookingRepository bookingRepository,
+  })  : _paymentRepository = paymentRepository,
+        _bookingRepository = bookingRepository,
+        super(const BookingInitial());
+
+  // ── Card payment (Stripe) ──────────────────────────────────────────────────
+
+  Future<void> makePayment({
+    required PaymentIntentInputModel input,
+  }) async {
+    emit(const BookingLoading());
+    final result = await _paymentRepository.makePayment(input: input);
+    result.fold(
+          (failure) => emit(BookingError(failure.errorMessage)),
+          (_) => emit(const BookingSuccess()),
+    );
   }
+
+  // ── Wallet payment ────────────────────────────────────────────────────────
 
   Future<void> confirmBooking(BookingModel booking) async {
-    if (booking.paymentMethod != 'AQUA') {
-      emit(BookingError("نعتذر، محفظة AQUA هي المتاحة فقط حالياً."));
-      return;
-    }
-
-    emit(BookingLoading());
-
-    try {
-      final user = Supabase.instance.client.auth.currentUser;
-      if (user == null) {
-        emit(BookingError("المستخدم غير مسجل"));
-        return;
-      }
-
-      final walletData = await Supabase.instance.client
-          .from('profiles')
-          .select('wallet_balance')
-          .eq('id', user.id)
-          .single();
-
-      double balance = (walletData['wallet_balance'] as num).toDouble();
-
-      if (balance < booking.totalAmount) {
-        emit(BookingError("عفواً، رصيد محفظتك غير كافي لإتمام الحجز."));
-        return;
-      }
-
-      await repository.confirmBooking(booking);
-      emit(BookingSuccess());
-    } catch (e) {
-      emit(BookingError("حدث خطأ أثناء معالجة الحجز: ${e.toString()}"));
-    }
+    emit(const BookingLoading());
+    final result = await _bookingRepository.confirmBooking(booking);
+    result.fold(
+          (failure) => emit(BookingError(failure.errorMessage)),
+          (_) => emit(const BookingSuccess()),
+    );
   }
+
+  // ── UI helpers ────────────────────────────────────────────────────────────
 
   void changeWallet(String walletName) {
     selectedWallet = walletName;
-    emit(BookingInitial());
+    emit(BookingWalletChanged(walletName));
   }
 }

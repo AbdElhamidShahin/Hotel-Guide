@@ -61,7 +61,6 @@ class SignUpCubit extends Cubit<SignUpState> {
     }
 
     emit(SignUpLoading());
-
     try {
       final result = await _signUpRepository.signUp(
         email: email,
