@@ -16,7 +16,7 @@ class ApiService {
         headers: {'Authorization': "bearer $token"},
       ),
     );
-    
+
     return response;
   }
 }

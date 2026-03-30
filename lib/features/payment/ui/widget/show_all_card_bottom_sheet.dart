@@ -16,8 +16,7 @@ void showAllCardBottomSheet(BuildContext context) {
   );
 }
 
-/// Extracted into a proper [StatefulWidget] — eliminates the [StatefulBuilder]
-/// anti-pattern and gives the sheet its own clean state scope.
+
 class _CardBottomSheetContent extends StatefulWidget {
   const _CardBottomSheetContent();
 

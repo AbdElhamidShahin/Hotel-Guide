@@ -22,6 +22,7 @@ import '../../features/notification/ui/notification_screen.dart';
 import '../../features/on_boarding/ui/on_boarding_screen.dart';
 import '../../features/payment/logic/booking_cubit.dart';
 import '../../features/payment/ui/booking_details_page.dart';
+import '../../features/payment/ui/booking_result_screen.dart';
 import '../../features/profile/ui/edit_account_screen.dart';
 import '../../features/profile/ui/faq_page.dart';
 import '../../features/profile/ui/profile_screen.dart';
@@ -64,6 +65,16 @@ abstract class AppRouter {
           create: (BuildContext context) => getIt<LoginCubit>(),
           child: const LoginScreen(),
         ),
+      ),GoRoute(
+        path: routes.bookingResult,
+        builder: (context, state) {
+          final data = state.extra as Map<String, dynamic>;
+          return BookingResultScreen(
+            isSuccess: data['success'] as bool,
+            paymentMethod: data['method'] as String?,
+            errorMessage: data['message'] as String?,
+          );
+        },
       ),
       GoRoute(
         path: routes.signUpScreen,

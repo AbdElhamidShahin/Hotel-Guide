@@ -49,7 +49,7 @@ class BookingRepoImpl implements BookingRepository {
       // Persist the booking via a Supabase RPC call.
       await _supabase.rpc(
         'process_hotel_booking',
-        params: booking.copyWith(userId: user.id).toRpcParams(),
+        params: booking.copyWith(userId: user.id).toRpcParams(), // التأكد أن toRpcParams تستخدم الأسماء بـ p_
       );
 
       return const Right(null);
