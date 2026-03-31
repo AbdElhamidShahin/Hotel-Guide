@@ -65,17 +65,21 @@ abstract class AppRouter {
           create: (BuildContext context) => getIt<LoginCubit>(),
           child: const LoginScreen(),
         ),
-      ),GoRoute(
+      ),
+      GoRoute(
         path: routes.bookingResult,
         builder: (context, state) {
-          final data = state.extra as Map<String, dynamic>;
+          final extra = state.extra as Map<String, dynamic>;
+
           return BookingResultScreen(
-            isSuccess: data['success'] as bool,
-            paymentMethod: data['method'] as String?,
-            errorMessage: data['message'] as String?,
+            isSuccess: extra['isSuccess'] as bool,
+            paymentMethod: extra['paymentMethod'] as String?,
+            errorMessage: extra['errorMessage'] as String?,
           );
         },
       ),
+
+
       GoRoute(
         path: routes.signUpScreen,
         builder: (BuildContext context, GoRouterState state) => BlocProvider(

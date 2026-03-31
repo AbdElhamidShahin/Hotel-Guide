@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hotel_guide/core/network/model/profile_model.dart';
 import 'package:hotel_guide/core/router/routers.dart';
 import 'package:hotel_guide/features/payment/logic/booking_cubit.dart';
 import 'package:hotel_guide/features/payment/logic/booking_state.dart';
@@ -13,6 +14,7 @@ import 'package:hotel_guide/features/payment/ui/widget/payment_title_booking_det
 import 'package:hotel_guide/features/payment/ui/widget/price_section.dart';
 import 'package:hotel_guide/features/payment/ui/widget/section_title_booking_details.dart';
 import 'package:hotel_guide/features/payment/ui/widget/show_all_wallet_bottom_sheet.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../core/helpers/widget/custom_appbar_widget.dart';
 import '../../../core/network/model/booking_model.dart';
 import '../../../core/network/model/room_model.dart';
@@ -42,7 +44,7 @@ class _BookingDetailsView extends StatefulWidget {
 class _BookingDetailsViewState extends State<_BookingDetailsView> {
   static const double _taxes = 500;
   static const double _services = 300;
-
+  late final UserProfileModel userProfileModel;
   int _rooms = 1;
   int _adults = 2;
   int _children = 1;
@@ -76,7 +78,6 @@ class _BookingDetailsViewState extends State<_BookingDetailsView> {
     paymentMethod: _selectedPayment,
   );
 
-
   void _onWalletTap() {
     setState(() => _selectedPayment = 'wallet');
     showWalletBottomSheet(context, _currentBooking);
@@ -84,10 +85,18 @@ class _BookingDetailsViewState extends State<_BookingDetailsView> {
 
   void _onCardTap() {
     setState(() => _selectedPayment = 'card');
+    final user = Supabase.instance.client.auth.currentUser;
+    if (user == null) return;
+
     context.read<BookingCubit>().makePayment(
       input: PaymentIntentInputModel(
         amount: (_totalPrice * 100).toInt().toString(),
         currency: 'usd',
+        // ✅ مفيش customerId
+      ),
+      booking: _currentBooking.copyWith(
+        userId: user.id,
+        paymentMethod: 'card',
       ),
     );
   }
@@ -97,14 +106,15 @@ class _BookingDetailsViewState extends State<_BookingDetailsView> {
     return BlocListener<BookingCubit, BookingStates>(
       listener: (context, state) {
         if (state is BookingSuccess) {
-          context.go(routes.homeScreen);
-
-
-
+          context.push(
+            routes.bookingResult,
+            extra: {'isSuccess': true, 'paymentMethod': 'البطاقة البنكية'},
+          );
         } else if (state is BookingError) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(state.message)));
+          context.push(
+            '/booking-result',
+            extra: {'isSuccess': false, 'errorMessage': state.message},
+          );
         }
       },
       child: Scaffold(
@@ -220,7 +230,3 @@ class _BookingDetailsViewState extends State<_BookingDetailsView> {
     );
   }
 }
-
-
-
-

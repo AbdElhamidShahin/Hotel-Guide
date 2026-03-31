@@ -23,12 +23,22 @@ class BookingCubit extends Cubit<BookingStates> {
 
   Future<void> makePayment({
     required PaymentIntentInputModel input,
+    required BookingModel booking,
   }) async {
     emit(const BookingLoading());
-    final result = await _paymentRepository.makePayment(input: input);
-    result.fold(
-          (failure) => emit(BookingError(failure.errorMessage)),
-          (_) => emit(const BookingSuccess()),
+    final paymentResult = await _paymentRepository.makePayment(input: input);
+
+    await paymentResult.fold(
+          (failure) async => emit(BookingError(failure.errorMessage)),
+          (_) async {
+        final bookingResult = await _bookingRepository.confirmBooking(
+          booking.copyWith(paymentMethod: 'card'),
+        );
+        bookingResult.fold(
+              (failure) => emit(BookingError(failure.errorMessage)),
+              (_) => emit(const BookingSuccess()),
+        );
+      },
     );
   }
 

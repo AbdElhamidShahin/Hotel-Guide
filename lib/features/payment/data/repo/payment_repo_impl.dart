@@ -1,4 +1,6 @@
 import 'package:dartz/dartz.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:hotel_guide/features/payment/data/repo/payment_repository.dart';
 import '../../../../core/error/failure.dart';
 import '../../../../core/units/stripe_service.dart';
@@ -19,6 +21,14 @@ class PaymentRepoImpl implements PaymentRepository {
     try {
       await _stripeService.makePayment(paymentIntentInputModel: input);
       return const Right(null);
+    } on StripeException catch (e) {
+      // ✅ لو cancel مش error حقيقي
+      if (e.error.code == FailureCode.Canceled) {
+        return const Left(
+          ServerFailure(errorMessage: 'تم إلغاء عملية الدفع.'),
+        );
+      }
+      return Left(ServerFailure(errorMessage: e.error.localizedMessage ?? 'خطأ في الدفع'));
     } on Failure catch (f) {
       return Left(f);
     } catch (e) {
