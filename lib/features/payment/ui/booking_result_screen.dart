@@ -17,7 +17,7 @@ class BookingResultScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = isSuccess ? const Color(0xFF22C55E) : const Color(0xFFEF4444);
+    final color = isSuccess ? const Color(0xFF14AE5C) : const Color(0xFFFF3838);
     final bgColor = isSuccess
         ? const Color(0xFFF0FDF4)
         : const Color(0xFFFFF1F2);
@@ -29,8 +29,9 @@ class BookingResultScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 28.w),
+          padding: EdgeInsets.symmetric(horizontal: 40.w),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Spacer(flex: 2),
@@ -49,7 +50,7 @@ class BookingResultScreen extends StatelessWidget {
               Text(
                 isSuccess ? 'عملية حجز ناجحة' : 'فشلت عملية الحجز',
                 style: TextStyle(
-                  fontSize: 28.sp,
+                  fontSize: 38.sp,
                   fontWeight: FontWeight.w800,
                   color: color,
                   fontFamily: 'Cairo',
@@ -63,7 +64,8 @@ class BookingResultScreen extends StatelessWidget {
               Text(
                 isSuccess
                     ? 'شكرًا لاستخدامك ${paymentMethod ?? 'AQUA'}'
-                    : (errorMessage ?? 'تفقد رصيدك وحاول مرة أخرى'),
+                    : ('حدث خطأ ما حاول مره اخري' ??
+                          'تفقد رصيدك وحاول مرة أخرى'),
                 style: TextStyle(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w400,
@@ -73,7 +75,7 @@ class BookingResultScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
 
-              const Spacer(flex: 3),
+              const Spacer(flex: 1),
 
               // ── Button ─────────────────────────────────
               _ResultButton(
@@ -81,7 +83,7 @@ class BookingResultScreen extends StatelessWidget {
                 onTap: () => context.go(routes.homeScreen),
               ),
 
-              SizedBox(height: 40.h),
+              const Spacer(flex: 3),
             ],
           ),
         ),
@@ -110,15 +112,15 @@ class _BookingCardIllustration extends StatelessWidget {
     return SizedBox(
       height: 280.h,
       child: Stack(
-        alignment: Alignment.bottomCenter,
+        alignment: Alignment.center,
         children: [
           // Outer card (background)
           Positioned(
             top: 0,
-            left: 10.w,
-            right: 10.w,
+            left: 24.w,
+            right: 24.w,
             child: Container(
-              height: 230.h,
+              height: 225.h,
               decoration: BoxDecoration(
                 color: const Color(0xFFF3F4F6),
                 borderRadius: BorderRadius.circular(20.r),
@@ -128,11 +130,11 @@ class _BookingCardIllustration extends StatelessWidget {
 
           // Inner card
           Positioned(
-            top: 30.h,
-            left: 30.w,
-            right: 30.w,
+            top: 35.h,
+            left: 55.w,
+            right: 55.w,
             child: Container(
-              height: 180.h,
+              height: 190.h,
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(16.r),
@@ -145,13 +147,15 @@ class _BookingCardIllustration extends StatelessWidget {
                 ],
               ),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+
                 children: [
                   // Header bar
                   Container(
-                    height: 4.h,
-                    margin: EdgeInsets.only(top: 12.h, left: 60.w, right: 60.w),
+                    height: 5.h,
+                    margin: EdgeInsets.only(top: 12.h, left: 80.w, right: 80.w),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFE5E7EB),
+                      color: const Color(0xFFFECACA),
                       borderRadius: BorderRadius.circular(2.r),
                     ),
                   ),
@@ -164,19 +168,22 @@ class _BookingCardIllustration extends StatelessWidget {
                       vertical: 8.h,
                     ),
                     margin: EdgeInsets.symmetric(horizontal: 20.w),
-                    decoration: BoxDecoration(
-                      color: cardAccent,
-                      borderRadius: BorderRadius.circular(10.r),
-                    ),
+
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.bed_outlined, size: 16.r, color: color),
+                        SizedBox(height: 32.h),
+
+                        Icon(
+                          Icons.bed_outlined,
+                          size: 16.r,
+                          color: Color(0xFF9CA4AB),
+                        ),
                         SizedBox(width: 6.w),
                         Text(
                           isSuccess ? 'تم الحجز' : 'فشل الحجز',
                           style: TextStyle(
-                            color: color,
+                            color: Color(0xFF9CA4AB),
                             fontSize: 13.sp,
                             fontWeight: FontWeight.w600,
                             fontFamily: 'Cairo',
@@ -189,13 +196,13 @@ class _BookingCardIllustration extends StatelessWidget {
 
                   // Content skeleton lines
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20.w),
+                    padding: EdgeInsets.symmetric(horizontal: 40.w),
                     child: Row(
                       children: [
                         // Square thumbnail
                         Container(
-                          width: 44.r,
-                          height: 44.r,
+                          width: 40.r,
+                          height: 40.r,
                           decoration: BoxDecoration(
                             color: cardAccent,
                             borderRadius: BorderRadius.circular(8.r),
@@ -208,7 +215,9 @@ class _BookingCardIllustration extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Container(
-                                height: 10.h,
+                                height: 12.h,
+                                width: 90.w,
+
                                 decoration: BoxDecoration(
                                   color: cardAccent,
                                   borderRadius: BorderRadius.circular(4.r),
@@ -216,8 +225,8 @@ class _BookingCardIllustration extends StatelessWidget {
                               ),
                               SizedBox(height: 8.h),
                               Container(
-                                height: 10.h,
-                                width: 100.w,
+                                height: 8.h,
+                                width: 50.w,
                                 decoration: BoxDecoration(
                                   color: cardAccent,
                                   borderRadius: BorderRadius.circular(4.r),
@@ -233,61 +242,100 @@ class _BookingCardIllustration extends StatelessWidget {
               ),
             ),
           ),
+          Positioned(
+            top: 70.h,
+            left: 80.w,
+            right: 80.w,
+            child: Container(
+              height: 155.h,
+              decoration: BoxDecoration(
+                color: Colors.blue.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(16.r),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+            ),
+          ),
 
           // Status Badge
           Positioned(
             bottom: 0,
             left: 0,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // Circle icon
-                Container(
-                  width: 56.r,
-                  height: 56.r,
-                  decoration: BoxDecoration(
-                    color: color,
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: color.withOpacity(0.35),
-                        blurRadius: 16,
-                        spreadRadius: 2,
-                        offset: const Offset(0, 4),
+            child: Container(
+              padding: EdgeInsets.only(
+                top: 18.h,
+                bottom: 18.h,
+                right: 100.w,
+                left: 20.w,
+              ),
+              decoration: BoxDecoration(
+                color: Color(0xFFFEFEFE),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF121933).withOpacity(0.08),
+                    blurRadius: 75,
+                    spreadRadius: 1,
+                    offset: const Offset(6, 12),
+                  ),
+                ],
+                borderRadius: BorderRadius.all(Radius.circular(18.r)),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // Circle icon
+                  Container(
+                    width: 60.r,
+                    height: 60.r,
+                    decoration: BoxDecoration(
+                      color: color,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: color.withOpacity(0.35),
+                          blurRadius: 16,
+                          spreadRadius: 2,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Icon(
+                      isSuccess ? Icons.check_rounded : Icons.close_rounded,
+                      color: Colors.white,
+                      size: 30.r,
+                    ),
+                  ),
+                  SizedBox(width: 12.w),
+                  // Status lines
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: 140.w,
+                        height: 14.h,
+                        decoration: BoxDecoration(
+                          color: color,
+                          borderRadius: BorderRadius.circular(6.r),
+                        ),
+                      ),
+                      SizedBox(height: 6.h),
+                      Container(
+                        width: 100.w,
+                        height: 14.h,
+                        decoration: BoxDecoration(
+                          color: color,
+                          borderRadius: BorderRadius.circular(6.r),
+                        ),
                       ),
                     ],
                   ),
-                  child: Icon(
-                    isSuccess ? Icons.check_rounded : Icons.close_rounded,
-                    color: Colors.white,
-                    size: 30.r,
-                  ),
-                ),
-                SizedBox(width: 12.w),
-                // Status lines
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: 140.w,
-                      height: 14.h,
-                      decoration: BoxDecoration(
-                        color: color,
-                        borderRadius: BorderRadius.circular(6.r),
-                      ),
-                    ),
-                    SizedBox(height: 6.h),
-                    Container(
-                      width: 100.w,
-                      height: 14.h,
-                      decoration: BoxDecoration(
-                        color: color,
-                        borderRadius: BorderRadius.circular(6.r),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ],
@@ -309,7 +357,7 @@ class _ResultButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: double.infinity,
+        width: 200.w,
         height: 56.h,
         decoration: BoxDecoration(
           color: color,
