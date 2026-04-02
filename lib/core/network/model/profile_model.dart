@@ -6,11 +6,13 @@ class UserProfileModel {
   final String? avatarUrl;
   final double walletBalance;
   final double balance;
+  final String? stripeCustomerId;
 
   UserProfileModel({
     required this.id,
     required this.fullName,
     required this.email,
+    this.stripeCustomerId,
     this.phoneNumber,
     this.avatarUrl,
     this.walletBalance = 0.0,
@@ -23,6 +25,7 @@ class UserProfileModel {
       fullName: map['full_name'] ?? 'مستخدم جديد',
       email: map['email'] ?? '',
       phoneNumber: map['phone_number'],
+      stripeCustomerId: map['stripe_customer_id'],
       avatarUrl: map['avatar_url'],
       walletBalance: (map['wallet_balance'] ?? 0.0).toDouble(),
       balance: (map['wallet_balance'] ?? 0.0).toDouble(),
@@ -36,6 +39,7 @@ class UserProfileModel {
       'email': email,
       'phone_number': phoneNumber,
       'avatar_url': avatarUrl,
+      'stripe_customer_id': stripeCustomerId,
       'wallet_balance': walletBalance,
       'balance': balance,
     };
@@ -46,11 +50,12 @@ class UserProfileModel {
     String? phoneNumber,
     String? avatarUrl,
     double? walletBalance,
-    double? balance,
+    double? balance,  String? stripeCustomerId,
   }) {
     return UserProfileModel(
       id: id,
       email: email,
+      stripeCustomerId: stripeCustomerId ?? this.stripeCustomerId,
       fullName: fullName ?? this.fullName,
       phoneNumber: phoneNumber ?? this.phoneNumber,
       avatarUrl: avatarUrl ?? this.avatarUrl,

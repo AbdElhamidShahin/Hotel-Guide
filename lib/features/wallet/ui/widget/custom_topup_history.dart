@@ -56,8 +56,10 @@ class _CustomTopupHistoryState extends State<CustomTopupHistory> {
           selected: selectedPayment == 'card',
           onTap: () {
             setState(() => selectedPayment = 'card');
-            // showAllCardBottomSheet(context,totalPrice: ,currentBooking: );
-          },
+            showCardsBottomSheet(
+              context: context,
+              isPaymentMode: false, // وضع العرض والإضافة فقط
+            );          },
 
           trailing: Row(
             children: [

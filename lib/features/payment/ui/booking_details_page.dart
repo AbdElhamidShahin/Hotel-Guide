@@ -18,6 +18,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../core/helpers/widget/custom_appbar_widget.dart';
 import '../../../core/network/model/booking_model.dart';
 import '../../../core/network/model/room_model.dart';
+import '../../../core/units/stripe_service.dart';
 import '../data/model/payment_intent_input_model.dart';
 
 class BookingDetailsPage extends StatelessWidget {
@@ -42,6 +43,35 @@ class _BookingDetailsView extends StatefulWidget {
 }
 
 class _BookingDetailsViewState extends State<_BookingDetailsView> {
+  UserProfileModel? userProfile;
+  bool isLoadingProfile = true;
+  @override
+  void initState() {
+    super.initState();
+    _loadUserProfile();
+  }
+
+  Future<void> _loadUserProfile() async {
+    final user = Supabase.instance.client.auth.currentUser;
+    if (user == null) {
+      setState(() {
+        isLoadingProfile = false;
+      });
+      return;
+    }
+
+    final response = await Supabase.instance.client
+        .from('profiles')
+        .select()
+        .eq('id', user.id)
+        .single();
+
+    setState(() {
+      userProfile = UserProfileModel.fromMap(response);
+      isLoadingProfile = false;
+    });
+  }
+
   static const double _taxes = 500;
   static const double _services = 300;
   late final UserProfileModel userProfileModel;
@@ -83,19 +113,30 @@ class _BookingDetailsViewState extends State<_BookingDetailsView> {
     showWalletBottomSheet(context, _currentBooking);
   }
 
-  void _onCardTap() {
+  void _onCardTap() async {
     setState(() => _selectedPayment = 'card');
-    final user = Supabase.instance.client.auth.currentUser;
-    if (user == null) return;
+
+    if (userProfile == null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('يرجى تسجيل الدخول أولاً')));
+      return;
+    }
+
+    final stripeCustomerId = await StripeService().getOrCreateStripeCustomerId(
+      userProfile!,
+    );
 
     context.read<BookingCubit>().makePayment(
       input: PaymentIntentInputModel(
         amount: (_totalPrice * 100).toInt().toString(),
-        customerId: 'cus_UGExYkXAXwnQVP',
+        customerId: stripeCustomerId,
         currency: 'usd',
-        // ✅ مفيش customerId
       ),
-      booking: _currentBooking.copyWith(userId: user.id, paymentMethod: 'card'),
+      booking: _currentBooking.copyWith(
+        userId: userProfile!.id,
+        paymentMethod: 'card',
+      ),
     );
   }
 
@@ -201,13 +242,9 @@ class _BookingDetailsViewState extends State<_BookingDetailsView> {
 
                 SizedBox(height: 12.h),
 
-                // BlocBuilder is scoped to only this tile so rebuilds are
-                // minimal — it reads the already-provided BookingCubit.
                 BlocBuilder<BookingCubit, BookingStates>(
-                  buildWhen: (_, s) =>
-                      s is BookingLoading ||
-                      s is BookingError ||
-                      s is BookingSuccess,
+                  buildWhen: (previous, current) =>
+                      current is BookingLoading || previous is BookingLoading,
                   builder: (context, state) {
                     return PaymentTitle(
                       title: 'البطاقة البنكية',

@@ -6,14 +6,19 @@ class ApiService {
     required String url,
     required body,
     required String token,
+    Map<String, String>? headers,
     String? contentType,
   }) async {
+    final mergedHeaders = {
+      'Authorization': 'Bearer $token',
+      ...?headers, // ✅ merge مش override
+    };
     var response = await dio.post(
       url,
       data: body,
       options: Options(
         contentType: contentType,
-        headers: {'Authorization': "bearer $token"},
+        headers: mergedHeaders,
       ),
     );
 
