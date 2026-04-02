@@ -33,3 +33,10 @@ class CardSavingLoading extends BookingStates {
 class CardSaved extends BookingStates {
   const CardSaved();
 }
+
+/// Emitted when the wallet selection changes — keeps UI in sync without
+/// triggering a full reload.
+class BookingWalletChanged extends BookingStates {
+  final String selectedWallet;
+  const BookingWalletChanged(this.selectedWallet);
+}
