@@ -91,13 +91,11 @@ class _BookingDetailsViewState extends State<_BookingDetailsView> {
     context.read<BookingCubit>().makePayment(
       input: PaymentIntentInputModel(
         amount: (_totalPrice * 100).toInt().toString(),
+        customerId: 'cus_UGExYkXAXwnQVP',
         currency: 'usd',
         // ✅ مفيش customerId
       ),
-      booking: _currentBooking.copyWith(
-        userId: user.id,
-        paymentMethod: 'card',
-      ),
+      booking: _currentBooking.copyWith(userId: user.id, paymentMethod: 'card'),
     );
   }
 

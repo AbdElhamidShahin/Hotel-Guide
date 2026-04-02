@@ -6,9 +6,6 @@ import '../../../../core/error/failure.dart';
 import '../../../../core/units/stripe_service.dart';
 import '../model/payment_intent_input_model.dart';
 
-/// Concrete implementation of [PaymentRepository].
-/// [StripeService] is injected — no `new StripeService()` here,
-/// keeping this class testable and decoupled from the SDK.
 class PaymentRepoImpl implements PaymentRepository {
   final StripeService _stripeService;
 
@@ -21,18 +18,11 @@ class PaymentRepoImpl implements PaymentRepository {
     try {
       await _stripeService.makePayment(paymentIntentInputModel: input);
       return const Right(null);
-    } on StripeException catch (e) {
-      // ✅ لو cancel مش error حقيقي
-      if (e.error.code == FailureCode.Canceled) {
-        return const Left(
-          ServerFailure(errorMessage: 'تم إلغاء عملية الدفع.'),
-        );
-      }
-      return Left(ServerFailure(errorMessage: e.error.localizedMessage ?? 'خطأ في الدفع'));
     } on Failure catch (f) {
       return Left(f);
     } catch (e) {
       return Left(ServerFailure(errorMessage: e.toString()));
     }
   }
+
 }

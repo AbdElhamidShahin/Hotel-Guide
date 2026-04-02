@@ -25,3 +25,11 @@ class BookingWalletChanged extends BookingStates {
   final String selectedWallet;
   const BookingWalletChanged(this.selectedWallet);
 }
+
+class CardSavingLoading extends BookingStates {
+  const CardSavingLoading();
+}
+
+class CardSaved extends BookingStates {
+  const CardSaved();
+}
