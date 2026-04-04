@@ -11,6 +11,7 @@ import 'package:hotel_guide/features/search/logic/cubit/search_cubit.dart';
 import 'package:hotel_guide/features/search/ui/search_screen.dart';
 import 'package:hotel_guide/features/sign_up/logic/cubit/sign_up_cubit.dart';
 import '../../AuthWrapper.dart';
+import '../../features/chat_ai/ui/chat_screen.dart';
 import '../../features/favorite/logic/cubit/favorite_cubit.dart';
 import '../../features/home/ui/custom_details_screen.dart';
 import '../../features/home/ui/home_screen.dart';
@@ -62,6 +63,11 @@ abstract class AppRouter {
         path: routes.AboutUsScreen,
         builder: (BuildContext context, GoRouterState state) =>
             const AboutUsScreen(),
+      ),
+      GoRoute(
+        path: routes.ChatScreen,
+        builder: (BuildContext context, GoRouterState state) =>
+            const ChatScreen(),
       ),
       GoRoute(
         path: routes.loginScreen,
