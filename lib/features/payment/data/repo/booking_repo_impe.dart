@@ -3,7 +3,10 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../core/error/failure.dart';
 import '../../../../core/network/model/booking_model.dart';
 import 'booking_repo.dart';
+<<<<<<< HEAD
 
+=======
+>>>>>>> development-
 class BookingRepoImpl implements BookingRepository {
   final SupabaseClient _supabase;
 
@@ -12,13 +15,37 @@ class BookingRepoImpl implements BookingRepository {
   @override
   Future<Either<Failure, void>> confirmBooking(BookingModel booking) async {
     try {
+<<<<<<< HEAD
       final user = _supabase.auth.currentUser;
       if (user == null) {
+=======
+      if (booking.paymentMethod != 'AQUA') {
+        return const Left(
+          ServerFailure(errorMessage: 'نعتذر، محفظة AQUA هي المتاحة فقط حالياً.'),
+        );
+      }
+
+      final user = _supabase.auth.currentUser;
+      if (user == null) {
+        return const Left(ServerFailure(errorMessage: 'المستخدم غير مسجل الدخول.'));
+      }
+
+      final profileData = await _supabase
+          .from('profiles')
+          .select('wallet_balance')
+          .eq('id', user.id)
+          .single();
+
+      final balance = (profileData['wallet_balance'] as num).toDouble();
+
+      if (balance < booking.totalAmount) {
+>>>>>>> development-
         return const Left(
           ServerFailure(errorMessage: 'المستخدم غير مسجل الدخول.'),
         );
       }
 
+<<<<<<< HEAD
       final bookingWithUser = booking.copyWith(userId: user.id);
 
       if (bookingWithUser.paymentMethod == 'AQUA') {
@@ -41,6 +68,12 @@ class BookingRepoImpl implements BookingRepository {
           });
         }
       }
+=======
+      await _supabase.rpc(
+        'process_hotel_booking',
+        params: booking.copyWith(userId: user.id).toRpcParams(),
+      );
+>>>>>>> development-
 
       return const Right(null);
     } on Failure catch (f) {

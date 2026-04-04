@@ -31,8 +31,13 @@ class BookingModel {
       'p_hotel_name': hotelName,
       'p_room_id': roomId,
       'p_total_amount': totalAmount,
+<<<<<<< HEAD
       'p_check_in': startDate.toIso8601String(),
       'p_check_out': endDate.toIso8601String(),
+=======
+      'p_check_in': startDate.toUtc().toIso8601String(),   // ✅ toUtc() أولاً
+      'p_check_out': endDate.toUtc().toIso8601String(),    // ✅ toUtc() أولاً
+>>>>>>> development-
       'p_payment_method': paymentMethod,
     };
   }
