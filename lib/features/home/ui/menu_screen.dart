@@ -54,7 +54,10 @@ class MenuScreen extends StatelessWidget {
                         MenuTile(
                           title: 'من نحن',
                           iconPath: 'assets/icons/menu_icons/people.svg',
-                          onTap: () {},
+                          onTap: () {
+
+                            context.push(routes.AboutUsScreen);
+                          },
                         ),
                         MenuTile(
                           title: 'الأسئلة الشائعة',
