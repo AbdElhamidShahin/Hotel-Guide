@@ -8,6 +8,9 @@ import 'package:hotel_guide/core/theme/colors.dart';
 import 'package:hotel_guide/features/home/ui/widget/menu/build_background_decorations.dart';
 import 'package:hotel_guide/features/home/ui/widget/menu/menu_tile.dart';
 
+import '../../../core/router/routers.dart';
+import '../../profile/ui/about_us_screen.dart';
+
 class MenuScreen extends StatelessWidget {
   const MenuScreen({super.key});
 

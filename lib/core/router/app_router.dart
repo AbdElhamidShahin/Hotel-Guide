@@ -23,11 +23,8 @@ import '../../features/notification/ui/notification_screen.dart';
 import '../../features/on_boarding/ui/on_boarding_screen.dart';
 import '../../features/payment/logic/booking_cubit.dart';
 import '../../features/payment/ui/booking_details_page.dart';
-<<<<<<< HEAD
 import '../../features/payment/ui/booking_result_screen.dart';
-=======
 import '../../features/profile/ui/about_us_screen.dart';
->>>>>>> development-
 import '../../features/profile/ui/edit_account_screen.dart';
 import '../../features/profile/ui/faq_page.dart';
 import '../../features/profile/ui/profile_screen.dart';
