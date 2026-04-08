@@ -70,6 +70,8 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
       _nameController.text = (widget.name.isNotEmpty) ? widget.name : (data['name'] ?? '');
       _emailController.text = data['email'] ?? '';
       _phoneController.text = data['phone'] ?? '';
+      // السطر الناقص اللي كان بيخلي العنوان يظهر فاضي:
+      _addressController.text = data['address'] ?? '';
       profileImage = data['image'];
     });
   }
@@ -134,19 +136,24 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
                   text: 'تحديث الملف الشخصي',
                   onTap: () async {
                     if (_formKey.currentState!.validate()) {
+                      // تأكد إن دالة saveUserData عندك بتقبل address
                       await UserDataManager.saveUserData(
                         name: _nameController.text,
                         image: _imageFile?.path ?? profileImage ?? "",
                         phone: _phoneController.text,
                         email: _emailController.text,
+                        address: _addressController.text, // ضيف العنوان هنا عشان يتحفظ
                       );
+
                       Snackly.success(
                         context: context,
                         title: 'تم حفظ البيانات بنجاح',
                         style: SnackbarStyle.filled,
                       );
 
-                      context.push(routes.homeScreen, extra: {'name': _nameController.text});
+                      // بدل context.push استخدم context.go عشان تتجنب الشاشة البيضاء
+                      // وتحدث حالة التطبيق بالكامل بالاسم الجديد
+                      context.go(routes.homeScreen, extra: {'name': _nameController.text});
                     }
                   },
                 ),

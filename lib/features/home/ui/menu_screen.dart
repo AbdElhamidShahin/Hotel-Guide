@@ -7,9 +7,9 @@ import 'package:hotel_guide/core/theme/app_theme.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
 import 'package:hotel_guide/features/home/ui/widget/menu/build_background_decorations.dart';
 import 'package:hotel_guide/features/home/ui/widget/menu/menu_tile.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' show Supabase;
 
 import '../../../core/router/routers.dart';
-
 
 class MenuScreen extends StatelessWidget {
   const MenuScreen({super.key});
@@ -58,7 +58,6 @@ class MenuScreen extends StatelessWidget {
                           title: 'من نحن',
                           iconPath: 'assets/icons/menu_icons/people.svg',
                           onTap: () {
-
                             context.push(routes.AboutUsScreen);
                           },
                         ),
@@ -104,8 +103,11 @@ class MenuScreen extends StatelessWidget {
 
   Widget _buildLogoutButton(BuildContext context) {
     return OutlinedButton(
-      onPressed: () {
-        context.push(routes.onBoardingScreen);
+      onPressed: () async {
+        await Supabase.instance.client.auth.signOut();
+        if (context.mounted) {
+          context.go(routes.onBoardingScreen);
+        }
       },
       style: OutlinedButton.styleFrom(
         side: BorderSide(color: AppColors.primary, width: 1.w),
