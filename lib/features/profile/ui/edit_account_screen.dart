@@ -41,6 +41,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
       setState(() {});
     }
   }
+
   void _onImagePicked(File? file) {
     setState(() {
       _imageFile = file;
@@ -62,12 +63,15 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
     if (!emailRegex.hasMatch(value)) return 'أدخل عنوان بريد إلكتروني صالح';
     return null;
   }
+
   String? profileImage;
 
   Future<void> _loadInitialData() async {
     final data = await UserDataManager.loadUserData();
     setState(() {
-      _nameController.text = (widget.name.isNotEmpty) ? widget.name : (data['name'] ?? '');
+      _nameController.text = (widget.name.isNotEmpty)
+          ? widget.name
+          : (data['name'] ?? '');
       _emailController.text = data['email'] ?? '';
       _phoneController.text = data['phone'] ?? '';
       // السطر الناقص اللي كان بيخلي العنوان يظهر فاضي:
@@ -75,6 +79,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
       profileImage = data['image'];
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -112,7 +117,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
                 keyboardType: TextInputType.emailAddress,
                 validator: _validateEmail,
               ),
-               SizedBox(height: 8.h),
+              SizedBox(height: 8.h),
 
               Customtextfeild(
                 controller: _addressController,
@@ -126,8 +131,7 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
                 },
               ),
 
-
-               SizedBox(height: 40.h),
+              SizedBox(height: 40.h),
               SizedBox(
                 width: 0.85.sw,
                 height: 55.h,
@@ -136,13 +140,13 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
                   text: 'تحديث الملف الشخصي',
                   onTap: () async {
                     if (_formKey.currentState!.validate()) {
-                      // تأكد إن دالة saveUserData عندك بتقبل address
-                      await UserDataManager.saveUserData(
+                      // ✅ احفظ في الـ notifier
+                      await UserDataNotifier.instance.save(
                         name: _nameController.text,
+                        email: _emailController.text,
                         image: _imageFile?.path ?? profileImage ?? "",
                         phone: _phoneController.text,
-                        email: _emailController.text,
-                        address: _addressController.text, // ضيف العنوان هنا عشان يتحفظ
+                        address: _addressController.text,
                       );
 
                       Snackly.success(
@@ -151,14 +155,12 @@ class _EditAccountScreenState extends State<EditAccountScreen> {
                         style: SnackbarStyle.filled,
                       );
 
-                      // بدل context.push استخدم context.go عشان تتجنب الشاشة البيضاء
-                      // وتحدث حالة التطبيق بالكامل بالاسم الجديد
-                      context.go(routes.homeScreen, extra: {'name': _nameController.text});
+                      if (context.mounted) context.pop(); // ✅ pop بس مش go
                     }
                   },
                 ),
               ),
-               SizedBox(height: 40.h),
+              SizedBox(height: 40.h),
             ],
           ),
         ),

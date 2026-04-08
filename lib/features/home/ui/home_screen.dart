@@ -34,25 +34,30 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _setupName();
     context.read<HomeCubit>().getHotelsAndCities();
+    UserDataNotifier.instance.addListener(_onUserDataChanged);
+    UserDataNotifier.instance.load();
   }
 
-  Future<void> _setupName() async {
-    if (widget.name.isNotEmpty) {
-      setState(() {
-        displayUserName = widget.name;
-      });
-    } else {
-      final data = await UserDataManager.loadUserData();
-      setState(() {
-        displayUserName = data['name'] ?? 'ضيف';
-      });
-    }
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    UserDataNotifier.instance.load();
+  }
+
+  void _onUserDataChanged() => setState(() {});
+
+  @override
+  void dispose() {
+    UserDataNotifier.instance.removeListener(_onUserDataChanged);
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final notifier = UserDataNotifier.instance;
+    final displayName = notifier.name.isNotEmpty ? notifier.name : widget.name;
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -61,7 +66,8 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               CustomAppbarHome(),
               SizedBox(height: 16.h),
-              CustomWelcomeHeader(name: displayUserName ?? ''),
+              CustomWelcomeHeader(name: displayName),
+
               SizedBox(height: 14.h),
               AiBookingBanner(),
 
@@ -70,7 +76,8 @@ class _HomeScreenState extends State<HomeScreen> {
               SizedBox(height: 24.h),
               TopRatingWidget(
                 name: 'الأكثر حجزًا هذا الأسبوع',
-                onTap: () => showHotelsBottomSheet(context),
+                onTap: () =>
+                    showHotelsBottomSheet(context, 'الأكثر حجزًا هذا الأسبوع'),
               ),
 
               SizedBox(height: 16.h),
@@ -107,7 +114,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               SizedBox(height: 12.h),
-              CustomOffersHome(),
+              GestureDetector(
+                onTap: () => showHotelsBottomSheet(context, 'عروض نهايه العام'),
+                child: CustomOffersHome(),
+              ),
             ],
           ),
         ),

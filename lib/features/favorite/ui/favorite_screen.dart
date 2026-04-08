@@ -16,7 +16,7 @@ class FavoriteScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppbarWidget(name: "المفضله",  onTap: (){},),
+      appBar: CustomAppbarWidget(name: "المفضله", onTap: () {}),
 
       body: BlocBuilder<FavoriteCubit, FavoriteState>(
         builder: (context, state) {
@@ -38,7 +38,7 @@ class FavoriteScreen extends StatelessWidget {
           if (favoriteItems.isEmpty) {
             return buildFavoriteNotFoundWidget(
               onRetry: () {
-                context.push(routes.homeScreen);
+                context.go(routes.homeScreen);
               },
             );
           }

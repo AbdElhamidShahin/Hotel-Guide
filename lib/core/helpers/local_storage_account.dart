@@ -1,4 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/material.dart';
+import 'local_storage_account.dart';
 
 Future<void> saveUserLocally(String name, String email, String phone) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -39,5 +41,48 @@ class UserDataManager {
       'image': prefs.getString('image'),
       'address': prefs.getString('address'), // 3. استرجاع العنوان
     };
+  }
+}
+
+class UserDataNotifier extends ChangeNotifier {
+  static final UserDataNotifier instance = UserDataNotifier._();
+  UserDataNotifier._();
+
+  String name = '';
+  String email = '';
+  String image = '';
+  String phone = '';
+  String address = '';
+
+  Future<void> load() async {
+    final data = await UserDataManager.loadUserData();
+    name = data['name'] ?? '';
+    email = data['email'] ?? '';
+    image = data['image'] ?? '';
+    phone = data['phone'] ?? '';
+    address = data['address'] ?? '';
+    notifyListeners(); // ✅ لازم يكون هنا
+  }
+
+  Future<void> save({
+    required String name,
+    required String email,
+    required String image,
+    required String phone,
+    required String address,
+  }) async {
+    await UserDataManager.saveUserData(
+      name: name,
+      email: email,
+      image: image,
+      phone: phone,
+      address: address,
+    );
+    this.name = name;
+    this.email = email;
+    this.image = image;
+    this.phone = phone;
+    this.address = address;
+    notifyListeners(); // ✅ فوري
   }
 }

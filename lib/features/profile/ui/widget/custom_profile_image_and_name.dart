@@ -38,13 +38,41 @@ class CustomProfileImageAndName extends StatefulWidget {
 class _CustomProfileImageAndNameState extends State<CustomProfileImageAndName> {
   String? image;
   String? name;
-
   final ImagePicker _picker = ImagePicker();
 
   @override
   void initState() {
     super.initState();
-    loadUserData();
+    // ✅ اشترك في التغييرات
+    UserDataNotifier.instance.addListener(_onUserDataChanged);
+    _syncFromNotifier(); // ✅ حمّل البيانات من الـ notifier فوراً
+  }
+
+  // ✅ دالة جديدة تمسح من الـ notifier مباشرة
+  void _syncFromNotifier() {
+    final notifier = UserDataNotifier.instance;
+    if (notifier.name.isNotEmpty || notifier.image.isNotEmpty) {
+      setState(() {
+        name = notifier.name.isNotEmpty ? notifier.name : widget.name;
+        image = notifier.image.isNotEmpty ? notifier.image : widget.imageUrl;
+      });
+    } else {
+      // لو الـ notifier فاضي، حمّل من الـ storage
+      loadUserData();
+    }
+  }
+
+  void _onUserDataChanged() {
+    setState(() {
+      name = UserDataNotifier.instance.name;
+      image = UserDataNotifier.instance.image;
+    });
+  }
+
+  @override
+  void dispose() {
+    UserDataNotifier.instance.removeListener(_onUserDataChanged); // ✅
+    super.dispose();
   }
 
   Future<void> loadUserData() async {

@@ -9,40 +9,42 @@ import '../../../core/helpers/local_storage_account.dart';
 import '../../../core/theme/colors.dart';
 
 class AccountScreen extends StatefulWidget {
-  const AccountScreen({super.key, this.name});
-  final String? name;
+  const AccountScreen({super.key});
 
   @override
   State<AccountScreen> createState() => _AccountScreenState();
 }
 
 class _AccountScreenState extends State<AccountScreen> {
-  String? name;
-  String? profileImage;
   @override
   void initState() {
     super.initState();
-    name = widget.name;
-    _loadIfNeeded();
+    UserDataNotifier.instance.addListener(_onUserDataChanged);
+    UserDataNotifier.instance.load();
   }
 
-  Future<void> _loadIfNeeded() async {
-    final data = await UserDataManager.loadUserData();
-    setState(() {
-      name = data['name'] ?? 'مستخدم';
-      profileImage = data['image'];
-    });
+  void _onUserDataChanged() => setState(() {});
+
+  @override
+  void dispose() {
+    UserDataNotifier.instance.removeListener(_onUserDataChanged);
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     bool isDarkMode = false;
+    final notifier = UserDataNotifier.instance;
 
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          CustomProfileImageAndName(showEditIcon: true, name: name),
+          CustomProfileImageAndName(
+            showEditIcon: true,
+            name: notifier.name.isNotEmpty ? notifier.name : 'مستخدم', // ✅
+            imageUrl: notifier.image.isNotEmpty ? notifier.image : null, // ✅
+          ),
           Expanded(
             child: ListView(
               padding: EdgeInsets.zero,

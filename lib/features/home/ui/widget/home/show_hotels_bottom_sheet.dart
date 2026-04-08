@@ -9,7 +9,7 @@ import '../../../../favorite/logic/cubit/favorite_cubit.dart';
 import '../../../logic/cubit/home_cubit.dart';
 import '../../../logic/cubit/home_state.dart';
 
-void showHotelsBottomSheet(BuildContext context) {
+void showHotelsBottomSheet(BuildContext context,String text) {
   final homeCubit = context.read<HomeCubit>();
   final favoriteCubit = getIt<FavoriteCubit>(); // ✅ من getIt
 
@@ -40,7 +40,7 @@ void showHotelsBottomSheet(BuildContext context) {
               ),
             ),
             Text(
-              "الأكثر حجزًا هذا الأسبوع",
+              text,
               style: textStyle1Regularprimary.copyWith(
                 fontWeight: FontWeight.w600,
                 fontSize: 18.sp,

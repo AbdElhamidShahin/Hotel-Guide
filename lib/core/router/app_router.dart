@@ -42,7 +42,6 @@ import '../network/model/room_model.dart';
 
 abstract class AppRouter {
   static final router = GoRouter(
-    
     initialLocation: routes.authWrapper,
     routes: [
       GoRoute(
@@ -56,11 +55,12 @@ abstract class AppRouter {
         path: routes.onBoardingScreen,
         builder: (BuildContext context, GoRouterState state) =>
             const OnBoardingScreen(),
-      ),  GoRoute(
+      ),
+      GoRoute(
         path: routes.FaqPage,
-        builder: (BuildContext context, GoRouterState state) =>
-            const FaqPage(),
-      ),  GoRoute(
+        builder: (BuildContext context, GoRouterState state) => const FaqPage(),
+      ),
+      GoRoute(
         path: routes.AboutUsScreen,
         builder: (BuildContext context, GoRouterState state) =>
             const AboutUsScreen(),
@@ -89,7 +89,6 @@ abstract class AppRouter {
           );
         },
       ),
-
 
       GoRoute(
         path: routes.signUpScreen,
@@ -257,11 +256,9 @@ abstract class AppRouter {
               GoRoute(
                 path: routes.accountScreen,
                 builder: (context, state) {
-                  final data = state.extra as Map<String, dynamic>?;
-
                   return BlocProvider(
                     create: (context) => getIt<HomeCubit>(),
-                    child: AccountScreen(name: data?["name"]),
+                    child: AccountScreen(),
                   );
                 },
               ),
