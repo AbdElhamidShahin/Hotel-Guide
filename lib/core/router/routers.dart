@@ -20,7 +20,7 @@ class routes {
   static const String BookingDetailsPage = "/BookingDetailsPage";
   static const String RoomDetailsPage = "/RoomDetailsPage";
   static const String FaqPage = "/FaqPage";
-  static const String bookingResult = '/booking-result';}
+  static const String bookingResult = '/booking-result';
   static const String AboutUsScreen = "/AboutUsScreen";
   static const String ChatScreen = "/ChatScreen";
 }

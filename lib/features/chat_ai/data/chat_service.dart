@@ -6,7 +6,6 @@ class ChatService {
   static const String _webhookUrl =
       'http://10.0.2.2:5678/webhook/a54ec973-c221-47b9-8021-685ea14e6a70';
 
-  /// يرجع ChatMessage كامل مع نوعه (text أو hotels)
   Future<ChatMessage> sendMessage({
     required String message,
     required String userId,
@@ -39,11 +38,9 @@ class ChatService {
     try {
       final decoded = jsonDecode(body);
 
-      // لو جاء List
       if (decoded is List && decoded.isNotEmpty) {
         final item = decoded[0];
 
-        // لو فيه hotels array
         if (item['hotels'] != null) {
           return _buildHotelsMessage(item['text'] ?? '', item['hotels']);
         }
@@ -53,7 +50,6 @@ class ChatService {
         return _buildTextMessage(text);
       }
 
-      // لو جاء Map
       if (decoded is Map) {
         if (decoded['hotels'] != null) {
           return _buildHotelsMessage(decoded['text'] ?? '', decoded['hotels']);
@@ -63,9 +59,9 @@ class ChatService {
         if (text.isEmpty) return _limitMessage();
         return _buildTextMessage(text);
       }
+
     } catch (_) {}
 
-    // لو جاء plain text
     if (body.trim().isEmpty) return _limitMessage();
     return _buildTextMessage(body);
   }

@@ -2,18 +2,27 @@ import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
 import '../../../../core/di/injection.dart';
 import '../../../../core/helpers/contact/custom_show_snackbar.dart';
 import '../../../../core/network/model/booking_model.dart';
 import '../../../../core/network/model/notification_model.dart';
+import '../../../../core/router/routers.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../notification/logic/notificatin_logic.dart';
 import '../../logic/booking_cubit.dart';
 import '../../logic/booking_state.dart';
 import 'custom_wallet_item.dart';
+
+// Helper: هل رسالة الخطأ تعني رصيد ناقص؟
+bool _isInsufficientBalance(String message) {
+  return message.contains('رصيد') ||
+      message.contains('غير كافٍ') ||
+      message.contains('insufficient') ||
+      message.contains('balance');
+}
 
 void showWalletBottomSheet(
   BuildContext parentContext,
@@ -58,6 +67,13 @@ void showWalletBottomSheet(
               }
             }
 
+            context.push(
+              routes.bookingResult,
+              extra: {
+                'isSuccess': true,
+                'paymentMethod': 'المحفظة الإلكترونية',
+              },
+            );
             showCustomSnackbar(
               parentContext,
               ContentType.success,
@@ -65,8 +81,9 @@ void showWalletBottomSheet(
               'تمت العملية بنجاح',
             );
           } else if (state is BookingError) {
+            // أغلق الـ loading dialog فقط
             Navigator.of(context, rootNavigator: true).pop();
-            Navigator.of(context).pop();
+
             final user = Supabase.instance.client.auth.currentUser;
             if (user != null) {
               final errorNotif = NotificationModel(
@@ -85,12 +102,31 @@ void showWalletBottomSheet(
               }
             }
 
-            showCustomSnackbar(
-              parentContext,
-              ContentType.failure,
-              'عفواً، فشل الحجز',
-              state.message,
-            );
+            // ── هل الخطأ بسبب رصيد ناقص؟ ──
+            final bool isBalanceError = _isInsufficientBalance(state.message);
+
+            if (isBalanceError) {
+              // نفضل في نفس الـ BottomSheet ونعرض رسالة واضحة للمستخدم
+              showCustomSnackbar(
+                context,
+                ContentType.failure,
+                'رصيد غير كافٍ 💳',
+                'رصيد محفظتك لا يكفي لإتمام الحجز.\nالمطلوب: ${bookingData.totalAmount.toInt()} EGP',
+              );
+            } else {
+              // خطأ عام → أغلق الـ BottomSheet وروح لصفحة النتيجة
+              Navigator.of(context).pop();
+              context.push(
+                routes.bookingResult,
+                extra: {'isSuccess': false, 'errorMessage': state.message},
+              );
+              showCustomSnackbar(
+                parentContext,
+                ContentType.failure,
+                'عفواً، فشل الحجز',
+                state.message,
+              );
+            }
           }
         },
         child: Container(

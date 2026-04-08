@@ -9,7 +9,7 @@ import 'package:hotel_guide/features/home/ui/widget/menu/build_background_decora
 import 'package:hotel_guide/features/home/ui/widget/menu/menu_tile.dart';
 
 import '../../../core/router/routers.dart';
-import '../../profile/ui/about_us_screen.dart';
+
 
 class MenuScreen extends StatelessWidget {
   const MenuScreen({super.key});

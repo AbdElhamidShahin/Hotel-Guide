@@ -13,63 +13,61 @@ class BookingRepoImpl implements BookingRepository {
   Future<Either<Failure, void>> confirmBooking(BookingModel booking) async {
     try {
       final user = _supabase.auth.currentUser;
+
+      // 1. التحقق من وجود مستخدم
       if (user == null) {
-      if (booking.paymentMethod != 'AQUA') {
-        return const Left(
-          ServerFailure(errorMessage: 'نعتذر، محفظة AQUA هي المتاحة فقط حالياً.'),
-        );
+        return const Left(ServerFailure(errorMessage: 'يرجى تسجيل الدخول أولاً لإتمام الحجز.'));
       }
 
-      final user = _supabase.auth.currentUser;
-      if (user == null) {
-        return const Left(ServerFailure(errorMessage: 'المستخدم غير مسجل الدخول.'));
-      }
-
-      final profileData = await _supabase
-          .from('profiles')
-          .select('wallet_balance')
-          .eq('id', user.id)
-          .single();
-
-      final balance = (profileData['wallet_balance'] as num).toDouble();
-
-      if (balance < booking.totalAmount) {
-        return const Left(
-          ServerFailure(errorMessage: 'المستخدم غير مسجل الدخول.'),
-        );
-      }
-
+      // 2. تحديث بيانات الحجز بـ ID المستخدم الحالي
       final bookingWithUser = booking.copyWith(userId: user.id);
 
+      // --- حالة الدفع عن طريق AQUA Wallet ---
       if (bookingWithUser.paymentMethod == 'AQUA') {
+        // التحقق من الرصيد أولاً
+        final profileData = await _supabase
+            .from('profiles')
+            .select('wallet_balance')
+            .eq('id', user.id)
+            .single();
+
+        final balance = (profileData['wallet_balance'] as num).toDouble();
+
+        if (balance < bookingWithUser.totalAmount) {
+          return const Left(ServerFailure(errorMessage: 'عذراً، رصيد محفظتك غير كافٍ.'));
+        }
+
+        // تنفيذ الحجز عبر الـ RPC (لضمان الخصم والحجز كعملية واحدة Transaction)
         await _supabase.rpc(
           'process_hotel_booking',
           params: bookingWithUser.toRpcParams(),
         );
-      } else {
-        if (bookingWithUser.paymentMethod == 'card') {
-          // ✅ الكارت: Insert مباشر بدون خصم رصيد
-          await _supabase.from('bookings').insert({
-            'user_id': bookingWithUser.userId,
-            'hotel_name': bookingWithUser.hotelName,
-            'room_id': bookingWithUser.roomId,
-            'total_amount': bookingWithUser.totalAmount,
-            'check_in': bookingWithUser.startDate.toIso8601String(),
-            'check_out': bookingWithUser.endDate.toIso8601String(),
-            'payment_method': bookingWithUser.paymentMethod,
-          });
-        }
       }
-      await _supabase.rpc(
-        'process_hotel_booking',
-        params: booking.copyWith(userId: user.id).toRpcParams(),
-      );
+
+      // --- حالة الدفع عن طريق البطاقة (Card) ---
+      else if (bookingWithUser.paymentMethod == 'card') {
+        await _supabase.from('bookings').insert({
+          'user_id': bookingWithUser.userId,
+          'hotel_name': bookingWithUser.hotelName,
+          'room_id': bookingWithUser.roomId,
+          'total_amount': bookingWithUser.totalAmount,
+          'check_in': bookingWithUser.startDate.toIso8601String(),
+          'check_out': bookingWithUser.endDate.toIso8601String(),
+          'payment_method': bookingWithUser.paymentMethod,
+        });
+      }
+
+      // --- حالة وسيلة دفع غير مدعومة ---
+      else {
+        return const Left(ServerFailure(errorMessage: 'وسيلة الدفع المختارة غير مدعومة حالياً.'));
+      }
 
       return const Right(null);
-    } on Failure catch (f) {
-      return Left(f);
+    } on PostgrestException catch (e) {
+      // معالجة أخطاء Supabase/Database بشكل خاص
+      return Left(ServerFailure(errorMessage: e.message));
     } catch (e) {
-      return Left(ServerFailure(errorMessage: e.toString()));
+      return Left(ServerFailure(errorMessage: 'حدث خطأ غير متوقع: ${e.toString()}'));
     }
   }
 }
