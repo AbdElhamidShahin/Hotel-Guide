@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hotel_guide/core/helpers/widget/custom_item.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
 import 'package:hotel_guide/features/home/ui/widget/home/ai_booking_banner.dart';
 import 'package:hotel_guide/features/home/ui/widget/home/custom_appBar_home.dart';
@@ -8,11 +9,16 @@ import 'package:hotel_guide/features/home/ui/widget/home/custom_city_home.dart';
 import 'package:hotel_guide/features/home/ui/widget/home/custom_offers_home.dart';
 import 'package:hotel_guide/features/home/ui/widget/custom_rating_listview.dart';
 import 'package:hotel_guide/features/home/ui/widget/custom_welcome_header.dart';
+import 'package:hotel_guide/features/home/ui/widget/home/show_cities_bottom_sheet.dart';
+import 'package:hotel_guide/features/home/ui/widget/home/show_hotels_bottom_sheet.dart';
 import 'package:hotel_guide/features/home/ui/widget/top_rating_widget.dart';
 
+import '../../../core/di/injection.dart';
 import '../../../core/helpers/local_storage_account.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../favorite/logic/cubit/favorite_cubit.dart';
 import '../logic/cubit/home_cubit.dart';
+import '../logic/cubit/home_state.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.name});
@@ -62,22 +68,26 @@ class _HomeScreenState extends State<HomeScreen> {
               // SizedBox(height: 24),
               // BookingSearchForm(),
               SizedBox(height: 24.h),
-              TopRatingWidget(name: 'الأكثر حجزًا هذا الأسبوع', onTap: () {}),
+              TopRatingWidget(
+                name: 'الأكثر حجزًا هذا الأسبوع',
+                onTap: () => showHotelsBottomSheet(context),
+              ),
 
               SizedBox(height: 16.h),
               _buildDivider(),
 
               SizedBox(height: 24.h),
               SizedBox(
-                height:360.h,
+                height: 360.h,
                 child: CustomRatingListview(
                   cityId: "8a7ee754-037c-4a87-bda6-8a61527982a3",
                 ),
-              ),              SizedBox(height: 16.h),
+              ),
+              SizedBox(height: 16.h),
 
               TopRatingWidget(
                 name: 'إستكشف مصر',
-                onTap: () => _showCitiesBottomSheet(context),
+                onTap: () => showCitiesBottomSheet(context),
               ),
               SizedBox(height: 16.h),
 
@@ -113,46 +123,6 @@ Widget _buildDivider() {
       height: 2.h,
       thickness: 1.h,
       color: AppColors.black.withOpacity(0.1),
-    ),
-  );
-}
-
-void _showCitiesBottomSheet(BuildContext context) {
-  final homeCubit = context.read<HomeCubit>();
-  showModalBottomSheet(
-    context: context,
-    isScrollControlled: true,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
-    ),
-    builder: (context) => BlocProvider.value(
-      value: homeCubit,
-      child: DraggableScrollableSheet(
-        expand: false,
-        initialChildSize: 0.9,
-        builder: (_, scrollController) => Column(
-          children: [
-            Container(
-              margin: EdgeInsets.symmetric(vertical: 12.h),
-              height: 5.h,
-              width: 40.w,
-              decoration: BoxDecoration(
-                color: Colors.grey[300],
-                borderRadius: BorderRadius.circular(10.r),
-              ),
-            ),
-            Text(
-              "جميع المدن",
-              style: textStyle1Regularprimary.copyWith(
-                fontWeight: FontWeight.w600,
-                fontSize: 18.sp,
-              ),
-            ),
-            const Divider(),
-            Expanded(child: CustomCityHome()),
-          ],
-        ),
-      ),
     ),
   );
 }
