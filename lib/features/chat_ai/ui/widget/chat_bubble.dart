@@ -24,12 +24,14 @@ class ChatBubble extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: Column(
-        crossAxisAlignment:
-        isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        crossAxisAlignment: isUser
+            ? CrossAxisAlignment.end
+            : CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment:
-            isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+            mainAxisAlignment: isUser
+                ? MainAxisAlignment.end
+                : MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               if (!isUser) _buildBotAvatar(),
@@ -89,22 +91,17 @@ class ChatBubble extends StatelessWidget {
 
   Widget _buildTimeInfo(bool isUser, String time) {
     return Padding(
-      padding: EdgeInsets.only(
-        right: isUser ? 0 : 40,
-        top: 4,
-      ),
+      padding: EdgeInsets.only(right: isUser ? 0 : 40, top: 4),
       child: Row(
-        mainAxisAlignment:
-        isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+        mainAxisAlignment: isUser
+            ? MainAxisAlignment.end
+            : MainAxisAlignment.start,
         children: [
           if (isUser) ...[
             const Icon(Icons.done_all, size: 14, color: Color(0xFF4FC3F7)),
             const SizedBox(width: 4),
           ],
-          Text(
-            time,
-            style: const TextStyle(fontSize: 11, color: Colors.grey),
-          ),
+          Text(time, style: const TextStyle(fontSize: 11, color: Colors.grey)),
         ],
       ),
     );

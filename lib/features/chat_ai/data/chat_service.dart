@@ -1,22 +1,31 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'chat_message.dart';
 
 class ChatService {
   static const String _webhookUrl =
-      'http://10.0.2.2:5678/webhook/a54ec973-c221-47b9-8021-685ea14e6a70';
+      'https://hotelguide.app.n8n.cloud/webhook/8a939de3-e4b1-4c24-baaa-4694e9202757';
 
   Future<ChatMessage> sendMessage({
     required String message,
     required String userId,
   }) async {
     try {
+      final supabase = Supabase.instance.client;
+      final hotels = await supabase
+          .from('hotels')
+          .select('name, description, address, rating, price_starts_from')
+          .limit(5);
       final response = await http
           .post(
-        Uri.parse(_webhookUrl),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'message': message, 'userId': userId}),
-      )
+            Uri.parse(_webhookUrl),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({
+              'message': message,
+              'userId': userId,
+              'hotels': hotels,            }),
+          )
           .timeout(const Duration(seconds: 30));
 
       if (response.statusCode == 200) {
@@ -45,7 +54,8 @@ class ChatService {
           return _buildHotelsMessage(item['text'] ?? '', item['hotels']);
         }
 
-        final text = item['output']?.toString() ?? item['answer']?.toString() ?? '';
+        final text =
+            item['output']?.toString() ?? item['answer']?.toString() ?? '';
         if (text.isEmpty) return _limitMessage();
         return _buildTextMessage(text);
       }
@@ -55,11 +65,13 @@ class ChatService {
           return _buildHotelsMessage(decoded['text'] ?? '', decoded['hotels']);
         }
 
-        final text = decoded['output']?.toString() ?? decoded['answer']?.toString() ?? '';
+        final text =
+            decoded['output']?.toString() ??
+            decoded['answer']?.toString() ??
+            '';
         if (text.isEmpty) return _limitMessage();
         return _buildTextMessage(text);
       }
-
     } catch (_) {}
 
     if (body.trim().isEmpty) return _limitMessage();
@@ -75,15 +87,17 @@ class ChatService {
     final List<HotelCard> cards = [];
     if (hotelsData is List) {
       for (final h in hotelsData) {
-        cards.add(HotelCard(
-          name: h['name'] ?? '',
-          rating: (h['rating'] ?? 0).toDouble(),
-          description: h['description'] ?? '',
-          imageUrl: h['image'] ?? h['main_images'] ?? '',
-          price: h['price_starts_from'] != null
-              ? double.tryParse(h['price_starts_from'].toString())
-              : null,
-        ));
+        cards.add(
+          HotelCard(
+            name: h['name'] ?? '',
+            rating: (h['rating'] ?? 0).toDouble(),
+            description: h['description'] ?? '',
+            imageUrl: h['image'] ?? h['main_images'] ?? '',
+            price: h['price_starts_from'] != null
+                ? double.tryParse(h['price_starts_from'].toString())
+                : null,
+          ),
+        );
       }
     }
     final cleaned = text.replaceAll('**', '').replaceAll('*', '').trim();
@@ -96,12 +110,11 @@ class ChatService {
   }
 
   ChatMessage _limitMessage() => ChatMessage(
-    text: '⚠️ عذراً، المساعد الذكي وصل للحد المسموح بيه دلوقتي.\n\nحاول تاني بعد شوية أو تواصل مع الدعم الفني. 🙏',
+    text:
+        '⚠️ عذراً، المساعد الذكي وصل للحد المسموح بيه دلوقتي.\n\nحاول تاني بعد شوية أو تواصل مع الدعم الفني. 🙏',
     isUser: false,
   );
 
-  ChatMessage _errorMessage() => ChatMessage(
-    text: '⚠️ حصل خطأ، حاول تاني.',
-    isUser: false,
-  );
+  ChatMessage _errorMessage() =>
+      ChatMessage(text: '⚠️ حصل خطأ، حاول تاني.', isUser: false);
 }

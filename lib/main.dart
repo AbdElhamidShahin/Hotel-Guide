@@ -8,7 +8,7 @@ import 'hotel_app.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 void main() async {
-  Stripe.publishableKey= ApiConstants.publishableKey;
+  // Stripe.publishableKey = ApiConstants.publishableKey;
 
   WidgetsFlutterBinding.ensureInitialized();
   await ScreenUtil.ensureScreenSize();
