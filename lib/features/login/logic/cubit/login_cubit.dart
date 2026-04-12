@@ -13,8 +13,9 @@ class LoginCubit extends Cubit<LoginState> {
     required String email,
     required String password,
   }) async {
-    await _loginRepository.login(email, password);
-
+    // ✅ FIX #2: Previous code called _loginRepository.login() TWICE
+    //    (once before emit(Loading) and again inside the try block).
+    //    That caused a duplicate API request on every login.
     emit(LoginLoading());
 
     try {
@@ -43,10 +44,5 @@ class LoginCubit extends Cubit<LoginState> {
       return 'يرجى تأكيد بريدك الإلكتروني أولاً 📧';
     }
     return 'فشل تسجيل الدخول: $message';
-  }
-
-  @override
-  Future<void> close() async {
-    return super.close();
   }
 }

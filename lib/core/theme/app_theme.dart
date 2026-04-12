@@ -141,5 +141,10 @@ TextStyle textStyle12SemiBoldShadowPurple = TextStyle(
   fontWeight: FontWeight.w600,
   color: AppColors.ShadowPurple,
   fontFamily: 'Cairo',
+);TextStyle textStyle12RegularGray = TextStyle(
+  fontSize: 12.sp,
+  fontWeight: FontWeight.w400,
+  color: AppColors.gray2,
+  fontFamily: 'Cairo',
 );
 

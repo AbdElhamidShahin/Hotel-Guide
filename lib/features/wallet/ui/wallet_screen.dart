@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hotel_guide/features/wallet/date/wallet_state.dart';
 import 'package:hotel_guide/features/wallet/ui/widget/custom_refund_history.dart';
 import 'package:hotel_guide/features/wallet/ui/widget/custom_topup_history.dart';
 import 'package:hotel_guide/features/wallet/ui/widget/custom_wallet_balance.dart';
 import 'package:hotel_guide/features/wallet/ui/widget/custom_wallet_history.dart';
 import '../../../core/helpers/widget/custom_appbar_widget.dart';
-import '../date/wallet_cubit.dart';
+import '../logic/wallet_cubit.dart';
+import '../logic/wallet_state.dart';
 
 class WalletScreen extends StatefulWidget {
   WalletScreen({super.key});
@@ -17,18 +17,29 @@ class WalletScreen extends StatefulWidget {
 }
 
 class _WalletScreenState extends State<WalletScreen> {
+  String currentView = 'history';
+
   @override
   void initState() {
     super.initState();
     context.read<WalletCubit>().fetchWalletData();
   }
 
-  String currentView = 'history';
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppbarWidget(onTap: () {}, name: "المحفظة"),
       body: BlocBuilder<WalletCubit, WalletState>(
+        buildWhen: (previous, current) =>
+            current is WalletLoading ||
+            current is WalletLoaded ||
+            current is WalletError,
         builder: (context, state) {
+          if (state is WalletLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (state is WalletError) {
+            return Center(child: Text(state.message));
+          }
           if (state is WalletLoaded) {
             return ListView(
               physics: const BouncingScrollPhysics(),
@@ -41,11 +52,8 @@ class _WalletScreenState extends State<WalletScreen> {
                 SizedBox(height: 30.h),
               ],
             );
-          } else if (state is WalletLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else {
-            return Center(child: Text("حدث خطأ ما"));
           }
+          return const SizedBox.shrink();
         },
       ),
     );

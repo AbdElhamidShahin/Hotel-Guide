@@ -4,11 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hotel_guide/core/theme/app_theme.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
-
 import '../../../../core/helpers/custom_user_avatar.dart';
 import '../../../../core/helpers/local_storage_account.dart';
 import '../../../../core/network/model/profile_model.dart';
-import 'custom_topup_history.dart';
 
 class CustomWalletBalance extends StatefulWidget {
   final Function(String) onTabChanged;
@@ -17,11 +15,13 @@ class CustomWalletBalance extends StatefulWidget {
     required this.onTabChanged,
     required this.profileModel,
     this.name,
-    this.imageUrl, this.currentImageFile,
+    this.imageUrl,
+    this.currentImageFile,
   });
   final UserProfileModel profileModel;
   final String? name;
-  final String? imageUrl;final File? currentImageFile;
+  final String? imageUrl;
+  final File? currentImageFile;
   @override
   State<CustomWalletBalance> createState() => _CustomWalletBalanceState();
 }
@@ -29,14 +29,15 @@ class CustomWalletBalance extends StatefulWidget {
 class _CustomWalletBalanceState extends State<CustomWalletBalance> {
   String? name;
   String? image;
+  String _activeTab = 'history';
 
   @override
   void initState() {
     super.initState();
-    loadUserData();
+    _loadUserData();
   }
 
-  Future<void> loadUserData() async {
+  Future<void> _loadUserData() async {
     final userData = await UserDataManager.loadUserData();
     if (mounted) {
       setState(() {
@@ -44,6 +45,11 @@ class _CustomWalletBalanceState extends State<CustomWalletBalance> {
         image = userData['image'] ?? widget.imageUrl;
       });
     }
+  }
+
+  void _switchTab(String tab) {
+    setState(() => _activeTab = tab);
+    widget.onTabChanged(tab);
   }
 
   @override
@@ -139,42 +145,33 @@ class _CustomWalletBalanceState extends State<CustomWalletBalance> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        _CustomCoulmnWallet(
-                          "assets/icons/refresh-circle.svg",
-                          "سجل المعاملات",
-                          selectedPayment == 'history',
-                          () {
-                            setState(() => selectedPayment = 'history');
-                            widget.onTabChanged('history');
-                          },
+                        _TabButton(
+                          icon: 'assets/icons/refresh-circle.svg',
+                          label: 'سجل المعاملات',
+                          isActive: _activeTab == 'history',
+                          onTap: () => _switchTab('history'),
                         ),
                         Container(
                           height: 32.h,
                           color: Colors.white,
                           width: 1.5,
                         ),
-                        _CustomCoulmnWallet(
-                          "assets/icons/money-recive.svg",
-                          "الإسترداد",
-                          selectedPayment == 'refund',
-                          () {
-                            setState(() => selectedPayment = 'refund');
-                            widget.onTabChanged('refund');
-                          },
+                        _TabButton(
+                          icon: 'assets/icons/money-recive.svg',
+                          label: 'الإسترداد',
+                          isActive: _activeTab == 'refund',
+                          onTap: () => _switchTab('refund'),
                         ),
                         Container(
                           height: 32.h,
                           color: Colors.white,
                           width: 1.5,
                         ),
-                        _CustomCoulmnWallet(
-                          "assets/icons/empty-wallet-add.svg",
-                          "شحن رصيد",
-                          selectedPayment == 'topup',
-                          () {
-                            setState(() => selectedPayment = 'topup');
-                            widget.onTabChanged('topup');
-                          },
+                        _TabButton(
+                          icon: 'assets/icons/empty-wallet-add.svg',
+                          label: 'شحن رصيد',
+                          isActive: _activeTab == 'topup',
+                          onTap: () => _switchTab('topup'),
                         ),
                       ],
                     ),
@@ -191,29 +188,38 @@ class _CustomWalletBalanceState extends State<CustomWalletBalance> {
   }
 }
 
-GestureDetector _CustomCoulmnWallet(
-  String image,
-  String title,
-  bool selected,
-  VoidCallback onTap,
-) {
-  return GestureDetector(
-    onTap: onTap,
-    child: Column(
-      children: [
-        SvgPicture.asset(
-          image,
-          color: selected ? AppColors.AccentsPurple : AppColors.white,
-        ),
+class _TabButton extends StatelessWidget {
+  const _TabButton({
+    required this.icon,
+    required this.label,
+    required this.isActive,
+    required this.onTap,
+  });
+  final String icon;
+  final String label;
+  final bool isActive;
+  final VoidCallback onTap;
 
-        SizedBox(height: 12.h),
-        Text(
-          title,
-          style: textStyle16RegularGray.copyWith(
-            color: selected ? AppColors.AccentsPurple : AppColors.white,
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          SvgPicture.asset(
+            icon,
+            // ignore: deprecated_member_use
+            color: isActive ? AppColors.AccentsPurple : AppColors.white,
           ),
-        ),
-      ],
-    ),
-  );
+          SizedBox(height: 12.h),
+          Text(
+            label,
+            style: textStyle16RegularGray.copyWith(
+              color: isActive ? AppColors.AccentsPurple : AppColors.white,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

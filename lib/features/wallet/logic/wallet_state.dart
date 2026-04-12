@@ -1,0 +1,34 @@
+import '../../../core/network/model/profile_model.dart';
+
+abstract class WalletState {}
+
+class WalletInitial extends WalletState {}
+
+class WalletLoading extends WalletState {}
+
+class WalletLoaded extends WalletState {
+  final UserProfileModel userProfile;
+  final List<Map<String, dynamic>> transactions;
+
+  WalletLoaded(this.userProfile, this.transactions);
+}
+
+class WalletError extends WalletState {
+  final String message;
+  WalletError(this.message);
+}
+
+// ── Top-Up states ─────────────────────────────────────────────────────────────
+// Separate states so the wallet data stays visible while top-up is in progress.
+
+class WalletTopUpLoading extends WalletState {}
+
+class WalletTopUpSuccess extends WalletState {
+  final double newBalance;
+  WalletTopUpSuccess(this.newBalance);
+}
+
+class WalletTopUpError extends WalletState {
+  final String message;
+  WalletTopUpError(this.message);
+}
