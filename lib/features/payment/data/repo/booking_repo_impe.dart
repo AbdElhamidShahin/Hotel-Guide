@@ -38,6 +38,9 @@ class BookingRepoImpl implements BookingRepository {
       final bookingWithUser = booking.copyWith(userId: user.id);
 
       switch (bookingWithUser.paymentMethod) {
+      // 'wallet' is the value sent from BookingDetailsPage._onWalletTap
+      // 'AQUA'  is the value set by BookingCubit.changeWallet when user picks AQUA wallet
+        case 'wallet':
         case 'AQUA':
           await _processWalletPayment(bookingWithUser);
 
@@ -72,11 +75,84 @@ class BookingRepoImpl implements BookingRepository {
       throw const PostgrestException(message: 'عذراً، رصيد محفظتك غير كافٍ.');
     }
 
-    // RPC handles: booking insert + wallet deduct + transaction record + notification
-    await _supabase.rpc(
-      AppRpcNames.processHotelBooking,
-      params: booking.toRpcParams(),
+    // Try RPC first; fall back to manual if it doesn't exist yet
+    try {
+      await _supabase.rpc(
+        AppRpcNames.processHotelBooking,
+        params: booking.toRpcParams(),
+      );
+    } on PostgrestException catch (e) {
+      if (e.code == 'PGRST202' || e.message.contains('does not exist')) {
+        debugPrint('⚠️  process_hotel_booking RPC not found — using manual fallback.');
+        await _processWalletPaymentManual(booking);
+      } else {
+        rethrow;
+      }
+    }
+  }
+
+  /// Manual fallback for wallet payment until the RPC is deployed.
+  Future<void> _processWalletPaymentManual(BookingModel booking) async {
+    // 1. Deduct wallet balance
+    await _supabase.rpc('rpc_decrement_wallet', params: {
+      'p_user_id': booking.userId,
+      'p_amount': booking.totalAmount,
+    }).catchError((_) async {
+      // Ultra-fallback: direct update
+      final profileData = await _supabase
+          .from(AppTableNames.profiles)
+          .select('wallet_balance')
+          .eq('id', booking.userId)
+          .single();
+      final current = (profileData['wallet_balance'] as num).toDouble();
+      await _supabase
+          .from(AppTableNames.profiles)
+          .update({'wallet_balance': current - booking.totalAmount})
+          .eq('id', booking.userId);
+    });
+
+    // 2. Create booking
+    final bookingRow = await _supabase
+        .from(AppTableNames.bookings)
+        .insert({
+      'user_id': booking.userId,
+      'hotel_name': booking.hotelName,
+      'room_id': booking.roomId,
+      'total_amount': booking.totalAmount,
+      'check_in': booking.startDate.toIso8601String(),
+      'check_out': booking.endDate.toIso8601String(),
+      'payment_method': 'wallet',
+      'status': 'confirmed',
+    })
+        .select('id')
+        .single();
+
+    // 3. Transaction record
+    await _supabase.from(AppTableNames.walletTransactions).insert({
+      'user_id': booking.userId,
+      'amount': -booking.totalAmount,
+      'transaction_type': 'payment',
+      'type': 'payment',
+      'status': 'completed',
+      'description': 'حجز في ${booking.hotelName} عبر المحفظة',
+      'hotel_name': booking.hotelName,
+      'booking_id': bookingRow['id'],
+      'booking_date': booking.startDate.toIso8601String(),
+      'created_at': DateTime.now().toIso8601String(),
+    });
+
+    // 4. Notification
+    final notification = NotificationModel(
+      title: 'عملية حجز ناجحة ✅',
+      body:
+      'تم تأكيد حجزك في ${booking.hotelName} بنجاح عبر المحفظة الإلكترونية.\n'
+          'المبلغ المخصوم: ${booking.totalAmount.toStringAsFixed(2)} EGP',
+      time: DateTime.now(),
+      type: NotificationType.success,
     );
+    await _supabase
+        .from(AppTableNames.notifications)
+        .insert(notification.toJson(booking.userId));
   }
 
   // ── Card Payment ──────────────────────────────────────────────────────────
@@ -126,16 +202,22 @@ class BookingRepoImpl implements BookingRepository {
     await _supabase.from(AppTableNames.walletTransactions).insert({
       'user_id': userId,
       'amount': booking.totalAmount,
-      'type': 'card_payment',
-      'description': 'حجز في ${booking.hotelName}',
+      'transaction_type': 'payment',
+      'type': 'payment',
+      'status': 'completed',
+      'description': 'حجز في ${booking.hotelName} عبر البطاقة البنكية',
+      'hotel_name': booking.hotelName,
       'booking_id': bookingRow['id'],
+      'booking_date': booking.startDate.toIso8601String(),
       'created_at': DateTime.now().toIso8601String(),
     });
 
     // 3. Notification
     final notification = NotificationModel(
       title: 'عملية حجز ناجحة ✅',
-      body: 'تم تأكيد حجزك في ${booking.hotelName} بنجاح عبر البطاقة البنكية.',
+      body:
+      'تم تأكيد حجزك في ${booking.hotelName} بنجاح عبر البطاقة البنكية.\n'
+          'المبلغ المدفوع: ${booking.totalAmount.toStringAsFixed(2)} EGP',
       time: DateTime.now(),
       type: NotificationType.success,
     );

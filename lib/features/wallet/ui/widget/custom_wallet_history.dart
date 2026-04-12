@@ -47,7 +47,17 @@ class CustomWalletHistory extends StatelessWidget {
                 itemCount: state.transactions.length,
                 itemBuilder: (context, index) {
                   final trx = state.transactions[index];
-                  final booking = trx['bookings'];
+                  // 'bookings' is the joined relation from fetchWalletData
+                  final booking = trx['bookings'] as Map<String, dynamic>?;
+                  final transactionType =
+                      trx['transaction_type'] ?? trx['type'] ?? 'payment';
+                  final isTopUp = transactionType == 'top_up';
+                  final amount = (trx['amount'] as num).toDouble().abs();
+                  final dateStr = (trx['created_at'] as String).substring(0, 10);
+                  final hotelName = booking != null
+                      ? booking['hotel_name'] as String?
+                      : trx['hotel_name'] as String?;
+
                   return Padding(
                     padding: EdgeInsets.symmetric(
                       horizontal: 16.w,
@@ -64,41 +74,41 @@ class CustomWalletHistory extends StatelessWidget {
                       child: Column(
                         children: [
                           CustomDetailRow(
-                            "حجز",
-                            ":نوع العملية",
-                            "assets/icons/category.svg",
+                            isTopUp ? 'شحن رصيد' : 'دفع حجز',
+                            ':نوع العملية',
+                            isTopUp
+                                ? 'assets/icons/empty-wallet-add.svg'
+                                : 'assets/icons/dollar-circle.svg',
+                            isTopUp ? AppColors.Green : AppColors.primary,
+                          ),
+                          if (!isTopUp && hotelName != null) ...[
+                            SizedBox(height: 12.h),
+                            CustomDetailRow(
+                              hotelName,
+                              ':اسم الفندق',
+                              'assets/icons/Hotel.svg',
+                              AppColors.RoyalPurple,
+                            ),
+                          ],
+                          SizedBox(height: 12.h),
+                          CustomDetailRow(
+                            dateStr,
+                            ':التاريخ',
+                            'assets/icons/calendar-tick.svg',
                             AppColors.primary,
                           ),
                           SizedBox(height: 12.h),
                           CustomDetailRow(
-                            booking != null
-                                ? booking['hotel_name']
-                                : 'معاملة عامة',
-                            ":اسم الفندق",
-                            "assets/icons/hotel.svg",
-                            AppColors.RoyalPurple,
-                          ),
-                          SizedBox(height: 12.h),
-                          CustomDetailRow(
-                            booking != null
-                                ? booking['start_date']
-                                : trx['created_at'].toString().substring(0, 10),
-                            ":التاريخ",
-                            "assets/icons/calendar.svg",
+                            '${amount.toStringAsFixed(2)} EGP',
+                            ':المبلغ',
+                            'assets/icons/dollar-circle.svg',
                             AppColors.primary,
                           ),
                           SizedBox(height: 12.h),
                           CustomDetailRow(
-                            "${trx['amount'].abs()} EGP",
-                            ":المبلغ",
-                            "assets/icons/money.svg",
-                            AppColors.primary,
-                          ),
-                          SizedBox(height: 12.h),
-                          CustomDetailRow(
-                            "مكتملة",
-                            ":الحالة",
-                            "assets/icons/tick-circle.svg",
+                            trx['status'] == 'completed' ? 'مكتملة' : 'معلقة',
+                            ':الحالة',
+                            'assets/icons/tick-circle.svg',
                             AppColors.Green,
                           ),
                         ],

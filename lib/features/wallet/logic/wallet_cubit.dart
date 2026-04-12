@@ -16,11 +16,9 @@ class WalletCubit extends Cubit<WalletState> {
   WalletCubit({
     required SupabaseClient supabase,
     required StripeService stripeService,
-  })  : _supabase = supabase,
-        _stripeService = stripeService,
-        super(WalletInitial());
-
-
+  }) : _supabase = supabase,
+       _stripeService = stripeService,
+       super(WalletInitial());
 
   Future<void> fetchWalletData() async {
     emit(WalletLoading());
@@ -37,19 +35,20 @@ class WalletCubit extends Cubit<WalletState> {
 
       final transactionsData = await _supabase
           .from(AppTableNames.walletTransactions)
-          .select()
+          .select('*, bookings(hotel_name, check_in, check_out)')
           .eq('user_id', userId)
           .order('created_at', ascending: false);
 
-      emit(WalletLoaded(
-        userProfile,
-        List<Map<String, dynamic>>.from(transactionsData),
-      ));
+      emit(
+        WalletLoaded(
+          userProfile,
+          List<Map<String, dynamic>>.from(transactionsData),
+        ),
+      );
     } catch (e) {
       emit(WalletError('فشل في تحميل بيانات المحفظة'));
     }
   }
-
 
   Future<void> topUpWallet({required double amount}) async {
     final currentState = state;
@@ -58,8 +57,9 @@ class WalletCubit extends Cubit<WalletState> {
     emit(WalletTopUpLoading());
 
     try {
-      final customerId = await _stripeService
-          .getOrCreateStripeCustomerId(currentState.userProfile);
+      final customerId = await _stripeService.getOrCreateStripeCustomerId(
+        currentState.userProfile,
+      );
 
       await _stripeService.makePayment(
         paymentIntentInputModel: PaymentIntentInputModel(
@@ -90,10 +90,10 @@ class WalletCubit extends Cubit<WalletState> {
     String? hotelName,
   }) async {
     try {
-      await _supabase.rpc(AppRpcNames.topUpWallet, params: {
-        'p_user_id': userId,
-        'p_amount': amount,
-      });
+      await _supabase.rpc(
+        AppRpcNames.topUpWallet,
+        params: {'p_user_id': userId, 'p_amount': amount},
+      );
     } on PostgrestException catch (e) {
       if (e.code == 'PGRST202' || e.message.contains('does not exist')) {
         debugPrint('⚠️  top_up_wallet RPC not found — using manual fallback');
@@ -116,19 +116,22 @@ class WalletCubit extends Cubit<WalletState> {
     final currentBalance = (profile['wallet_balance'] as num).toDouble();
     await _supabase
         .from(AppTableNames.profiles)
-        .update({'wallet_balance': currentBalance + amount}).eq('id', userId);
+        .update({'wallet_balance': currentBalance + amount})
+        .eq('id', userId);
 
     await _supabase.from(AppTableNames.walletTransactions).insert({
       'user_id': userId,
       'amount': amount,
-      'type': 'top_up',
+      'transaction_type': 'topup',
+      'status': 'completed',
       'description': 'شحن رصيد عبر البطاقة البنكية',
       'created_at': DateTime.now().toIso8601String(),
     });
 
     final notification = NotificationModel(
       title: 'تم شحن الرصيد ✅',
-      body: 'تمت إضافة ${amount.toStringAsFixed(2)} جنيه إلى محفظتك بنجاح.',
+      body:
+          'تمت إضافة ${amount.toStringAsFixed(2)} EGP إلى محفظتك بنجاح عبر البطاقة البنكية.',
       time: DateTime.now(),
       type: NotificationType.success,
     );

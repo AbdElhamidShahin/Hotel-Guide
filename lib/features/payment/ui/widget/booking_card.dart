@@ -31,18 +31,24 @@ class BookingCard extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(15.r),
-              child: Image.network(
+              child:
+
+
+              room.gallery.isNotEmpty
+                  ? Image.network(
                 room.gallery[0],
                 width: 100.w,
                 height: 100.w,
                 fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => Image.asset(
-                  'assets/images/onBoardingImage.jpg',
-                  width: 100.w,
-                  height: 100.w,
-                  fit: BoxFit.cover,
-                ),
+              )
+                  : Image.asset(
+                "assets/images/onBoardingImage.jpg",
+                width: 100.w,
+                height: 100.w,
+                fit: BoxFit.cover,
               ),
+
+
             ),
             SizedBox(width: 16.w),
 
