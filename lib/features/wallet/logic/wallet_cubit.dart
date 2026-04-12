@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/units/stripe_service.dart';
@@ -10,13 +9,20 @@ class WalletCubit extends Cubit<WalletState> {
   final WalletRepository _repo;
   final StripeService _stripe;
 
-  WalletCubit(this._repo, this._stripe) : super(WalletInitial());
+  WalletCubit({
+    required WalletRepository repo,
+    required StripeService stripe,
+  })  : _repo = repo,
+        _stripe = stripe,
+        super(WalletInitial());
+
+  // ── Fetch ─────────────────────────────────────────────────────────────────
 
   Future<void> fetchWalletData() async {
     emit(WalletLoading());
     final result = await _repo.getWalletDetails();
     result.fold(
-          (f) => emit(WalletError(f.errorMessage)),
+          (failure) => emit(WalletError(failure.errorMessage)),
           (data) => emit(WalletLoaded(
         userProfile: data.profile,
         paymentTransactions: data.payments,
@@ -25,27 +31,31 @@ class WalletCubit extends Cubit<WalletState> {
     );
   }
 
+  // ── Top-Up ────────────────────────────────────────────────────────────────
+
   Future<void> topUpWallet({required double amount}) async {
     if (state is! WalletLoaded) return;
     final profile = (state as WalletLoaded).userProfile;
 
     emit(WalletTopUpLoading());
     try {
-      // Stripe logic
+      // 1. Stripe payment
       final customerId = await _stripe.getOrCreateStripeCustomerId(profile);
-      await _stripe.makePayment(paymentIntentInputModel: PaymentIntentInputModel(
-        amount: (amount * 100).toInt().toString(),
-        currency: 'egp',
-        customerId: customerId,
-      ));
+      await _stripe.makePayment(
+        paymentIntentInputModel: PaymentIntentInputModel(
+          amount: (amount * 100).toInt().toString(),
+          currency: 'egp',
+          customerId: customerId,
+        ),
+      );
 
-      // Repository logic
+      // 2. Update DB via repo (RPC or manual fallback)
       final result = await _repo.topUpBalance(amount);
       result.fold(
-            (f) => emit(WalletTopUpError(f.errorMessage)),
+            (failure) => emit(WalletTopUpError(failure.errorMessage)),
             (_) {
           emit(WalletTopUpSuccess(profile.walletBalance + amount));
-          fetchWalletData();
+          fetchWalletData(); // refresh list
         },
       );
     } catch (e) {

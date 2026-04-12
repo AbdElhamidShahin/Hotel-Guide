@@ -6,6 +6,9 @@ class WalletInitial extends WalletState {}
 
 class WalletLoading extends WalletState {}
 
+/// Two SEPARATE lists — UI must never mix them:
+/// [paymentTransactions] → type = 'payment'            (حجوزات)
+/// [topUpTransactions]   → type = 'top_up' / 'recharge' (شحن رصيد)
 class WalletLoaded extends WalletState {
   final UserProfileModel userProfile;
   final List<Map<String, dynamic>> paymentTransactions;

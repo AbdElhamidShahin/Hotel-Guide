@@ -1,68 +1,63 @@
+import 'dart:convert';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
 import '../../../../core/network/model/hotel_model.dart';
 import 'favorite_state.dart';
 
 class FavoriteCubit extends Cubit<FavoriteState> {
+  static const _prefsKey = 'favorites';
+
   FavoriteCubit() : super(FavoriteInitial()) {
     loadFavorites();
   }
 
   List<HotelModel> _favorites = [];
-  List<HotelModel> get favorites => _favorites;
 
-  bool isFavorite(HotelModel hotel) {
-    return _favorites.any((item) => item.id == hotel.id);
-  }
+  /// Synchronous check — safe to call inside BlocBuilder
+  bool isFavorite(HotelModel hotel) =>
+      _favorites.any((h) => h.id == hotel.id);
+
+  // ── Toggle ────────────────────────────────────────────────────────────────
 
   Future<void> toggleFavorite(HotelModel hotel) async {
-    try {
-      if (isClosed) return;
+    if (isClosed) return;
 
-      final bool exists = isFavorite(hotel);
-      final List<HotelModel> updatedFavorites = List.from(_favorites);
-
-      if (exists) {
-        updatedFavorites.removeWhere((item) => item.id == hotel.id);
-      } else {
-        updatedFavorites.add(hotel);
-      }
-
-      _favorites = updatedFavorites;
-
-      final prefs = await SharedPreferences.getInstance();
-      final List<String> favoriteList =
-      _favorites.map((e) => jsonEncode(e.toJson())).toList();
-      await prefs.setStringList('favorites', favoriteList);
-
-      if (!isClosed) {
-        emit(FavoriteUpdated(List.from(_favorites)));
-      }
-
-    } catch (error) {
-      if (!isClosed) {
-        emit(FavoriteError('Failed to toggle favorite'));
-      }
+    if (isFavorite(hotel)) {
+      _favorites = _favorites.where((h) => h.id != hotel.id).toList();
+    } else {
+      _favorites = [..._favorites, hotel];
     }
+
+    // Emit IMMEDIATELY — UI rebuilds before the async persist completes
+    emit(FavoriteUpdated(List.unmodifiable(_favorites)));
+
+    // Persist in background — errors are swallowed so UI stays consistent
+    _persist().catchError((_) {});
   }
 
+  // ── Load ──────────────────────────────────────────────────────────────────
 
   Future<void> loadFavorites() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final data = prefs.getStringList('favorites');
-
-      if (data != null) {
-        _favorites = data
-            .map((e) => HotelModel.fromJson(jsonDecode(e)))
-            .toList();
-        emit(FavoriteUpdated(List.from(_favorites)));
-      } else {
-        emit(FavoriteUpdated([]));
-      }
-    } catch (e) {
-      emit(FavoriteError('Failed to load favorites'));
+      final raw = prefs.getStringList(_prefsKey) ?? [];
+      _favorites = raw
+          .map((s) => HotelModel.fromJson(jsonDecode(s) as Map<String, dynamic>))
+          .toList();
+      if (!isClosed) emit(FavoriteUpdated(List.unmodifiable(_favorites)));
+    } catch (_) {
+      _favorites = [];
+      if (!isClosed) emit(FavoriteUpdated(const []));
     }
+  }
+
+  // ── Private ───────────────────────────────────────────────────────────────
+
+  Future<void> _persist() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList(
+      _prefsKey,
+      _favorites.map((h) => jsonEncode(h.toJson())).toList(),
+    );
   }
 }

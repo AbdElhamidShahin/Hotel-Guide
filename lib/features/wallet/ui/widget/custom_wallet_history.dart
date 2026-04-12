@@ -14,7 +14,7 @@ class CustomWalletHistory extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<WalletCubit, WalletState>(
       buildWhen: (_, s) =>
-      s is WalletLoading || s is WalletLoaded || s is WalletError,
+          s is WalletLoading || s is WalletLoaded || s is WalletError,
       builder: (context, state) {
         if (state is WalletLoading) {
           return const Padding(
@@ -33,9 +33,9 @@ class CustomWalletHistory extends StatelessWidget {
         if (state is WalletLoaded) {
           final txns = state.paymentTransactions;
           return RefreshIndicator(
-              onRefresh: () async {
-                await context.read<WalletCubit>().fetchWalletData();
-              },
+            onRefresh: () async {
+              await context.read<WalletCubit>().fetchWalletData();
+            },
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
@@ -60,11 +60,11 @@ class CustomWalletHistory extends StatelessWidget {
                   )
                 else
                   ListView.builder(
-                                      shrinkWrap: true,
-                                      physics: const NeverScrollableScrollPhysics(),
-                                      itemCount: txns.length,
-                                      itemBuilder: (_, i) => _PaymentCard(trx: txns[i]),
-                                    ),
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: txns.length,
+                    itemBuilder: (_, i) => _PaymentCard(trx: txns[i]),
+                  ),
               ],
             ),
           );
