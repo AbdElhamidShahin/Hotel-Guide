@@ -1,9 +1,5 @@
-import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:flutter_stripe/flutter_stripe.dart';
-
-// Core
 import '../../features/home/data/repo/home_repo.dart';
 import '../../features/login/data/repo/login_repoImpl.dart';
 import '../../features/login/data/repo/login_repostry.dart';
@@ -17,6 +13,8 @@ import '../../features/room/data/home_repo_impl.dart';
 import '../../features/search/data/repo/search_repo_iplm.dart';
 import '../../features/sign_up/data/repo/sign_up_repo.dart';
 import '../../features/sign_up/data/repo/sign_up_repoImpl.dart';
+import '../../features/wallet/data/wallet_repo.dart';
+import '../../features/wallet/data/wallet_repo_imple.dart';
 import '../../features/wallet/logic/wallet_cubit.dart';
 import '../network/service/SupabaseService.dart';
 import '../units/api_service.dart';
@@ -84,15 +82,16 @@ Future<void> setupGetIt() async {
     ),
   );
 
-  // ── Wallet ────────────────────────────────────────────────────────────────
-  // ✅ ARCH FIX: WalletCubit now receives injected deps — no more Supabase.instance inside
-  getIt.registerFactory<WalletCubit>(
-    () => WalletCubit(
-      supabase: getIt<SupabaseClient>(),
-      stripeService: getIt<StripeService>(),
-    ),
+  getIt.registerLazySingleton<WalletRepository>(
+    () => WalletRepositoryImpl(getIt<SupabaseClient>()),
   );
 
+  getIt.registerFactory<WalletCubit>(
+    () => WalletCubit(
+      getIt<WalletRepository>(),
+      getIt<StripeService>(),
+    ),
+  );
   // ── Others ────────────────────────────────────────────────────────────────
   getIt.registerFactory<FavoriteCubit>(() => FavoriteCubit());
   getIt.registerFactory<NotificationCubit>(() => NotificationCubit());

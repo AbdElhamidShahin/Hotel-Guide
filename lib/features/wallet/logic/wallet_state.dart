@@ -8,18 +8,20 @@ class WalletLoading extends WalletState {}
 
 class WalletLoaded extends WalletState {
   final UserProfileModel userProfile;
-  final List<Map<String, dynamic>> transactions;
+  final List<Map<String, dynamic>> paymentTransactions;
+  final List<Map<String, dynamic>> topUpTransactions;
 
-  WalletLoaded(this.userProfile, this.transactions);
+  WalletLoaded({
+    required this.userProfile,
+    required this.paymentTransactions,
+    required this.topUpTransactions,
+  });
 }
 
 class WalletError extends WalletState {
   final String message;
   WalletError(this.message);
 }
-
-// ── Top-Up states ─────────────────────────────────────────────────────────────
-// Separate states so the wallet data stays visible while top-up is in progress.
 
 class WalletTopUpLoading extends WalletState {}
 

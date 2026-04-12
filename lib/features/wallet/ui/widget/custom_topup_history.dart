@@ -17,15 +17,9 @@ class CustomTopupHistory extends StatefulWidget {
 }
 
 class _CustomTopupHistoryState extends State<CustomTopupHistory> {
-  String _selectedPayment = 'card';
   double _selectedAmount = 100;
-
-  final TextEditingController _amountController = TextEditingController(
-    text: '100',
-  );
+  final _amountController = TextEditingController(text: '100');
   final _formKey = GlobalKey<FormState>();
-
-  // Quick-select shortcut chips
   static const _shortcuts = [50.0, 100.0, 200.0, 500.0, 1000.0];
 
   @override
@@ -34,11 +28,10 @@ class _CustomTopupHistoryState extends State<CustomTopupHistory> {
     super.dispose();
   }
 
-  /// Syncs both the chip selection and the text field together
-  void _setAmountFromChip(double amount) {
+  void _setFromChip(double v) {
     setState(() {
-      _selectedAmount = amount;
-      _amountController.text = amount.toInt().toString();
+      _selectedAmount = v;
+      _amountController.text = v.toInt().toString();
     });
   }
 
@@ -47,7 +40,25 @@ class _CustomTopupHistoryState extends State<CustomTopupHistory> {
     return BlocListener<WalletCubit, WalletState>(
       listener: (context, state) {
         if (state is WalletTopUpSuccess) {
-          _showSuccessDialog(state.newBalance);
+          Future.delayed(const Duration(milliseconds: 800), () {
+            context.read<WalletCubit>().fetchWalletData();
+          });
+          showDialog(
+            context: context,
+            builder: (_) => AlertDialog(
+              title: const Text('تم شحن الرصيد ✅'),
+              content: Text(
+                'تمت إضافة ${_selectedAmount.toStringAsFixed(2)} EGP بنجاح.\n'
+                'رصيدك الجديد: ${state.newBalance.toStringAsFixed(2)} EGP',
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('حسناً'),
+                ),
+              ],
+            ),
+          );
         } else if (state is WalletTopUpError) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.message), backgroundColor: Colors.red),
@@ -57,9 +68,8 @@ class _CustomTopupHistoryState extends State<CustomTopupHistory> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          // ── Section title ─────────────────────────────────────────────────
           Padding(
-            padding: EdgeInsets.only(right: 24.w, top: 50.h, bottom: 24.h),
+            padding: EdgeInsets.only(right: 24.w, top: 32.h, bottom: 20.h),
             child: Text(
               'شحن رصيد',
               style: textStyle20BoldShadowPurple.copyWith(
@@ -68,7 +78,7 @@ class _CustomTopupHistoryState extends State<CustomTopupHistory> {
             ),
           ),
 
-          // ── Amount input area ─────────────────────────────────────────────
+          // Amount input
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.w),
             child: Form(
@@ -76,7 +86,6 @@ class _CustomTopupHistoryState extends State<CustomTopupHistory> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  // Dynamic text field
                   Text(
                     'أدخل المبلغ (EGP)',
                     style: textStyle16RegularGray.copyWith(
@@ -116,31 +125,24 @@ class _CustomTopupHistoryState extends State<CustomTopupHistory> {
                         borderSide: const BorderSide(color: Colors.red),
                       ),
                     ),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
+                    validator: (v) {
+                      if (v == null || v.trim().isEmpty)
                         return 'يرجى إدخال المبلغ';
-                      }
-                      final parsed = double.tryParse(value.trim());
-                      if (parsed == null || parsed <= 0) {
-                        return 'يرجى إدخال مبلغ صحيح أكبر من صفر';
-                      }
+                      final p = double.tryParse(v.trim());
+                      if (p == null || p <= 0) return 'مبلغ غير صحيح';
                       return null;
                     },
-                    onChanged: (value) {
-                      final parsed = double.tryParse(value.trim());
-                      if (parsed != null && parsed > 0) {
-                        setState(() => _selectedAmount = parsed);
-                      }
+                    onChanged: (v) {
+                      final p = double.tryParse(v.trim());
+                      if (p != null && p > 0)
+                        setState(() => _selectedAmount = p);
                     },
                   ),
-
-                  SizedBox(height: 16.h),
-
-                  // Quick-select chips
+                  SizedBox(height: 12.h),
                   Text(
                     'أو اختر مبلغاً سريعاً',
                     style: textStyle16RegularGray.copyWith(
-                      color: AppColors.black7.withOpacity(0.6),
+                      color: AppColors.black7.withOpacity(0.5),
                       fontSize: 13,
                     ),
                   ),
@@ -148,12 +150,12 @@ class _CustomTopupHistoryState extends State<CustomTopupHistory> {
                   Wrap(
                     spacing: 8.w,
                     runSpacing: 8.h,
-                    children: _shortcuts.map((amount) {
-                      final isSelected =
-                          _selectedAmount == amount &&
-                          _amountController.text == amount.toInt().toString();
+                    children: _shortcuts.map((a) {
+                      final sel =
+                          _selectedAmount == a &&
+                          _amountController.text == a.toInt().toString();
                       return GestureDetector(
-                        onTap: () => _setAmountFromChip(amount),
+                        onTap: () => _setFromChip(a),
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 200),
                           padding: EdgeInsets.symmetric(
@@ -161,22 +163,20 @@ class _CustomTopupHistoryState extends State<CustomTopupHistory> {
                             vertical: 8.h,
                           ),
                           decoration: BoxDecoration(
-                            color: isSelected
+                            color: sel
                                 ? AppColors.primary
                                 : AppColors.ShadowPurple.withOpacity(0.08),
                             borderRadius: BorderRadius.circular(30.r),
                             border: Border.all(
-                              color: isSelected
+                              color: sel
                                   ? AppColors.primary
                                   : Colors.transparent,
                             ),
                           ),
                           child: Text(
-                            '${amount.toInt()} EGP',
+                            '${a.toInt()} EGP',
                             style: textStyle16RegularGray.copyWith(
-                              color: isSelected
-                                  ? Colors.white
-                                  : AppColors.black7,
+                              color: sel ? Colors.white : AppColors.black7,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -189,34 +189,15 @@ class _CustomTopupHistoryState extends State<CustomTopupHistory> {
             ),
           ),
 
-          SizedBox(height: 24.h),
+          SizedBox(height: 20.h),
 
-          // ── Payment method tiles ──────────────────────────────────────────
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.w),
-            child: PaymentTile(
-              title: 'المحفظة الإلكترونية',
-              selected: _selectedPayment == 'wallet',
-              onTap: () => setState(() => _selectedPayment = 'wallet'),
-              trailing: Container(
-                padding: EdgeInsets.all(12.r),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30.r),
-                  color: AppColors.ShadowPurple.withOpacity(0.1),
-                ),
-                child: SvgPicture.asset('assets/icons/empty-wallet.svg'),
-              ),
-            ),
-          ),
-
-          SizedBox(height: 16.h),
-
+          // Card tile
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.w),
             child: PaymentTile(
               title: 'البطاقة البنكية',
-              selected: _selectedPayment == 'card',
-              onTap: () => setState(() => _selectedPayment = 'card'),
+              selected: true,
+              onTap: () {},
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -228,31 +209,29 @@ class _CustomTopupHistoryState extends State<CustomTopupHistory> {
             ),
           ),
 
-          SizedBox(height: 32.h),
+          SizedBox(height: 24.h),
 
-          // ── Confirm button ────────────────────────────────────────────────
+          // Confirm button
           BlocBuilder<WalletCubit, WalletState>(
             builder: (context, state) {
-              final isLoading = state is WalletTopUpLoading;
+              final loading = state is WalletTopUpLoading;
               return Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.w),
                 child: SizedBox(
                   width: double.infinity,
                   height: 55.h,
                   child: ElevatedButton(
-                    onPressed: isLoading
-                        ? null
-                        : () => _onConfirmTopUp(context),
+                    onPressed: loading ? null : () => _onConfirm(context),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12.r),
                       ),
                     ),
-                    child: isLoading
+                    child: loading
                         ? const CircularProgressIndicator(color: Colors.white)
                         : Text(
-                            'شحن ${_selectedAmount.toStringAsFixed(_selectedAmount % 1 == 0 ? 0 : 2)} EGP',
+                            'شحن ${_selectedAmount % 1 == 0 ? _selectedAmount.toInt() : _selectedAmount.toStringAsFixed(2)} EGP',
                             style: textStyle20BoldShadowPurple.copyWith(
                               color: Colors.white,
                             ),
@@ -263,46 +242,131 @@ class _CustomTopupHistoryState extends State<CustomTopupHistory> {
             },
           ),
 
-          SizedBox(height: 24.h),
+          // Past top-up history
+          BlocBuilder<WalletCubit, WalletState>(
+            buildWhen: (_, s) =>
+                s is WalletLoading || s is WalletLoaded || s is WalletError,
+            builder: (context, state) {
+              if (state is! WalletLoaded || state.topUpTransactions.isEmpty) {
+                return const SizedBox.shrink();
+              }
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(
+                      right: 24.w,
+                      top: 32.h,
+                      bottom: 8.h,
+                    ),
+                    child: Text(
+                      'سجل عمليات الشحن',
+                      style: textStyle16BoldWhite.copyWith(
+                        color: AppColors.primary,
+                      ),
+                    ),
+                  ),
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: state.topUpTransactions.length,
+                    itemBuilder: (_, i) =>
+                        _TopUpCard(trx: state.topUpTransactions[i]),
+                  ),
+                ],
+              );
+            },
+          ),
+
+          SizedBox(height: 30.h),
         ],
       ),
     );
   }
 
-  void _onConfirmTopUp(BuildContext context) {
+  void _onConfirm(BuildContext context) {
     if (!_formKey.currentState!.validate()) return;
-
     final parsed = double.tryParse(_amountController.text.trim());
     if (parsed == null || parsed <= 0) return;
-
-    // Update _selectedAmount from field in case user typed manually
     _selectedAmount = parsed;
+    context.read<WalletCubit>().topUpWallet(amount: _selectedAmount);
+  }
+}
 
-    if (_selectedPayment == 'card') {
-      context.read<WalletCubit>().topUpWallet(amount: _selectedAmount);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('الشحن عبر المحافظ الأخرى قريباً!')),
-      );
-    }
+class _TopUpCard extends StatelessWidget {
+  final Map<String, dynamic> trx;
+  const _TopUpCard({required this.trx});
+
+  @override
+  Widget build(BuildContext context) {
+    final amount = (trx['amount'] as num? ?? 0).toDouble().abs();
+    final dateRaw = trx['created_at'] as String? ?? '';
+    final dateStr = dateRaw.length >= 10 ? dateRaw.substring(0, 10) : dateRaw;
+    final status = trx['status'] == 'completed' ? 'مكتملة' : 'معلقة';
+
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+      child: Container(
+        padding: EdgeInsets.all(16.r),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: AppColors.Green.withOpacity(.2)),
+          borderRadius: BorderRadius.circular(14.r),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.04),
+              blurRadius: 8,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Column(
+          children: [
+            _r(
+              'شحن رصيد',
+              ':نوع العملية',
+              'assets/icons/empty-wallet-add.svg',
+              AppColors.Green,
+            ),
+            SizedBox(height: 10.h),
+            _r(
+              dateStr,
+              ':التاريخ',
+              'assets/icons/calendar-tick.svg',
+              AppColors.primary,
+            ),
+            SizedBox(height: 10.h),
+            _r(
+              '+${amount.toStringAsFixed(2)} EGP',
+              ':المبلغ المضاف',
+              'assets/icons/dollar-circle.svg',
+              AppColors.Green,
+            ),
+            SizedBox(height: 10.h),
+            _r(
+              status,
+              ':الحالة',
+              'assets/icons/tick-circle.svg',
+              AppColors.Green,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
-  void _showSuccessDialog(double newBalance) {
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: const Text('تم شحن الرصيد ✅'),
-        content: Text(
-          'تمت إضافة ${_selectedAmount.toStringAsFixed(2)} EGP بنجاح.\n'
-          'رصيدك الجديد: ${newBalance.toStringAsFixed(2)} EGP',
+  Widget _r(String val, String label, String icon, Color color) {
+    return Row(
+      children: [
+        Text(val, style: textStyle16RegularGray.copyWith(color: color)),
+        const Spacer(),
+        Text(
+          label,
+          style: textStyle16RegularGray.copyWith(color: AppColors.primary),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('حسناً'),
-          ),
-        ],
-      ),
+        const SizedBox(width: 8),
+        SvgPicture.asset(icon, width: 18, height: 18),
+      ],
     );
   }
 }

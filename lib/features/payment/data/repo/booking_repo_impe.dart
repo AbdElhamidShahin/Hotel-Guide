@@ -1,5 +1,4 @@
 import 'package:dartz/dartz.dart';
-import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../core/constants/api_constants.dart';
 import '../../../../core/error/failure.dart';
@@ -7,19 +6,7 @@ import '../../../../core/network/model/booking_model.dart';
 import '../../../../core/network/model/notification_model.dart';
 import 'booking_repo.dart';
 
-/// ✅ FIX #3: Unified payment flow.
-///
-/// BEFORE:
-///   - Wallet  → called RPC `process_hotel_booking`  → saved booking + transaction + notification ✅
-///   - Card    → did a plain `insert` into `bookings`  → NO transaction, NO notification ❌
-///
-/// AFTER:
-///   Both methods go through Supabase RPCs so the database handles everything
-///   atomically (booking + transaction + notification in a single DB transaction).
-///
-/// REQUIRED: Create a `process_card_booking` RPC in Supabase that mirrors
-///           `process_hotel_booking` but skips the wallet-balance deduction.
-///           SQL template is included at the bottom of this file.
+/// Handles all booking-related data operations and payment coordination.
 class BookingRepoImpl implements BookingRepository {
   final SupabaseClient _supabase;
 
@@ -28,201 +15,112 @@ class BookingRepoImpl implements BookingRepository {
   @override
   Future<Either<Failure, void>> confirmBooking(BookingModel booking) async {
     try {
-      final user = _supabase.auth.currentUser;
-      if (user == null) {
-        return const Left(
-          ServerFailure(errorMessage: 'يرجى تسجيل الدخول أولاً لإتمام الحجز.'),
-        );
-      }
+      final userId = _supabase.auth.currentUser?.id;
+      if (userId == null) return const Left(ServerFailure(errorMessage: 'يرجى تسجيل الدخول أولاً.'));
 
-      final bookingWithUser = booking.copyWith(userId: user.id);
+      final fullBooking = booking.copyWith(userId: userId);
 
-      switch (bookingWithUser.paymentMethod) {
-      // 'wallet' is the value sent from BookingDetailsPage._onWalletTap
-      // 'AQUA'  is the value set by BookingCubit.changeWallet when user picks AQUA wallet
-        case 'wallet':
-        case 'AQUA':
-          await _processWalletPayment(bookingWithUser);
-
-        case 'card':
-          await _processCardPayment(bookingWithUser, user.id);
-
-        default:
-          return const Left(
-            ServerFailure(errorMessage: 'وسيلة الدفع المختارة غير مدعومة حالياً.'),
-          );
-      }
-
-      return const Right(null);
-    } on PostgrestException catch (e) {
-      return Left(ServerFailure(errorMessage: e.message));
+      // Routing logic based on payment method
+      return await _processPaymentByType(fullBooking);
     } catch (e) {
-      return Left(ServerFailure(errorMessage: 'حدث خطأ غير متوقع: ${e.toString()}'));
+      return Left(ServerFailure(errorMessage: e.toString()));
     }
   }
 
-  // ── Wallet Payment ────────────────────────────────────────────────────────
+  /// Routes the booking to the specific payment processor.
+  Future<Either<Failure, void>> _processPaymentByType(BookingModel booking) async {
+    try {
+      if (booking.paymentMethod == 'wallet' || booking.paymentMethod == 'AQUA') {
+        await _executeWalletPayment(booking);
+      } else if (booking.paymentMethod == 'card') {
+        await _executeCardPayment(booking);
+      } else {
+        return const Left(ServerFailure(errorMessage: 'وسيلة الدفع غير مدعومة.'));
+      }
+      return const Right(null);
+    } on PostgrestException catch (e) {
+      return Left(ServerFailure(errorMessage: e.message));
+    }
+  }
 
-  Future<void> _processWalletPayment(BookingModel booking) async {
-    final profileData = await _supabase
-        .from(AppTableNames.profiles)
-        .select('wallet_balance')
-        .eq('id', booking.userId)
-        .single();
-
-    final balance = (profileData['wallet_balance'] as num).toDouble();
+  /// Validates balance and attempts wallet deduction via RPC or manual fallback.
+  Future<void> _executeWalletPayment(BookingModel booking) async {
+    final balance = await _getUserBalance(booking.userId);
     if (balance < booking.totalAmount) {
       throw const PostgrestException(message: 'عذراً، رصيد محفظتك غير كافٍ.');
     }
 
-    // Try RPC first; fall back to manual if it doesn't exist yet
     try {
-      await _supabase.rpc(
-        AppRpcNames.processHotelBooking,
-        params: booking.toRpcParams(),
-      );
-    } on PostgrestException catch (e) {
-      if (e.code == 'PGRST202' || e.message.contains('does not exist')) {
-        debugPrint('⚠️  process_hotel_booking RPC not found — using manual fallback.');
-        await _processWalletPaymentManual(booking);
-      } else {
-        rethrow;
-      }
+      await _supabase.rpc(AppRpcNames.processHotelBooking, params: booking.toRpcParams());
+    } catch (e) {
+      // Fallback if the RPC is missing or fails specifically due to existence
+      await _performManualBookingUpdate(booking, 'wallet');
     }
   }
 
-  /// Manual fallback for wallet payment until the RPC is deployed.
-  Future<void> _processWalletPaymentManual(BookingModel booking) async {
-    // 1. Deduct wallet balance
-    await _supabase.rpc('rpc_decrement_wallet', params: {
-      'p_user_id': booking.userId,
-      'p_amount': booking.totalAmount,
-    }).catchError((_) async {
-      // Ultra-fallback: direct update
-      final profileData = await _supabase
-          .from(AppTableNames.profiles)
-          .select('wallet_balance')
-          .eq('id', booking.userId)
-          .single();
-      final current = (profileData['wallet_balance'] as num).toDouble();
-      await _supabase
-          .from(AppTableNames.profiles)
-          .update({'wallet_balance': current - booking.totalAmount})
-          .eq('id', booking.userId);
-    });
-
-    // 2. Create booking
-    final bookingRow = await _supabase
-        .from(AppTableNames.bookings)
-        .insert({
-      'user_id': booking.userId,
-      'hotel_name': booking.hotelName,
-      'room_id': booking.roomId,
-      'total_amount': booking.totalAmount,
-      'check_in': booking.startDate.toIso8601String(),
-      'check_out': booking.endDate.toIso8601String(),
-      'payment_method': 'wallet',
-      'status': 'confirmed',
-    })
-        .select('id')
-        .single();
-
-    // 3. Transaction record
-    await _supabase.from(AppTableNames.walletTransactions).insert({
-      'user_id': booking.userId,
-      'amount': -booking.totalAmount,
-      'transaction_type': 'payment',
-      'type': 'payment',
-      'status': 'completed',
-      'description': 'حجز في ${booking.hotelName} عبر المحفظة',
-      'hotel_name': booking.hotelName,
-      'booking_id': bookingRow['id'],
-      'booking_date': booking.startDate.toIso8601String(),
-      'created_at': DateTime.now().toIso8601String(),
-    });
-
-    // 4. Notification
-    final notification = NotificationModel(
-      title: 'عملية حجز ناجحة ✅',
-      body:
-      'تم تأكيد حجزك في ${booking.hotelName} بنجاح عبر المحفظة الإلكترونية.\n'
-          'المبلغ المخصوم: ${booking.totalAmount.toStringAsFixed(2)} EGP',
-      time: DateTime.now(),
-      type: NotificationType.success,
-    );
-    await _supabase
-        .from(AppTableNames.notifications)
-        .insert(notification.toJson(booking.userId));
-  }
-
-  // ── Card Payment ──────────────────────────────────────────────────────────
-
-  Future<void> _processCardPayment(BookingModel booking, String userId) async {
-    // Option A — Preferred: Use an RPC so everything is atomic in the DB.
-    //   The RPC `process_card_booking` should:
-    //     1. Insert into `bookings`
-    //     2. Insert into `wallet_transactions` (type = 'card_payment')
-    //     3. Insert into `notifications`
-    //
-    // Option B — Fallback if you haven't created the RPC yet:
-    //   Uncomment the manual block below and comment out the rpc() call.
-
+  /// High-level logic for card-based bookings.
+  Future<void> _executeCardPayment(BookingModel booking) async {
     try {
-      await _supabase.rpc(
-        AppRpcNames.processCardBooking,
-        params: booking.toRpcParams(),
-      );
-    } on PostgrestException catch (e) {
-      // Fallback: function doesn't exist yet — do it manually in a sequence.
-      if (e.code == 'PGRST202' || e.message.contains('does not exist')) {
-        debugPrint('⚠️  process_card_booking RPC not found — using manual fallback.');
-        await _processCardPaymentManual(booking, userId);
-      } else {
-        rethrow;
-      }
+      await _supabase.rpc(AppRpcNames.processCardBooking, params: booking.toRpcParams());
+    } catch (e) {
+      await _performManualBookingUpdate(booking, 'card');
     }
   }
 
-  /// Manual fallback (3 separate inserts) until the RPC is ready in Supabase.
-  /// Note: this is NOT atomic — if step 2 or 3 fails, step 1 already committed.
-  /// Create the RPC ASAP to replace this.
-  Future<void> _processCardPaymentManual(BookingModel booking, String userId) async {
-    // 1. Booking
+  /// Atomic manual update for when RPCs are unavailable.
+  Future<void> _performManualBookingUpdate(BookingModel b, String method) async {
+    // 1. If wallet, deduct balance
+    if (method == 'wallet') {
+      final current = await _getUserBalance(b.userId);
+      await _supabase.from(AppTableNames.profiles)
+          .update({'wallet_balance': current - b.totalAmount})
+          .eq('id', b.userId);
+    }
+
+    // 2. Insert booking record
     final bookingRow = await _supabase.from(AppTableNames.bookings).insert({
-      'user_id': userId,
-      'hotel_name': booking.hotelName,
-      'room_id': booking.roomId,
-      'total_amount': booking.totalAmount,
-      'check_in': booking.startDate.toIso8601String(),
-      'check_out': booking.endDate.toIso8601String(),
-      'payment_method': booking.paymentMethod,
+      'user_id': b.userId,
+      'hotel_name': b.hotelName,
+      'room_id': b.roomId,
+      'total_amount': b.totalAmount,
+      'check_in': b.startDate.toIso8601String(),
+      'check_out': b.endDate.toIso8601String(),
+      'payment_method': method,
+      'status': 'confirmed',
     }).select('id').single();
 
-    // 2. Transaction record
+    // 3. Register transaction
     await _supabase.from(AppTableNames.walletTransactions).insert({
-      'user_id': userId,
-      'amount': booking.totalAmount,
-      'transaction_type': 'payment',
+      'user_id': b.userId,
+      'amount': b.totalAmount,
       'type': 'payment',
       'status': 'completed',
-      'description': 'حجز في ${booking.hotelName} عبر البطاقة البنكية',
-      'hotel_name': booking.hotelName,
+      'description': 'حجز في ${b.hotelName} عبر ${method == 'wallet' ? 'المحفظة' : 'البطاقة'}',
       'booking_id': bookingRow['id'],
-      'booking_date': booking.startDate.toIso8601String(),
-      'created_at': DateTime.now().toIso8601String(),
     });
 
-    // 3. Notification
-    final notification = NotificationModel(
-      title: 'عملية حجز ناجحة ✅',
-      body:
-      'تم تأكيد حجزك في ${booking.hotelName} بنجاح عبر البطاقة البنكية.\n'
-          'المبلغ المدفوع: ${booking.totalAmount.toStringAsFixed(2)} EGP',
-      time: DateTime.now(),
-      type: NotificationType.success,
+    await _sendBookingNotification(b, method);
+  }
+
+  /// Helper to fetch current user wallet balance.
+  Future<double> _getUserBalance(String userId) async {
+    final data = await _supabase.from(AppTableNames.profiles)
+        .select('wallet_balance').eq('id', userId).single();
+    return (data['wallet_balance'] as num).toDouble();
+  }
+
+  /// Internal notification dispatcher.
+  Future<void> _sendBookingNotification(BookingModel b, String method) async {
+    final title = 'عملية حجز ناجحة ✅';
+    final body = 'تم تأكيد حجزك في ${b.hotelName}. المبلغ: ${b.totalAmount} EGP';
+
+    await _supabase.from(AppTableNames.notifications).insert(
+      NotificationModel(
+        title: title,
+        body: body,
+        time: DateTime.now(),
+        type: NotificationType.success,
+      ).toJson(b.userId),
     );
-    await _supabase
-        .from(AppTableNames.notifications)
-        .insert(notification.toJson(userId));
   }
 }

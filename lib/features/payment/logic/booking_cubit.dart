@@ -5,12 +5,11 @@ import '../data/repo/booking_repo.dart';
 import '../data/repo/payment_repository.dart';
 import 'booking_state.dart';
 
-
 class BookingCubit extends Cubit<BookingStates> {
   final PaymentRepository _paymentRepository;
   final BookingRepository _bookingRepository;
 
-  String selectedWallet = 'orange';
+  String selectedWallet = 'AQUA';
 
   BookingCubit({
     required PaymentRepository paymentRepository,
@@ -19,7 +18,6 @@ class BookingCubit extends Cubit<BookingStates> {
         _bookingRepository = bookingRepository,
         super(const BookingInitial());
 
-  // ── Card payment (Stripe) ──────────────────────────────────────────────────
 
   Future<void> makePayment({
     required PaymentIntentInputModel input,
@@ -36,24 +34,27 @@ class BookingCubit extends Cubit<BookingStates> {
         );
         bookingResult.fold(
               (failure) => emit(BookingError(failure.errorMessage)),
-              (_) => emit(const BookingSuccess()),
+              (_) async {
+            emit(const BookingSuccess());
+
+            await Future.delayed(const Duration(milliseconds: 300));
+          },
         );
       },
     );
   }
 
-  // ── Wallet payment ────────────────────────────────────────────────────────
-
   Future<void> confirmBooking(BookingModel booking) async {
     emit(const BookingLoading());
-    final result = await _bookingRepository.confirmBooking(booking);
+    final result = await _bookingRepository.confirmBooking(
+      booking.copyWith(paymentMethod: 'AQUA'),
+    );
     result.fold(
           (failure) => emit(BookingError(failure.errorMessage)),
           (_) => emit(const BookingSuccess()),
     );
   }
 
-  // ── UI helpers ────────────────────────────────────────────────────────────
 
   void changeWallet(String walletName) {
     selectedWallet = walletName;
