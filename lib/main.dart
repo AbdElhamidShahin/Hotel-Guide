@@ -8,12 +8,12 @@ import 'hotel_app.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 void main() async {
-  Stripe.publishableKey = ApiConstants.publishableKey;
-
   WidgetsFlutterBinding.ensureInitialized();
+
+  Stripe.publishableKey = ApiConstants.publishableKey;
+  await Stripe.instance.applySettings();
   await ScreenUtil.ensureScreenSize();
   await setupGetIt();
-
   await Supabase.initialize(
     url: 'https://oavjmvbwyrkixfnlzmcg.supabase.co',
     anonKey:

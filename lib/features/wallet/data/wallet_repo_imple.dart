@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../core/constants/api_constants.dart';
@@ -11,7 +12,7 @@ class WalletRepositoryImpl implements WalletRepository {
   final SupabaseClient _supabase;
   const WalletRepositoryImpl(this._supabase);
 
-  // ── Fetch all wallet data in parallel ─────────────────────────────────────
+  // ── Fetch ──────────────────────────────────────────────────────────────────
 
   @override
   Future<Either<Failure, WalletDataBundle>> getWalletDetails() async {
@@ -21,22 +22,29 @@ class WalletRepositoryImpl implements WalletRepository {
         return const Left(ServerFailure(errorMessage: 'يرجى تسجيل الدخول أولاً'));
       }
 
-      // Use maybeSingle() — never crashes with PGRST116 when RLS blocks the row
-      final profileRaw = await _supabase
+      // ✅ maybeSingle — never throws PGRST116
+      var profileRaw = await _supabase
           .from(AppTableNames.profiles)
           .select()
           .eq('id', userId)
           .maybeSingle();
 
+      // ✅ Auto-create profile for Google OAuth users (skipped signUp flow)
       if (profileRaw == null) {
-        return const Left(ServerFailure(
-          errorMessage:
-          'تعذّر تحميل بيانات المحفظة.\n'
-              'تأكد من إعداد سياسات RLS على جدول profiles في Supabase.',
-        ));
+        debugPrint('⚠️ Profile missing for $userId — auto-creating');
+        final user = _supabase.auth.currentUser!;
+        profileRaw = await _supabase.from(AppTableNames.profiles).upsert({
+          'id': userId,
+          'full_name': user.userMetadata?['full_name'] ??
+              user.userMetadata?['name'] ??
+              'مستخدم جديد',
+          'email': user.email ?? '',
+          'wallet_balance': 0.0,
+        }).select().single();
+        debugPrint('✅ Profile auto-created');
       }
 
-      // Fetch payments and top-ups in parallel for performance
+      // ✅ Fetch payment & top-up in parallel
       final results = await Future.wait([
         _supabase
             .from(AppTableNames.walletTransactions)
@@ -58,13 +66,15 @@ class WalletRepositoryImpl implements WalletRepository {
         topUps: List<Map<String, dynamic>>.from(results[1] as List),
       ));
     } on PostgrestException catch (e) {
+      debugPrint('❌ getWalletDetails: ${e.message}');
       return Left(ServerFailure(errorMessage: e.message));
     } catch (e) {
+      debugPrint('❌ getWalletDetails: $e');
       return Left(ServerFailure(errorMessage: e.toString()));
     }
   }
 
-  // ── Top-Up ────────────────────────────────────────────────────────────────
+  // ── Top-Up ─────────────────────────────────────────────────────────────────
 
   @override
   Future<Either<Failure, void>> topUpBalance(double amount) async {
@@ -74,21 +84,18 @@ class WalletRepositoryImpl implements WalletRepository {
         return const Left(ServerFailure(errorMessage: 'يرجى تسجيل الدخول أولاً'));
       }
 
-      // Try RPC first (atomic: balance + transaction + notification in one DB tx)
+      // Try RPC; fallback on ANY RPC failure
+      bool rpcFailed = false;
       try {
-        await _supabase.rpc(
-          AppRpcNames.topUpWallet,
-          params: {'p_user_id': userId, 'p_amount': amount},
-        );
+        await _supabase.rpc(AppRpcNames.topUpWallet,
+            params: {'p_user_id': userId, 'p_amount': amount});
+        debugPrint('✅ topUp via RPC');
       } on PostgrestException catch (e) {
-        // RPC doesn't exist yet → fall back to manual steps
-        if (e.code == 'PGRST202' || e.message.contains('does not exist')) {
-          await _manualTopUp(userId, amount);
-        } else {
-          rethrow;
-        }
+        rpcFailed = true;
+        debugPrint('⚠️ RPC failed (${e.message}) → manual fallback');
       }
 
+      if (rpcFailed) await _manualTopUp(userId, amount);
       return const Right(null);
     } on PostgrestException catch (e) {
       return Left(ServerFailure(errorMessage: e.message));
@@ -98,7 +105,7 @@ class WalletRepositoryImpl implements WalletRepository {
   }
 
   Future<void> _manualTopUp(String userId, double amount) async {
-    // 1. Read current balance
+    // 1. Read balance
     final data = await _supabase
         .from(AppTableNames.profiles)
         .select('wallet_balance')
@@ -106,31 +113,35 @@ class WalletRepositoryImpl implements WalletRepository {
         .single();
     final current = (data['wallet_balance'] as num).toDouble();
 
-    // 2. Update balance
-    await _supabase
+    // 2. Update — .select() detects silent RLS block
+    final updated = await _supabase
         .from(AppTableNames.profiles)
         .update({'wallet_balance': current + amount})
-        .eq('id', userId);
+        .eq('id', userId)
+        .select('wallet_balance');
 
-    // 3. Transaction record — type = 'top_up'
+    if (updated == null || (updated as List).isEmpty) {
+      throw Exception('فشل تحديث الرصيد — تحقق من RLS على جدول profiles');
+    }
+    debugPrint('✅ Balance: $current → ${current + amount}');
+
+    // 3. Transaction — 'type' ONLY (no duplicate 'transaction_type')
     await _supabase.from(AppTableNames.walletTransactions).insert({
       'user_id': userId,
       'amount': amount,
       'type': 'top_up',
-      'transaction_type': 'top_up',
-      'status': 'completed',
       'description': 'شحن رصيد عبر البطاقة البنكية',
-      'created_at': DateTime.now().toIso8601String(),
     });
 
     // 4. Notification
     await _supabase.from(AppTableNames.notifications).insert(
       NotificationModel(
         title: 'تم شحن الرصيد ✅',
-        body: 'تمت إضافة ${amount.toStringAsFixed(2)} EGP إلى محفظتك بنجاح.',
+        body: 'تمت إضافة ${amount.toStringAsFixed(0)} EGP إلى محفظتك.',
         time: DateTime.now(),
         type: NotificationType.success,
       ).toJson(userId),
     );
+    debugPrint('✅ Manual topUp complete');
   }
 }

@@ -1,4 +1,7 @@
+import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../core/units/stripe_service.dart';
 import '../../payment/data/model/payment_intent_input_model.dart';
@@ -9,14 +12,14 @@ class WalletCubit extends Cubit<WalletState> {
   final WalletRepository _repo;
   final StripeService _stripe;
 
-  WalletCubit({
-    required WalletRepository repo,
-    required StripeService stripe,
-  })  : _repo = repo,
+  StreamSubscription? _walletSub;
+
+  WalletCubit({required WalletRepository repo, required StripeService stripe})
+      : _repo = repo,
         _stripe = stripe,
         super(WalletInitial());
 
-  // ── Fetch ─────────────────────────────────────────────────────────────────
+  // ── Fetch ─────────────────────────────────────────────
 
   Future<void> fetchWalletData() async {
     emit(WalletLoading());
@@ -31,16 +34,40 @@ class WalletCubit extends Cubit<WalletState> {
     );
   }
 
-  // ── Top-Up ────────────────────────────────────────────────────────────────
+  // ── 🔥 Realtime Listener ─────────────────────────────
+
+  void startWalletListener() {
+    final userId = Supabase.instance.client.auth.currentUser?.id;
+    if (userId == null) return;
+
+    _walletSub?.cancel(); // safety
+
+    _walletSub = Supabase.instance.client
+        .from('profiles')
+        .stream(primaryKey: ['id'])
+        .eq('id', userId)
+        .listen((data) async {
+      debugPrint('🔥 Wallet Realtime Triggered');
+
+      // أي تغيير في الرصيد → اعمل refresh
+      await fetchWalletData();
+    });
+  }
+
+  // ── Top-Up ───────────────────────────────────────────
 
   Future<void> topUpWallet({required double amount}) async {
-    if (state is! WalletLoaded) return;
-    final profile = (state as WalletLoaded).userProfile;
+    final currentState = state;
+    if (currentState is! WalletLoaded) return;
+
+    final profile = currentState.userProfile;
 
     emit(WalletTopUpLoading());
+
     try {
-      // 1. Stripe payment
-      final customerId = await _stripe.getOrCreateStripeCustomerId(profile);
+      final customerId =
+      await _stripe.getOrCreateStripeCustomerId(profile);
+
       await _stripe.makePayment(
         paymentIntentInputModel: PaymentIntentInputModel(
           amount: (amount * 100).toInt().toString(),
@@ -49,17 +76,30 @@ class WalletCubit extends Cubit<WalletState> {
         ),
       );
 
-      // 2. Update DB via repo (RPC or manual fallback)
+      debugPrint('✅ Stripe payment success');
+
       final result = await _repo.topUpBalance(amount);
-      result.fold(
-            (failure) => emit(WalletTopUpError(failure.errorMessage)),
-            (_) {
+
+      await result.fold(
+            (failure) async => emit(WalletTopUpError(failure.errorMessage)),
+            (_) async {
           emit(WalletTopUpSuccess(profile.walletBalance + amount));
-          fetchWalletData(); // refresh list
+
+          // fallback (لو realtime اتأخر)
+          await fetchWalletData();
         },
       );
     } catch (e) {
+      debugPrint('❌ topUpWallet: $e');
       emit(WalletTopUpError(e.toString()));
     }
+  }
+
+  // ── Dispose ──────────────────────────────────────────
+
+  @override
+  Future<void> close() {
+    _walletSub?.cancel();
+    return super.close();
   }
 }

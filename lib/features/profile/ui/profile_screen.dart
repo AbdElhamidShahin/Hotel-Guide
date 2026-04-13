@@ -1,3 +1,4 @@
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -153,7 +154,12 @@ class _AccountScreenState extends State<AccountScreen> {
                   icon: Icons.login_rounded,
                   isLast: true,
                   onTap: () async {
+                    // ✅ Clear local SharedPreferences cache before signing out
+                    final prefs = await SharedPreferences.getInstance();
+                    await prefs.clear();
+
                     await Supabase.instance.client.auth.signOut();
+
                     if (context.mounted) {
                       context.go(routes.onBoardingScreen);
                     }

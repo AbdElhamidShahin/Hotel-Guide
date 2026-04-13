@@ -5,12 +5,13 @@ import 'package:hotel_guide/features/wallet/ui/widget/custom_refund_history.dart
 import 'package:hotel_guide/features/wallet/ui/widget/custom_topup_history.dart';
 import 'package:hotel_guide/features/wallet/ui/widget/custom_wallet_balance.dart';
 import 'package:hotel_guide/features/wallet/ui/widget/custom_wallet_history.dart';
+
 import '../../../core/helpers/widget/custom_appbar_widget.dart';
 import '../logic/wallet_cubit.dart';
 import '../logic/wallet_state.dart';
 
 class WalletScreen extends StatefulWidget {
-  WalletScreen({super.key});
+  const WalletScreen({super.key});
 
   @override
   State<WalletScreen> createState() => _WalletScreenState();
@@ -22,30 +23,41 @@ class _WalletScreenState extends State<WalletScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<WalletCubit>().fetchWalletData();
+
+    final cubit = context.read<WalletCubit>();
+
+    // ✅ أول تحميل
+    cubit.fetchWalletData();
+
+    // 🔥 تشغيل realtime
+    cubit.startWalletListener();
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppbarWidget(onTap: () {}, name: "المحفظة"),
       body: BlocBuilder<WalletCubit, WalletState>(
         buildWhen: (previous, current) =>
-            current is WalletLoading ||
+        current is WalletLoading ||
             current is WalletLoaded ||
             current is WalletError,
         builder: (context, state) {
           if (state is WalletLoading) {
             return const Center(child: CircularProgressIndicator());
           }
+
           if (state is WalletError) {
             return Center(child: Text(state.message));
           }
+
           if (state is WalletLoaded) {
             return ListView(
               physics: const BouncingScrollPhysics(),
               children: [
                 CustomWalletBalance(
-                  onTabChanged: (view) => setState(() => currentView = view),
+                  onTabChanged: (view) =>
+                      setState(() => currentView = view),
                   profileModel: state.userProfile,
                 ),
                 _buildSelectedView(currentView),
@@ -53,6 +65,7 @@ class _WalletScreenState extends State<WalletScreen> {
               ],
             );
           }
+
           return const SizedBox.shrink();
         },
       ),
@@ -63,13 +76,12 @@ class _WalletScreenState extends State<WalletScreen> {
 Widget _buildSelectedView(currentView) {
   switch (currentView) {
     case 'history':
-      return CustomWalletHistory();
+      return const CustomWalletHistory();
     case 'refund':
       return const CustomRefundHistory();
     case 'topup':
-      return CustomTopupHistory();
-
+      return const CustomTopupHistory();
     default:
-      return CustomWalletHistory();
+      return const CustomWalletHistory();
   }
 }
