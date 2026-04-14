@@ -1,6 +1,5 @@
 import 'package:get_it/get_it.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
 import '../../features/home/data/repo/home_repo.dart';
 import '../../features/home/data/repo/home_repo_impl.dart';
 import '../../features/home/logic/cubit/home_cubit.dart';
@@ -33,7 +32,6 @@ import '../units/stripe_service.dart';
 final getIt = GetIt.instance;
 
 Future<void> setupGetIt() async {
-
   if (getIt.isRegistered<SupabaseClient>()) return;
 
   getIt.registerLazySingleton<SupabaseClient>(() => Supabase.instance.client);
@@ -43,50 +41,42 @@ Future<void> setupGetIt() async {
 
   // ── Auth ───────────────────────────────────────────────────────────────────
   getIt.registerLazySingleton<LoginRepository>(
-        () => LoginRepositoryImpl(getIt<SupabaseClient>()),
+    () => LoginRepositoryImpl(getIt<SupabaseClient>()),
   );
-  getIt.registerFactory<LoginCubit>(
-        () => LoginCubit(getIt<LoginRepository>()),
-  );
+  getIt.registerFactory<LoginCubit>(() => LoginCubit(getIt<LoginRepository>()));
 
   getIt.registerLazySingleton<SignUpRepository>(
-        () => SignUpRepoImpl(getIt<SupabaseClient>()),
+    () => SignUpRepoImpl(getIt<SupabaseClient>()),
   );
   getIt.registerFactory<SignUpCubit>(
-        () => SignUpCubit(getIt<SignUpRepository>()),
+    () => SignUpCubit(getIt<SignUpRepository>()),
   );
 
   // ── Home ───────────────────────────────────────────────────────────────────
   getIt.registerLazySingleton<HomeRepository>(
-        () => HomeRepoImpl(getIt<SupabaseService>()),
+    () => HomeRepoImpl(getIt<SupabaseService>()),
   );
-  getIt.registerFactory<HomeCubit>(
-        () => HomeCubit(getIt<HomeRepository>()),
-  );
+  getIt.registerFactory<HomeCubit>(() => HomeCubit(getIt<HomeRepository>()));
 
   // ── Rooms ──────────────────────────────────────────────────────────────────
   getIt.registerLazySingleton<RoomRepo>(
-        () => RoomRepoImpl(getIt<SupabaseService>()),
+    () => RoomRepoImpl(getIt<SupabaseService>()),
   );
-  getIt.registerFactory<RoomCubit>(
-        () => RoomCubit(getIt<RoomRepo>()),
-  );
+  getIt.registerFactory<RoomCubit>(() => RoomCubit(getIt<RoomRepo>()));
 
   // ── Search ─────────────────────────────────────────────────────────────────
   getIt.registerLazySingleton<SearchRepo>(() => SearchRepoImpl());
-  getIt.registerFactory<SearchCubit>(
-        () => SearchCubit(getIt<SearchRepo>()),
-  );
+  getIt.registerFactory<SearchCubit>(() => SearchCubit(getIt<SearchRepo>()));
 
   // ── Payment ────────────────────────────────────────────────────────────────
   getIt.registerLazySingleton<PaymentRepository>(
-        () => PaymentRepoImpl(getIt<StripeService>()),
+    () => PaymentRepoImpl(getIt<StripeService>()),
   );
   getIt.registerLazySingleton<BookingRepository>(
-        () => BookingRepoImpl(getIt<SupabaseClient>()),
+    () => BookingRepoImpl(getIt<SupabaseClient>()),
   );
   getIt.registerFactory<BookingCubit>(
-        () => BookingCubit(
+    () => BookingCubit(
       paymentRepository: getIt<PaymentRepository>(),
       bookingRepository: getIt<BookingRepository>(),
     ),
@@ -94,10 +84,10 @@ Future<void> setupGetIt() async {
 
   // ── Wallet ─────────────────────────────────────────────────────────────────
   getIt.registerLazySingleton<WalletRepository>(
-        () => WalletRepositoryImpl(getIt<SupabaseClient>()),
+    () => WalletRepositoryImpl(getIt<SupabaseClient>()),
   );
   getIt.registerFactory<WalletCubit>(
-        () => WalletCubit(
+    () => WalletCubit(
       repo: getIt<WalletRepository>(),
       stripe: getIt<StripeService>(),
     ),

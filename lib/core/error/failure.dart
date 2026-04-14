@@ -1,12 +1,29 @@
-class Failure {
-  final String errorMessage;
-  const Failure({required this.errorMessage});
+abstract class Failure {
+  final String message;
+  const Failure(this.message);
 }
 
+// 🔴 Server (API)
 class ServerFailure extends Failure {
-  const ServerFailure({required super.errorMessage});
+  const ServerFailure(super.message);
 }
 
+// 🌐 Network (No Internet)
 class NetworkFailure extends Failure {
-  const NetworkFailure({required super.errorMessage});
+  const NetworkFailure(super.message);
+}
+
+// 🔐 Auth
+class AuthFailure extends Failure {
+  const AuthFailure(super.message);
+}
+
+// 💳 Payment
+class PaymentFailure extends Failure {
+  const PaymentFailure(super.message);
+}
+
+// ⚠️ Unknown
+class UnknownFailure extends Failure {
+  const UnknownFailure(super.message);
 }

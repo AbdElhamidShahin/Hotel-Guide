@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../core/constants/api_constants.dart';
+import '../../../core/error/error_handler.dart';
 import '../../../core/error/failure.dart';
 import '../../../core/network/model/notification_model.dart';
 import '../../../core/network/model/profile_model.dart';
@@ -19,7 +20,7 @@ class WalletRepositoryImpl implements WalletRepository {
     try {
       final userId = _supabase.auth.currentUser?.id;
       if (userId == null) {
-        return const Left(ServerFailure(errorMessage: 'يرجى تسجيل الدخول أولاً'));
+        return Left(ErrorHandler.handle('يرجى تسجيل الدخول أولا'));
       }
 
       // ✅ maybeSingle — never throws PGRST116
@@ -33,14 +34,19 @@ class WalletRepositoryImpl implements WalletRepository {
       if (profileRaw == null) {
         debugPrint('⚠️ Profile missing for $userId — auto-creating');
         final user = _supabase.auth.currentUser!;
-        profileRaw = await _supabase.from(AppTableNames.profiles).upsert({
-          'id': userId,
-          'full_name': user.userMetadata?['full_name'] ??
-              user.userMetadata?['name'] ??
-              'مستخدم جديد',
-          'email': user.email ?? '',
-          'wallet_balance': 0.0,
-        }).select().single();
+        profileRaw = await _supabase
+            .from(AppTableNames.profiles)
+            .upsert({
+              'id': userId,
+              'full_name':
+                  user.userMetadata?['full_name'] ??
+                  user.userMetadata?['name'] ??
+                  'مستخدم جديد',
+              'email': user.email ?? '',
+              'wallet_balance': 0.0,
+            })
+            .select()
+            .single();
         debugPrint('✅ Profile auto-created');
       }
 
@@ -60,17 +66,19 @@ class WalletRepositoryImpl implements WalletRepository {
             .order('created_at', ascending: false),
       ]);
 
-      return Right(WalletDataBundle(
-        profile: UserProfileModel.fromMap(profileRaw),
-        payments: List<Map<String, dynamic>>.from(results[0] as List),
-        topUps: List<Map<String, dynamic>>.from(results[1] as List),
-      ));
+      return Right(
+        WalletDataBundle(
+          profile: UserProfileModel.fromMap(profileRaw),
+          payments: List<Map<String, dynamic>>.from(results[0] as List),
+          topUps: List<Map<String, dynamic>>.from(results[1] as List),
+        ),
+      );
     } on PostgrestException catch (e) {
       debugPrint('❌ getWalletDetails: ${e.message}');
-      return Left(ServerFailure(errorMessage: e.message));
+      return Left(ErrorHandler.handle(e));
     } catch (e) {
       debugPrint('❌ getWalletDetails: $e');
-      return Left(ServerFailure(errorMessage: e.toString()));
+      return Left(ErrorHandler.handle(e));
     }
   }
 
@@ -81,14 +89,16 @@ class WalletRepositoryImpl implements WalletRepository {
     try {
       final userId = _supabase.auth.currentUser?.id;
       if (userId == null) {
-        return const Left(ServerFailure(errorMessage: 'يرجى تسجيل الدخول أولاً'));
+        return Left(ErrorHandler.handle('يرجى تسجيل الدخول أولاً'));
       }
 
       // Try RPC; fallback on ANY RPC failure
       bool rpcFailed = false;
       try {
-        await _supabase.rpc(AppRpcNames.topUpWallet,
-            params: {'p_user_id': userId, 'p_amount': amount});
+        await _supabase.rpc(
+          AppRpcNames.topUpWallet,
+          params: {'p_user_id': userId, 'p_amount': amount},
+        );
         debugPrint('✅ topUp via RPC');
       } on PostgrestException catch (e) {
         rpcFailed = true;
@@ -98,9 +108,9 @@ class WalletRepositoryImpl implements WalletRepository {
       if (rpcFailed) await _manualTopUp(userId, amount);
       return const Right(null);
     } on PostgrestException catch (e) {
-      return Left(ServerFailure(errorMessage: e.message));
+      return Left(ErrorHandler.handle(e));
     } catch (e) {
-      return Left(ServerFailure(errorMessage: e.toString()));
+      return Left(ErrorHandler.handle(e));
     }
   }
 
@@ -134,14 +144,16 @@ class WalletRepositoryImpl implements WalletRepository {
     });
 
     // 4. Notification
-    await _supabase.from(AppTableNames.notifications).insert(
-      NotificationModel(
-        title: 'تم شحن الرصيد ✅',
-        body: 'تمت إضافة ${amount.toStringAsFixed(0)} EGP إلى محفظتك.',
-        time: DateTime.now(),
-        type: NotificationType.success,
-      ).toJson(userId),
-    );
+    await _supabase
+        .from(AppTableNames.notifications)
+        .insert(
+          NotificationModel(
+            title: 'تم شحن الرصيد ✅',
+            body: 'تمت إضافة ${amount.toStringAsFixed(0)} EGP إلى محفظتك.',
+            time: DateTime.now(),
+            type: NotificationType.success,
+          ).toJson(userId),
+        );
     debugPrint('✅ Manual topUp complete');
   }
 }

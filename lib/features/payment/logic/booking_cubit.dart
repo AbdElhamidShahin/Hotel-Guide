@@ -27,13 +27,13 @@ class BookingCubit extends Cubit<BookingStates> {
     final paymentResult = await _paymentRepository.makePayment(input: input);
 
     await paymentResult.fold(
-          (failure) async => emit(BookingError(failure.errorMessage)),
+          (failure) async => emit(BookingError(failure.message)),
           (_) async {
         final bookingResult = await _bookingRepository.confirmBooking(
           booking.copyWith(paymentMethod: 'card'),
         );
         bookingResult.fold(
-              (failure) => emit(BookingError(failure.errorMessage)),
+              (failure) => emit(BookingError(failure.message)),
               (_) async {
             emit(const BookingSuccess());
 
@@ -50,7 +50,7 @@ class BookingCubit extends Cubit<BookingStates> {
       booking.copyWith(paymentMethod: 'AQUA'),
     );
     result.fold(
-          (failure) => emit(BookingError(failure.errorMessage)),
+          (failure) => emit(BookingError(failure.message)),
           (_) => emit(const BookingSuccess()),
     );
   }
