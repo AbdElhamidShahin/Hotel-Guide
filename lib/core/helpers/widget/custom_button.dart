@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
-
 import '../../theme/app_theme.dart';
 
 class CustomButton extends StatelessWidget {
@@ -8,7 +7,6 @@ class CustomButton extends StatelessWidget {
 
   final String? text;
   final VoidCallback? onTap;
-//..
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(

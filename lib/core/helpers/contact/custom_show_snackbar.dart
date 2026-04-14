@@ -12,7 +12,6 @@ void showCustomSnackbar(
 
   overlayEntry = OverlayEntry(
     builder: (context) => Positioned(
-      // غيرنا من top لـ bottom عشان تظهر تحت
       bottom: 50.h,
       left: 20.w,
       right: 20.w,
@@ -22,7 +21,6 @@ void showCustomSnackbar(
           title: title,
           message: message,
           contentType: messageType,
-          // اختيارية: لو عايز تخلي السناك بار "عائم" أكتر
           inMaterialBanner: true,
         ),
       ),
