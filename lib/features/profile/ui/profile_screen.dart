@@ -1,47 +1,51 @@
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hotel_guide/core/router/routers.dart';
 import 'package:hotel_guide/features/profile/ui/widget/build_sttings_item.dart';
 import 'package:hotel_guide/features/profile/ui/widget/custom_profile_image_and_name.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../core/helpers/local_storage_account.dart';
 import '../../../core/theme/colors.dart';
 
 class AccountScreen extends StatefulWidget {
-  const AccountScreen({super.key, this.name});
-  final String? name;
+  const AccountScreen({super.key});
 
   @override
   State<AccountScreen> createState() => _AccountScreenState();
 }
 
 class _AccountScreenState extends State<AccountScreen> {
-  String? name;
-  String? profileImage;
   @override
   void initState() {
     super.initState();
-    name = widget.name;
-    _loadIfNeeded();
+    UserDataNotifier.instance.addListener(_onUserDataChanged);
+    UserDataNotifier.instance.load();
   }
 
-  Future<void> _loadIfNeeded() async {
-    final data = await UserDataManager.loadUserData();
-    setState(() {
-      name = data['name'] ?? 'مستخدم';
-      profileImage = data['image'];
-    });
+  void _onUserDataChanged() => setState(() {});
+
+  @override
+  void dispose() {
+    UserDataNotifier.instance.removeListener(_onUserDataChanged);
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     bool isDarkMode = false;
+    final notifier = UserDataNotifier.instance;
 
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          CustomProfileImageAndName(showEditIcon: true, name: name),
+          CustomProfileImageAndName(
+            showEditIcon: true,
+            name: notifier.name.isNotEmpty ? notifier.name : 'مستخدم', // ✅
+            imageUrl: notifier.image.isNotEmpty ? notifier.image : null, // ✅
+          ),
           Expanded(
             child: ListView(
               padding: EdgeInsets.zero,
@@ -125,19 +129,18 @@ class _AccountScreenState extends State<AccountScreen> {
                 buildSttingsItem(
                   title: "الموقع",
                   icon: Icons.location_on_outlined,
-                  onTap: () {},
+                  onTap: () => context.push(routes.AboutUsScreen),
                 ),
                 buildSttingsItem(
                   title: "سياسة الخصوصية",
                   icon: Icons.assignment_outlined,
-                  onTap: () {},
+                  onTap: () => context.push(routes.PrivacyPolicyScreen),
                 ),
                 buildSttingsItem(
                   title: "الأسئلة الشائعة",
                   icon: Icons.help_outline,
-                  onTap: () {
-                    context.push(routes.FaqPage);
-                  },
+                  onTap: () => context.push(routes.FaqPage),
+
                 ),
                 buildSttingsItem(
                   title: "شروط الإستخدام",
@@ -149,8 +152,16 @@ class _AccountScreenState extends State<AccountScreen> {
                   title: "تسجيل الخروج",
                   icon: Icons.login_rounded,
                   isLast: true,
-                  onTap: () {
-                    context.push(routes.onBoardingScreen);
+                  onTap: () async {
+                    // ✅ Clear local SharedPreferences cache before signing out
+                    final prefs = await SharedPreferences.getInstance();
+                    await prefs.clear();
+
+                    await Supabase.instance.client.auth.signOut();
+
+                    if (context.mounted) {
+                      context.go(routes.onBoardingScreen);
+                    }
                   },
                 ),
               ],

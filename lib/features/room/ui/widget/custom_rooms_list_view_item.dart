@@ -19,12 +19,19 @@ class CustomRoomsListViewItem extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
         child: Stack(
           children: [
-            Image.network(
-              height: 300.h,
-              width: 220.w,
-              room.gallery[0],
-              fit: BoxFit.cover,
-            ),
+            room.gallery.isNotEmpty
+                ? Image.network(
+                    room.gallery[0],
+                    height: 300.h,
+                    width: 220.w,
+                    fit: BoxFit.cover,
+                  )
+                : Image.asset(
+                    "assets/images/onBoardingImage.jpg",
+                    height: 300.h,
+                    width: 220.w,
+                    fit: BoxFit.cover,
+                  ),
             Container(
               height: 300.h,
               width: 220.w,

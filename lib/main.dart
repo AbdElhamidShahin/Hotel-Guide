@@ -3,17 +3,17 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'core/di/injection.dart';
-import 'core/units/api_constants.dart';
+import 'core/constants/api_constants.dart';
 import 'hotel_app.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 void main() async {
-  Stripe.publishableKey= ApiConstants.publishableKey;
-
   WidgetsFlutterBinding.ensureInitialized();
+
+  Stripe.publishableKey = ApiConstants.publishableKey;
+  await Stripe.instance.applySettings();
   await ScreenUtil.ensureScreenSize();
   await setupGetIt();
-
   await Supabase.initialize(
     url: 'https://oavjmvbwyrkixfnlzmcg.supabase.co',
     anonKey:

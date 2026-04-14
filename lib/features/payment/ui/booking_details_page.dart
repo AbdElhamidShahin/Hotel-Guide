@@ -143,15 +143,24 @@ class _BookingDetailsViewState extends State<_BookingDetailsView> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<BookingCubit, BookingStates>(
+      // Only handle card-payment results here.
+      // Wallet-payment results are handled inside the bottom sheet.
+      listenWhen: (_, current) =>
+      _selectedPayment == 'card' &&
+          (current is BookingSuccess || current is BookingError),
       listener: (context, state) {
         if (state is BookingSuccess) {
+          // Refresh notifications so bell updates immediately
           context.push(
             routes.bookingResult,
-            extra: {'isSuccess': true, 'paymentMethod': 'البطاقة البنكية'},
+            extra: {
+              'isSuccess': true,
+              'paymentMethod': 'البطاقة البنكية',
+            },
           );
         } else if (state is BookingError) {
           context.push(
-            '/booking-result',
+            routes.bookingResult,
             extra: {'isSuccess': false, 'errorMessage': state.message},
           );
         }
@@ -244,7 +253,7 @@ class _BookingDetailsViewState extends State<_BookingDetailsView> {
 
                 BlocBuilder<BookingCubit, BookingStates>(
                   buildWhen: (previous, current) =>
-                      current is BookingLoading || previous is BookingLoading,
+                  current is BookingLoading || previous is BookingLoading,
                   builder: (context, state) {
                     return PaymentTitle(
                       title: 'البطاقة البنكية',

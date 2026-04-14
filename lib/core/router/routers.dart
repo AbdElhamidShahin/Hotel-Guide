@@ -23,4 +23,6 @@ class routes {
   static const String bookingResult = '/booking-result';
   static const String AboutUsScreen = "/AboutUsScreen";
   static const String ChatScreen = "/ChatScreen";
+  static const String PrivacyPolicyScreen = "/PrivacyPolicyScreen";
+
 }

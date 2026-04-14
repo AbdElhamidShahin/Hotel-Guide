@@ -5,7 +5,11 @@ import 'package:hotel_guide/core/theme/app_theme.dart';
 import '../../../../core/theme/colors.dart';
 
 class ImageGallerySection extends StatefulWidget {
-  const ImageGallerySection({super.key, required this.images, this.vrUrl});
+  const ImageGallerySection({
+    super.key,
+    required this.images,
+    this.vrUrl,
+  });
 
   final List<String> images;
   final String? vrUrl;
@@ -17,11 +21,25 @@ class ImageGallerySection extends StatefulWidget {
 class _ImageGallerySectionState extends State<ImageGallerySection> {
   int selectedIndex = 0;
 
+  List<String> get safeImages =>
+      widget.images.where((e) => e.isNotEmpty).toList();
+
+  String? get currentImage {
+    if (safeImages.isNotEmpty &&
+        selectedIndex < safeImages.length &&
+        safeImages[selectedIndex].isNotEmpty) {
+      return safeImages[selectedIndex];
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         SizedBox(height: 12.h),
+
+        /// ================= MAIN IMAGE =================
         Stack(
           alignment: Alignment.bottomCenter,
           children: [
@@ -31,24 +49,35 @@ class _ImageGallerySectionState extends State<ImageGallerySection> {
                 borderRadius: BorderRadius.circular(12.r),
                 child: AnimatedSwitcher(
                   duration: const Duration(milliseconds: 300),
-                  child: Image.network(
-                    widget.images[selectedIndex],
-                    key: ValueKey<int>(selectedIndex),
+                  child: currentImage != null
+                      ? Image.network(
+                    currentImage!,
+                    key: ValueKey(currentImage),
                     fit: BoxFit.cover,
                     width: double.infinity,
-                    errorBuilder: (context, error, stackTrace) =>
-                        const Center(child: Icon(Icons.broken_image, size: 50)),
+                    errorBuilder: (context, error, stackTrace) {
+                      return Image.asset(
+                        "assets/images/onBoardingImage.jpg",
+                        fit: BoxFit.cover,
+                      );
+                    },
+                  )
+                      : Image.asset(
+                    "assets/images/onBoardingImage.jpg",
+                    fit: BoxFit.cover,
                   ),
                 ),
               ),
             ),
+
+            /// Dots
             Padding(
               padding: EdgeInsets.only(bottom: 10.h),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List.generate(
-                  widget.images.length,
-                  (index) => _buildDot(index == selectedIndex),
+                  safeImages.length,
+                      (index) => _buildDot(index == selectedIndex),
                 ),
               ),
             ),
@@ -57,6 +86,7 @@ class _ImageGallerySectionState extends State<ImageGallerySection> {
 
         SizedBox(height: 16.h),
 
+        /// ================= GRID =================
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 24.w),
           child: Container(
@@ -71,10 +101,13 @@ class _ImageGallerySectionState extends State<ImageGallerySection> {
                 ),
               ],
             ),
-            child: GridView.builder(
+            child: safeImages.isEmpty
+                ? _buildEmptyGrid()
+                : GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: widget.images.length > 4 ? 4 : widget.images.length,
+              itemCount:
+              safeImages.length > 4 ? 4 : safeImages.length,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 mainAxisSpacing: 12.h,
@@ -82,7 +115,9 @@ class _ImageGallerySectionState extends State<ImageGallerySection> {
                 childAspectRatio: 1.6,
               ),
               itemBuilder: (context, index) {
-                bool isLast = (index == 3 && widget.images.length > 4);
+                bool isLast =
+                (index == 3 && safeImages.length > 4);
+
                 return GestureDetector(
                   onTap: () {
                     if (isLast) {
@@ -94,23 +129,29 @@ class _ImageGallerySectionState extends State<ImageGallerySection> {
                     }
                   },
                   child: _buildThumbnail(
-                    widget.images[index],
+                    safeImages[index],
                     isSelected: selectedIndex == index,
                     isLast: isLast,
-                    count: isLast ? "+${widget.images.length - 3}" : null,
+                    count: isLast
+                        ? "+${safeImages.length - 3}"
+                        : null,
                   ),
                 );
               },
             ),
           ),
         ),
+
         SizedBox(height: 24.h),
 
-        if (widget.vrUrl != null && widget.vrUrl!.isNotEmpty) _buildVRButton(),
+        /// ================= VR BUTTON =================
+        if (widget.vrUrl != null && widget.vrUrl!.isNotEmpty)
+          _buildVRButton(),
       ],
     );
   }
 
+  /// ================= BOTTOM SHEET =================
   void _showAllImagesBottomSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -144,8 +185,9 @@ class _ImageGallerySectionState extends State<ImageGallerySection> {
               Expanded(
                 child: GridView.builder(
                   padding: EdgeInsets.all(16.w),
-                  itemCount: widget.images.length,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  itemCount: safeImages.length,
+                  gridDelegate:
+                  SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 10.w,
                     mainAxisSpacing: 10.h,
@@ -155,8 +197,14 @@ class _ImageGallerySectionState extends State<ImageGallerySection> {
                     return ClipRRect(
                       borderRadius: BorderRadius.circular(10.r),
                       child: Image.network(
-                        widget.images[index],
+                        safeImages[index],
                         fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Image.asset(
+                            "assets/images/onBoardingImage.jpg",
+                            fit: BoxFit.cover,
+                          );
+                        },
                       ),
                     );
                   },
@@ -169,6 +217,7 @@ class _ImageGallerySectionState extends State<ImageGallerySection> {
     );
   }
 
+  /// ================= DOT =================
   Widget _buildDot(bool active) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
@@ -182,18 +231,19 @@ class _ImageGallerySectionState extends State<ImageGallerySection> {
     );
   }
 
+  /// ================= THUMBNAIL =================
   Widget _buildThumbnail(
-    String url, {
-    required bool isSelected,
-    bool isLast = false,
-    String? count,
-  }) {
+      String url, {
+        required bool isSelected,
+        bool isLast = false,
+        String? count,
+      }) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12.r),
         border: isSelected
             ? Border.all(color: AppColors.primaryDark, width: 2)
-            : Border.all(color: Colors.transparent, width: 2),
+            : null,
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10.r),
@@ -203,8 +253,12 @@ class _ImageGallerySectionState extends State<ImageGallerySection> {
             Image.network(
               url,
               fit: BoxFit.cover,
-              color: isSelected ? null : Colors.black.withOpacity(0.1),
-              colorBlendMode: isSelected ? null : BlendMode.darken,
+              errorBuilder: (context, error, stackTrace) {
+                return Image.asset(
+                  "assets/images/onBoardingImage.jpg",
+                  fit: BoxFit.cover,
+                );
+              },
             ),
             if (isLast && count != null)
               Container(
@@ -226,6 +280,23 @@ class _ImageGallerySectionState extends State<ImageGallerySection> {
     );
   }
 
+  /// ================= EMPTY GRID =================
+  Widget _buildEmptyGrid() {
+    return Container(
+      height: 120.h,
+      alignment: Alignment.center,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: const [
+          Icon(Icons.image_not_supported, size: 40),
+          SizedBox(height: 8),
+          Text("لا توجد صور متاحة"),
+        ],
+      ),
+    );
+  }
+
+  /// ================= VR BUTTON =================
   Widget _buildVRButton() {
     return Padding(
       padding: EdgeInsets.only(top: 32.h),
@@ -240,11 +311,13 @@ class _ImageGallerySectionState extends State<ImageGallerySection> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SvgPicture.asset("assets/icons/AR-view-see-through-eye.svg"),
+              SvgPicture.asset(
+                  "assets/icons/AR-view-see-through-eye.svg"),
               const SizedBox(width: 12),
               Text(
                 "مشاهدة الغرفة بالواقع الإفتراضي",
-                style: textStyle22BoldPrimary.copyWith(fontSize: 19.sp),
+                style:
+                textStyle22BoldPrimary.copyWith(fontSize: 19.sp),
               ),
             ],
           ),

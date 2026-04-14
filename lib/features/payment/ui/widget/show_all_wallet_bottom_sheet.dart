@@ -7,7 +7,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/helpers/contact/custom_show_snackbar.dart';
 import '../../../../core/network/model/booking_model.dart';
-import '../../../../core/network/model/notification_model.dart';
 import '../../../../core/router/routers.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/colors.dart';
@@ -25,9 +24,9 @@ bool _isInsufficientBalance(String message) {
 }
 
 void showWalletBottomSheet(
-  BuildContext parentContext,
-  BookingModel bookingData,
-) {
+    BuildContext parentContext,
+    BookingModel bookingData,
+    ) {
   final bookingCubit = parentContext.read<BookingCubit>();
 
   showModalBottomSheet(
@@ -43,29 +42,16 @@ void showWalletBottomSheet(
               context: context,
               barrierDismissible: false,
               builder: (context) =>
-                  const Center(child: CircularProgressIndicator()),
+              const Center(child: CircularProgressIndicator()),
             );
           } else if (state is BookingSuccess) {
-            Navigator.of(context, rootNavigator: true).pop();
-            Navigator.of(context).pop();
+            Navigator.of(context, rootNavigator: true).pop(); // close loading
+            Navigator.of(context).pop(); // close bottom sheet
 
-            final user = Supabase.instance.client.auth.currentUser;
-            if (user != null) {
-              final newNotif = NotificationModel(
-                title: 'عملية حجز ناجحة ✅',
-                body: 'تم تأكيد حجزك في ${bookingData.hotelName} بنجاح.',
-                time: DateTime.now(),
-                type: NotificationType.success,
-              );
-              getIt<NotificationCubit>().addNotification(newNotif);
-              try {
-                await Supabase.instance.client
-                    .from('notifications')
-                    .insert(newNotif.toJson(user.id));
-              } catch (e) {
-                debugPrint("Error saving to DB: $e");
-              }
-            }
+            // ✅ Repo already saved the notification to DB.
+            // Here we only refresh the local in-memory NotificationCubit
+            // so the bell icon updates immediately without a re-fetch.
+            getIt<NotificationCubit>().fetchNotifications();
 
             context.push(
               routes.bookingResult,
@@ -78,29 +64,14 @@ void showWalletBottomSheet(
               parentContext,
               ContentType.success,
               'تم الحجز بنجاح ✅',
-              'تمت العملية بنجاح',
+              'تم خصم ${bookingData.totalAmount.toInt()} EGP من محفظتك',
             );
           } else if (state is BookingError) {
-            // أغلق الـ loading dialog فقط
-            Navigator.of(context, rootNavigator: true).pop();
+            Navigator.of(context, rootNavigator: true).pop(); // close loading
 
-            final user = Supabase.instance.client.auth.currentUser;
-            if (user != null) {
-              final errorNotif = NotificationModel(
-                title: 'فشل عملية الدفع ❌',
-                body: 'عفواً، لم يتم الحجز: ${state.message}',
-                time: DateTime.now(),
-                type: NotificationType.failure,
-              );
-              getIt<NotificationCubit>().addNotification(errorNotif);
-              try {
-                await Supabase.instance.client
-                    .from('notifications')
-                    .insert(errorNotif.toJson(user.id));
-              } catch (e) {
-                debugPrint("Error saving error notification: $e");
-              }
-            }
+            // ✅ Repo already saved the failure notification to DB for card path.
+            // Refresh local list so the bell updates immediately.
+            getIt<NotificationCubit>().fetchNotifications();
 
             // ── هل الخطأ بسبب رصيد ناقص؟ ──
             final bool isBalanceError = _isInsufficientBalance(state.message);

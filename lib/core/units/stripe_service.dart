@@ -6,7 +6,7 @@ import '../../features/payment/data/model/ephemeral_keys_model.dart';
 import '../../features/payment/data/model/init_payment_sheet_payment_input_model.dart';
 import '../../features/payment/data/model/payment_intent_input_model.dart';
 import '../../features/payment/data/model/payment_intent_model.dart';
-import 'api_constants.dart';
+import '../constants/api_constants.dart';
 import 'api_service.dart';
 
 class StripeService {
