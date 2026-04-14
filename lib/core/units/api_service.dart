@@ -11,7 +11,7 @@ class ApiService {
   }) async {
     final mergedHeaders = {
       'Authorization': 'Bearer $token',
-      ...?headers, // ✅ merge مش override
+      ...?headers,
     };
     var response = await dio.post(
       url,
