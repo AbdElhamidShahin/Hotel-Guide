@@ -22,7 +22,7 @@ class BookingCalendar extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: AppColors.calenderColor,
+        color: AppColors.scaffoldBackground,
         borderRadius: BorderRadius.circular(8.r),
       ),
       child: TableCalendar(

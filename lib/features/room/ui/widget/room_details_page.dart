@@ -100,7 +100,7 @@ class RoomDetailsPage extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border.all(color: AppColors.ShadowPurple.withOpacity(0.5)),
         borderRadius: BorderRadius.circular(5.r),
-        color: AppColors.white,
+        color: AppColors.textWhite,
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

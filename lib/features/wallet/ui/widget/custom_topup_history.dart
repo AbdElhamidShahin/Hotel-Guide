@@ -73,7 +73,7 @@ class _CustomTopupHistoryState extends State<CustomTopupHistory> {
             child: Text(
               'شحن رصيد',
               style: textStyle20BoldShadowPurple.copyWith(
-                color: AppColors.black7,
+                color: AppColors.textPrimary,
               ),
             ),
           ),
@@ -89,7 +89,7 @@ class _CustomTopupHistoryState extends State<CustomTopupHistory> {
                   Text(
                     'أدخل المبلغ (EGP)',
                     style: textStyle16RegularGray.copyWith(
-                      color: AppColors.black7,
+                      color: AppColors.textPrimary,
                     ),
                   ),
                   SizedBox(height: 8.h),
@@ -100,7 +100,7 @@ class _CustomTopupHistoryState extends State<CustomTopupHistory> {
                     ),
                     textAlign: TextAlign.center,
                     style: textStyle20BoldShadowPurple.copyWith(
-                      color: AppColors.black7,
+                      color: AppColors.textPrimary,
                     ),
                     decoration: InputDecoration(
                       hintText: 'مثال: 250',
@@ -142,7 +142,7 @@ class _CustomTopupHistoryState extends State<CustomTopupHistory> {
                   Text(
                     'أو اختر مبلغاً سريعاً',
                     style: textStyle16RegularGray.copyWith(
-                      color: AppColors.black7.withOpacity(0.5),
+                      color: AppColors.textPrimary.withOpacity(0.5),
                       fontSize: 13,
                     ),
                   ),
@@ -176,7 +176,7 @@ class _CustomTopupHistoryState extends State<CustomTopupHistory> {
                           child: Text(
                             '${a.toInt()} EGP',
                             style: textStyle16RegularGray.copyWith(
-                              color: sel ? Colors.white : AppColors.black7,
+                              color: sel ? Colors.white : AppColors.textPrimary,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -310,7 +310,7 @@ class _TopUpCard extends StatelessWidget {
         padding: EdgeInsets.all(16.r),
         decoration: BoxDecoration(
           color: Colors.white,
-          border: Border.all(color: AppColors.Green.withOpacity(.2)),
+          border: Border.all(color: AppColors.success.withOpacity(.2)),
           borderRadius: BorderRadius.circular(14.r),
           boxShadow: [
             BoxShadow(
@@ -326,7 +326,7 @@ class _TopUpCard extends StatelessWidget {
               'شحن رصيد',
               ':نوع العملية',
               'assets/icons/empty-wallet-add.svg',
-              AppColors.Green,
+              AppColors.success,
             ),
             SizedBox(height: 10.h),
             _r(
@@ -340,14 +340,14 @@ class _TopUpCard extends StatelessWidget {
               '+${amount.toStringAsFixed(2)} EGP',
               ':المبلغ المضاف',
               'assets/icons/dollar-circle.svg',
-              AppColors.Green,
+              AppColors.success,
             ),
             SizedBox(height: 10.h),
             _r(
               status,
               ':الحالة',
               'assets/icons/tick-circle.svg',
-              AppColors.Green,
+              AppColors.success,
             ),
           ],
         ),

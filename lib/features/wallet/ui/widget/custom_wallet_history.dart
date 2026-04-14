@@ -119,7 +119,7 @@ class _PaymentCard extends StatelessWidget {
               hotelName,
               ':اسم الفندق',
               'assets/icons/Hotel.svg',
-              AppColors.RoyalPurple,
+              AppColors.accent,
             ),
             SizedBox(height: 10.h),
             CustomDetailRow(
@@ -147,7 +147,7 @@ class _PaymentCard extends StatelessWidget {
               status,
               ':الحالة',
               'assets/icons/tick-circle.svg',
-              AppColors.Green,
+              AppColors.success,
             ),
           ],
         ),

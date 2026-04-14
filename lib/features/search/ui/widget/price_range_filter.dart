@@ -127,7 +127,7 @@ class _PriceRangeFilterState extends State<PriceRangeFilter> {
             Text(
               ": $label",
               style: textStyle14RegularNightfall.copyWith(
-                color: AppColors.black,
+                color: AppColors.pureBlack,
               ),
             ),
           ],

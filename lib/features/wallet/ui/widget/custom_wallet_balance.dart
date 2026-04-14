@@ -102,7 +102,7 @@ class _CustomWalletBalanceState extends State<CustomWalletBalance> {
                   Text(
                     "ID  ",
                     style: textStyle22RegularWhite.copyWith(
-                      color: AppColors.white,
+                      color: AppColors.textWhite,
                     ),
                   ),
                   Text(
@@ -110,7 +110,7 @@ class _CustomWalletBalanceState extends State<CustomWalletBalance> {
                         ? widget.profileModel.id.substring(0, 8).toUpperCase()
                         : widget.profileModel.id,
                     style: textStyle20BoldShadowPurple.copyWith(
-                      color: AppColors.white.withOpacity(0.6),
+                      color: AppColors.textWhite.withOpacity(0.6),
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -132,7 +132,7 @@ class _CustomWalletBalanceState extends State<CustomWalletBalance> {
                     Text(
                       "الرصيد الحالي",
                       style: textStyle16RegularGray.copyWith(
-                        color: AppColors.white,
+                        color: AppColors.textWhite,
                       ),
                     ),
 
@@ -209,13 +209,13 @@ class _TabButton extends StatelessWidget {
           SvgPicture.asset(
             icon,
             // ignore: deprecated_member_use
-            color: isActive ? AppColors.AccentsPurple : AppColors.white,
+            color: isActive ? AppColors.AccentsPurple : AppColors.textWhite,
           ),
           SizedBox(height: 12.h),
           Text(
             label,
             style: textStyle16RegularGray.copyWith(
-              color: isActive ? AppColors.AccentsPurple : AppColors.white,
+              color: isActive ? AppColors.AccentsPurple : AppColors.textWhite,
             ),
           ),
         ],

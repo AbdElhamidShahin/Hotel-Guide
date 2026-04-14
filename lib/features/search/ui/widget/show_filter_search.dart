@@ -26,7 +26,7 @@ void showFilterSearch(
         builder: (context, setModalState) {
           return Container(
             decoration: BoxDecoration(
-              color: AppColors.white,
+              color: AppColors.textWhite,
               borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
             ),
             height: MediaQuery.of(context).size.height * 0.85,

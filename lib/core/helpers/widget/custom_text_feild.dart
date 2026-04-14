@@ -54,24 +54,24 @@ class AppTextFormFeild extends StatelessWidget {
               focusedBorder ??
               OutlineInputBorder(
                 borderSide: BorderSide(
-                  color: AppColors.RoyalPurple,
+                  color: AppColors.accent,
                   width: 1.3,
                 ),
 
                 borderRadius: BorderRadius.circular(10),
               ),
           errorBorder: OutlineInputBorder(
-            borderSide:  BorderSide(color: AppColors.red, width: 1.3),
+            borderSide:  BorderSide(color: AppColors.error, width: 1.3),
             borderRadius: BorderRadius.circular(10),
           ),
           focusedErrorBorder: OutlineInputBorder(
-            borderSide:  BorderSide(color: AppColors.red, width: 1.3),
+            borderSide:  BorderSide(color: AppColors.error, width: 1.3),
             borderRadius: BorderRadius.circular(10),
           ),
           hintStyle: hintStyle ?? textStyle14RegularNightfall,
           hintText: "${hintText}",
           suffixIcon: suffixIcon,
-          suffixIconColor: AppColors.blueSoft,
+          suffixIconColor: AppColors.info,
 
           fillColor: backGroundColor ?? Colors.transparent,
           filled: true,

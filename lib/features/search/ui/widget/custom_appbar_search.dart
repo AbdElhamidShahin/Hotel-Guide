@@ -82,7 +82,7 @@ class CustomAppbarSearch extends StatelessWidget {
           SizedBox(width: 12.w),
           IconButton(
             onPressed: () => context.pop(),
-            icon: Icon(Icons.arrow_forward, color: AppColors.black6, size: 24),
+            icon: Icon(Icons.arrow_forward, color: AppColors.darkBackground, size: 24),
           ),
         ],
       ),

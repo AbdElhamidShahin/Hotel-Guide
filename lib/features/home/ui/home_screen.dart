@@ -134,7 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Text(
                   '!عروض ترويجية وخصومات وعروض خاصة لك',
                   style: textStyle14SemiBoldWhite.copyWith(
-                    color: AppColors.black.withOpacity(0.6),
+                    color: AppColors.pureBlack.withOpacity(0.6),
                   ),
                   textAlign: TextAlign.right,
                 ),
@@ -174,7 +174,7 @@ class _SectionDivider extends StatelessWidget {
       child: Divider(
         height: 2.h,
         thickness: 1.h,
-        color: AppColors.black.withOpacity(0.1),
+        color: AppColors.pureBlack.withOpacity(0.1),
       ),
     );
   }

@@ -34,7 +34,7 @@ class Customtextfeild extends StatelessWidget {
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 14.sp,
-              color: AppColors.black,
+              color: AppColors.pureBlack,
               fontFamily: 'Cairo',
             ),
           ),
@@ -46,7 +46,7 @@ class Customtextfeild extends StatelessWidget {
             validator: validator,
             keyboardType: keyboardType,
             textAlign: TextAlign.right,
-            style: TextStyle(color: AppColors.black, fontSize: 16.sp),
+            style: TextStyle(color: AppColors.pureBlack, fontSize: 16.sp),
             decoration: InputDecoration(
               filled: true,
               fillColor: Colors.white,
@@ -58,19 +58,19 @@ class Customtextfeild extends StatelessWidget {
               ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
-                borderSide: const BorderSide(color: AppColors.yellowGold),
+                borderSide: const BorderSide(color: AppColors.warning),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(6),
                 borderSide: BorderSide(
-                  color: AppColors.black4.withOpacity(0.7),
+                  color: AppColors.textTitle.withOpacity(0.7),
                   width: 1.0,
                 ),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
                 borderSide: const BorderSide(
-                  color: AppColors.mainOrange,
+                  color: AppColors.secondary,
                   width: 1.5,
                 ),
               ),

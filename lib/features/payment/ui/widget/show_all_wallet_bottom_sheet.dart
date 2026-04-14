@@ -120,7 +120,7 @@ void showWalletBottomSheet(
                     Text(
                       "المحفظة الإلكترونية",
                       style: textStyle20RegularPrimary.copyWith(
-                        color: AppColors.black6,
+                        color: AppColors.darkBackground,
                       ),
                     ),
                   ],

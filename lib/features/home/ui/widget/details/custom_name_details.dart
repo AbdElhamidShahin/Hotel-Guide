@@ -50,7 +50,7 @@ class CustomNameDetails extends StatelessWidget {
               child: Text(
                 name,
                 style: textStyle20BoldShadowPurple.copyWith(
-                  color: AppColors.white,
+                  color: AppColors.textWhite,
                 ),
               ),
             ),

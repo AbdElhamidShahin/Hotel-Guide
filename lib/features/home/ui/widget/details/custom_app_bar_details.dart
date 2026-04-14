@@ -19,7 +19,7 @@ class CustomAppBarDetails extends StatelessWidget {
           Text(
             title,
             style: textStyle23SemiBoldBlack.copyWith(
-              color: AppColors.black6.withOpacity(0.8),
+              color: AppColors.darkBackground.withOpacity(0.8),
             ),
           ),
           const Spacer(),

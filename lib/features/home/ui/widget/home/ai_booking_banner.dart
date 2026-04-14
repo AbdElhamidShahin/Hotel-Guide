@@ -65,7 +65,7 @@ class AiBookingBanner extends StatelessWidget {
                                   "assets/images/iconCahtRobot.png",
                                   width: 25.r,
                                   height: 25.r,
-                                  color: AppColors.white,
+                                  color: AppColors.textWhite,
                                 ),
                                 Text(
                                   "  أحجز فندقك خلال ثواني",
@@ -79,7 +79,7 @@ class AiBookingBanner extends StatelessWidget {
                             Text(
                               "خلي الذكاء الإصطناعي يساعدك في عملية البحث",
                               style: textStyle14RegularNightfall.copyWith(
-                                color: AppColors.white.withOpacity(0.7),fontSize: 13.sp
+                                color: AppColors.textWhite.withOpacity(0.7),fontSize: 13.sp
                               ),textAlign: TextAlign.right,
                             ),
                           ],

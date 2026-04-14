@@ -13,7 +13,7 @@ class FacilityItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final Color mainColor = facility.isAvailable
         ? AppColors.ShadowPurple
-        : AppColors.red;
+        : AppColors.error;
 
     final IconData icon = facility.isAvailable
         ? Icons.check_circle_outline_rounded
@@ -21,7 +21,7 @@ class FacilityItem extends StatelessWidget {
 
     final Color borderColor = facility.isAvailable
         ? AppColors.ShadowPurple.withOpacity(0.5)
-        : AppColors.red;
+        : AppColors.error;
 
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),

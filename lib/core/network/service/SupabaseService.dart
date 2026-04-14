@@ -24,8 +24,4 @@ class SupabaseService {
 
     return response as List<Map<String, dynamic>>;
   }
-
-  Future<List<Map<String, dynamic>>> feathData() async {
-    return await _client.from(AppTableNames.hotels).select("*");
-  }
 }

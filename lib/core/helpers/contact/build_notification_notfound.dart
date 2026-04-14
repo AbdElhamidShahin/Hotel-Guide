@@ -39,7 +39,7 @@ Widget BuildNotFoundNotification({VoidCallback? onRetry}) {
               child: Text(
                 'العودة للرئيسية',
                 style: textStyle18RegularShadowPurple.copyWith(
-                  color: AppColors.white,
+                  color: AppColors.textWhite,
                 ),
               ),
             ),

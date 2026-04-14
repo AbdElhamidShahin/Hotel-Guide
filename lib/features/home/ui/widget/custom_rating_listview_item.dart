@@ -82,7 +82,7 @@ class CustomRatingListviewItem extends StatelessWidget {
                     Text(
                       hotelModel.name,
                       style: textStyle16BoldWhite.copyWith(
-                        color: AppColors.black,
+                        color: AppColors.pureBlack,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,

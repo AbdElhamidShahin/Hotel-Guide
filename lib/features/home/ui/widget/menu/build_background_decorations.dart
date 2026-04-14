@@ -13,7 +13,7 @@ Widget buildBackgroundDecorations() {
           width: 300.w,
           height: 300.h,
           decoration: BoxDecoration(
-            color: AppColors.GrayLight,
+            color: AppColors.border,
             shape: BoxShape.circle,
           ),
         ),
@@ -25,7 +25,7 @@ Widget buildBackgroundDecorations() {
           width: 300.w,
           height: 300.h,
           decoration: BoxDecoration(
-            color: AppColors.GrayLight,
+            color: AppColors.border,
             shape: BoxShape.circle,
           ),
         ),

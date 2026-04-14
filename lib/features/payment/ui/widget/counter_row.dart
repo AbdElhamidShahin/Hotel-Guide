@@ -33,7 +33,7 @@ class CounterRow extends StatelessWidget {
           ),
           Row(
             children: [
-              _circleBtn(Icons.add, onAdd, AppColors.primary, AppColors.white),
+              _circleBtn(Icons.add, onAdd, AppColors.primary, AppColors.textWhite),
 
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 15.w),
