@@ -10,8 +10,8 @@ import 'package:intl/date_symbol_data_local.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  Stripe.publishableKey = ApiConstants.publishableKey;
-  await Stripe.instance.applySettings();
+  // Stripe.publishableKey = ApiConstants.publishableKey;
+  // await Stripe.instance.applySettings();
   await ScreenUtil.ensureScreenSize();
   await setupGetIt();
   await Supabase.initialize(

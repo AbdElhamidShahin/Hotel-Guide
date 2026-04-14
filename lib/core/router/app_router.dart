@@ -209,10 +209,10 @@ abstract class AppRouter {
       GoRoute(
         path: routes.RoomsScreenListView,
         builder: (context, state) {
-          final String hotelId = (state.extra as String?) ?? "";
+          final hotelId = state.extra as String;
 
-          return BlocProvider.value(
-            value: getIt<RoomCubit>(),
+          return BlocProvider(
+            create: (_) => getIt<RoomCubit>()..getRoomsHotel(hotelId),
             child: RoomsScreenListView(hotelId: hotelId),
           );
         },
@@ -308,9 +308,13 @@ abstract class AppRouter {
                 builder: (context, state) {
                   final data = state.extra as Map<String, dynamic>?;
 
-                  return BlocProvider(
-                    create: (context) =>
-                        getIt<HomeCubit>()..getHotelsAndCities(),
+                  return MultiBlocProvider(
+                    providers: [
+                      BlocProvider.value(value: getIt<FavoriteCubit>()),
+                      BlocProvider(
+                        create: (context) => getIt<HomeCubit>()..getHotelsAndCities(),
+                      ),
+                    ],
                     child: HomeScreen(name: data?["name"] ?? ""),
                   );
                 },

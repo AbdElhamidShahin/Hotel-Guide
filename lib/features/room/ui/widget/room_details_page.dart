@@ -25,8 +25,10 @@ class RoomDetailsPage extends StatelessWidget {
   final Room room;
   @override
   Widget build(BuildContext context) {
-    final List<FacilityModel> facilities = room.facilities.entries.map((entry) {
-      return FacilityModel(title: entry.key, isAvailable: entry.value);
+    final List<FacilityModel> facilities = room.facilities.entries
+        .where((entry) => entry.value == true)
+        .map((entry) {
+      return FacilityModel(title: entry.key, isAvailable: true);
     }).toList();
     return Scaffold(
       appBar: CustomAppbarWidget(name: "الغرفة", onTap: () => context.pop()),
