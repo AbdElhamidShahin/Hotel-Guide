@@ -129,19 +129,18 @@ class _AccountScreenState extends State<AccountScreen> {
                 buildSttingsItem(
                   title: "الموقع",
                   icon: Icons.location_on_outlined,
-                  onTap: () {},
+                  onTap: () => context.push(routes.AboutUsScreen),
                 ),
                 buildSttingsItem(
                   title: "سياسة الخصوصية",
                   icon: Icons.assignment_outlined,
-                  onTap: () {},
+                  onTap: () => context.push(routes.PrivacyPolicyScreen),
                 ),
                 buildSttingsItem(
                   title: "الأسئلة الشائعة",
                   icon: Icons.help_outline,
-                  onTap: () {
-                    context.push(routes.FaqPage);
-                  },
+                  onTap: () => context.push(routes.FaqPage),
+
                 ),
                 buildSttingsItem(
                   title: "شروط الإستخدام",

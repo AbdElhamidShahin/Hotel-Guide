@@ -9,57 +9,74 @@ class AboutUsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFFF8F8FC),
       appBar: CustomAppbarWidget(
-        name: "من نحن",
+        name: 'من نحن',
         onTap: () => Navigator.pop(context),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+        physics: const BouncingScrollPhysics(),
+        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            // ─── من نحن ───
-            _SectionBlock(
-              title: "من نحن",
-              content:
-              "منصة فندقي هي المنصة الأولى التي جمعت أكثر من ١٥٠٠ فندق وشقة فندقية ووحدة سكنية مُصنَّفة تحت نظام واحد، يتيح للمسافر مقارنة الأسعار والمرافق واختيار الأنسب له — سواء للسياحة أو العمل أو الإقامة والحجوزات.\n\nندعو تقديم منصة استثمارية وشراكة فعّالة مع المنشآت السياحية في الفصل التالي من نمو المقاطعة السياحية في مصر.\n\nهدفنا تحقيق مستوى جودة عالمية مبني في قطاع الضيافة مع تطوير حلول مبتكرة ومنظومة متكاملة للأعمال.\n\nمن أصل ١٦٠٠+ فندق مُصنَّف في مصر، تعامل معنا ٩٣٪ من القطاعين العام والخاص لتوفير تجربة سياحية متكاملة وخدمات احترافية لأكبر شركات السياحة والطيران.\n\nنؤمن أن تحقيق التميز في الضيافة يتطلب التفاصيل الدقيقة، لذلك نعمل مع المطورين والمستثمرين والقطاع الإلكتروني لتقديم خدمات متقدمة وفق المعايير الدولية.\n\nنسعى دائمًا لتطوير القطاع، من خلال ربط المنشآت بشبكة واسعة من الشركاء والقطاع الإلكتروني — للتأهيل نحو المستقبل وتحقيق أهدافنا.",
-            ),
-
+            // ── Hero intro ─────────────────────────────────────────────
+            _HeroIntro(),
             SizedBox(height: 28.h),
 
-            // ─── رسالتنا ───
-            _SectionBlock(
-              title: "رسالتنا",
-              content: null,
-              bullets: [
-                "دعم هذا رؤية الدولة",
-                "تحقيق متطلبات من خلال شبكة منظمة وفعّالة",
-                "تربط المنشآت والمنافذ بالديناميكية بشبكة تشغيل الفندق الرقمي",
+            // ── Sections ───────────────────────────────────────────────
+            _SectionCard(
+              title: 'من نحن',
+              icon: Icons.info_outline_rounded,
+              content:
+              'مرحبًا بك في منصة فندقي، الوجهة التي ضممت لتكون حلقة الوصل بين الزائر والفندق، '
+                  'ولتمنحك تجربة مختلفة تمامًا في عالم استكشاف أماكن الإقامة داخل مصر.\n\n'
+                  'نحن نؤمن أن رحلة البحث عن فندق لا يجب أن تكون فوضوية أو معقدة، لذلك أنشأنا '
+                  'هذه المنصة لنقدم لك المعلومات التي تحتاجها بوضوح، وبأقل عدد ممكن من الخطوات.\n\n'
+                  'منصة تجمع بين البساطة والقوة — فمنا لتطوير واجهة سهلة الاستخدام، '
+                  'وتجربة تُصفِّح مريحة تساعدك على الوصول إلى الفندق المناسب خلال ثوانٍ.\n\n'
+                  'هدفنا ليس مجرد عرض قائمة فنادق، بل تقديم محتوى دقيق ومتكامل يساعدك على '
+                  'اتخاذ القرار بثقة، من صور وخدمات وموقع وطرق التواصل.\n\n'
+                  'رؤيتنا أن نصبح الدليل الأول للمسافرين داخل مصر، والمرجع الأساسي لكل من يبحث '
+                  'عن فندق يناسب رحلته.',
+            ),
+
+            SizedBox(height: 16.h),
+
+            _SectionCard(
+              title: 'رسالتنا',
+              icon: Icons.campaign_outlined,
+              bullets: const [
+                'نحن هنا لنبسط التجربة.',
+                'لجعل عملية البحث عن فندق سهلة، سريعة، وواضحة.',
+                'ولنربط بين الفنادق والعملاء بحديثة تلائم العالم الرقمي الحالي.',
               ],
             ),
 
-            SizedBox(height: 28.h),
+            SizedBox(height: 16.h),
 
-            // ─── قيمنا ───
-            _SectionBlock(
-              title: "قيمنا",
-              content: null,
-              bullets: [
-                "الشفافية: تقديم معلومات دقيقة وموثوقة",
-                "الجودة: المنظومة تضم أفضل المنشآت المُصنَّفة في مصر",
-                "الابتكار: تقديم الأنظمة لإطلاق تجربة جديدة خدمة للمستثمرين",
-                "الاحترافية: تعامل بمنهجية عرض للمستوى الدولي أمام الاستثمار",
+            _SectionCard(
+              title: 'قيمنا',
+              icon: Icons.verified_outlined,
+              bullets: const [
+                'الشفافية: نقدم معلومات حقيقية، واضحة، وموثوقة.',
+                'السهولة: تصميم بسيط وتجربة سلسة تناسب كل الأعمار.',
+                'الابتكار: نطوّر المنصة باستمرار لإضافة أدوات جديدة تخدم المستخدم.',
+                'الاحترافية: من طريقة عرض المحتوى وصولًا إلى تجربة التصفح.',
               ],
             ),
 
-            SizedBox(height: 28.h),
+            SizedBox(height: 16.h),
 
-            // ─── مستقبل المنصة ───
-            _SectionBlock(
-              title: "مستقبل المنصة",
+            _SectionCard(
+              title: 'مستقبل المنصة',
+              icon: Icons.rocket_launch_outlined,
               content:
-              "نسعى للتطور نحو منصة رائدة على مستوى القارة الإفريقية.\n\nنحو توظيف خدمات محدودة من خلال تعاون فعّال مع نظام فندقي وتكنولوجي وخدمات المستقبلية في القارة الإفريقية داخل مصر.\n\nفي نماذج أجمعته يمكنك تقديمها أيضًا.\n\nنحو هذا الاتجاه في المكان الأنسب لكل مسؤولية.",
+              'نحن نعمل على بناء علامة تجارية قوية في مجال الضيافة الرقمية.\n\n'
+                  'ومع توسعنا، ستتحول المنصة من مجرد دليل للفنادق إلى مركز متكامل للحجوزات، '
+                  'المراجعات، الخرائط التفاعلية، وإدارة الإقامات داخل مصر.\n\n'
+                  'في ستاي إيجيبت، رحلتك تبدأ من هنا.\n'
+                  'ومن هنا ستصل إلى المكان الأنسب لك بكل سهولة.',
             ),
 
             SizedBox(height: 32.h),
@@ -70,115 +87,191 @@ class AboutUsScreen extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────
-// Section Block Widget
-// ─────────────────────────────────────────
-class _SectionBlock extends StatelessWidget {
+// ── Hero intro card ───────────────────────────────────────────────────────────
+
+class _HeroIntro extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(20.r),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFF2D2B3E), Color(0xFF4A4766)],
+          begin: Alignment.topRight,
+          end: Alignment.bottomLeft,
+        ),
+        borderRadius: BorderRadius.circular(16.r),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF2D2B3E).withOpacity(0.25),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text(
+                'منصة فندقي',
+                style: TextStyle(
+                  fontSize: 22.sp,
+                  fontFamily: 'Cairo',
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              SizedBox(width: 10.w),
+              Container(
+                padding: EdgeInsets.all(8.r),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.15),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(Icons.hotel_rounded, color: Colors.white, size: 24.sp),
+              ),
+            ],
+          ),
+          SizedBox(height: 12.h),
+          Text(
+            'دليلك الأول للإقامة في مصر — نربط الزائر بالفندق المناسب '
+                'بأقل جهد وأعلى ثقة.',
+            textAlign: TextAlign.right,
+            textDirection: TextDirection.rtl,
+            style: TextStyle(
+              fontSize: 13.5.sp,
+              fontFamily: 'Cairo',
+              color: Colors.white.withOpacity(0.85),
+              height: 1.7,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Section card ──────────────────────────────────────────────────────────────
+
+class _SectionCard extends StatelessWidget {
   final String title;
+  final IconData icon;
   final String? content;
   final List<String>? bullets;
 
-  const _SectionBlock({
+  const _SectionCard({
     required this.title,
+    required this.icon,
     this.content,
     this.bullets,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        // Title with accent line
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(18.r),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          // Title row
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 17.sp,
+                  fontFamily: 'Cairo',
+                  fontWeight: FontWeight.bold,
+                  color: const Color(0xFF1A1F3C),
+                ),
+              ),
+              SizedBox(width: 10.w),
+              Container(
+                padding: EdgeInsets.all(7.r),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withOpacity(0.08),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(icon, color: AppColors.primary, size: 18.sp),
+              ),
+            ],
+          ),
+
+          SizedBox(height: 10.h),
+          Container(height: 1, color: const Color(0xFFEEEEF5)),
+          SizedBox(height: 14.h),
+
+          // Content
+          if (content != null)
             Text(
-              title,
+              content!,
               textDirection: TextDirection.rtl,
+              textAlign: TextAlign.right,
               style: TextStyle(
-                fontSize: 17.sp,
-                fontWeight: FontWeight.bold,
-                color: const Color(0xFF1A1F3C),
+                fontSize: 13.5.sp,
+                fontFamily: 'Cairo',
+                color: const Color(0xFF555566),
+                height: 1.85,
               ),
             ),
-            SizedBox(width: 8.w),
-            Container(
-              width: 4.w,
-              height: 20.h,
-              decoration: BoxDecoration(
-                color: AppColors.primary,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-          ],
-        ),
 
-        SizedBox(height: 10.h),
-
-        // Divider
-        Align(
-          alignment: Alignment.centerRight,
-          child: Container(
-            height: 1,
-            color: const Color(0xFFE8E8EE),
-          ),
-        ),
-
-        SizedBox(height: 12.h),
-
-        // Content
-        if (content != null)
-          Text(
-            content!,
-            textDirection: TextDirection.rtl,
-            textAlign: TextAlign.right,
-            style: TextStyle(
-              fontSize: 13.5.sp,
-              color: const Color(0xFF444444),
-              height: 1.8,
-            ),
-          ),
-
-        // Bullets
-        if (bullets != null)
-          ...bullets!.map(
-                (item) => Padding(
-              padding: EdgeInsets.only(bottom: 8.h),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                textDirection: TextDirection.rtl,
-                children: [
-                  Expanded(
-                    child: Text(
-                      item,
-                      textDirection: TextDirection.rtl,
-                      textAlign: TextAlign.right,
-                      style: TextStyle(
-                        fontSize: 13.5.sp,
-                        color: const Color(0xFF444444),
-                        height: 1.7,
+          // Bullets
+          if (bullets != null)
+            ...bullets!.map(
+                  (item) => Padding(
+                padding: EdgeInsets.only(bottom: 10.h),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  textDirection: TextDirection.rtl,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        item,
+                        textDirection: TextDirection.rtl,
+                        textAlign: TextAlign.right,
+                        style: TextStyle(
+                          fontSize: 13.5.sp,
+                          fontFamily: 'Cairo',
+                          color: const Color(0xFF555566),
+                          height: 1.75,
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(width: 8.w),
-                  Padding(
-                    padding: EdgeInsets.only(top: 6.h),
-                    child: Container(
-                      width: 6.w,
-                      height: 6.w,
-                      decoration: BoxDecoration(
-                        color: AppColors.primary,
-                        shape: BoxShape.circle,
+                    SizedBox(width: 10.w),
+                    Padding(
+                      padding: EdgeInsets.only(top: 7.h),
+                      child: Container(
+                        width: 7.r,
+                        height: 7.r,
+                        decoration: BoxDecoration(
+                          color: AppColors.primary,
+                          shape: BoxShape.circle,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-      ],
+        ],
+      ),
     );
   }
 }
