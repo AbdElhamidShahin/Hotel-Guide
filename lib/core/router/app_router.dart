@@ -55,7 +55,7 @@ abstract class AppRouter {
       GoRoute(
         path: routes.onBoardingScreen,
         builder: (BuildContext context, GoRouterState state) =>
-        const OnBoardingScreen(),
+            const OnBoardingScreen(),
       ),
       GoRoute(
         path: routes.FaqPage,
@@ -68,12 +68,12 @@ abstract class AppRouter {
       GoRoute(
         path: routes.AboutUsScreen,
         builder: (BuildContext context, GoRouterState state) =>
-        const AboutUsScreen(),
+            const AboutUsScreen(),
       ),
       GoRoute(
         path: routes.ChatScreen,
         builder: (BuildContext context, GoRouterState state) =>
-        const ChatScreen(),
+            const ChatScreen(),
       ),
       GoRoute(
         path: routes.loginScreen,
@@ -105,13 +105,21 @@ abstract class AppRouter {
       GoRoute(
         path: routes.customDetailsScreen,
         builder: (BuildContext context, GoRouterState state) {
+          final hotel = state.extra as HotelModel;
+
           return MultiBlocProvider(
             providers: [
               BlocProvider.value(value: getIt<FavoriteCubit>()),
-              BlocProvider(create: (context) => getIt<HomeCubit>()),
-              BlocProvider(create: (context) => getIt<RoomCubit>()),
+              BlocProvider(
+                create: (context) => getIt<HomeCubit>()..getHotelsAndCities(),
+              ),
+
+              BlocProvider(
+                create: (context) =>
+                    getIt<RoomCubit>()..getRoomsHotel(hotel.id),
+              ),
             ],
-            child: CustomDetailsScreen(hotelModel: state.extra as HotelModel),
+            child: CustomDetailsScreen(hotelModel: hotel),
           );
         },
       ),
@@ -220,34 +228,34 @@ abstract class AppRouter {
             reverseTransitionDuration: const Duration(milliseconds: 1000),
             transitionsBuilder:
                 (context, animation, secondaryAnimation, child) {
-              final curvedAnimation = CurvedAnimation(
-                parent: animation,
-                curve: Curves.easeOutBack,
-                reverseCurve: Curves.easeInBack,
-              );
-              final slide = Tween<Offset>(
-                begin: const Offset(-1.0, 0.0),
-                end: Offset.zero,
-              ).animate(curvedAnimation);
+                  final curvedAnimation = CurvedAnimation(
+                    parent: animation,
+                    curve: Curves.easeOutBack,
+                    reverseCurve: Curves.easeInBack,
+                  );
+                  final slide = Tween<Offset>(
+                    begin: const Offset(-1.0, 0.0),
+                    end: Offset.zero,
+                  ).animate(curvedAnimation);
 
-              final scale = Tween<double>(
-                begin: 0.88,
-                end: 1.0,
-              ).animate(curvedAnimation);
-              final opacity = Tween<double>(
-                begin: 0.0,
-                end: 1.0,
-              ).animate(curvedAnimation);
+                  final scale = Tween<double>(
+                    begin: 0.88,
+                    end: 1.0,
+                  ).animate(curvedAnimation);
+                  final opacity = Tween<double>(
+                    begin: 0.0,
+                    end: 1.0,
+                  ).animate(curvedAnimation);
 
-              return FadeTransition(
-                opacity: opacity,
-                child: ScaleTransition(
-                  scale: scale,
-                  alignment: Alignment.centerLeft,
-                  child: SlideTransition(position: slide, child: child),
-                ),
-              );
-            },
+                  return FadeTransition(
+                    opacity: opacity,
+                    child: ScaleTransition(
+                      scale: scale,
+                      alignment: Alignment.centerLeft,
+                      child: SlideTransition(position: slide, child: child),
+                    ),
+                  );
+                },
           );
         },
       ),
@@ -302,7 +310,7 @@ abstract class AppRouter {
 
                   return BlocProvider(
                     create: (context) =>
-                    getIt<HomeCubit>()..getHotelsAndCities(),
+                        getIt<HomeCubit>()..getHotelsAndCities(),
                     child: HomeScreen(name: data?["name"] ?? ""),
                   );
                 },

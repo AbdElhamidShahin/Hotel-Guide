@@ -78,11 +78,10 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   @override
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppbarWidget(name: "AQUA Hotel AI",  onTap: (){},),
+      appBar: CustomAppbarWidget(name: "AQUA Hotel AI", onTap: () {}),
       body: Column(
         children: [
           Expanded(
@@ -115,5 +114,4 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
     );
   }
-
 }

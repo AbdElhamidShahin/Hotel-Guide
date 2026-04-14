@@ -61,7 +61,9 @@ class StripeService {
     required PaymentIntentInputModel paymentIntentInputModel,
   }) async {
     try {
-      var paymentIntentModel = await createPaymentIntent(paymentIntentInputModel);
+      var paymentIntentModel = await createPaymentIntent(
+        paymentIntentInputModel,
+      );
 
       var ephermeralKeysModel = await createEphermeralKeys(
         customerId: paymentIntentInputModel.customerId!,
@@ -78,23 +80,17 @@ class StripeService {
       );
 
       await displayPaymentSheet();
-
     } on StripeException catch (e) {
       if (e.error.code == FailureCode.Canceled) {
         throw const PaymentFailure("تم إلغاء عملية الدفع بواسطة المستخدم");
       }
       throw PaymentFailure(e.error.message ?? "حدث خطأ غير متوقع أثناء الدفع");
-
     } on DioException catch (e) {
       throw ErrorHandler.handle(e);
-
     } catch (e) {
       throw UnknownFailure(e.toString());
     }
   }
-
-
-
 
   Future<String> getOrCreateStripeCustomerId(UserProfileModel user) async {
     if (user.stripeCustomerId != null && user.stripeCustomerId!.isNotEmpty) {
@@ -106,10 +102,7 @@ class StripeService {
         url: ApiConstants.customersUrl,
         token: ApiConstants.secretKey,
         contentType: Headers.formUrlEncodedContentType,
-        body: {
-          'email': user.email,
-          'metadata[supabase_id]': user.id,
-        },
+        body: {'email': user.email, 'metadata[supabase_id]': user.id},
       );
 
       String newCustomerId = response.data['id'];
@@ -120,7 +113,6 @@ class StripeService {
           .eq('id', user.id);
 
       return newCustomerId;
-
     } on DioException catch (e) {
       throw ErrorHandler.handle(e);
     } catch (e) {

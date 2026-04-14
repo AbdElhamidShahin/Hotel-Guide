@@ -112,52 +112,47 @@ class CustomRatingListviewItem extends StatelessWidget {
   }
 
   Widget _buildFavoriteIcon() {
-    return BlocProvider.value(
-      value: getIt<FavoriteCubit>(),
+    return BlocBuilder<FavoriteCubit, FavoriteState>(
+      builder: (context, state) {
+        final favoriteCubit = context.read<FavoriteCubit>();
+        final isFavorite = favoriteCubit.isFavorite(hotelModel);
 
-      child: BlocBuilder<FavoriteCubit, FavoriteState>(
-        builder: (context, state) {
-          final favoriteCubit = context.read<FavoriteCubit>();
-          final isFavorite = favoriteCubit.isFavorite(hotelModel);
-
-          return IconButton(
-            icon: Container(
-              padding: EdgeInsets.all(8.r),
-              decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.3),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                isFavorite
-                    ? Icons.favorite_rounded
-                    : Icons.favorite_border_rounded,
-                color: isFavorite ? Colors.red : Colors.white,
-                size: 24.r,
-              ),
+        return IconButton(
+          icon: Container(
+            padding: EdgeInsets.all(8.r),
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.3),
+              shape: BoxShape.circle,
             ),
-            onPressed: () async {
-              final bool currentlyFavorite = isFavorite;
-              await favoriteCubit.toggleFavorite(hotelModel);
-
-              if (currentlyFavorite) {
-                Snackly.success(
-                  context: context,
-                  title: "تم الحذف من المفضلة",
-                  style: SnackbarStyle.filled,
-                );
-              } else {
-                Snackly.success(
-                  context: context,
-                  title: "تم الإضافة إلى المفضلة",
-                  style: SnackbarStyle.filled,
-                );
-              }
-            },
-            padding: const EdgeInsets.all(8),
-            constraints: const BoxConstraints(),
-          );
-        },
-      ),
+            child: Icon(
+              isFavorite
+                  ? Icons.favorite_rounded
+                  : Icons.favorite_border_rounded,
+              color: isFavorite ? Colors.red : Colors.white,
+              size: 24.r,
+            ),
+          ),
+          onPressed: () async {
+            favoriteCubit.toggleFavorite(hotelModel);
+            final bool currentlyFavorite = isFavorite;
+            if (currentlyFavorite) {
+              Snackly.success(
+                context: context,
+                title: "تم الحذف من المفضلة",
+                style: SnackbarStyle.filled,
+              );
+            } else {
+              Snackly.success(
+                context: context,
+                title: "تم الإضافة إلى المفضلة",
+                style: SnackbarStyle.filled,
+              );
+            }
+          },
+          padding: const EdgeInsets.all(8),
+          constraints: const BoxConstraints(),
+        );
+      },
     );
   }
 

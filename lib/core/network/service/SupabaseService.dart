@@ -22,6 +22,6 @@ class SupabaseService {
         .select()
         .eq('hotel_id', hotelId);
 
-    return response as List<Map<String, dynamic>>;
+    return List<Map<String, dynamic>>.from(response);
   }
 }

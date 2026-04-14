@@ -51,7 +51,6 @@ class _CustomSimilarHotelsListviewState
 
         if (state is HomeLoaded) {
           final similarHotels = _filterSimilarHotels(state);
-
           if (similarHotels.isEmpty) {
             return _buildEmptyState();
           }
@@ -75,7 +74,6 @@ class _CustomSimilarHotelsListviewState
     );
   }
 
-
   Widget _buildHotelPageView(List<HotelModel> hotels) {
     return SizedBox(
       height: 250.h,
@@ -89,11 +87,11 @@ class _CustomSimilarHotelsListviewState
           return Padding(
             padding: EdgeInsets.symmetric(horizontal: 8.w),
             child: GestureDetector(
-              onTap: () => context.push(routes.customDetailsScreen, extra: hotels[index]),
-              child: CustomItem(
-                hotelModel: hotels[index],
-                isContinar: false,
+              onTap: () => context.push(
+                routes.customDetailsScreen,
+                extra: hotels[index],
               ),
+              child: CustomItem(hotelModel: hotels[index], isContinar: false),
             ),
           );
         },
@@ -111,7 +109,9 @@ class _CustomSimilarHotelsListviewState
           height: 6.r,
           width: _currentPage == index ? 16.w : 6.w,
           decoration: BoxDecoration(
-            color: _currentPage == index ? AppColors.primary : Colors.grey.shade300,
+            color: _currentPage == index
+                ? AppColors.primary
+                : Colors.grey.shade300,
             borderRadius: BorderRadius.circular(4.r),
           ),
         );
@@ -122,7 +122,10 @@ class _CustomSimilarHotelsListviewState
   List<HotelModel> _filterSimilarHotels(HomeLoaded state) {
     try {
       final cityName = state.cities
-          .firstWhere((c) => c.id == widget.cityId, orElse: () => state.cities.first)
+          .firstWhere(
+            (c) => c.id == widget.cityId,
+            orElse: () => state.cities.first,
+          )
           .name;
       return state.hotels
           .where((h) => h.cityName == cityName && h.id != widget.hotelModel.id)

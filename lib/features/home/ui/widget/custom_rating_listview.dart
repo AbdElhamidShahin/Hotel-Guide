@@ -12,7 +12,7 @@ class CustomRatingListview extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<HomeCubit, HomeState>(
       buildWhen: (prev, curr) =>
-      curr is HomeLoading || curr is HomeLoaded || curr is HomeError,
+          curr is HomeLoading || curr is HomeLoaded || curr is HomeError,
       builder: (context, state) {
         if (state is HomeLoading) {
           return const Center(child: CircularProgressIndicator());
@@ -37,7 +37,9 @@ class CustomRatingListview extends StatelessWidget {
               .toList(growable: false);
 
           if (hotels.isEmpty) {
-            return const Center(child: Text('لا توجد فنادق لهذه المدينة حالياً'));
+            return const Center(
+              child: Text('لا توجد فنادق لهذه المدينة حالياً'),
+            );
           }
 
           return ListView.builder(
@@ -45,9 +47,8 @@ class CustomRatingListview extends StatelessWidget {
             itemCount: hotels.length,
             addAutomaticKeepAlives: false,
             addRepaintBoundaries: true,
-            itemBuilder: (context, index) => CustomRatingListviewItem(
-              hotelModel: hotels[index],
-            ),
+            itemBuilder: (context, index) =>
+                CustomRatingListviewItem(hotelModel: hotels[index]),
           );
         }
 

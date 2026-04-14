@@ -1,11 +1,12 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../../core/constants/api_constants.dart';
+import '../../../core/error/failure.dart';
 import 'chat_message.dart';
 
 class ChatService {
-  static const String _webhookUrl =
-      'https://hotelguide.app.n8n.cloud/webhook/8a939de3-e4b1-4c24-baaa-4694e9202757';
+  static const String _webhookUrl = ApiConstants.webhookUrl;
 
   Future<ChatMessage> sendMessage({
     required String message,
@@ -14,7 +15,7 @@ class ChatService {
     try {
       final supabase = Supabase.instance.client;
       final hotels = await supabase
-          .from('hotels')
+          .from(AppTableNames.hotels)
           .select('name, description, address, rating, price_starts_from')
           .limit(5);
       final response = await http
@@ -24,20 +25,22 @@ class ChatService {
             body: jsonEncode({
               'message': message,
               'userId': userId,
-              'hotels': hotels,            }),
+              'hotels': hotels,
+            }),
           )
           .timeout(const Duration(seconds: 30));
 
       if (response.statusCode == 200) {
         return _parseResponse(response.body);
       } else {
-        return _errorMessage();
+        throw const ServerFailure(
+          '⚠️ السيرفر مش بيتشجيب دلوقتي، حاول تاني كمان شوية',
+        );
       }
+    } on http.ClientException {
+      throw const NetworkFailure('⚠️ مفيش اتصال بالنت، اتأكد من الشبكة');
     } catch (e) {
-      return ChatMessage(
-        text: '⚠️ مشكلة في الاتصال، تأكد من النت وحاول تاني',
-        isUser: false,
-      );
+      throw UnknownFailure(e.toString());
     }
   }
 
@@ -50,8 +53,11 @@ class ChatService {
       if (decoded is List && decoded.isNotEmpty) {
         final item = decoded[0];
 
-        if (item['hotels'] != null) {
-          return _buildHotelsMessage(item['text'] ?? '', item['hotels']);
+        if (item[AppTableNames.hotels] != null) {
+          return _buildHotelsMessage(
+            item['text'] ?? '',
+            item[AppTableNames.hotels],
+          );
         }
 
         final text =
@@ -61,8 +67,11 @@ class ChatService {
       }
 
       if (decoded is Map) {
-        if (decoded['hotels'] != null) {
-          return _buildHotelsMessage(decoded['text'] ?? '', decoded['hotels']);
+        if (decoded[AppTableNames.hotels] != null) {
+          return _buildHotelsMessage(
+            decoded['text'] ?? '',
+            decoded[AppTableNames.hotels],
+          );
         }
 
         final text =
