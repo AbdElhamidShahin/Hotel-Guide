@@ -177,7 +177,7 @@ class _ImageGallerySectionState extends State<ImageGallerySection> {
               ),
               Text(
                 "صور الغرفة",
-                style: textStyle1Regularprimary.copyWith(
+                style: font17RegularPrimary.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -317,7 +317,7 @@ class _ImageGallerySectionState extends State<ImageGallerySection> {
               Text(
                 "مشاهدة الغرفة بالواقع الإفتراضي",
                 style:
-                textStyle22BoldPrimary.copyWith(fontSize: 19.sp),
+                font22BoldPrimary.copyWith(fontSize: 19.sp),
               ),
             ],
           ),

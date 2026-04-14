@@ -16,12 +16,12 @@ Widget BuildNotFoundNotification({VoidCallback? onRetry}) {
             height: 250.h,
           ),
           SizedBox(height: 20.h),
-          Text('صفحة الإشعارات فارغة', style: textStyle28BoldWhite),
+          Text('صفحة الإشعارات فارغة', style: font28BoldBlack),
           SizedBox(height: 32.h),
           Text(
             'في حال توفر أي إشعار ستظهرلك على الفور',
             textAlign: TextAlign.center,
-            style: textStyle1Regularprimary.copyWith(color: Color(0xFF9E9E9E)),
+            style: font17RegularPrimary.copyWith(color: Color(0xFF9E9E9E)),
           ),
           SizedBox(height: 40.h),
           SizedBox(
@@ -38,7 +38,7 @@ Widget BuildNotFoundNotification({VoidCallback? onRetry}) {
               ),
               child: Text(
                 'العودة للرئيسية',
-                style: textStyle18RegularShadowPurple.copyWith(
+                style: font18RegularShadowPurple.copyWith(
                   color: AppColors.textWhite,
                 ),
               ),

@@ -45,7 +45,7 @@ class SignUpScreen extends StatelessWidget {
                       SizedBox(height: 15.h),
                       Text(
                         'بوابتك لتجربة فندقية استثنائية',
-                        style: textStyle30BoldPrimary.copyWith(fontSize: 26.sp),
+                        style: font30BoldPrimary.copyWith(fontSize: 26.sp),
                         maxLines: 1,
                       ),
                       SizedBox(height: 20.h),
@@ -65,14 +65,14 @@ class SignUpScreen extends StatelessWidget {
                             onPressed: () => context.push(routes.loginScreen),
                             child: Text(
                               'تسجيل دخول',
-                              style: textStyle16BoldWhite.copyWith(
+                              style: font16BoldWhite.copyWith(
                                 color: AppColors.ShadowPurple,
                               ),
                             ),
                           ),
                           Text(
                             'لديك حساب بالفعل؟',
-                            style: textStyle16RegularGray,
+                            style: font16RegularMuted,
                             textDirection: TextDirection.rtl,
                           ),
                         ],

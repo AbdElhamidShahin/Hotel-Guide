@@ -84,7 +84,7 @@ class _NotificationScreenListViewState
                       ),
                       child: Text(
                         day,
-                        style: textStyle20BoldShadowPurple.copyWith(
+                        style: font20BoldShadowPurple.copyWith(
                           color: AppColors.primary,
                         ),
                       ),

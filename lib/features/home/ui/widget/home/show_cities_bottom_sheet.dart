@@ -32,7 +32,7 @@ void showCitiesBottomSheet(BuildContext context) {
             ),
             Text(
               "جميع المدن",
-              style: textStyle1Regularprimary.copyWith(
+              style: font17RegularPrimary.copyWith(
                 fontWeight: FontWeight.w600,
                 fontSize: 18.sp,
               ),

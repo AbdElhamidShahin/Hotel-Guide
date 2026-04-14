@@ -53,14 +53,14 @@ class CustomWalletItem extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: textStyle16BoldWhite.copyWith(
+                      style: font16BoldWhite.copyWith(
                         color: AppColors.primary,
                       ),
                     ),
                     SizedBox(height: 8.h),
                     Text(
                       cashBack,
-                      style: textStyle14RegularNightfall.copyWith(
+                      style: font14RegularNightfall.copyWith(
                         color: AppColors.Grayscale,
                       ),
                     ),

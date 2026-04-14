@@ -59,7 +59,7 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Text('البريد الإلكتروني', style: textStyle16RegularGray),
+            child: Text('البريد الإلكتروني', style: font16RegularMuted),
           ),
           AppTextFormFeild(
             hintText: 'example@gmail.com',
@@ -84,7 +84,7 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
           ),
           Padding(
             padding: EdgeInsets.only(bottom: 8.h, top: 16.h),
-            child: Text('كلمة المرور', style: textStyle16RegularGray),
+            child: Text('كلمة المرور', style: font16RegularMuted),
           ),
           AppTextFormFeild(
             hintText: '******',

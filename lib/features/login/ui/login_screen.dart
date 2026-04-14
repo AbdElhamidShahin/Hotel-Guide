@@ -48,7 +48,7 @@ class LoginScreen extends StatelessWidget {
                       SizedBox(height: 15.h),
                       Text(
                         'بوابتك لتجربة فندقية استثنائية',
-                        style: textStyle30BoldPrimary.copyWith(fontSize: 26.sp),
+                        style: font30BoldPrimary.copyWith(fontSize: 26.sp),
                         maxLines: 1,
                       ),
                       SizedBox(height: 30.h),
@@ -69,12 +69,12 @@ class LoginScreen extends StatelessWidget {
                             onPressed: () => context.push(routes.signUpScreen),
                             child: Text(
                               'إنشاء حساب',
-                              style: textStyle16BoldWhite.copyWith(
+                              style: font16BoldWhite.copyWith(
                                 color: AppColors.ShadowPurple,
                               ),
                             ),
                           ),
-                          Text('لا تمتلك حساب؟', style: textStyle16RegularGray),
+                          Text('لا تمتلك حساب؟', style: font16RegularMuted),
                         ],
                       ),
                       SizedBox(height: 40.h),

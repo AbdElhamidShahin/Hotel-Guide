@@ -26,7 +26,7 @@ class CustomWalletHistory extends StatelessWidget {
           return Padding(
             padding: EdgeInsets.only(top: 60.h),
             child: Center(
-              child: Text(state.message, style: textStyle16RegularGray),
+              child: Text(state.message, style: font16RegularMuted),
             ),
           );
         }
@@ -43,7 +43,7 @@ class CustomWalletHistory extends StatelessWidget {
                   padding: EdgeInsets.only(right: 24.w, top: 24.h, bottom: 8.h),
                   child: Text(
                     'سجل الحجوزات',
-                    style: textStyle16BoldWhite.copyWith(
+                    style: font16BoldWhite.copyWith(
                       color: AppColors.primary,
                     ),
                   ),
@@ -54,7 +54,7 @@ class CustomWalletHistory extends StatelessWidget {
                     child: Center(
                       child: Text(
                         'لا توجد حجوزات سابقة',
-                        style: textStyle16RegularGray,
+                        style: font16RegularMuted,
                       ),
                     ),
                   )

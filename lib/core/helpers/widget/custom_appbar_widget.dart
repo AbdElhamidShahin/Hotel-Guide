@@ -29,7 +29,7 @@ class CustomAppbarWidget extends StatelessWidget
           children: [
             Text(
               name,
-              style: textStyle22BoldPrimary.copyWith(
+              style: font22BoldPrimary.copyWith(
                 fontWeight: FontWeight.w700,
                 color: AppColors.primary,
               ),

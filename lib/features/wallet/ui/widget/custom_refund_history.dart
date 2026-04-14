@@ -18,14 +18,14 @@ class CustomRefundHistory extends StatelessWidget {
           padding: EdgeInsets.only(right: 24.w, top: 50.h, bottom: 6.h),
           child: Text(
             "اليوم",
-            style: textStyle16BoldWhite.copyWith(color: AppColors.primary),
+            style: font16BoldWhite.copyWith(color: AppColors.primary),
           ),
         ),
         SizedBox(height: 50.h,),
         Center(
           child: Text(
             "لا يوجد عمليات استرداد ",
-            style: textStyle36BoldWhite.copyWith(color: AppColors.primary,fontSize:24 ),
+            style: font36BoldWhite.copyWith(color: AppColors.primary,fontSize:24 ),
           ),
         ),
       ],

@@ -34,7 +34,7 @@ class _PriceRangeFilterState extends State<PriceRangeFilter> {
         SizedBox(height: 24.h),
         Text(
           "متوسط السعر",
-          style: textStyle14RegularNightfall.copyWith(
+          style: font14RegularNightfall.copyWith(
             color: AppColors.primary.withOpacity(0.7),
           ),
         ),
@@ -73,7 +73,7 @@ class _PriceRangeFilterState extends State<PriceRangeFilter> {
                         bottom: 0,
                         child: Text(
                           "${_currentRangeValues.start.round()}",
-                          style: textStyle12SemiBoldShadowPurple,
+                          style: font12SemiBoldShadowPurpleled,
                         ),
                       ),
                       Positioned(
@@ -81,7 +81,7 @@ class _PriceRangeFilterState extends State<PriceRangeFilter> {
                         bottom: 0,
                         child: Text(
                           "${_currentRangeValues.end.round()}",
-                          style: textStyle12SemiBoldShadowPurple,
+                          style: font12SemiBoldShadowPurpleled,
                         ),
                       ),
                     ],
@@ -122,11 +122,11 @@ class _PriceRangeFilterState extends State<PriceRangeFilter> {
           children: [
             Text(
               "${value.round()} EGP ",
-              style: textStyle18BoldGray.copyWith(fontSize: 14.sp,fontWeight: FontWeight.bold),
+              style: font18BoldGray.copyWith(fontSize: 14.sp,fontWeight: FontWeight.bold),
             ),
             Text(
               ": $label",
-              style: textStyle14RegularNightfall.copyWith(
+              style: font14RegularNightfall.copyWith(
                 color: AppColors.pureBlack,
               ),
             ),

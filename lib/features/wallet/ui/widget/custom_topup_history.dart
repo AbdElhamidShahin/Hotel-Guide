@@ -72,7 +72,7 @@ class _CustomTopupHistoryState extends State<CustomTopupHistory> {
             padding: EdgeInsets.only(right: 24.w, top: 32.h, bottom: 20.h),
             child: Text(
               'شحن رصيد',
-              style: textStyle20BoldShadowPurple.copyWith(
+              style: font20BoldShadowPurple.copyWith(
                 color: AppColors.textPrimary,
               ),
             ),
@@ -88,7 +88,7 @@ class _CustomTopupHistoryState extends State<CustomTopupHistory> {
                 children: [
                   Text(
                     'أدخل المبلغ (EGP)',
-                    style: textStyle16RegularGray.copyWith(
+                    style: font16RegularMuted.copyWith(
                       color: AppColors.textPrimary,
                     ),
                   ),
@@ -99,7 +99,7 @@ class _CustomTopupHistoryState extends State<CustomTopupHistory> {
                       decimal: true,
                     ),
                     textAlign: TextAlign.center,
-                    style: textStyle20BoldShadowPurple.copyWith(
+                    style: font20BoldShadowPurple.copyWith(
                       color: AppColors.textPrimary,
                     ),
                     decoration: InputDecoration(
@@ -141,7 +141,7 @@ class _CustomTopupHistoryState extends State<CustomTopupHistory> {
                   SizedBox(height: 12.h),
                   Text(
                     'أو اختر مبلغاً سريعاً',
-                    style: textStyle16RegularGray.copyWith(
+                    style: font16RegularMuted.copyWith(
                       color: AppColors.textPrimary.withOpacity(0.5),
                       fontSize: 13,
                     ),
@@ -175,7 +175,7 @@ class _CustomTopupHistoryState extends State<CustomTopupHistory> {
                           ),
                           child: Text(
                             '${a.toInt()} EGP',
-                            style: textStyle16RegularGray.copyWith(
+                            style: font16RegularMuted.copyWith(
                               color: sel ? Colors.white : AppColors.textPrimary,
                               fontWeight: FontWeight.w600,
                             ),
@@ -232,7 +232,7 @@ class _CustomTopupHistoryState extends State<CustomTopupHistory> {
                         ? const CircularProgressIndicator(color: Colors.white)
                         : Text(
                             'شحن ${_selectedAmount % 1 == 0 ? _selectedAmount.toInt() : _selectedAmount.toStringAsFixed(2)} EGP',
-                            style: textStyle20BoldShadowPurple.copyWith(
+                            style: font20BoldShadowPurple.copyWith(
                               color: Colors.white,
                             ),
                           ),
@@ -261,7 +261,7 @@ class _CustomTopupHistoryState extends State<CustomTopupHistory> {
                     ),
                     child: Text(
                       'سجل عمليات الشحن',
-                      style: textStyle16BoldWhite.copyWith(
+                      style: font16BoldWhite.copyWith(
                         color: AppColors.primary,
                       ),
                     ),
@@ -358,11 +358,11 @@ class _TopUpCard extends StatelessWidget {
   Widget _r(String val, String label, String icon, Color color) {
     return Row(
       children: [
-        Text(val, style: textStyle16RegularGray.copyWith(color: color)),
+        Text(val, style: font16RegularMuted.copyWith(color: color)),
         const Spacer(),
         Text(
           label,
-          style: textStyle16RegularGray.copyWith(color: AppColors.primary),
+          style: font16RegularMuted.copyWith(color: AppColors.primary),
         ),
         const SizedBox(width: 8),
         SvgPicture.asset(icon, width: 18, height: 18),

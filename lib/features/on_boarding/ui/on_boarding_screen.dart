@@ -108,14 +108,14 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                               Text(
                                 contents[i].title,
                                 textAlign: TextAlign.end,
-                                style: textStyle30BoldPrimary,
+                                style: font30BoldPrimary,
                               ),
                               SizedBox(height: 16.h),
                               Text(
                                 textAlign: TextAlign.end,
 
                                 contents[i].description,
-                                style: textStyle20RegularPrimary,
+                                style: font20RegularPrimary,
                               ),
                             ],
                           ),

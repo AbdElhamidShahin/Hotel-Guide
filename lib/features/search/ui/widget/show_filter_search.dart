@@ -132,7 +132,7 @@ void showFilterSearch(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text("فلترة", style: textStyle16BoldWhite),
+                            Text("فلترة", style: font16BoldWhite),
                             SizedBox(width: 8.w),
                             SvgPicture.asset(
                               "assets/icons/Filter_alt.svg",
@@ -160,7 +160,7 @@ void showFilterSearch(
 Widget _buildSectionTitle(String title) {
   return Text(
     title,
-    style: textStyle20BoldShadowPurple.copyWith(
+    style: font20BoldShadowPurple.copyWith(
       color: AppColors.primary,
       fontSize: 18.sp,
     ),
@@ -186,7 +186,7 @@ Widget _buildChoiceChips({
               showCheckmark: false,
               label: Text(
                 item,
-                style: textStyle18BoldGray.copyWith(
+                style: font18BoldGray.copyWith(
                   color: isSelected ? Colors.white : AppColors.primary,
                   fontSize: 14.sp,
                 ),
@@ -226,7 +226,7 @@ Widget _buildFilterHeader(BuildContext context) {
         const Spacer(),
         Text(
           "البحث المتقدم",
-          style: textStyle16BoldWhite.copyWith(fontSize: 17.sp),
+          style: font16BoldWhite.copyWith(fontSize: 17.sp),
         ),
         SizedBox(width: 40.w),
         const Spacer(),

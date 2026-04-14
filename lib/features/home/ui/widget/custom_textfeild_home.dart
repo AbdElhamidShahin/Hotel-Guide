@@ -41,7 +41,7 @@ class CustomTextfeildHome extends StatelessWidget {
               ),
               child: Text(
                 title,
-                style: textStyle16BoldWhite.copyWith(fontSize: 14.sp),
+                style: font16BoldWhite.copyWith(fontSize: 14.sp),
               ),
             ),
 
@@ -58,7 +58,7 @@ class CustomTextfeildHome extends StatelessWidget {
                     Expanded(
                       child: Text(
                         text,
-                        style: textStyle16BoldWhite.copyWith(fontSize: 14.sp),
+                        style: font16BoldWhite.copyWith(fontSize: 14.sp),
                         textAlign: TextAlign.center,
                       ),
                     ),

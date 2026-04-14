@@ -32,7 +32,7 @@ class CustomRoomsAndLocationDetailsScreen extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("الموقع", style: textStyle20BoldShadowPurple.copyWith(color: AppColors.textWhite, fontSize: 16.sp)),
+                    Text("الموقع", style: font20BoldShadowPurple.copyWith(color: AppColors.textWhite, fontSize: 16.sp)),
                     SizedBox(width: 12.w),
                     SvgPicture.asset("assets/icons/map.svg", height: 20.r),
                   ],
@@ -53,7 +53,7 @@ class CustomRoomsAndLocationDetailsScreen extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("الغرف", style: textStyle20BoldShadowPurple.copyWith(color: AppColors.textWhite, fontSize: 16.sp)),
+                    Text("الغرف", style: font20BoldShadowPurple.copyWith(color: AppColors.textWhite, fontSize: 16.sp)),
                     SizedBox(width: 12.w),
                     SvgPicture.asset("assets/icons/rooms_icon.svg", height: 20.r),
                   ],

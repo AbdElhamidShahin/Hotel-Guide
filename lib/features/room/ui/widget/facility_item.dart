@@ -37,7 +37,7 @@ class FacilityItem extends StatelessWidget {
           SizedBox(width: 8.w),
           Text(
             facility.title,
-            style: textStyle16RegularGray.copyWith(
+            style: font16RegularMuted.copyWith(
               color: mainColor,
               fontSize: 14.sp,
             ),

@@ -45,7 +45,7 @@ class CustomAppbarSearch extends StatelessWidget {
                 style: const TextStyle(fontSize: 16),
                 decoration: InputDecoration(
                   hintText: "...البحث عن الفنادق",
-                  hintStyle: textStyle17MediumBlack.copyWith(
+                  hintStyle: font17MediumBlack.copyWith(
                     color: const Color(0xFFB7B7B7),
                   ),
                   prefixIcon: GestureDetector(

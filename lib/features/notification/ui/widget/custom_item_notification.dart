@@ -56,7 +56,7 @@ class CustomItemNotification extends StatelessWidget {
               children: [
                 Text(
                   notification.title,
-                  style: textStyle20BoldShadowPurple.copyWith(
+                  style: font20BoldShadowPurple.copyWith(
                     color: AppColors.primary,
                     fontSize: 18.sp,
                   ),
@@ -64,7 +64,7 @@ class CustomItemNotification extends StatelessWidget {
                 SizedBox(height: 4.h),
                 Text(
                   notification.body,
-                  style: textStyle14RegularNightfall.copyWith(
+                  style: font14RegularNightfall.copyWith(
                     color: AppColors.ShadowPurple,
                   ),
                   textDirection: TextDirection.rtl,

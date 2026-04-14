@@ -34,7 +34,7 @@ class CustomButton extends StatelessWidget {
       child: Text(
         text ?? '',
         textAlign: TextAlign.center,
-        style: textStyle18BoldGray.copyWith(color: AppColors.textWhite)
+        style: font18BoldGray.copyWith(color: AppColors.textWhite)
       ),
     );
   }

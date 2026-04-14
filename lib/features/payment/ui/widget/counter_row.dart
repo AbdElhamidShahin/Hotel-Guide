@@ -27,7 +27,7 @@ class CounterRow extends StatelessWidget {
         children: [
           Text(
             title,
-            style: textStyle22BoldPrimary.copyWith(
+            style: font22BoldPrimary.copyWith(
               color: AppColors.ShadowPurple,
             ),
           ),

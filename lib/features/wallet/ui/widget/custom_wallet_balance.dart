@@ -87,7 +87,7 @@ class _CustomWalletBalanceState extends State<CustomWalletBalance> {
             SizedBox(height: 12.h),
             Text(
               widget.profileModel.fullName,
-              style: textStyle23SemiBoldBlack.copyWith(color: Colors.white),
+              style: font23SemiBoldBlack.copyWith(color: Colors.white),
             ),
             SizedBox(height: 12.h),
             Container(
@@ -101,7 +101,7 @@ class _CustomWalletBalanceState extends State<CustomWalletBalance> {
                 children: [
                   Text(
                     "ID  ",
-                    style: textStyle22RegularWhite.copyWith(
+                    style: font22RegularWhite.copyWith(
                       color: AppColors.textWhite,
                     ),
                   ),
@@ -109,7 +109,7 @@ class _CustomWalletBalanceState extends State<CustomWalletBalance> {
                     widget.profileModel.id.length > 8
                         ? widget.profileModel.id.substring(0, 8).toUpperCase()
                         : widget.profileModel.id,
-                    style: textStyle20BoldShadowPurple.copyWith(
+                    style: font20BoldShadowPurple.copyWith(
                       color: AppColors.textWhite.withOpacity(0.6),
                     ),
                     textAlign: TextAlign.center,
@@ -131,14 +131,14 @@ class _CustomWalletBalanceState extends State<CustomWalletBalance> {
                   children: [
                     Text(
                       "الرصيد الحالي",
-                      style: textStyle16RegularGray.copyWith(
+                      style: font16RegularMuted.copyWith(
                         color: AppColors.textWhite,
                       ),
                     ),
 
                     Text(
                       "${widget.profileModel.walletBalance}",
-                      style: textStyle36BoldWhite,
+                      style: font36BoldWhite,
                     ),
 
                     SizedBox(height: 16.h),
@@ -214,7 +214,7 @@ class _TabButton extends StatelessWidget {
           SizedBox(height: 12.h),
           Text(
             label,
-            style: textStyle16RegularGray.copyWith(
+            style: font16RegularMuted.copyWith(
               color: isActive ? AppColors.AccentsPurple : AppColors.textWhite,
             ),
           ),

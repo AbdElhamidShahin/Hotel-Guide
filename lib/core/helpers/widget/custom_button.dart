@@ -21,7 +21,7 @@ class CustomButton extends StatelessWidget {
         padding: EdgeInsets.zero,
       ),
       onPressed: onTap,
-      child: Text(text ?? '', style: textStyle16BoldWhite),
+      child: Text(text ?? '', style: font16BoldWhite),
     );
   }
 }

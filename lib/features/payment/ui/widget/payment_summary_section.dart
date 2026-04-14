@@ -48,7 +48,7 @@ class PaymentTile extends StatelessWidget {
               const Spacer(),
               Text(
                 title,
-                style: textStyle20RegularPrimary.copyWith(
+                style: font20RegularPrimary.copyWith(
                   color: AppColors.ShadowPurple,
                 ),
               ),

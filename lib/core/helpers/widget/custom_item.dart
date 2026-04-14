@@ -115,7 +115,7 @@ class CustomItem extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                           textDirection: TextDirection.rtl,
                           textAlign: TextAlign.right,
-                          style: textStyle16BoldWhite.copyWith(
+                          style: font16BoldWhite.copyWith(
                             color: AppColors.ShadowPurple,
                           ),
                         ),
@@ -125,7 +125,7 @@ class CustomItem extends StatelessWidget {
                           maxLines: 3,
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.right,
-                          style: textStyle14RegularNightfall.copyWith(
+                          style: font14RegularNightfall.copyWith(
                             color: AppColors.ShadowPurple.withOpacity(0.7),
                           ),
                         ),
@@ -135,7 +135,7 @@ class CustomItem extends StatelessWidget {
 
                           textDirection: TextDirection.rtl,
                           "يبدأ من ${hotelModel.priceStartsFrom} EGP /\nاليوم",
-                          style: textStyle16BoldWhite.copyWith(
+                          style: font16BoldWhite.copyWith(
                             color: AppColors.colorText,
                           ),
                         ),
@@ -164,7 +164,7 @@ class CustomItem extends StatelessWidget {
                                   child: Text(
                                     "إحجز الآن",
                                     overflow: TextOverflow.ellipsis,
-                                    style: textStyle16BoldWhite.copyWith(
+                                    style: font16BoldWhite.copyWith(
                                       fontSize: 16.sp,
                                       fontFamily: 'Cairo',
                                     ),

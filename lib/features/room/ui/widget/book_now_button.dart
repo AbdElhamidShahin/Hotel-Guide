@@ -31,7 +31,7 @@ class BookNowButton extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("إحجز الآن", style: textStyle22BoldPrimary),
+            Text("إحجز الآن", style: font22BoldPrimary),
 
             SizedBox(width: 8.w),
             SvgPicture.asset("assets/icons/send.svg"),

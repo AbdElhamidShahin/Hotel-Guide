@@ -56,7 +56,7 @@ Widget iconSocial(String image, String text) {
       children: [
         Text(
           text,
-          style: textStyle16BoldWhite.copyWith(color: AppColors.nightfall),
+          style: font16BoldWhite.copyWith(color: AppColors.nightfall),
         ),
         SizedBox(width: 12.w),
         SvgPicture.asset(image, width: 22.r, height: 22.r),

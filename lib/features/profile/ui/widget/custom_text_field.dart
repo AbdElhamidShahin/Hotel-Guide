@@ -51,7 +51,7 @@ class Customtextfeild extends StatelessWidget {
               filled: true,
               fillColor: Colors.white,
               hintText: hintText,
-              hintStyle: textStyle15MediumGray,
+              hintStyle: font15MediumGray,
               contentPadding: EdgeInsets.symmetric(
                 horizontal: 12.w,
                 vertical: 16.h,

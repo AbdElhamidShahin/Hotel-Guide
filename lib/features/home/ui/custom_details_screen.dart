@@ -73,7 +73,7 @@ class _CustomDetailsScreenState extends State<CustomDetailsScreen> {
                   maxLines: 9,
                   textDirection: TextDirection.rtl,
                   overflow: TextOverflow.ellipsis,
-                  style: textStyle1Regularprimary.copyWith(
+                  style: font17RegularPrimary.copyWith(
                     color: AppColors.ShadowPurple,
                   ),
                 ),
@@ -92,7 +92,7 @@ class _CustomDetailsScreenState extends State<CustomDetailsScreen> {
                     child: Text(
                       "شاهد المزيد ",
                       textAlign: TextAlign.center,
-                      style: textStyle18BoldGray.copyWith(
+                      style: font18BoldGray.copyWith(
                         color: AppColors.primary,
                       ),
                     ),
@@ -116,7 +116,7 @@ class _CustomDetailsScreenState extends State<CustomDetailsScreen> {
               Center(
                 child: Text(
                   "فنادق مشابهة",
-                  style: textStyle22BoldPrimary.copyWith(
+                  style: font22BoldPrimary.copyWith(
                     color: AppColors.primary,
                   ),
                 ),

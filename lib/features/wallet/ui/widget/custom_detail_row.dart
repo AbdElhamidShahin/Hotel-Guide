@@ -9,11 +9,11 @@ import '../../../../core/theme/colors.dart';
 Row CustomDetailRow(String title, String supTitle, String image, Color color) {
   return Row(
     children: [
-      Text(title, style: textStyle16RegularGray.copyWith(color: color)),
+      Text(title, style: font16RegularMuted.copyWith(color: color)),
       Spacer(),
       Text(
         supTitle,
-        style: textStyle16RegularGray.copyWith(color: AppColors.primary),
+        style: font16RegularMuted.copyWith(color: AppColors.primary),
       ),
       SizedBox(width: 8.w),
       SvgPicture.asset(image),

@@ -69,7 +69,7 @@ class AiBookingBanner extends StatelessWidget {
                                 ),
                                 Text(
                                   "  أحجز فندقك خلال ثواني",
-                                  style: textStyle16BoldWhite.copyWith(
+                                  style: font16BoldWhite.copyWith(
                                     fontSize: 20.sp,
                                   ),
                                 ),
@@ -78,7 +78,7 @@ class AiBookingBanner extends StatelessWidget {
                             SizedBox(height: 8.h,),
                             Text(
                               "خلي الذكاء الإصطناعي يساعدك في عملية البحث",
-                              style: textStyle14RegularNightfall.copyWith(
+                              style: font14RegularNightfall.copyWith(
                                 color: AppColors.textWhite.withOpacity(0.7),fontSize: 13.sp
                               ),textAlign: TextAlign.right,
                             ),

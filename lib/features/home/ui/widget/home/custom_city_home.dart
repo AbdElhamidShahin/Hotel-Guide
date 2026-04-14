@@ -117,7 +117,7 @@ class CustomCityHomeItem extends StatelessWidget {
                 padding: EdgeInsets.only(bottom: 12.h),
                 child: Text(
                   city.name,
-                  style: textStyle22BoldPrimary.copyWith(fontSize: 16.sp, color: Colors.white),
+                  style: font22BoldPrimary.copyWith(fontSize: 16.sp, color: Colors.white),
                 ),
               ),
             ),

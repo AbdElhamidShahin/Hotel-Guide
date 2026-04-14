@@ -41,7 +41,7 @@ class CustomOffersHome extends StatelessWidget {
                   child: Center(
                     child: Text(
                       'إكتشف العروض',
-                      style: textStyle14SemiBoldWhite.copyWith(
+                      style: font14SemiBoldWhite.copyWith(
                         fontSize: 12.sp,
                       ),
                     ),
@@ -55,14 +55,14 @@ class CustomOffersHome extends StatelessWidget {
                     children: [
                       Text(
                         'عروض نهاية العام',
-                        style: textStyle20RegularWhite.copyWith(
+                        style: font20RegularWhite.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       SizedBox(height: 8.h),
                       Text(
                         'استمتع بآخر لحظات الصيف بخصم بنسبة 15% على الأقل.',
-                        style: textStyle14SemiBoldWhite.copyWith(fontSize: 13.sp, color: Colors.white.withOpacity(0.9)),
+                        style: font14SemiBoldWhite.copyWith(fontSize: 13.sp, color: Colors.white.withOpacity(0.9)),
                         textAlign: TextAlign.right,
                       ),
                     ],

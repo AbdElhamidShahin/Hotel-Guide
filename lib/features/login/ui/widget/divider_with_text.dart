@@ -17,7 +17,7 @@ class DividerWithText extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 16.w),
           child: Text(
             'أو',
-            style: textStyle16RegularGray.copyWith(fontSize: 12.sp),
+            style: font16RegularMuted.copyWith(fontSize: 12.sp),
           ),
         ),
         Expanded(child: Divider(color: AppColors.softGray, thickness: 1)),

@@ -35,7 +35,7 @@ class TopRatingWidget extends StatelessWidget {
                   SizedBox(width: 4.w),
                   Text(
                     "عرض المزيد",
-                    style: textStyle18RegularShadowPurple.copyWith(
+                    style: font18RegularShadowPurple.copyWith(
                       fontSize: 16.sp,
                     ),
                   ),
@@ -48,7 +48,7 @@ class TopRatingWidget extends StatelessWidget {
               name,
               textAlign: TextAlign.right,
               textDirection: TextDirection.rtl,
-              style: textStyle20BoldShadowPurple.copyWith(
+              style: font20BoldShadowPurple.copyWith(
                 fontSize: 18.sp,
               ),
               maxLines: 1,

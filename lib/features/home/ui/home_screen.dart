@@ -133,7 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: EdgeInsets.symmetric(horizontal: 16.w),
                 child: Text(
                   '!عروض ترويجية وخصومات وعروض خاصة لك',
-                  style: textStyle14SemiBoldWhite.copyWith(
+                  style: font14SemiBoldWhite.copyWith(
                     color: AppColors.pureBlack.withOpacity(0.6),
                   ),
                   textAlign: TextAlign.right,

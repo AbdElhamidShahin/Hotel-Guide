@@ -67,7 +67,7 @@ class RoomDetailsPage extends StatelessWidget {
                         SizedBox(height: 40.h),
                         Text(
                           "المرافق",
-                          style: textStyle22BoldPrimary.copyWith(
+                          style: font22BoldPrimary.copyWith(
                             color: AppColors.primary,
                           ),
                           textAlign: TextAlign.end,
@@ -109,7 +109,7 @@ class RoomDetailsPage extends StatelessWidget {
           SizedBox(width: 8.w),
           Text(
             text,
-            style: textStyle16RegularGray.copyWith(
+            style: font16RegularMuted.copyWith(
               color: AppColors.ShadowPurple,
               fontSize: 16.sp,
             ),

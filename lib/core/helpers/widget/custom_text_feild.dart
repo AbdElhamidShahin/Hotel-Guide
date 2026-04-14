@@ -68,7 +68,7 @@ class AppTextFormFeild extends StatelessWidget {
             borderSide:  BorderSide(color: AppColors.error, width: 1.3),
             borderRadius: BorderRadius.circular(10),
           ),
-          hintStyle: hintStyle ?? textStyle14RegularNightfall,
+          hintStyle: hintStyle ?? font14RegularNightfall,
           hintText: "${hintText}",
           suffixIcon: suffixIcon,
           suffixIconColor: AppColors.info,
@@ -78,7 +78,7 @@ class AppTextFormFeild extends StatelessWidget {
         ),
         obscureText: isObscureText ?? false,
 
-        style: textStyle16mediumWhite.copyWith(color: AppColors.primary),
+        style: font16MediumWhite.copyWith(color: AppColors.primary),
         validator: (value) {
           return validator(value);
         },
