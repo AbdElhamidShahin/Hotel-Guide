@@ -41,7 +41,7 @@ class PaymentTitle extends StatelessWidget {
             SizedBox(width: 12.w),
             Text(
               title,
-              style: textStyle16RegularGray.copyWith(color: Colors.black),
+              style: font16RegularMuted.copyWith(color: Colors.black),
             ),
             const Spacer(),
             if (isLoading)

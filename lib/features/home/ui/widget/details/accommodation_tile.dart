@@ -25,7 +25,7 @@ class AccommodationCard extends StatelessWidget {
               Expanded(
                 child: Text(
                   address,
-                  style: textStyle18BoldGray.copyWith(color: AppColors.primary),
+                  style: font18BoldGray.copyWith(color: AppColors.primary),
                   textDirection: TextDirection.rtl,
                 ),
               ),

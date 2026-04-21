@@ -45,7 +45,7 @@ class CustomAppbarSearch extends StatelessWidget {
                 style: const TextStyle(fontSize: 16),
                 decoration: InputDecoration(
                   hintText: "...البحث عن الفنادق",
-                  hintStyle: textStyle17MediumBlack.copyWith(
+                  hintStyle: font17MediumBlack.copyWith(
                     color: const Color(0xFFB7B7B7),
                   ),
                   prefixIcon: GestureDetector(
@@ -82,7 +82,7 @@ class CustomAppbarSearch extends StatelessWidget {
           SizedBox(width: 12.w),
           IconButton(
             onPressed: () => context.pop(),
-            icon: Icon(Icons.arrow_forward, color: AppColors.black6, size: 24),
+            icon: Icon(Icons.arrow_forward, color: AppColors.darkBackground, size: 24),
           ),
         ],
       ),

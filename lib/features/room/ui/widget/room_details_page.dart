@@ -25,8 +25,10 @@ class RoomDetailsPage extends StatelessWidget {
   final Room room;
   @override
   Widget build(BuildContext context) {
-    final List<FacilityModel> facilities = room.facilities.entries.map((entry) {
-      return FacilityModel(title: entry.key, isAvailable: entry.value);
+    final List<FacilityModel> facilities = room.facilities.entries
+        .where((entry) => entry.value == true)
+        .map((entry) {
+      return FacilityModel(title: entry.key, isAvailable: true);
     }).toList();
     return Scaffold(
       appBar: CustomAppbarWidget(name: "الغرفة", onTap: () => context.pop()),
@@ -67,7 +69,7 @@ class RoomDetailsPage extends StatelessWidget {
                         SizedBox(height: 40.h),
                         Text(
                           "المرافق",
-                          style: textStyle22BoldPrimary.copyWith(
+                          style: font22BoldPrimary.copyWith(
                             color: AppColors.primary,
                           ),
                           textAlign: TextAlign.end,
@@ -100,7 +102,7 @@ class RoomDetailsPage extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border.all(color: AppColors.ShadowPurple.withOpacity(0.5)),
         borderRadius: BorderRadius.circular(5.r),
-        color: AppColors.white,
+        color: AppColors.textWhite,
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -109,7 +111,7 @@ class RoomDetailsPage extends StatelessWidget {
           SizedBox(width: 8.w),
           Text(
             text,
-            style: textStyle16RegularGray.copyWith(
+            style: font16RegularMuted.copyWith(
               color: AppColors.ShadowPurple,
               fontSize: 16.sp,
             ),

@@ -149,7 +149,7 @@ class _EmailAndPasswordAndNameState extends State<EmailAndPasswordAndName> {
                   onPressed: _onSubmit,
                   child: Text(
                     'إنشاء حساب',
-                    style: textStyle16RegularGray.copyWith(color: Colors.white),
+                    style: font16RegularMuted.copyWith(color: Colors.white),
                   ),
                 );
               },
@@ -164,7 +164,7 @@ class _EmailAndPasswordAndNameState extends State<EmailAndPasswordAndName> {
 Widget _buildLabel(String text) {
   return Padding(
     padding: EdgeInsets.only(bottom: 6.h, top: 10.h),
-    child: Text(text, style: textStyle16RegularGray.copyWith(fontSize: 14.sp)),
+    child: Text(text, style: font16RegularMuted.copyWith(fontSize: 14.sp)),
   );
 }
 

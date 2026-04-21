@@ -41,7 +41,7 @@ void showHotelsBottomSheet(BuildContext context,String text) {
             ),
             Text(
               text,
-              style: textStyle1Regularprimary.copyWith(
+              style: font17RegularPrimary.copyWith(
                 fontWeight: FontWeight.w600,
                 fontSize: 18.sp,
               ),

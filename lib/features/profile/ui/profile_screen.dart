@@ -109,7 +109,7 @@ class _AccountScreenState extends State<AccountScreen> {
                           SizedBox(width: 8.w),
                           Icon(
                             Icons.nightlight_outlined,
-                            color: AppColors.black4,
+                            color: AppColors.textTitle,
 
                             size: 24.sp,
                           ),

@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
-import 'package:hotel_guide/core/router/routers.dart';
 import '../../theme/app_theme.dart';
 import '../../theme/colors.dart';
 
 class CustomAppbarWidget extends StatelessWidget
     implements PreferredSizeWidget {
-  const CustomAppbarWidget({super.key, required this.name, required this.onTap});
+  const CustomAppbarWidget({
+    super.key,
+    required this.name,
+    required this.onTap,
+  });
   final String name;
   final VoidCallback onTap;
-
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +29,7 @@ class CustomAppbarWidget extends StatelessWidget
           children: [
             Text(
               name,
-              style: textStyle22BoldPrimary.copyWith(
+              style: font22BoldPrimary.copyWith(
                 fontWeight: FontWeight.w700,
                 color: AppColors.primary,
               ),
@@ -37,12 +38,12 @@ class CustomAppbarWidget extends StatelessWidget
             Positioned(
               right: 0,
               child: IconButton(
-                icon:  Icon(
+                icon: Icon(
                   Icons.arrow_forward,
                   color: Colors.black,
                   size: 28.sp,
                 ),
-                onPressed: onTap
+                onPressed: onTap,
               ),
             ),
           ],

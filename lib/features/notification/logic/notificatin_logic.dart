@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../../core/constants/api_constants.dart';
 import '../../../core/network/model/notification_model.dart';
-import '../../../core/network/service/app_constants.dart';
 
 class NotificationCubit extends Cubit<List<NotificationModel>> {
   NotificationCubit() : super([]);

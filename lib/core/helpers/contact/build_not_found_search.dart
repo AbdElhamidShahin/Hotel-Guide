@@ -11,12 +11,12 @@ Widget BuildNotFoundSearch({VoidCallback? onRetry}) {
         children: [
           Image.asset('assets/images/Not_Found.png', height: 250.h),
           SizedBox(height: 20.h),
-          Text('نتيجة البحث غير موجودة', style: textStyle28BoldWhite),
+          Text('نتيجة البحث غير موجودة', style: font28BoldBlack),
           SizedBox(height: 16.h),
           Text(
             'برجاء البحث مرة أخرى للعثور على النتائج\nالمناسبة',
             textAlign: TextAlign.center,
-            style: textStyle1Regularprimary.copyWith(color: Color(0xFF9E9E9E)),
+            style: font17RegularPrimary.copyWith(color: Color(0xFF9E9E9E)),
           ),
         ],
       ),

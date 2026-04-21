@@ -14,13 +14,13 @@ Widget buildNoConnectionWidget({VoidCallback? onRetry}) {
           SizedBox(height: 20.h),
           Text(
             'مشكلة في الإتصال',
-            style: textStyle28BoldWhite.copyWith(color: Colors.black),
+            style: font28BoldBlack.copyWith(color: Colors.black),
           ),
           SizedBox(height: 32.h),
           Text(
             'لديك مشكلة في الإتصال بالإنترنت\nبرجاء حل المشكلة وإعادة محاولة الإتصال',
             textAlign: TextAlign.center,
-            style: textStyle1Regularprimary.copyWith(color: Color(0xFF9E9E9E)),
+            style: font17RegularPrimary.copyWith(color: Color(0xFF9E9E9E)),
           ),
           SizedBox(height: 40.h),
           SizedBox(
@@ -37,8 +37,8 @@ Widget buildNoConnectionWidget({VoidCallback? onRetry}) {
               ),
               child: Text(
                 'إعادة الإتصال',
-                style: textStyle18RegularShadowPurple.copyWith(
-                  color: AppColors.white,
+                style: font18RegularShadowPurple.copyWith(
+                  color: AppColors.textWhite,
                 ),
               ),
             ),
@@ -61,13 +61,13 @@ Widget buildNoConnectionMiniWidget({VoidCallback? onRetry}) {
           SizedBox(height: 12.h),
           Text(
             'مشكلة في الإتصال',
-            style: textStyle18BoldGray.copyWith(color: AppColors.primary, fontSize: 20.sp),
+            style: font18BoldGray.copyWith(color: AppColors.primary, fontSize: 20.sp),
           ),
           SizedBox(height: 8.h),
           Text(
             'تأكد من اتصالك بالإنترنت وأعد المحاولة',
             textAlign: TextAlign.center,
-            style: textStyle14RegularNightfall.copyWith(
+            style: font14RegularNightfall.copyWith(
                 color: const Color(0xFF9E9E9E),
                 fontSize: 16.sp
             ),
@@ -87,7 +87,7 @@ Widget buildNoConnectionMiniWidget({VoidCallback? onRetry}) {
               ),
               child: Text(
                 'إعادة المحاولة',
-                style: textStyle14SemiBoldWhite.copyWith(
+                style: font14SemiBoldWhite.copyWith(
                   color: Colors.white,
                   fontSize: 14.sp,
                 ),

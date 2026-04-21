@@ -27,13 +27,13 @@ class CounterRow extends StatelessWidget {
         children: [
           Text(
             title,
-            style: textStyle22BoldPrimary.copyWith(
+            style: font22BoldPrimary.copyWith(
               color: AppColors.ShadowPurple,
             ),
           ),
           Row(
             children: [
-              _circleBtn(Icons.add, onAdd, AppColors.primary, AppColors.white),
+              _circleBtn(Icons.add, onAdd, AppColors.primary, AppColors.textWhite),
 
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 15.w),

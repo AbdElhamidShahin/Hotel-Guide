@@ -29,7 +29,7 @@ class CustomServiceDetails extends StatelessWidget {
           const SizedBox(width: 8),
           Text(
             text,
-            style: textStyle16BoldWhite.copyWith(color: AppColors.primary),
+            style: font16BoldWhite.copyWith(color: AppColors.primary),
           ),
         ],
       ),

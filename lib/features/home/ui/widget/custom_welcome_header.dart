@@ -65,7 +65,7 @@ class _CustomWelcomeHeaderState extends State<CustomWelcomeHeader> {
                     children: [
                       Text(
                         "مرحبًا ${name}",
-                        style: textStyle23SemiBoldBlack,
+                        style: font23SemiBoldBlack,
                         overflow: TextOverflow.ellipsis,
                       ),
                       Image.asset(
@@ -107,7 +107,7 @@ class _CustomWelcomeHeaderState extends State<CustomWelcomeHeader> {
           SizedBox(height: 8.h),
           Text(
             "كل ما تحتاجه للإقامة المثالية أصبح بين يديك الآن.",
-            style: textStyle17MediumBlack.copyWith(fontSize: 14.sp),
+            style: font17MediumBlack.copyWith(fontSize: 14.sp),
             textDirection: TextDirection.rtl,
 
             textAlign: TextAlign.start,

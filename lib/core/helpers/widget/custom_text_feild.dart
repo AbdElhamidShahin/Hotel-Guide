@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import '../../theme/app_theme.dart';
 import '../../theme/colors.dart';
 
@@ -55,31 +54,31 @@ class AppTextFormFeild extends StatelessWidget {
               focusedBorder ??
               OutlineInputBorder(
                 borderSide: BorderSide(
-                  color: AppColors.RoyalPurple,
+                  color: AppColors.accent,
                   width: 1.3,
                 ),
 
                 borderRadius: BorderRadius.circular(10),
               ),
           errorBorder: OutlineInputBorder(
-            borderSide:  BorderSide(color: AppColors.red, width: 1.3),
+            borderSide:  BorderSide(color: AppColors.error, width: 1.3),
             borderRadius: BorderRadius.circular(10),
           ),
           focusedErrorBorder: OutlineInputBorder(
-            borderSide:  BorderSide(color: AppColors.red, width: 1.3),
+            borderSide:  BorderSide(color: AppColors.error, width: 1.3),
             borderRadius: BorderRadius.circular(10),
           ),
-          hintStyle: hintStyle ?? textStyle14RegularNightfall,
+          hintStyle: hintStyle ?? font14RegularNightfall,
           hintText: "${hintText}",
           suffixIcon: suffixIcon,
-          suffixIconColor: AppColors.blueSoft,
+          suffixIconColor: AppColors.info,
 
           fillColor: backGroundColor ?? Colors.transparent,
           filled: true,
         ),
         obscureText: isObscureText ?? false,
 
-        style: textStyle16mediumWhite.copyWith(color: AppColors.primary),
+        style: font16MediumWhite.copyWith(color: AppColors.primary),
         validator: (value) {
           return validator(value);
         },

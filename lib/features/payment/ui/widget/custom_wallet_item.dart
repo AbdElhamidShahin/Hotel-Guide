@@ -30,9 +30,9 @@ class CustomWalletItem extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             border: Border.all(
-              color: selected ? AppColors.RoyalPurple : Colors.transparent,
+              color: selected ? AppColors.accent : Colors.transparent,
             ),
-            color: AppColors.white,
+            color: AppColors.textWhite,
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.1),
@@ -53,14 +53,14 @@ class CustomWalletItem extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: textStyle16BoldWhite.copyWith(
+                      style: font16BoldWhite.copyWith(
                         color: AppColors.primary,
                       ),
                     ),
                     SizedBox(height: 8.h),
                     Text(
                       cashBack,
-                      style: textStyle14RegularNightfall.copyWith(
+                      style: font14RegularNightfall.copyWith(
                         color: AppColors.Grayscale,
                       ),
                     ),

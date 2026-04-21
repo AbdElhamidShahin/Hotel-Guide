@@ -119,8 +119,8 @@ void showWalletBottomSheet(
                     ),
                     Text(
                       "المحفظة الإلكترونية",
-                      style: textStyle20RegularPrimary.copyWith(
-                        color: AppColors.black6,
+                      style: font20RegularPrimary.copyWith(
+                        color: AppColors.darkBackground,
                       ),
                     ),
                   ],
@@ -189,7 +189,7 @@ void showWalletBottomSheet(
                     child: Center(
                       child: Text(
                         "تأكيد دفع ${bookingData.totalAmount.toInt()} EGP",
-                        style: textStyle20BoldShadowPurple.copyWith(
+                        style: font20BoldShadowPurple.copyWith(
                           color: Colors.white,
                         ),
                       ),

@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:supabase_flutter/supabase_flutter.dart';
+
 import '../../../../core/network/service/SupabaseService.dart';
 import '../../../../core/network/model/city_model.dart';
 import '../../../../core/network/model/hotel_model.dart';
@@ -8,6 +12,11 @@ class HomeRepoImpl implements HomeRepository {
   final SupabaseService _service;
 
   HomeRepoImpl(this._service);
+
+
+
+
+
   @override
   Future<List<HotelModel>> getAllHotels() async {
     try {
@@ -27,6 +36,9 @@ class HomeRepoImpl implements HomeRepository {
       throw SupabaseFailure.fromGenericError(error);
     }
   }
+
+
+
 
 
 }

@@ -1,7 +1,10 @@
+import 'dart:math';
+
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../core/constants/api_constants.dart';
+import '../../../../core/error/error_handler.dart';
 import '../../../../core/error/failure.dart';
 import '../../../../core/network/model/booking_model.dart';
 import '../../../../core/network/model/notification_model.dart';
@@ -16,7 +19,7 @@ class BookingRepoImpl implements BookingRepository {
     try {
       final userId = _supabase.auth.currentUser?.id;
       if (userId == null) {
-        return const Left(ServerFailure(errorMessage: 'يرجى تسجيل الدخول أولاً.'));
+        return Left(ErrorHandler.handle('يرجى تسجيل الدخول أولاً.'));
       }
 
       final full = booking.copyWith(userId: userId);
@@ -26,16 +29,19 @@ class BookingRepoImpl implements BookingRepository {
       } else if (full.paymentMethod == 'card') {
         await _cardPayment(full);
       } else {
-        return const Left(ServerFailure(errorMessage: 'وسيلة الدفع غير مدعومة.'));
+        return Left(ErrorHandler.handle('وسيلة الدفع غير مدعومة.'));
+
       }
 
       return const Right(null);
     } on PostgrestException catch (e) {
       debugPrint('❌ confirmBooking: ${e.message}');
-      return Left(ServerFailure(errorMessage: e.message));
+      return Left(ErrorHandler.handle('وسيلة الدفع غير مدعومة.'));
+
     } catch (e) {
       debugPrint('❌ confirmBooking: $e');
-      return Left(ServerFailure(errorMessage: e.toString()));
+      return Left(ErrorHandler.handle(e));
+
     }
   }
 

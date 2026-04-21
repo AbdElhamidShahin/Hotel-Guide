@@ -58,8 +58,8 @@ class BookingCard extends StatelessWidget {
                 children: [
                   Text(
                     room.name,
-                    style: textStyle16mediumWhite.copyWith(
-                      color: AppColors.black7,
+                    style: font16MediumWhite.copyWith(
+                      color: AppColors.textPrimary,
                     ),
                   ),
                   SizedBox(height: 12.h),
@@ -73,8 +73,8 @@ class BookingCard extends StatelessWidget {
                       SizedBox(width: 4.w),
                       Text(
                         room.bedType ?? "غرفة مميزة",
-                        style: textStyle14RegularNightfall.copyWith(
-                          color: AppColors.gray2,
+                        style: font14RegularNightfall.copyWith(
+                          color: AppColors.textDisabled,
                         ),
                       ),
                     ],
@@ -82,7 +82,7 @@ class BookingCard extends StatelessWidget {
                   SizedBox(height: 6.h),
                   RichText(
                     text: TextSpan(
-                      style: textStyle16BoldWhite.copyWith(
+                      style: font16BoldWhite.copyWith(
                         color: AppColors.primary,
                       ),
                       children: [

@@ -7,6 +7,8 @@ import '../../features/payment/data/model/init_payment_sheet_payment_input_model
 import '../../features/payment/data/model/payment_intent_input_model.dart';
 import '../../features/payment/data/model/payment_intent_model.dart';
 import '../constants/api_constants.dart';
+import '../error/error_handler.dart';
+import '../error/failure.dart';
 import 'api_service.dart';
 
 class StripeService {
@@ -48,70 +50,73 @@ class StripeService {
     var response = await apiService.post(
       body: {'customer': customerId},
       contentType: Headers.formUrlEncodedContentType,
-      url: 'https://api.stripe.com/v1/ephemeral_keys',
+      url: ApiConstants.ephemeralKeysUrl,
       token: ApiConstants.secretKey,
-      headers: {
-        // 'Authorization': "bearer ${ApiConstants.secretKey}",
-        'Stripe-Version': '2024-06-20',
-      },
+      headers: {'Stripe-Version': '2024-06-20'},
     );
     return EphemeralKeysModel.fromJson(response.data);
   }
 
-  Future makePayment({
+  Future<void> makePayment({
     required PaymentIntentInputModel paymentIntentInputModel,
   }) async {
-    var paymentIntentModel = await createPaymentIntent(paymentIntentInputModel);
-    var ephermeralKeysModel = await createEphermeralKeys(
-      customerId: paymentIntentInputModel.customerId!,
-    );
-    var initPaymentSheetInputModel = InitPaymentSheetInputModel(
-      clientSecret: paymentIntentModel.clientSecret!,
-      ephermeralKeysSecret: ephermeralKeysModel.secret!,
-      customerId: paymentIntentInputModel.customerId!,
-    );
-    await initPaymentSheet(
-      initPaymentSheetInputModel: initPaymentSheetInputModel,
-    );
-    await displayPaymentSheet();
+    try {
+      var paymentIntentModel = await createPaymentIntent(
+        paymentIntentInputModel,
+      );
+
+      var ephermeralKeysModel = await createEphermeralKeys(
+        customerId: paymentIntentInputModel.customerId!,
+      );
+
+      var initPaymentSheetInputModel = InitPaymentSheetInputModel(
+        clientSecret: paymentIntentModel.clientSecret!,
+        ephermeralKeysSecret: ephermeralKeysModel.secret!,
+        customerId: paymentIntentInputModel.customerId!,
+      );
+
+      await initPaymentSheet(
+        initPaymentSheetInputModel: initPaymentSheetInputModel,
+      );
+
+      await displayPaymentSheet();
+    } on StripeException catch (e) {
+      if (e.error.code == FailureCode.Canceled) {
+        throw const PaymentFailure("تم إلغاء عملية الدفع بواسطة المستخدم");
+      }
+      throw PaymentFailure(e.error.message ?? "حدث خطأ غير متوقع أثناء الدفع");
+    } on DioException catch (e) {
+      throw ErrorHandler.handle(e);
+    } catch (e) {
+      throw UnknownFailure(e.toString());
+    }
   }
 
-
-
-
-
   Future<String> getOrCreateStripeCustomerId(UserProfileModel user) async {
-    // 1. إذا كان المستخدم لديه ID مخزن مسبقاً في قاعدة بياناتك، استخدمه مباشرة
     if (user.stripeCustomerId != null && user.stripeCustomerId!.isNotEmpty) {
       return user.stripeCustomerId!;
     }
 
-    // 2. إذا لم يوجد، نقوم بإنشاء واحد جديد في Stripe
     try {
       var response = await apiService.post(
-        url: 'https://api.stripe.com/v1/customers', // تأكد من أن الرابط هو لـ customers
+        url: ApiConstants.customersUrl,
         token: ApiConstants.secretKey,
         contentType: Headers.formUrlEncodedContentType,
-        body: {
-          'email': user.email, // Stripe يفضل وجود الإيميل
-          'metadata[supabase_id]': user.id, // اختياري: لربط الهويتين ببعض
-        },
+        body: {'email': user.email, 'metadata[supabase_id]': user.id},
       );
 
       String newCustomerId = response.data['id'];
 
-      // 3. (خطوة هامة) يجب أن تقوم بتحديث بيانات المستخدم في Supabase
-      // لكي لا تضطر لإنشاء Customer جديد في كل مرة يضغط فيها المستخدم على الدفع
       await Supabase.instance.client
-          .from('profiles')
+          .from(AppTableNames.profiles)
           .update({'stripe_customer_id': newCustomerId})
           .eq('id', user.id);
 
       return newCustomerId;
+    } on DioException catch (e) {
+      throw ErrorHandler.handle(e);
     } catch (e) {
-      print("Error creating Stripe Customer: $e");
-      rethrow;
+      throw UnknownFailure("فشل في إنشاء حساب العميل: ${e.toString()}");
     }
   }
-
 }

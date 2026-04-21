@@ -45,18 +45,18 @@ Widget iconSocial(String image, String text) {
     height: 52.h,
     decoration: BoxDecoration(
       border: Border.all(
-        color: AppColors.Milk,
+        color: AppColors.surfaceVariant,
         width:1.5,
       ),
       borderRadius: BorderRadius.circular(12.r),
-      color: AppColors.white,
+      color: AppColors.textWhite,
     ),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
           text,
-          style: textStyle16BoldWhite.copyWith(color: AppColors.Nightfall),
+          style: font16BoldWhite.copyWith(color: AppColors.nightfall),
         ),
         SizedBox(width: 12.w),
         SvgPicture.asset(image, width: 22.r, height: 22.r),

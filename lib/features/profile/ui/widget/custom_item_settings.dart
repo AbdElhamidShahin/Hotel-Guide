@@ -16,14 +16,14 @@ Padding CustomItemSetteings(String text, final VoidCallback? onPressed) {
               child: Text(
                 text,
                 style: TextStyle(
-                    fontWeight: FontWeight.bold, fontSize: 24, color: AppColors.yellowGold),
+                    fontWeight: FontWeight.bold, fontSize: 24, color: AppColors.warning),
               ),
             ),
             Container(
               height: 24,
               width: 24,
               decoration: BoxDecoration(
-                  color: AppColors.yellowGold, borderRadius: BorderRadius.circular(20)),
+                  color: AppColors.warning, borderRadius: BorderRadius.circular(20)),
             ),
           ],
         ),

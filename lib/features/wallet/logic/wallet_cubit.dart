@@ -25,7 +25,7 @@ class WalletCubit extends Cubit<WalletState> {
     emit(WalletLoading());
     final result = await _repo.getWalletDetails();
     result.fold(
-          (failure) => emit(WalletError(failure.errorMessage)),
+          (failure) => emit(WalletError(failure.message)),
           (data) => emit(WalletLoaded(
         userProfile: data.profile,
         paymentTransactions: data.payments,
@@ -81,7 +81,7 @@ class WalletCubit extends Cubit<WalletState> {
       final result = await _repo.topUpBalance(amount);
 
       await result.fold(
-            (failure) async => emit(WalletTopUpError(failure.errorMessage)),
+            (failure) async => emit(WalletTopUpError(failure.message)),
             (_) async {
           emit(WalletTopUpSuccess(profile.walletBalance + amount));
 

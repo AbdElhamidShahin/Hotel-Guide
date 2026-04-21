@@ -30,7 +30,7 @@ class MenuTile extends StatelessWidget {
           title: Text(
             title,
             textAlign: TextAlign.right,
-            style: textStyle23Regularprimary,
+            style: font23RegularPrimary,
           ),
           trailing: SvgPicture.asset(
             iconPath,

@@ -81,8 +81,8 @@ class CustomRatingListviewItem extends StatelessWidget {
                   children: [
                     Text(
                       hotelModel.name,
-                      style: textStyle16BoldWhite.copyWith(
-                        color: AppColors.black,
+                      style: font16BoldWhite.copyWith(
+                        color: AppColors.pureBlack,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -98,7 +98,7 @@ class CustomRatingListviewItem extends StatelessWidget {
                         ),
                         SizedBox(width: 6.w),
 
-                        Text("إحجز الآن", style: textStyle1Regularprimary),
+                        Text("إحجز الآن", style: font17RegularPrimary),
                       ],
                     ),
                   ],
@@ -112,52 +112,47 @@ class CustomRatingListviewItem extends StatelessWidget {
   }
 
   Widget _buildFavoriteIcon() {
-    return BlocProvider.value(
-      value: getIt<FavoriteCubit>(),
+    return BlocBuilder<FavoriteCubit, FavoriteState>(
+      builder: (context, state) {
+        final favoriteCubit = context.read<FavoriteCubit>();
+        final isFavorite = favoriteCubit.isFavorite(hotelModel);
 
-      child: BlocBuilder<FavoriteCubit, FavoriteState>(
-        builder: (context, state) {
-          final favoriteCubit = context.read<FavoriteCubit>();
-          final isFavorite = favoriteCubit.isFavorite(hotelModel);
-
-          return IconButton(
-            icon: Container(
-              padding: EdgeInsets.all(8.r),
-              decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.3),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                isFavorite
-                    ? Icons.favorite_rounded
-                    : Icons.favorite_border_rounded,
-                color: isFavorite ? Colors.red : Colors.white,
-                size: 24.r,
-              ),
+        return IconButton(
+          icon: Container(
+            padding: EdgeInsets.all(8.r),
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.3),
+              shape: BoxShape.circle,
             ),
-            onPressed: () async {
-              final bool currentlyFavorite = isFavorite;
-              await favoriteCubit.toggleFavorite(hotelModel);
-
-              if (currentlyFavorite) {
-                Snackly.success(
-                  context: context,
-                  title: "تم الحذف من المفضلة",
-                  style: SnackbarStyle.filled,
-                );
-              } else {
-                Snackly.success(
-                  context: context,
-                  title: "تم الإضافة إلى المفضلة",
-                  style: SnackbarStyle.filled,
-                );
-              }
-            },
-            padding: const EdgeInsets.all(8),
-            constraints: const BoxConstraints(),
-          );
-        },
-      ),
+            child: Icon(
+              isFavorite
+                  ? Icons.favorite_rounded
+                  : Icons.favorite_border_rounded,
+              color: isFavorite ? Colors.red : Colors.white,
+              size: 24.r,
+            ),
+          ),
+          onPressed: () async {
+            favoriteCubit.toggleFavorite(hotelModel);
+            final bool currentlyFavorite = isFavorite;
+            if (currentlyFavorite) {
+              Snackly.success(
+                context: context,
+                title: "تم الحذف من المفضلة",
+                style: SnackbarStyle.filled,
+              );
+            } else {
+              Snackly.success(
+                context: context,
+                title: "تم الإضافة إلى المفضلة",
+                style: SnackbarStyle.filled,
+              );
+            }
+          },
+          padding: const EdgeInsets.all(8),
+          constraints: const BoxConstraints(),
+        );
+      },
     );
   }
 
@@ -167,7 +162,7 @@ class CustomRatingListviewItem extends StatelessWidget {
         Icon(Icons.star_rounded, color: Colors.amber, size: 24.r),
         Text(
           " ${hotelModel.rating}",
-          style: textStyle14SemiBoldWhite.copyWith(
+          style: font14SemiBoldWhite.copyWith(
             fontSize: 16.sp,
             fontWeight: FontWeight.bold,
           ),
@@ -183,7 +178,7 @@ class CustomRatingListviewItem extends StatelessWidget {
         color: Colors.green.withOpacity(0.9),
         borderRadius: BorderRadius.circular(12.r),
       ),
-      child: Text("إقتصادي", style: textStyle14SemiBoldWhite),
+      child: Text("إقتصادي", style: font14SemiBoldWhite),
     );
   }
 }

@@ -9,20 +9,9 @@ import '../../../core/helpers/contact/build_error_widget.dart';
 import '../../../core/helpers/widget/custom_appbar_widget.dart';
 import '../../../core/router/routers.dart';
 
-class RoomsScreenListView extends StatefulWidget {
+class RoomsScreenListView extends StatelessWidget {
   const RoomsScreenListView({super.key, required this.hotelId});
   final String hotelId;
-
-  @override
-  State<RoomsScreenListView> createState() => _RoomsScreenListViewState();
-}
-
-class _RoomsScreenListViewState extends State<RoomsScreenListView> {
-  @override
-  void initState() {
-    super.initState();
-    context.read<RoomCubit>().getRoomsHotel(widget.hotelId);
-  }
 
   @override
   Widget build(BuildContext context) {

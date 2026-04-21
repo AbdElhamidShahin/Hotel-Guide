@@ -35,7 +35,7 @@ class CustomRoomsListViewItem extends StatelessWidget {
             Container(
               height: 300.h,
               width: 220.w,
-              color: AppColors.black.withOpacity(0.2),
+              color: AppColors.pureBlack.withOpacity(0.2),
             ),
             Positioned(
               bottom: 12.w,
@@ -45,7 +45,7 @@ class CustomRoomsListViewItem extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
                 child: Text(
                   room.name,
-                  style: textStyle16BoldWhite,
+                  style: font16BoldWhite,
                   maxLines: 2,
                   textDirection: TextDirection.rtl,
                 ),
@@ -65,7 +65,7 @@ class CustomRoomsListViewItem extends StatelessWidget {
 
                   Text(
                     "4.6",
-                    style: textStyle18BoldGray.copyWith(color: AppColors.white),
+                    style: font18BoldGray.copyWith(color: AppColors.textWhite),
                   ),
                 ],
               ),

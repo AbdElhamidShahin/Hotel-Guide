@@ -49,8 +49,8 @@ class CustomNameDetails extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 12.w),
               child: Text(
                 name,
-                style: textStyle20BoldShadowPurple.copyWith(
-                  color: AppColors.white,
+                style: font20BoldShadowPurple.copyWith(
+                  color: AppColors.textWhite,
                 ),
               ),
             ),

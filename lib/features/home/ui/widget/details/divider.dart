@@ -11,7 +11,7 @@ class DividerWidget extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Divider(
         height: 1,
-        color: AppColors.black.withOpacity(0.1),
+        color: AppColors.pureBlack.withOpacity(0.1),
       ),
     );
   }

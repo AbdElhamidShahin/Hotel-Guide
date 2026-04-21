@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 abstract class Failure {
@@ -22,7 +20,6 @@ class SupabaseFailure extends Failure {
       return SupabaseFailure("حدث خطأ غير متوقع، يرجى المحاولة مرة أخرى.");
     }
   }
-
 
   factory SupabaseFailure.fromGenericError(Object? error) {
     String errorStr = error.toString();

@@ -14,13 +14,13 @@ Widget buildFavoriteNotFoundWidget({VoidCallback? onRetry}) {
           SizedBox(height: 20.h),
           Text(
             'صفحة المفضلة فارغة',
-            style: textStyle28BoldWhite.copyWith(color: Colors.black),
+            style: font28BoldBlack.copyWith(color: Colors.black),
           ),
           SizedBox(height: 32.h),
           Text(
             'في حال إضافة أي عنصر سيظهر هنا على\nالفور',
             textAlign: TextAlign.center,
-            style: textStyle1Regularprimary.copyWith(color: Color(0xFF9E9E9E)),
+            style: font17RegularPrimary.copyWith(color: Color(0xFF9E9E9E)),
           ),
           SizedBox(height: 40.h),
           SizedBox(
@@ -37,8 +37,8 @@ Widget buildFavoriteNotFoundWidget({VoidCallback? onRetry}) {
               ),
               child: Text(
                 'العودة للرئيسية',
-                style: textStyle18RegularShadowPurple.copyWith(
-                  color: AppColors.white,
+                style: font18RegularShadowPurple.copyWith(
+                  color: AppColors.textWhite,
                 ),
               ),
             ),

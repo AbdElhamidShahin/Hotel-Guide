@@ -46,17 +46,17 @@ class PriceSection extends StatelessWidget {
         Text(
           title,
           style: isTotal
-              ? textStyle20RegularPrimary.copyWith(
-                  color: AppColors.black6,
+              ? font20RegularPrimary.copyWith(
+                  color: AppColors.darkBackground,
                   fontWeight: FontWeight.w600,
                 )
-              : textStyle18RegularShadowPurple.copyWith(
+              : font18RegularShadowPurple.copyWith(
                   color: AppColors.Grayscale,
                 ),
         ),
         Text(
           "${value.toInt()} EGP",
-          style: textStyle20BoldShadowPurple.copyWith(color: AppColors.black6),
+          style: font20BoldShadowPurple.copyWith(color: AppColors.darkBackground),
         ),
       ],
     );

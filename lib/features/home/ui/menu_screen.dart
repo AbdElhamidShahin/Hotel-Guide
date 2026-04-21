@@ -133,7 +133,7 @@ class _MenuTile extends StatelessWidget {
           title: Text(
             title,
             textAlign: TextAlign.right,
-            style: textStyle23Regularprimary,
+            style: font23RegularPrimary,
           ),
           trailing: SvgPicture.asset(
             iconPath,
@@ -174,7 +174,7 @@ class _LogoutButton extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text('تسجيل الخروج', style: textStyle23Regularprimary),
+          Text('تسجيل الخروج', style: font23RegularPrimary),
           SizedBox(width: 10.w),
           SvgPicture.asset(
             'assets/icons/menu_icons/logout.svg',

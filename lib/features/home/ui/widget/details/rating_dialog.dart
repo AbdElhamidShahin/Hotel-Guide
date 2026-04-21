@@ -38,7 +38,7 @@ class _RatingDialogState extends State<RatingDialog> {
                   SizedBox(height: 120.h),
                   Text(
                     "شكراً لتقييمك!",
-                    style: textStyle23Regularprimary.copyWith(
+                    style: font23RegularPrimary.copyWith(
                       color: AppColors.primary,
                     ),
                   ),
@@ -46,7 +46,7 @@ class _RatingDialogState extends State<RatingDialog> {
                   Text(
                     "سنعمل بجهد أكبر لرضاك أكثر دوماً",
                     textAlign: TextAlign.center,
-                    style: textStyle1Regularprimary.copyWith(
+                    style: font17RegularPrimary.copyWith(
                       color: AppColors.primary.withOpacity(0.5),
                     ),
                   ),
@@ -81,7 +81,7 @@ class _RatingDialogState extends State<RatingDialog> {
                     ),
                     child: Text(
                       "إرسال التقييم",
-                      style: textStyle25RegularWhite,
+                      style: font25RegularWhite,
                     ),
                   ),
                   SizedBox(height: 32.h),
