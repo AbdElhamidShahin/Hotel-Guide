@@ -21,7 +21,6 @@ class SupabaseFailure extends Failure {
     }
   }
 
-
   factory SupabaseFailure.fromGenericError(Object? error) {
     String errorStr = error.toString();
 
