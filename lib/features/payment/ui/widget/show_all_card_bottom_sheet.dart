@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hotel_guide/core/network/model/booking_model.dart';
@@ -69,7 +70,7 @@ void showCardsBottomSheet({
                   ElevatedButton(
                     onPressed: () {
                       // هنا تضع منطق الدفع باستخدام Stripe
-                      print("جاري الدفع لمبلغ: ${booking?.totalAmount}");
+                      debugPrint("جاري الدفع لمبلغ: ${booking?.totalAmount}");
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF2E2E3E),

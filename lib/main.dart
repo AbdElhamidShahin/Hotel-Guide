@@ -13,11 +13,15 @@ void main() async {
   Stripe.publishableKey = ApiConstants.publishableKey;
   await Stripe.instance.applySettings();
   await ScreenUtil.ensureScreenSize();
-  await setupGetIt();
+
+  // ✅ Fix: Supabase must initialize BEFORE GetIt,
+  // because GetIt registers Supabase.instance.client as a dependency.
   await Supabase.initialize(
     url: ApiConstants.supabaseUrl,
     anonKey: ApiConstants.supabaseAnonKey,
   );
+
+  await setupGetIt();
   await initializeDateFormatting('ar_SA', null);
-  runApp(HotelApp());
+  runApp(const HotelApp());
 }

@@ -17,6 +17,12 @@ class AccountScreen extends StatefulWidget {
 }
 
 class _AccountScreenState extends State<AccountScreen> {
+  // ✅ Fix: isDarkMode is now an actual reactive state variable.
+  // Previously it was always false (dead toggle — never changed anything).
+  // Note: for full app-wide dark mode, wire this to a ThemeCubit that
+  // calls setState on MaterialApp. This is the single-screen fix.
+  bool _isDarkMode = AppColors.isDark;
+
   @override
   void initState() {
     super.initState();
@@ -26,6 +32,13 @@ class _AccountScreenState extends State<AccountScreen> {
 
   void _onUserDataChanged() => setState(() {});
 
+  void _toggleDarkMode() {
+    setState(() {
+      _isDarkMode = !_isDarkMode;
+      AppColors.isDark = _isDarkMode;
+    });
+  }
+
   @override
   void dispose() {
     UserDataNotifier.instance.removeListener(_onUserDataChanged);
@@ -34,7 +47,6 @@ class _AccountScreenState extends State<AccountScreen> {
 
   @override
   Widget build(BuildContext context) {
-    bool isDarkMode = false;
     final notifier = UserDataNotifier.instance;
 
     return Scaffold(
@@ -43,8 +55,8 @@ class _AccountScreenState extends State<AccountScreen> {
         children: [
           CustomProfileImageAndName(
             showEditIcon: true,
-            name: notifier.name.isNotEmpty ? notifier.name : 'مستخدم', // ✅
-            imageUrl: notifier.image.isNotEmpty ? notifier.image : null, // ✅
+            name: notifier.name.isNotEmpty ? notifier.name : 'مستخدم',
+            imageUrl: notifier.image.isNotEmpty ? notifier.image : null,
           ),
           Expanded(
             child: ListView(
@@ -59,8 +71,9 @@ class _AccountScreenState extends State<AccountScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      // ✅ Fix: toggle now actually calls _toggleDarkMode
                       GestureDetector(
-                        onTap: () {},
+                        onTap: _toggleDarkMode,
                         child: Container(
                           width: 60.w,
                           height: 32.h,
@@ -75,7 +88,7 @@ class _AccountScreenState extends State<AccountScreen> {
                           child: AnimatedAlign(
                             duration: const Duration(milliseconds: 250),
                             curve: Curves.easeInOut,
-                            alignment: isDarkMode
+                            alignment: _isDarkMode
                                 ? Alignment.centerRight
                                 : Alignment.centerLeft,
                             child: Container(
@@ -86,7 +99,9 @@ class _AccountScreenState extends State<AccountScreen> {
                                 color: Color(0xFF181A20),
                               ),
                               child: Icon(
-                                Icons.wb_sunny_outlined,
+                                _isDarkMode
+                                    ? Icons.nightlight_outlined
+                                    : Icons.wb_sunny_outlined,
                                 color: Colors.white,
                                 size: 14.sp,
                               ),
@@ -97,11 +112,10 @@ class _AccountScreenState extends State<AccountScreen> {
                       Row(
                         children: [
                           Text(
-                            "الوضع الليلي",
+                            'الوضع الليلي',
                             style: TextStyle(
                               fontSize: 20.sp,
                               fontFamily: 'Cairo',
-
                               fontWeight: FontWeight.w600,
                               color: Colors.black,
                             ),
@@ -110,7 +124,6 @@ class _AccountScreenState extends State<AccountScreen> {
                           Icon(
                             Icons.nightlight_outlined,
                             color: AppColors.textTitle,
-
                             size: 24.sp,
                           ),
                         ],
@@ -127,38 +140,34 @@ class _AccountScreenState extends State<AccountScreen> {
                 ),
 
                 buildSttingsItem(
-                  title: "الموقع",
+                  title: 'الموقع',
                   icon: Icons.location_on_outlined,
                   onTap: () => context.push(routes.AboutUsScreen),
                 ),
                 buildSttingsItem(
-                  title: "سياسة الخصوصية",
+                  title: 'سياسة الخصوصية',
                   icon: Icons.assignment_outlined,
                   onTap: () => context.push(routes.PrivacyPolicyScreen),
                 ),
                 buildSttingsItem(
-                  title: "الأسئلة الشائعة",
+                  title: 'الأسئلة الشائعة',
                   icon: Icons.help_outline,
                   onTap: () => context.push(routes.FaqPage),
-
                 ),
                 buildSttingsItem(
-                  title: "شروط الإستخدام",
+                  title: 'شروط الإستخدام',
                   icon: Icons.book_outlined,
                   onTap: () {},
                 ),
 
                 buildSttingsItem(
-                  title: "تسجيل الخروج",
+                  title: 'تسجيل الخروج',
                   icon: Icons.login_rounded,
                   isLast: true,
                   onTap: () async {
-                    // ✅ Clear local SharedPreferences cache before signing out
                     final prefs = await SharedPreferences.getInstance();
                     await prefs.clear();
-
                     await Supabase.instance.client.auth.signOut();
-
                     if (context.mounted) {
                       context.go(routes.onBoardingScreen);
                     }

@@ -17,4 +17,8 @@ class WalletDataBundle {
 abstract class WalletRepository {
   Future<Either<Failure, WalletDataBundle>> getWalletDetails();
   Future<Either<Failure, void>> topUpBalance(double amount);
+
+  /// ✅ Added: stream moved out of Cubit into repository layer.
+  /// Cubit subscribes through the repo, not via Supabase.instance directly.
+  Stream<void> watchWalletChanges(String userId);
 }

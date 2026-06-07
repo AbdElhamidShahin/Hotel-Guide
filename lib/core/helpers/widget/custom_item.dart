@@ -21,6 +21,10 @@ class CustomItem extends StatelessWidget {
     required this.isContinar,
   });
 
+  void _navigateToDetails(BuildContext context) {
+    context.push(routes.customDetailsScreen, extra: hotelModel);
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<FavoriteCubit, FavoriteState>(
@@ -42,10 +46,11 @@ class CustomItem extends StatelessWidget {
               ),
             ],
           ),
+          // ✅ Fix: single navigation point — InkWell handles the whole card tap.
+          // The "إحجز الآن" button below was a duplicate that caused double pushes.
           child: InkWell(
             borderRadius: BorderRadius.circular(12.r),
-            onTap: () =>
-                context.push(routes.customDetailsScreen, extra: hotelModel),
+            onTap: () => _navigateToDetails(context),
             child: Row(
               textDirection: TextDirection.rtl,
               children: [
@@ -73,13 +78,14 @@ class CustomItem extends StatelessWidget {
                         top: 10.h,
                         right: 10.w,
                         child: GestureDetector(
+                          // Stop the tap from bubbling to the InkWell
                           onTap: () async {
                             await favoriteCubit.toggleFavorite(hotelModel);
                             Snackly.success(
                               context: context,
                               title: isCurrentlyFavorite
-                                  ? "تم الحذف"
-                                  : "تمت الإضافة",
+                                  ? 'تم الحذف'
+                                  : 'تمت الإضافة',
                               style: SnackbarStyle.filled,
                             );
                           },
@@ -121,7 +127,7 @@ class CustomItem extends StatelessWidget {
                         ),
                         SizedBox(height: 12.h),
                         Text(
-                          hotelModel.description ?? "",
+                          hotelModel.description ?? '',
                           maxLines: 3,
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.right,
@@ -132,53 +138,46 @@ class CustomItem extends StatelessWidget {
                         SizedBox(height: 8.h),
                         Text(
                           maxLines: 2,
-
                           textDirection: TextDirection.rtl,
-                          "يبدأ من ${hotelModel.priceStartsFrom} EGP /\nاليوم",
+                          'يبدأ من ${hotelModel.priceStartsFrom} EGP /\nاليوم',
                           style: font16BoldWhite.copyWith(
                             color: AppColors.colorText,
                           ),
                         ),
 
                         SizedBox(height: 8.h),
-                        GestureDetector(
-                          onTap: () {
-                            context.push(
-                              routes.customDetailsScreen,
-                              extra: hotelModel,
-                            );
-                          },
-                          child: Container(
-                            height: 45.h,
-                            width: double.infinity,
-                            padding: EdgeInsets.symmetric(horizontal: 12.w),
-                            decoration: BoxDecoration(
-                              color: AppColors.primary,
-                              borderRadius: BorderRadius.circular(30.r),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              textDirection: TextDirection.rtl,
-                              children: [
-                                Flexible(
-                                  child: Text(
-                                    "إحجز الآن",
-                                    overflow: TextOverflow.ellipsis,
-                                    style: font16BoldWhite.copyWith(
-                                      fontSize: 16.sp,
-                                      fontFamily: 'Cairo',
-                                    ),
+
+                        // ✅ Fix: button now uses _navigateToDetails (same function)
+                        // instead of an inline push that caused duplicate navigation.
+                        Container(
+                          height: 45.h,
+                          width: double.infinity,
+                          padding: EdgeInsets.symmetric(horizontal: 12.w),
+                          decoration: BoxDecoration(
+                            color: AppColors.primary,
+                            borderRadius: BorderRadius.circular(30.r),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            textDirection: TextDirection.rtl,
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  'إحجز الآن',
+                                  overflow: TextOverflow.ellipsis,
+                                  style: font16BoldWhite.copyWith(
+                                    fontSize: 16.sp,
+                                    fontFamily: 'Cairo',
                                   ),
                                 ),
-
-                                SvgPicture.asset(
-                                  "assets/icons/send.svg",
-                                  height: 20.h,
-                                  width: 20.w,
-                                  color: Colors.white,
-                                ),
-                              ],
-                            ),
+                              ),
+                              SvgPicture.asset(
+                                'assets/icons/send.svg',
+                                height: 20.h,
+                                width: 20.w,
+                                color: Colors.white,
+                              ),
+                            ],
                           ),
                         ),
                       ],

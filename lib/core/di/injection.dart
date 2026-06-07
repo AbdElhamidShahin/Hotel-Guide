@@ -34,6 +34,7 @@ final getIt = GetIt.instance;
 Future<void> setupGetIt() async {
   if (getIt.isRegistered<SupabaseClient>()) return;
 
+  // ✅ Safe: Supabase.initialize() is guaranteed to run before setupGetIt()
   getIt.registerLazySingleton<SupabaseClient>(() => Supabase.instance.client);
   getIt.registerLazySingleton<SupabaseService>(() => SupabaseService());
   getIt.registerLazySingleton<ApiService>(() => ApiService());
@@ -65,7 +66,10 @@ Future<void> setupGetIt() async {
   getIt.registerFactory<RoomCubit>(() => RoomCubit(getIt<RoomRepo>()));
 
   // ── Search ─────────────────────────────────────────────────────────────────
-  getIt.registerLazySingleton<SearchRepo>(() => SearchRepoImpl());
+  // ✅ Fix: pass SupabaseClient so SearchRepoImpl doesn't self-instantiate
+  getIt.registerLazySingleton<SearchRepo>(
+    () => SearchRepoImpl(getIt<SupabaseClient>()),
+  );
   getIt.registerFactory<SearchCubit>(() => SearchCubit(getIt<SearchRepo>()));
 
   // ── Payment ────────────────────────────────────────────────────────────────
@@ -94,6 +98,9 @@ Future<void> setupGetIt() async {
   );
 
   // ── Others ─────────────────────────────────────────────────────────────────
-  getIt.registerLazySingleton<FavoriteCubit>(() => FavoriteCubit());
+  // ✅ Fix: FavoriteCubit as factory, not LazySingleton,
+  // to avoid closed Cubit being returned after navigation.
+  getIt.registerFactory<FavoriteCubit>(() => FavoriteCubit());
+
   getIt.registerFactory<NotificationCubit>(() => NotificationCubit());
 }

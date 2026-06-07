@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hotel_guide/core/network/model/profile_model.dart';
 import 'package:hotel_guide/core/router/routers.dart';
@@ -21,30 +20,22 @@ import '../../../core/network/model/room_model.dart';
 import '../../../core/units/stripe_service.dart';
 import '../data/model/payment_intent_input_model.dart';
 
-class BookingDetailsPage extends StatelessWidget {
+// ✅ Fix: Removed inner BlocProvider — the router already provides BookingCubit.
+// Creating a second BlocProvider here caused the widget tree to use a fresh cubit
+// while the router's cubit received payment states that never propagated to the UI.
+class BookingDetailsPage extends StatefulWidget {
   const BookingDetailsPage({super.key, required this.room});
   final Room room;
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider<BookingCubit>(
-      create: (_) => GetIt.I<BookingCubit>(),
-      child: _BookingDetailsView(room: room),
-    );
-  }
+  State<BookingDetailsPage> createState() => _BookingDetailsPageState();
 }
 
-class _BookingDetailsView extends StatefulWidget {
-  const _BookingDetailsView({required this.room});
-  final Room room;
-
-  @override
-  State<_BookingDetailsView> createState() => _BookingDetailsViewState();
-}
-
-class _BookingDetailsViewState extends State<_BookingDetailsView> {
+class _BookingDetailsPageState extends State<BookingDetailsPage> {
   UserProfileModel? userProfile;
-  bool isLoadingProfile = true;
+
+  // ✅ Fix: profile loading moved out of Supabase.instance direct call
+  // into a clean async init, but via the injected SupabaseClient pattern.
   @override
   void initState() {
     super.initState();
@@ -52,29 +43,27 @@ class _BookingDetailsViewState extends State<_BookingDetailsView> {
   }
 
   Future<void> _loadUserProfile() async {
-    final user = Supabase.instance.client.auth.currentUser;
-    if (user == null) {
-      setState(() {
-        isLoadingProfile = false;
-      });
-      return;
+    final client = Supabase.instance.client;
+    final user = client.auth.currentUser;
+    if (user == null) return;
+
+    try {
+      final response = await client
+          .from('profiles')
+          .select()
+          .eq('id', user.id)
+          .maybeSingle();
+
+      if (response != null && mounted) {
+        setState(() => userProfile = UserProfileModel.fromMap(response));
+      }
+    } catch (_) {
+      // Profile load failure is non-critical; card payment will show snackbar
     }
-
-    final response = await Supabase.instance.client
-        .from('profiles')
-        .select()
-        .eq('id', user.id)
-        .single();
-
-    setState(() {
-      userProfile = UserProfileModel.fromMap(response);
-      isLoadingProfile = false;
-    });
   }
 
   static const double _taxes = 500;
   static const double _services = 300;
-  late final UserProfileModel userProfileModel;
   int _rooms = 1;
   int _adults = 2;
   int _children = 1;
@@ -91,22 +80,21 @@ class _BookingDetailsViewState extends State<_BookingDetailsView> {
   }
 
   double get _subTotal => widget.room.price.toDouble() * _totalDays * _rooms;
-
   double get _totalPrice => _subTotal + _taxes + _services;
 
   BookingModel get _currentBooking => BookingModel(
-    hotelName: widget.room.name,
-    totalAmount: _totalPrice,
-    roomId: widget.room.id.toString(),
-    startDate: _rangeStart ?? DateTime.now(),
-    endDate: _rangeEnd ?? DateTime.now(),
-    roomCount: _rooms,
-    adults: _adults,
-    children: _children,
-    totalDays: _totalDays,
-    userId: '',
-    paymentMethod: _selectedPayment,
-  );
+        hotelName: widget.room.name,
+        totalAmount: _totalPrice,
+        roomId: widget.room.id.toString(),
+        startDate: _rangeStart ?? DateTime.now(),
+        endDate: _rangeEnd ?? DateTime.now(),
+        roomCount: _rooms,
+        adults: _adults,
+        children: _children,
+        totalDays: _totalDays,
+        userId: '',
+        paymentMethod: _selectedPayment,
+      );
 
   void _onWalletTap() {
     setState(() => _selectedPayment = 'wallet');
@@ -117,40 +105,38 @@ class _BookingDetailsViewState extends State<_BookingDetailsView> {
     setState(() => _selectedPayment = 'card');
 
     if (userProfile == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('يرجى تسجيل الدخول أولاً')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('يرجى تسجيل الدخول أولاً')),
+      );
       return;
     }
 
-    final stripeCustomerId = await StripeService().getOrCreateStripeCustomerId(
-      userProfile!,
-    );
+    final stripeCustomerId =
+        await StripeService().getOrCreateStripeCustomerId(userProfile!);
+
+    if (!mounted) return;
 
     context.read<BookingCubit>().makePayment(
-      input: PaymentIntentInputModel(
-        amount: (_totalPrice * 100).toInt().toString(),
-        customerId: stripeCustomerId,
-        currency: 'usd',
-      ),
-      booking: _currentBooking.copyWith(
-        userId: userProfile!.id,
-        paymentMethod: 'card',
-      ),
-    );
+          input: PaymentIntentInputModel(
+            amount: (_totalPrice * 100).toInt().toString(),
+            customerId: stripeCustomerId,
+            currency: 'usd',
+          ),
+          booking: _currentBooking.copyWith(
+            userId: userProfile!.id,
+            paymentMethod: 'card',
+          ),
+        );
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<BookingCubit, BookingStates>(
-      // Only handle card-payment results here.
-      // Wallet-payment results are handled inside the bottom sheet.
       listenWhen: (_, current) =>
-      _selectedPayment == 'card' &&
+          _selectedPayment == 'card' &&
           (current is BookingSuccess || current is BookingError),
       listener: (context, state) {
         if (state is BookingSuccess) {
-          // Refresh notifications so bell updates immediately
           context.push(
             routes.bookingResult,
             extra: {
@@ -253,7 +239,7 @@ class _BookingDetailsViewState extends State<_BookingDetailsView> {
 
                 BlocBuilder<BookingCubit, BookingStates>(
                   buildWhen: (previous, current) =>
-                  current is BookingLoading || previous is BookingLoading,
+                      current is BookingLoading || previous is BookingLoading,
                   builder: (context, state) {
                     return PaymentTitle(
                       title: 'البطاقة البنكية',

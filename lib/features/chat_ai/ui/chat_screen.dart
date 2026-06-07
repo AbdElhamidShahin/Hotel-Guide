@@ -4,6 +4,7 @@ import 'package:hotel_guide/features/chat_ai/ui/widget/chat_bubble.dart'
 import 'package:hotel_guide/features/chat_ai/ui/widget/chat_input_bar.dart';
 import 'package:hotel_guide/features/chat_ai/ui/widget/hotel_card.dart';
 import 'package:hotel_guide/features/chat_ai/ui/widget/typing_indicator.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../core/helpers/widget/custom_appbar_widget.dart';
 import '../data/chat_message.dart';
 import '../data/chat_service.dart';
@@ -21,7 +22,10 @@ class _ChatScreenState extends State<ChatScreen> {
   final ChatService _chatService = ChatService();
   final List<ChatMessage> _messages = [];
   bool _isLoading = false;
-  final String _userId = 'user_123';
+
+  // ✅ Fix: use authenticated user ID instead of hardcoded 'user_123'
+  String get _userId =>
+      Supabase.instance.client.auth.currentUser?.id ?? 'anonymous';
 
   @override
   void initState() {
@@ -81,7 +85,7 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppbarWidget(name: "AQUA Hotel AI", onTap: () {}),
+      appBar: CustomAppbarWidget(name: 'AQUA Hotel AI', onTap: () {}),
       body: Column(
         children: [
           Expanded(

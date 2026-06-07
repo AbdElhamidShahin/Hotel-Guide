@@ -29,22 +29,22 @@ class _NotificationScreenListViewState
   Map<String, List<NotificationModel>> _groupNotifications(
     List<NotificationModel> list,
   ) {
-    Map<String, List<NotificationModel>> grouped = {};
+    final Map<String, List<NotificationModel>> grouped = {};
     final now = DateTime.now();
     final yesterday = DateTime.now().subtract(const Duration(days: 1));
 
-    for (var notif in list) {
+    for (final notif in list) {
       String day;
       if (notif.time.year == now.year &&
           notif.time.month == now.month &&
           notif.time.day == now.day) {
-        day = "اليوم";
+        day = 'اليوم';
       } else if (notif.time.year == yesterday.year &&
           notif.time.month == yesterday.month &&
           notif.time.day == yesterday.day) {
-        day = "الأمس";
+        day = 'الأمس';
       } else {
-        day = "${notif.time.year}/${notif.time.month}/${notif.time.day}";
+        day = '${notif.time.year}/${notif.time.month}/${notif.time.day}';
       }
       grouped.putIfAbsent(day, () => []).add(notif);
     }
@@ -54,10 +54,41 @@ class _NotificationScreenListViewState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppbarWidget(name: "الإشعارات", onTap: () => context.pop()),
+      appBar: CustomAppbarWidget(name: 'الإشعارات', onTap: () => context.pop()),
 
-      body: BlocBuilder<NotificationCubit, List<NotificationModel>>(
-        builder: (context, notifications) {
+      // ✅ Fix: BlocBuilder now uses the proper NotificationState type
+      body: BlocBuilder<NotificationCubit, NotificationState>(
+        builder: (context, state) {
+          if (state is NotificationLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (state is NotificationError) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    state.message,
+                    style: font20BoldShadowPurple.copyWith(
+                      color: AppColors.primary,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  ElevatedButton(
+                    onPressed: () =>
+                        context.read<NotificationCubit>().fetchNotifications(),
+                    child: const Text('إعادة المحاولة'),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          final notifications = state is NotificationLoaded
+              ? state.notifications
+              : <NotificationModel>[];
+
           if (notifications.isEmpty) {
             return BuildNotFoundNotification();
           }
@@ -70,8 +101,8 @@ class _NotificationScreenListViewState
             child: ListView.builder(
               itemCount: groupedNotifs.keys.length,
               itemBuilder: (context, index) {
-                String day = groupedNotifs.keys.elementAt(index);
-                List<NotificationModel> dayNotifs = groupedNotifs[day]!;
+                final day = groupedNotifs.keys.elementAt(index);
+                final dayNotifs = groupedNotifs[day]!;
 
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
