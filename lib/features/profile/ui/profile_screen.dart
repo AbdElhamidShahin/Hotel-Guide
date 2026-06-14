@@ -1,10 +1,13 @@
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hotel_guide/core/router/routers.dart';
+import 'package:hotel_guide/core/theme/app_theme_data.dart';
+import 'package:hotel_guide/core/theme/cubit/theme_cubit.dart';
 import 'package:hotel_guide/features/profile/ui/widget/build_sttings_item.dart';
 import 'package:hotel_guide/features/profile/ui/widget/custom_profile_image_and_name.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../core/helpers/local_storage_account.dart';
 import '../../../core/theme/colors.dart';
@@ -34,23 +37,31 @@ class _AccountScreenState extends State<AccountScreen> {
 
   @override
   Widget build(BuildContext context) {
-    bool isDarkMode = false;
     final notifier = UserDataNotifier.instance;
+    final cs = Theme.of(context).colorScheme;
+
+    // ── Read current dark-mode state directly from the live theme.
+    // This is the single source of truth — no local bool, no AppColors.isDark.
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      // scaffoldBackgroundColor from AppThemeData — adapts automatically.
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
           CustomProfileImageAndName(
             showEditIcon: true,
-            name: notifier.name.isNotEmpty ? notifier.name : 'مستخدم', // ✅
-            imageUrl: notifier.image.isNotEmpty ? notifier.image : null, // ✅
+            name: notifier.name.isNotEmpty ? notifier.name : 'مستخدم',
+            imageUrl: notifier.image.isNotEmpty ? notifier.image : null,
           ),
+
           Expanded(
             child: ListView(
               padding: EdgeInsets.zero,
               physics: const BouncingScrollPhysics(),
               children: [
+
+                // ── Dark mode toggle ─────────────────────────────────────
                 Padding(
                   padding: EdgeInsets.symmetric(
                     horizontal: 20.w,
@@ -59,8 +70,15 @@ class _AccountScreenState extends State<AccountScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+
+                      // ── Animated toggle pill ─────────────────────────
                       GestureDetector(
-                        onTap: () {},
+                        // ACTION: calls ThemeCubit.toggleTheme() on every tap.
+                        // The Cubit saves the preference and emits the new
+                        // ThemeMode. BlocBuilder in hotel_app.dart rebuilds
+                        // the entire MaterialApp instantly.
+                        onTap: () =>
+                            context.read<ThemeCubit>().toggleTheme(),
                         child: Container(
                           width: 60.w,
                           height: 32.h,
@@ -68,25 +86,31 @@ class _AccountScreenState extends State<AccountScreen> {
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(30.r),
                             border: Border.all(
-                              color: Colors.grey.shade400,
+                              // outline = themed border — adapts in dark mode.
+                              color: cs.outline,
                               width: 2.w,
                             ),
                           ),
                           child: AnimatedAlign(
                             duration: const Duration(milliseconds: 250),
                             curve: Curves.easeInOut,
-                            alignment: isDarkMode
+                            // STATE REFLECTION: pill position mirrors live brightness.
+                            alignment: isDark
                                 ? Alignment.centerRight
                                 : Alignment.centerLeft,
                             child: Container(
                               width: 24.r,
                               height: 24.r,
-                              decoration: const BoxDecoration(
+                              decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: Color(0xFF181A20),
+                                // Primary colour for the knob — consistent brand.
+                                color: AppColors.primary,
                               ),
                               child: Icon(
-                                Icons.wb_sunny_outlined,
+                                isDark
+                                    ? Icons.nightlight_outlined
+                                    : Icons.wb_sunny_outlined,
+                                // Always white — icon on primary-colour circle.
                                 color: Colors.white,
                                 size: 14.sp,
                               ),
@@ -94,23 +118,20 @@ class _AccountScreenState extends State<AccountScreen> {
                           ),
                         ),
                       ),
+
+                      // ── Label ────────────────────────────────────────
                       Row(
                         children: [
                           Text(
-                            "الوضع الليلي",
-                            style: TextStyle(
-                              fontSize: 20.sp,
-                              fontFamily: 'Cairo',
-
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black,
-                            ),
+                            'الوضع الليلي',
+                            style: AppTextStyles.font23SemiBoldBlack(context)
+                                .copyWith(fontSize: 20.sp),
                           ),
                           SizedBox(width: 8.w),
                           Icon(
                             Icons.nightlight_outlined,
-                            color: AppColors.textTitle,
-
+                            // onSurfaceVariant = secondary icon colour.
+                            color: cs.onSurfaceVariant,
                             size: 24.sp,
                           ),
                         ],
@@ -118,50 +139,43 @@ class _AccountScreenState extends State<AccountScreen> {
                     ],
                   ),
                 ),
+
+                // Themed divider — correct shade in both modes.
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Divider(
-                    height: 2,
-                    color: Colors.black.withOpacity(0.1),
-                  ),
+                  padding: EdgeInsets.symmetric(horizontal: 8.w),
+                  child: Divider(height: 2, color: cs.outline),
                 ),
 
+                // ── Settings rows ────────────────────────────────────────
                 buildSttingsItem(
-                  title: "الموقع",
+                  title: 'الموقع',
                   icon: Icons.location_on_outlined,
                   onTap: () => context.push(routes.AboutUsScreen),
                 ),
                 buildSttingsItem(
-                  title: "سياسة الخصوصية",
+                  title: 'سياسة الخصوصية',
                   icon: Icons.assignment_outlined,
                   onTap: () => context.push(routes.PrivacyPolicyScreen),
                 ),
                 buildSttingsItem(
-                  title: "الأسئلة الشائعة",
+                  title: 'الأسئلة الشائعة',
                   icon: Icons.help_outline,
                   onTap: () => context.push(routes.FaqPage),
-
                 ),
                 buildSttingsItem(
-                  title: "شروط الإستخدام",
+                  title: 'شروط الإستخدام',
                   icon: Icons.book_outlined,
                   onTap: () {},
                 ),
-
                 buildSttingsItem(
-                  title: "تسجيل الخروج",
+                  title: 'تسجيل الخروج',
                   icon: Icons.login_rounded,
                   isLast: true,
                   onTap: () async {
-                    // ✅ Clear local SharedPreferences cache before signing out
                     final prefs = await SharedPreferences.getInstance();
                     await prefs.clear();
-
                     await Supabase.instance.client.auth.signOut();
-
-                    if (context.mounted) {
-                      context.go(routes.onBoardingScreen);
-                    }
+                    if (context.mounted) context.go(routes.onBoardingScreen);
                   },
                 ),
               ],

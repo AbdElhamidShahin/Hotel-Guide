@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hotel_guide/core/theme/app_theme.dart';
+import 'package:hotel_guide/core/theme/app_theme_data.dart';
 import '../../../../core/helpers/custom_user_avatar.dart';
 import '../../../../core/helpers/local_storage_account.dart';
 import '../../../../core/router/routers.dart';
@@ -26,6 +26,7 @@ class _CustomWelcomeHeaderState extends State<CustomWelcomeHeader> {
   String? name;
   String? image;
 
+  @override
   void initState() {
     super.initState();
     loadUserData();
@@ -43,6 +44,7 @@ class _CustomWelcomeHeaderState extends State<CustomWelcomeHeader> {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Column(
@@ -53,10 +55,13 @@ class _CustomWelcomeHeaderState extends State<CustomWelcomeHeader> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               IconButton(
-                onPressed: () {
-                  context.push(routes.menuScreen);
-                },
-                icon: Icon(Icons.menu_outlined, size: 34),
+                onPressed: () => context.push(routes.menuScreen),
+                icon: Icon(
+                  Icons.menu_outlined,
+                  size: 34,
+                  // onSurface = primary text — adapts in dark mode.
+                  color: cs.onSurface,
+                ),
               ),
               Expanded(
                 child: Directionality(
@@ -64,12 +69,13 @@ class _CustomWelcomeHeaderState extends State<CustomWelcomeHeader> {
                   child: Row(
                     children: [
                       Text(
-                        "مرحبًا ${name}",
-                        style: font23SemiBoldBlack,
+                        'مرحبًا $name',
+                        // Migrated from frozen font23SemiBoldBlack.
+                        style: AppTextStyles.font23SemiBoldBlack(context),
                         overflow: TextOverflow.ellipsis,
                       ),
                       Image.asset(
-                        "assets/images/hi.png",
+                        'assets/images/hi.png',
                         width: 24,
                         height: 24,
                       ),
@@ -77,7 +83,7 @@ class _CustomWelcomeHeaderState extends State<CustomWelcomeHeader> {
                   ),
                 ),
               ),
-              SizedBox(width: 10),
+              const SizedBox(width: 10),
               GestureDetector(
                 onTap: () {
                   context.push(
@@ -92,7 +98,8 @@ class _CustomWelcomeHeaderState extends State<CustomWelcomeHeader> {
                     padding: const EdgeInsets.all(3),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white, width: 2),
+                      // outline = themed border — visible on both backgrounds.
+                      border: Border.all(color: cs.outline, width: 2),
                     ),
                     child: CustomUserAvatar(
                       radius: 80,
@@ -106,10 +113,11 @@ class _CustomWelcomeHeaderState extends State<CustomWelcomeHeader> {
           ),
           SizedBox(height: 8.h),
           Text(
-            "كل ما تحتاجه للإقامة المثالية أصبح بين يديك الآن.",
-            style: font17MediumBlack.copyWith(fontSize: 14.sp),
+            'كل ما تحتاجه للإقامة المثالية أصبح بين يديك الآن.',
+            // Migrated from frozen font17MediumBlack.
+            style: AppTextStyles.font17MediumBlack(context)
+                .copyWith(fontSize: 14.sp),
             textDirection: TextDirection.rtl,
-
             textAlign: TextAlign.start,
             maxLines: 1,
           ),

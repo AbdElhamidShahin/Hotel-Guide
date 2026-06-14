@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../core/router/routers.dart';
-import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/app_theme_data.dart';
 import '../../../core/theme/colors.dart';
 import 'widget/menu/build_background_decorations.dart';
 
@@ -15,10 +15,12 @@ class MenuScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      // Reads from AppThemeData scaffoldBackgroundColor — white in light,
+      // dark navy in dark mode.
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Stack(
         children: [
-          buildBackgroundDecorations(),
+          buildBackgroundDecorations(context),
           SafeArea(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 24.w),
@@ -133,14 +135,14 @@ class _MenuTile extends StatelessWidget {
           title: Text(
             title,
             textAlign: TextAlign.right,
-            style: font23RegularPrimary,
+            // Migrated from frozen font23RegularPrimary global.
+            style: AppTextStyles.font23RegularPrimary(context),
           ),
           trailing: SvgPicture.asset(
             iconPath,
             width: 28.w,
             height: 28.h,
-            // ignore: deprecated_member_use
-            color: AppColors.primary,
+            colorFilter: ColorFilter.mode(AppColors.primary, BlendMode.srcIn),
           ),
         ),
         Divider(
@@ -174,12 +176,15 @@ class _LogoutButton extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text('تسجيل الخروج', style: font23RegularPrimary),
+          // Migrated from frozen font23RegularPrimary global.
+          Text('تسجيل الخروج',
+              style: AppTextStyles.font23RegularPrimary(context)),
           SizedBox(width: 10.w),
           SvgPicture.asset(
             'assets/icons/menu_icons/logout.svg',
             width: 26.w,
             height: 26.h,
+            colorFilter: ColorFilter.mode(AppColors.primary, BlendMode.srcIn),
           ),
         ],
       ),

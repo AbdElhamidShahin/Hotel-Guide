@@ -1,10 +1,8 @@
-// custom_appbar_search.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
-import '../../../../core/router/routers.dart';
-import '../../../../core/theme/app_theme.dart';
+import '../../../../core/theme/app_theme_data.dart';
 import '../../../../core/theme/colors.dart';
 
 class CustomAppbarSearch extends StatelessWidget {
@@ -19,6 +17,9 @@ class CustomAppbarSearch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs      = Theme.of(context).colorScheme;
+    final isLight = Theme.of(context).brightness == Brightness.light;
+
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 18.w),
       child: Row(
@@ -27,32 +28,47 @@ class CustomAppbarSearch extends StatelessWidget {
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.white,
+                // surface = white in light, dark card in dark mode.
+                color: cs.surface,
                 borderRadius: BorderRadius.circular(50),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.grey.withOpacity(0.2),
-                    spreadRadius: 2,
+                    // Shadow visible only in light mode; outline handles dark.
+                    color: isLight
+                        ? Colors.black.withOpacity(0.08)
+                        : Colors.transparent,
+                    spreadRadius: 1,
                     blurRadius: 8,
                     offset: const Offset(0, 4),
                   ),
                 ],
+                border: isLight
+                    ? null
+                    : Border.all(color: cs.outline, width: 0.5),
               ),
               child: TextField(
                 onChanged: onChanged,
                 textDirection: TextDirection.rtl,
                 textAlign: TextAlign.right,
-                style: const TextStyle(fontSize: 16),
+                // Input text colour from live theme.
+                style: TextStyle(fontSize: 16, color: cs.onSurface),
                 decoration: InputDecoration(
-                  hintText: "...البحث عن الفنادق",
-                  hintStyle: font17MediumBlack.copyWith(
-                    color: const Color(0xFFB7B7B7),
+                  hintText: '...البحث عن الفنادق',
+                  // Migrated from frozen font17MediumBlack global.
+                  hintStyle: AppTextStyles.font17MediumBlack(context).copyWith(
+                    color: cs.surfaceTint, // textMuted slot
                   ),
                   prefixIcon: GestureDetector(
                     onTap: onFilterTap,
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 18.w),
-                      child: SvgPicture.asset("assets/icons/filter-search.svg"),
+                      child: SvgPicture.asset(
+                        'assets/icons/filter-search.svg',
+                        colorFilter: ColorFilter.mode(
+                          cs.onSurfaceVariant,
+                          BlendMode.srcIn,
+                        ),
+                      ),
                     ),
                   ),
                   suffixIconConstraints: BoxConstraints(
@@ -62,8 +78,11 @@ class CustomAppbarSearch extends StatelessWidget {
                   suffixIcon: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 12.w),
                     child: SvgPicture.asset(
-                      "assets/icons/search-normal.svg",
-                      color: AppColors.primary,
+                      'assets/icons/search-normal.svg',
+                      colorFilter: ColorFilter.mode(
+                        AppColors.primary,
+                        BlendMode.srcIn,
+                      ),
                     ),
                   ),
                   fillColor: Colors.transparent,
@@ -82,7 +101,12 @@ class CustomAppbarSearch extends StatelessWidget {
           SizedBox(width: 12.w),
           IconButton(
             onPressed: () => context.pop(),
-            icon: Icon(Icons.arrow_forward, color: AppColors.darkBackground, size: 24),
+            icon: Icon(
+              Icons.arrow_forward,
+              // onSurface = primary text colour, adapts in dark mode.
+              color: cs.onSurface,
+              size: 24,
+            ),
           ),
         ],
       ),

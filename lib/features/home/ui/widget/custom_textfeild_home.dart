@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:hotel_guide/core/theme/app_theme.dart';
+import 'package:hotel_guide/core/theme/app_theme_data.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
 
 class CustomTextfeildHome extends StatelessWidget {
@@ -18,6 +18,7 @@ class CustomTextfeildHome extends StatelessWidget {
   final String image;
   final double height;
   final double width;
+
   @override
   Widget build(BuildContext context) {
     return Directionality(
@@ -41,10 +42,11 @@ class CustomTextfeildHome extends StatelessWidget {
               ),
               child: Text(
                 title,
-                style: font16BoldWhite.copyWith(fontSize: 14.sp),
+                // Migrated from frozen font16BoldWhite global.
+                style: AppTextStyles.font16BoldWhite(context)
+                    .copyWith(fontSize: 14.sp),
               ),
             ),
-
             Expanded(
               child: Container(
                 margin: EdgeInsets.all(4.r),
@@ -58,7 +60,9 @@ class CustomTextfeildHome extends StatelessWidget {
                     Expanded(
                       child: Text(
                         text,
-                        style: font16BoldWhite.copyWith(fontSize: 14.sp),
+                        // Migrated from frozen font16BoldWhite global.
+                        style: AppTextStyles.font16BoldWhite(context)
+                            .copyWith(fontSize: 14.sp),
                         textAlign: TextAlign.center,
                       ),
                     ),

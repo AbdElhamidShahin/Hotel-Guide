@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hotel_guide/core/router/routers.dart';
-import 'package:hotel_guide/core/theme/colors.dart';
-
-import '../../../../../core/theme/app_theme.dart';
+import 'package:hotel_guide/core/theme/app_theme_data.dart';
 
 class CustomAppBarDetails extends StatelessWidget {
   const CustomAppBarDetails({super.key, required this.title});
@@ -11,6 +8,7 @@ class CustomAppBarDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Row(
@@ -18,14 +16,17 @@ class CustomAppBarDetails extends StatelessWidget {
           const Spacer(),
           Text(
             title,
-            style: font23SemiBoldBlack.copyWith(
-              color: AppColors.darkBackground.withOpacity(0.8),
+            style: AppTextStyles.font23SemiBoldBlack(context).copyWith(
+              color: cs.onSurface, // التعديل: لضمان تحوله للون الأبيض في الـ Dark Mode
             ),
           ),
           const Spacer(),
           IconButton(
             onPressed: () => context.pop(),
-            icon: const Icon(Icons.arrow_forward),
+            icon: Icon(
+              Icons.arrow_forward,
+              color: cs.onSurface,
+            ),
           ),
         ],
       ),

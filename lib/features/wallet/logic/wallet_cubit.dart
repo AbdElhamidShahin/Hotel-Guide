@@ -19,14 +19,14 @@ class WalletCubit extends Cubit<WalletState> {
         _stripe = stripe,
         super(WalletInitial());
 
-  // ── Fetch ─────────────────────────────────────────────
+  // ── Fetch ─────────────────────────────────────────
 
   Future<void> fetchWalletData() async {
     emit(WalletLoading());
     final result = await _repo.getWalletDetails();
     result.fold(
-          (failure) => emit(WalletError(failure.message)),
-          (data) => emit(WalletLoaded(
+      (failure) => emit(WalletError(failure.message)),
+      (data) => emit(WalletLoaded(
         userProfile: data.profile,
         paymentTransactions: data.payments,
         topUpTransactions: data.topUps,
@@ -34,27 +34,23 @@ class WalletCubit extends Cubit<WalletState> {
     );
   }
 
-  // ── 🔥 Realtime Listener ─────────────────────────────
+  // ── 🔥 Realtime Listener via Repository ──────────
+  // ✅ Fix: stream now comes from _repo.watchWalletChanges
+  // instead of raw Supabase.instance.client, making this testable.
 
   void startWalletListener() {
     final userId = Supabase.instance.client.auth.currentUser?.id;
     if (userId == null) return;
 
-    _walletSub?.cancel(); // safety
+    _walletSub?.cancel();
 
-    _walletSub = Supabase.instance.client
-        .from('profiles')
-        .stream(primaryKey: ['id'])
-        .eq('id', userId)
-        .listen((data) async {
+    _walletSub = _repo.watchWalletChanges(userId).listen((_) async {
       debugPrint('🔥 Wallet Realtime Triggered');
-
-      // أي تغيير في الرصيد → اعمل refresh
       await fetchWalletData();
     });
   }
 
-  // ── Top-Up ───────────────────────────────────────────
+  // ── Top-Up ───────────────────────────────────────
 
   Future<void> topUpWallet({required double amount}) async {
     final currentState = state;
@@ -66,7 +62,7 @@ class WalletCubit extends Cubit<WalletState> {
 
     try {
       final customerId =
-      await _stripe.getOrCreateStripeCustomerId(profile);
+          await _stripe.getOrCreateStripeCustomerId(profile);
 
       await _stripe.makePayment(
         paymentIntentInputModel: PaymentIntentInputModel(
@@ -81,11 +77,9 @@ class WalletCubit extends Cubit<WalletState> {
       final result = await _repo.topUpBalance(amount);
 
       await result.fold(
-            (failure) async => emit(WalletTopUpError(failure.message)),
-            (_) async {
+        (failure) async => emit(WalletTopUpError(failure.message)),
+        (_) async {
           emit(WalletTopUpSuccess(profile.walletBalance + amount));
-
-          // fallback (لو realtime اتأخر)
           await fetchWalletData();
         },
       );
@@ -95,7 +89,7 @@ class WalletCubit extends Cubit<WalletState> {
     }
   }
 
-  // ── Dispose ──────────────────────────────────────────
+  // ── Dispose ──────────────────────────────────────
 
   @override
   Future<void> close() {

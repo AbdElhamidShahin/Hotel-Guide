@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../../core/theme/colors.dart';
-
-Widget buildBackgroundDecorations() {
+Widget buildBackgroundDecorations(BuildContext context) {
+  // Use outline color — a neutral tint that works in both light and dark mode.
+  final circleColor = Theme.of(context).colorScheme.outline.withOpacity(0.35);
   return Stack(
     children: [
       Positioned(
@@ -13,7 +13,7 @@ Widget buildBackgroundDecorations() {
           width: 300.w,
           height: 300.h,
           decoration: BoxDecoration(
-            color: AppColors.border,
+            color: circleColor,
             shape: BoxShape.circle,
           ),
         ),
@@ -25,7 +25,7 @@ Widget buildBackgroundDecorations() {
           width: 300.w,
           height: 300.h,
           decoration: BoxDecoration(
-            color: AppColors.border,
+            color: circleColor,
             shape: BoxShape.circle,
           ),
         ),

@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hotel_guide/core/router/routers.dart';
-import 'package:hotel_guide/core/theme/app_theme.dart';
+import 'package:hotel_guide/core/theme/app_theme_data.dart';
 import '../../../../../core/helpers/contact/build_error_widget.dart';
 import '../../../../../core/network/model/city_model.dart';
 import '../../../logic/cubit/home_cubit.dart';
@@ -13,6 +13,7 @@ import '../../../logic/cubit/home_state.dart';
 class CustomCityHome extends StatelessWidget {
   const CustomCityHome({super.key, this.itemCount});
   final int? itemCount;
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<HomeCubit, HomeState>(
@@ -20,18 +21,14 @@ class CustomCityHome extends StatelessWidget {
         if (state is HomeLoading) {
           return const Center(child: CircularProgressIndicator());
         }
-
         if (state is HomeError) {
           return buildNoConnectionMiniWidget(
-            onRetry: () {
-              context.read<HomeCubit>().getHotelsAndCities();
-            },
+            onRetry: () => context.read<HomeCubit>().getHotelsAndCities(),
           );
         }
-
         if (state is HomeLoaded) {
           if (state.cities.isEmpty) {
-            return const Center(child: Text("لا توجد مدن حالياً"));
+            return const Center(child: Text('لا توجد مدن حالياً'));
           }
           final int displayCount = itemCount != null
               ? min(itemCount!, state.cities.length)
@@ -71,7 +68,6 @@ class CustomCityHome extends StatelessWidget {
             ],
           );
         }
-
         return const SizedBox.shrink();
       },
     );
@@ -92,7 +88,7 @@ class CustomCityHomeItem extends StatelessWidget {
         borderRadius: BorderRadius.circular(15.r),
         child: Stack(
           children: [
-            // Image
+            // Photo background.
             Positioned.fill(
               child: Image.network(
                 city.imageUrl,
@@ -102,22 +98,30 @@ class CustomCityHomeItem extends StatelessWidget {
               ),
             ),
 
+            // Dark gradient at the bottom — intentionally dark in both themes
+            // to make the white city name readable over any photo.
             Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.bottomCenter,
                   end: Alignment.center,
-                  colors: [Colors.black.withOpacity(0.8), Colors.transparent],
+                  colors: [
+                    Colors.black.withOpacity(0.8),
+                    Colors.transparent,
+                  ],
                 ),
               ),
             ),
+
             Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
                 padding: EdgeInsets.only(bottom: 12.h),
                 child: Text(
                   city.name,
-                  style: font22BoldPrimary.copyWith(fontSize: 16.sp, color: Colors.white),
+                  // Always white — text sits on dark photo gradient overlay.
+                  style: AppTextStyles.font22BoldPrimary(context)
+                      .copyWith(fontSize: 16.sp, color: Colors.white),
                 ),
               ),
             ),

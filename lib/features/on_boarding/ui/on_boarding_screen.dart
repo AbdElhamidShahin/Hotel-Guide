@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hotel_guide/core/router/routers.dart';
 import 'package:hotel_guide/features/on_boarding/ui/widget/build_dot.dart';
 import 'package:hotel_guide/features/on_boarding/ui/widget/custom_elevated_button.dart';
-import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/app_theme_data.dart';
 import '../data/onpording_item.dart';
 
 class OnBoardingScreen extends StatefulWidget {
@@ -21,9 +21,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
   @override
   void initState() {
     _controller = PageController(initialPage: 0);
-    _controller.addListener(() {
-      setState(() {});
-    });
+    _controller.addListener(() => setState(() {}));
     super.initState();
   }
 
@@ -35,6 +33,8 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+
     return Scaffold(
       body: Stack(
         children: [
@@ -50,7 +50,6 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                     if (_controller.hasClients) {
                       pageOffset = _controller.page! - index;
                     }
-
                     return Opacity(
                       opacity: (1 - pageOffset.abs()).clamp(0.0, 1.0),
                       child: Transform.translate(
@@ -69,8 +68,12 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
             ),
           ),
 
+          // Dark overlay on the onboarding photos — intentionally static in
+          // both themes; it ensures the white sheet below stands out and the
+          // photo isn't blown out.
           Positioned.fill(
-            bottom: 0.35.sh,            child: Container(color: Colors.black.withOpacity(0.33)),
+            bottom: 0.35.sh,
+            child: Container(color: Colors.black.withOpacity(0.33)),
           ),
 
           Column(
@@ -79,19 +82,17 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                 child: PageView.builder(
                   controller: _controller,
                   itemCount: contents.length,
-                  onPageChanged: (int index) {
-                    setState(() {
-                      currentIndex = index;
-                    });
-                  },
+                  onPageChanged: (int index) =>
+                      setState(() => currentIndex = index),
                   itemBuilder: (_, i) {
                     return Align(
                       alignment: Alignment.bottomCenter,
                       child: Container(
                         height: MediaQuery.sizeOf(context).height * 0.35.h,
                         width: double.infinity,
-                        decoration:  BoxDecoration(
-                          color: Colors.white,
+                        decoration: BoxDecoration(
+                          // surface = white in light, dark card in dark mode.
+                          color: cs.surface,
                           borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(30.r),
                             topRight: Radius.circular(30.r),
@@ -105,17 +106,18 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
+                              // Migrated from frozen font30BoldPrimary global.
                               Text(
                                 contents[i].title,
                                 textAlign: TextAlign.end,
-                                style: font30BoldPrimary,
+                                style: AppTextStyles.font30BoldPrimary(context),
                               ),
                               SizedBox(height: 16.h),
+                              // Migrated from frozen font20RegularPrimary global.
                               Text(
-                                textAlign: TextAlign.end,
-
                                 contents[i].description,
-                                style: font20RegularPrimary,
+                                textAlign: TextAlign.end,
+                                style: AppTextStyles.font20RegularPrimary(context),
                               ),
                             ],
                           ),
@@ -127,7 +129,8 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
               ),
 
               Container(
-                color: Colors.white,
+                // surface = white in light, dark card in dark mode.
+                color: cs.surface,
                 padding: EdgeInsets.only(bottom: 40.h, left: 20.w, right: 20.w),
                 child: Column(
                   children: [
@@ -141,8 +144,8 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                     SizedBox(height: 30.h),
                     CustomElevatedButton(
                       name: currentIndex == contents.length - 1
-                          ? "ابدأ الآن"
-                          : "التالي",
+                          ? 'ابدأ الآن'
+                          : 'التالي',
                       onPressed: () {
                         if (currentIndex == contents.length - 1) {
                           context.push(routes.signUpScreen);

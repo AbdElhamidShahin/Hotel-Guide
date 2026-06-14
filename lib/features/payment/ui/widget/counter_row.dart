@@ -1,9 +1,9 @@
-import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hotel_guide/core/theme/app_theme.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
-
+import '../../../../core/theme/app_theme_data.dart';
+import '../../../../core/theme/colors.dart';
 class CounterRow extends StatelessWidget {
   final String title;
   final int value;
@@ -27,14 +27,13 @@ class CounterRow extends StatelessWidget {
         children: [
           Text(
             title,
-            style: font22BoldPrimary.copyWith(
+            style: AppTextStyles.font22BoldPrimary(context).copyWith(
               color: AppColors.ShadowPurple,
             ),
           ),
           Row(
             children: [
               _circleBtn(Icons.add, onAdd, AppColors.primary, AppColors.textWhite),
-
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 15.w),
                 child: Text(
@@ -42,6 +41,7 @@ class CounterRow extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 18.sp,
                     fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
               ),
@@ -59,11 +59,11 @@ class CounterRow extends StatelessWidget {
   }
 
   Widget _circleBtn(
-    IconData icon,
-    VoidCallback onTap,
-    Color color,
-    Color colorIcon,
-  ) {
+      IconData icon,
+      VoidCallback onTap,
+      Color color,
+      Color colorIcon,
+      ) {
     return GestureDetector(
       onTap: onTap,
       child: CircleAvatar(

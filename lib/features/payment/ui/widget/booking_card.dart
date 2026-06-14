@@ -1,8 +1,11 @@
+
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hotel_guide/core/theme/app_theme.dart';
-import 'package:hotel_guide/core/theme/colors.dart';
+
 import '../../../../core/network/model/room_model.dart';
+import '../../../../core/theme/app_theme_data.dart';
+import '../../../../core/theme/colors.dart';
 
 class BookingCard extends StatelessWidget {
   final Room room;
@@ -17,24 +20,22 @@ class BookingCard extends StatelessWidget {
         margin: EdgeInsets.symmetric(vertical: 10.h),
         padding: EdgeInsets.all(20.w),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(20.r),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withOpacity(0.05),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
           ],
+          border: Border.all(color: Theme.of(context).colorScheme.outline, width: 0.5),
         ),
         child: Row(
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(15.r),
-              child:
-
-
-              room.gallery.isNotEmpty
+              child: room.gallery.isNotEmpty
                   ? Image.network(
                 room.gallery[0],
                 width: 100.w,
@@ -47,8 +48,6 @@ class BookingCard extends StatelessWidget {
                 height: 100.w,
                 fit: BoxFit.cover,
               ),
-
-
             ),
             SizedBox(width: 16.w),
 
@@ -58,8 +57,8 @@ class BookingCard extends StatelessWidget {
                 children: [
                   Text(
                     room.name,
-                    style: font16MediumWhite.copyWith(
-                      color: AppColors.textPrimary,
+                    style: AppTextStyles.font16MediumWhite(context).copyWith(
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                   SizedBox(height: 12.h),
@@ -68,13 +67,13 @@ class BookingCard extends StatelessWidget {
                       Icon(
                         Icons.king_bed_outlined,
                         size: 18.sp,
-                        color: Colors.grey,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                       SizedBox(width: 4.w),
                       Text(
                         room.bedType ?? "غرفة مميزة",
-                        style: font14RegularNightfall.copyWith(
-                          color: AppColors.textDisabled,
+                        style: AppTextStyles.font14RegularNightfall(context).copyWith(
+                          color: Theme.of(context).textTheme.labelLarge?.color,
                         ),
                       ),
                     ],
@@ -82,7 +81,7 @@ class BookingCard extends StatelessWidget {
                   SizedBox(height: 6.h),
                   RichText(
                     text: TextSpan(
-                      style: font16BoldWhite.copyWith(
+                      style: AppTextStyles.font16BoldWhite(context).copyWith(
                         color: AppColors.primary,
                       ),
                       children: [

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../theme/colors.dart';
-
 class SectionDivider extends StatelessWidget {
   const SectionDivider();
 
@@ -13,7 +11,9 @@ class SectionDivider extends StatelessWidget {
       child: Divider(
         height: 2.h,
         thickness: 1.h,
-        color: AppColors.pureBlack.withOpacity(0.1),
+        // DividerThemeData in AppThemeData supplies the correct color for
+        // both light (0xFFD9D9D9) and dark (0xFF3A3A4A) automatically.
+        color: Theme.of(context).dividerTheme.color,
       ),
     );
   }

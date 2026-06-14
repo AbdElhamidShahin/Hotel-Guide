@@ -16,8 +16,9 @@ class RoomsScreenListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // Inherits scaffoldBackgroundColor from AppThemeData automatically.
       appBar: CustomAppbarWidget(
-        name: "الغرف",
+        name: 'الغرف',
         onTap: () {
           if (context.canPop()) {
             context.pop();
@@ -34,7 +35,7 @@ class RoomsScreenListView extends StatelessWidget {
               return const Center(child: CircularProgressIndicator());
             } else if (state is RoomLoaded) {
               if (state.rooms.isEmpty) {
-                return _buildEmptyState();
+                return _buildEmptyState(context);
               }
               return GridView.builder(
                 itemCount: state.rooms.length,
@@ -44,14 +45,12 @@ class RoomsScreenListView extends StatelessWidget {
                   mainAxisSpacing: 26.h,
                   childAspectRatio: 0.7,
                 ),
-                itemBuilder: (context, index) {
-                  return CustomRoomsListViewItem(room: state.rooms[index]);
-                },
+                itemBuilder: (context, index) =>
+                    CustomRoomsListViewItem(room: state.rooms[index]),
               );
             } else if (state is RoomError) {
               return buildNoConnectionWidget();
             }
-
             return const SizedBox.shrink();
           },
         ),
@@ -59,7 +58,8 @@ class RoomsScreenListView extends StatelessWidget {
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -67,24 +67,27 @@ class RoomsScreenListView extends StatelessWidget {
           Icon(
             Icons.bed_outlined,
             size: 100.r,
-            color: Colors.grey.withOpacity(0.5),
+            // onSurfaceVariant = secondary icon colour, adapts in dark mode.
+            color: cs.onSurfaceVariant.withOpacity(0.5),
           ),
           SizedBox(height: 20.h),
           Text(
-            "عذراً، لا توجد غرف متاحة",
+            'عذراً، لا توجد غرف متاحة',
             style: TextStyle(
               fontSize: 20.sp,
               fontWeight: FontWeight.bold,
-              color: Colors.black54,
+              // onSurface = primary text, adapts in dark mode.
+              color: cs.onSurface,
             ),
           ),
           SizedBox(height: 10.h),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 30.w),
             child: Text(
-              "يبدو أن هذا الفندق ليس لديه غرف مسجلة حالياً، حاول مرة أخرى لاحقاً.",
+              'يبدو أن هذا الفندق ليس لديه غرف مسجلة حالياً، حاول مرة أخرى لاحقاً.',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 14.sp, color: Colors.grey),
+              // surfaceTint = textMuted slot, adapts in dark mode.
+              style: TextStyle(fontSize: 14.sp, color: cs.surfaceTint),
             ),
           ),
         ],

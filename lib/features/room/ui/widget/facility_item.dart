@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hotel_guide/features/room/ui/widget/room_details_page.dart';
 import '../../../../core/theme/colors.dart';
-import '../../../../core/theme/app_theme.dart';
+import '../../../../core/theme/app_theme_data.dart';
 
 class FacilityItem extends StatelessWidget {
   final FacilityModel facility;
@@ -28,16 +28,19 @@ class FacilityItem extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border.all(color: borderColor),
         borderRadius: BorderRadius.circular(5.r),
-        color: facility.isAvailable ? Colors.transparent : AppColors.dangerRed.withOpacity(0.02),
+        color: facility.isAvailable
+            ? Colors.transparent
+            : AppColors.dangerRed.withOpacity(0.02),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: 24.sp, color: mainColor),
           SizedBox(width: 8.w),
+          // Migrated from frozen font16RegularMuted global.
           Text(
             facility.title,
-            style: font16RegularMuted.copyWith(
+            style: AppTextStyles.font16RegularMuted(context).copyWith(
               color: mainColor,
               fontSize: 14.sp,
             ),

@@ -5,7 +5,7 @@ import 'package:hotel_guide/core/theme/colors.dart';
 import 'package:hotel_guide/features/sign_up/logic/cubit/sign_up_cubit.dart';
 import '../../../../core/helpers/app_regex.dart';
 import '../../../../core/helpers/widget/custom_text_feild.dart';
-import '../../../../core/theme/app_theme.dart';
+import '../../../../core/theme/app_theme_data.dart';
 import '../../logic/cubit/sign_up_state.dart';
 
 class EmailAndPasswordAndName extends StatefulWidget {
@@ -38,7 +38,6 @@ class _EmailAndPasswordAndNameState extends State<EmailAndPasswordAndName> {
 
   void _onSubmit() {
     if (!_formKey.currentState!.validate()) return;
-
     context.read<SignUpCubit>().signUpUser(
       name: _nameController.text.trim(),
       email: _emailController.text.trim(),
@@ -54,7 +53,7 @@ class _EmailAndPasswordAndNameState extends State<EmailAndPasswordAndName> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          _buildLabel('الإسم'),
+          _buildLabel(context, 'الإسم'),
           AppTextFormFeild(
             hintText: 'abdo shahin',
             controller: _nameController,
@@ -67,7 +66,7 @@ class _EmailAndPasswordAndNameState extends State<EmailAndPasswordAndName> {
             suffixIcon: _buildSuffixIcon(Icons.person_outline_sharp),
           ),
           SizedBox(height: 16.h),
-          _buildLabel('البريد الإلكتروني'),
+          _buildLabel(context, 'البريد الإلكتروني'),
           AppTextFormFeild(
             hintText: 'example@gmail.com',
             controller: _emailController,
@@ -83,7 +82,7 @@ class _EmailAndPasswordAndNameState extends State<EmailAndPasswordAndName> {
             suffixIcon: _buildSuffixIcon(Icons.email_outlined),
           ),
           SizedBox(height: 16.h),
-          _buildLabel('كلمة المرور'),
+          _buildLabel(context, 'كلمة المرور'),
           AppTextFormFeild(
             hintText: '******',
             controller: _passwordController,
@@ -106,7 +105,7 @@ class _EmailAndPasswordAndNameState extends State<EmailAndPasswordAndName> {
             ),
           ),
           SizedBox(height: 16.h),
-          _buildLabel('تأكيد كلمة المرور'),
+          _buildLabel(context, 'تأكيد كلمة المرور'),
           AppTextFormFeild(
             hintText: '******',
             controller: _confirmPasswordController,
@@ -147,9 +146,13 @@ class _EmailAndPasswordAndNameState extends State<EmailAndPasswordAndName> {
                     ),
                   ),
                   onPressed: _onSubmit,
+                  // Migrated from frozen font16RegularMuted global.
+                  // Always white — on primary-coloured button.
                   child: Text(
                     'إنشاء حساب',
-                    style: font16RegularMuted.copyWith(color: Colors.white),
+                    style: AppTextStyles.font16RegularMuted(context).copyWith(
+                      color: Colors.white,
+                    ),
                   ),
                 );
               },
@@ -161,10 +164,11 @@ class _EmailAndPasswordAndNameState extends State<EmailAndPasswordAndName> {
   }
 }
 
-Widget _buildLabel(String text) {
+Widget _buildLabel(BuildContext context, String text) {
+  // Migrated from frozen font16RegularMuted global.
   return Padding(
     padding: EdgeInsets.only(bottom: 6.h, top: 10.h),
-    child: Text(text, style: font16RegularMuted.copyWith(fontSize: 14.sp)),
+    child: Text(text, style: AppTextStyles.font16RegularMuted(context).copyWith(fontSize: 14.sp)),
   );
 }
 

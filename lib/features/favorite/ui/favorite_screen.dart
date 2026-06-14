@@ -16,48 +16,40 @@ class FavoriteScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppbarWidget(name: "المفضله", onTap: () {}),
-
+      // Inherits scaffoldBackgroundColor from AppThemeData automatically.
+      // CustomAppbarWidget already migrated — adapts to theme.
+      appBar: CustomAppbarWidget(name: 'المفضله', onTap: () {}),
       body: BlocBuilder<FavoriteCubit, FavoriteState>(
         builder: (context, state) {
           if (state is FavoriteLoading) {
             return const Center(child: CircularProgressIndicator());
           }
-
           if (state is FavoriteError) {
             return buildNoConnectionWidget(
-              onRetry: () {
-                context.read<FavoriteCubit>().loadFavorites();
-              },
+              onRetry: () => context.read<FavoriteCubit>().loadFavorites(),
             );
           }
 
-          final List<HotelModel> favoriteItems = (state is FavoriteUpdated)
-              ? state.favorites
-              : [];
-          if (favoriteItems.isEmpty) {
+          final List<HotelModel> favorites =
+              state is FavoriteUpdated ? state.favorites : [];
+
+          if (favorites.isEmpty) {
             return buildFavoriteNotFoundWidget(
-              onRetry: () {
-                context.go(routes.homeScreen);
-              },
+              onRetry: () => context.go(routes.homeScreen),
             );
           }
 
           return RefreshIndicator(
-            onRefresh: () async {
-              await context.read<FavoriteCubit>().loadFavorites();
-            },
+            onRefresh: () async =>
+                context.read<FavoriteCubit>().loadFavorites(),
             child: ListView.builder(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              itemCount: favoriteItems.length,
-              itemBuilder: (context, index) {
-                final item = favoriteItems[index];
-                return CustomItem(
-                  key: ValueKey(item.id),
-                  hotelModel: item,
-                  isContinar: true,
-                );
-              },
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              itemCount: favorites.length,
+              itemBuilder: (_, i) => CustomItem(
+                key: ValueKey(favorites[i].id),
+                hotelModel: favorites[i],
+                isContinar: true,
+              ),
             ),
           );
         },

@@ -23,14 +23,12 @@ class WalletRepositoryImpl implements WalletRepository {
         return Left(ErrorHandler.handle('يرجى تسجيل الدخول أولا'));
       }
 
-      // ✅ maybeSingle — never throws PGRST116
       var profileRaw = await _supabase
           .from(AppTableNames.profiles)
           .select()
           .eq('id', userId)
           .maybeSingle();
 
-      // ✅ Auto-create profile for Google OAuth users (skipped signUp flow)
       if (profileRaw == null) {
         debugPrint('⚠️ Profile missing for $userId — auto-creating');
         final user = _supabase.auth.currentUser!;
@@ -50,7 +48,6 @@ class WalletRepositoryImpl implements WalletRepository {
         debugPrint('✅ Profile auto-created');
       }
 
-      // ✅ Fetch payment & top-up in parallel
       final results = await Future.wait([
         _supabase
             .from(AppTableNames.walletTransactions)
@@ -92,7 +89,6 @@ class WalletRepositoryImpl implements WalletRepository {
         return Left(ErrorHandler.handle('يرجى تسجيل الدخول أولاً'));
       }
 
-      // Try RPC; fallback on ANY RPC failure
       bool rpcFailed = false;
       try {
         await _supabase.rpc(
@@ -115,7 +111,6 @@ class WalletRepositoryImpl implements WalletRepository {
   }
 
   Future<void> _manualTopUp(String userId, double amount) async {
-    // 1. Read balance
     final data = await _supabase
         .from(AppTableNames.profiles)
         .select('wallet_balance')
@@ -123,7 +118,6 @@ class WalletRepositoryImpl implements WalletRepository {
         .single();
     final current = (data['wallet_balance'] as num).toDouble();
 
-    // 2. Update — .select() detects silent RLS block
     final updated = await _supabase
         .from(AppTableNames.profiles)
         .update({'wallet_balance': current + amount})
@@ -135,7 +129,6 @@ class WalletRepositoryImpl implements WalletRepository {
     }
     debugPrint('✅ Balance: $current → ${current + amount}');
 
-    // 3. Transaction — 'type' ONLY (no duplicate 'transaction_type')
     await _supabase.from(AppTableNames.walletTransactions).insert({
       'user_id': userId,
       'amount': amount,
@@ -143,7 +136,6 @@ class WalletRepositoryImpl implements WalletRepository {
       'description': 'شحن رصيد عبر البطاقة البنكية',
     });
 
-    // 4. Notification
     await _supabase
         .from(AppTableNames.notifications)
         .insert(
@@ -155,5 +147,18 @@ class WalletRepositoryImpl implements WalletRepository {
           ).toJson(userId),
         );
     debugPrint('✅ Manual topUp complete');
+  }
+
+  // ── Realtime Stream ─────────────────────────────────────────────────────────
+
+  // ✅ Fix: stream moved inside the class — was accidentally appended outside
+  // the closing brace, causing "missing implementation" and "_supabase undefined" errors.
+  @override
+  Stream<void> watchWalletChanges(String userId) {
+    return _supabase
+        .from('profiles')
+        .stream(primaryKey: ['id'])
+        .eq('id', userId)
+        .map((_) => null);
   }
 }

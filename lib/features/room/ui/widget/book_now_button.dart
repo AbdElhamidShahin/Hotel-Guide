@@ -3,14 +3,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hotel_guide/core/router/routers.dart';
-
 import '../../../../core/network/model/room_model.dart';
-import '../../../../core/theme/app_theme.dart';
+import '../../../../core/theme/app_theme_data.dart';
 import '../../../../core/theme/colors.dart';
 
 class BookNowButton extends StatelessWidget {
-  const BookNowButton({super.key, required this.room,});
+  const BookNowButton({super.key, required this.room});
   final Room room;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -18,10 +18,9 @@ class BookNowButton extends StatelessWidget {
       height: 65.h,
       margin: EdgeInsets.symmetric(horizontal: 30.w, vertical: 20.h),
       child: ElevatedButton(
-        onPressed: () {
-          context.push(routes.BookingDetailsPage, extra: room);
-        },
+        onPressed: () => context.push(routes.BookingDetailsPage, extra: room),
         style: ElevatedButton.styleFrom(
+          // Always primary — brand action button, same in both themes.
           backgroundColor: AppColors.primaryDark,
           padding: EdgeInsets.symmetric(vertical: 12.h),
           shape: RoundedRectangleBorder(
@@ -31,10 +30,14 @@ class BookNowButton extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("إحجز الآن", style: font22BoldPrimary),
-
+            // Migrated from frozen font22BoldPrimary global.
+            // Always white — on primary-coloured button.
+            Text('إحجز الآن', style: AppTextStyles.font22BoldPrimary(context)),
             SizedBox(width: 8.w),
-            SvgPicture.asset("assets/icons/send.svg"),
+            SvgPicture.asset(
+              'assets/icons/send.svg',
+              colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+            ),
           ],
         ),
       ),

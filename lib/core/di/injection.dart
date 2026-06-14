@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../features/home/data/repo/home_repo.dart';
@@ -26,6 +27,7 @@ import '../../features/wallet/data/wallet_repo.dart';
 import '../../features/wallet/data/wallet_repo_imple.dart';
 import '../../features/wallet/logic/wallet_cubit.dart';
 import '../network/service/SupabaseService.dart';
+import '../theme/cubit/theme_cubit.dart';
 import '../units/api_service.dart';
 import '../units/stripe_service.dart';
 
@@ -34,10 +36,19 @@ final getIt = GetIt.instance;
 Future<void> setupGetIt() async {
   if (getIt.isRegistered<SupabaseClient>()) return;
 
+  // ✅ Safe: Supabase.initialize() is guaranteed to run before setupGetIt()
   getIt.registerLazySingleton<SupabaseClient>(() => Supabase.instance.client);
   getIt.registerLazySingleton<SupabaseService>(() => SupabaseService());
   getIt.registerLazySingleton<ApiService>(() => ApiService());
   getIt.registerLazySingleton<StripeService>(() => StripeService());
+
+  // ── Theme ──────────────────────────────────────────────────────────────────
+  // ThemeMode is loaded in main() before runApp and passed in here.
+  // Registered as LazySingleton so the same Cubit instance is shared across
+  // the entire app — profile toggle and MaterialApp both point to it.
+  getIt.registerLazySingleton<ThemeCubit>(
+    () => ThemeCubit(ThemeMode.light), // placeholder; real value set in main()
+  );
 
   // ── Auth ───────────────────────────────────────────────────────────────────
   getIt.registerLazySingleton<LoginRepository>(
@@ -65,7 +76,9 @@ Future<void> setupGetIt() async {
   getIt.registerFactory<RoomCubit>(() => RoomCubit(getIt<RoomRepo>()));
 
   // ── Search ─────────────────────────────────────────────────────────────────
-  getIt.registerLazySingleton<SearchRepo>(() => SearchRepoImpl());
+  getIt.registerLazySingleton<SearchRepo>(
+    () => SearchRepoImpl(getIt<SupabaseClient>()),
+  );
   getIt.registerFactory<SearchCubit>(() => SearchCubit(getIt<SearchRepo>()));
 
   // ── Payment ────────────────────────────────────────────────────────────────
@@ -94,6 +107,6 @@ Future<void> setupGetIt() async {
   );
 
   // ── Others ─────────────────────────────────────────────────────────────────
-  getIt.registerLazySingleton<FavoriteCubit>(() => FavoriteCubit());
+  getIt.registerFactory<FavoriteCubit>(() => FavoriteCubit());
   getIt.registerFactory<NotificationCubit>(() => NotificationCubit());
 }

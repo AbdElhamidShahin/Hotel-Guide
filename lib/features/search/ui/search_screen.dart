@@ -25,25 +25,22 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // Inherits scaffoldBackgroundColor from AppThemeData automatically.
       body: SafeArea(
         child: BlocBuilder<SearchCubit, SearchState>(
           builder: (context, state) {
             List<String> cities = [];
             List<String> views = [];
-
             if (state is SearchSuccess) {
               cities = state.cities;
-              views = state.views;
+              views  = state.views;
             }
-
             return Column(
               children: [
                 CustomAppbarSearch(
-                  onChanged: (value) =>
-                      context.read<SearchCubit>().search(value),
-                  onFilterTap: () {
-                    showFilterSearch(context, cities: cities, views: views);
-                  },
+                  onChanged: (v) => context.read<SearchCubit>().search(v),
+                  onFilterTap: () =>
+                      showFilterSearch(context, cities: cities, views: views),
                 ),
                 const SizedBox(height: 24),
                 Expanded(child: _buildBody(state)),
@@ -59,24 +56,19 @@ class _SearchScreenState extends State<SearchScreen> {
     if (state is SearchLoading) {
       return const Center(child: CircularProgressIndicator());
     }
-
     if (state is SearchFailure) {
       return buildNoConnectionWidget(
         onRetry: () => context.read<SearchCubit>().loadHotels(),
       );
     }
-
     if (state is SearchSuccess) {
-      if (state.hotels.isEmpty) {
-        return Center(child: BuildNotFoundSearch());
-      }
+      if (state.hotels.isEmpty) return Center(child: BuildNotFoundSearch());
       return ListView.builder(
         itemCount: state.hotels.length,
-        itemBuilder: (context, index) =>
-            CustomItem(hotelModel: state.hotels[index], isContinar: false),
+        itemBuilder: (_, i) =>
+            CustomItem(hotelModel: state.hotels[i], isContinar: false),
       );
     }
-
     return const SizedBox.shrink();
   }
 }

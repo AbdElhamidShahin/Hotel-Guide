@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../core/theme/app_theme.dart';
-import '../../../../core/theme/colors.dart';
+import 'package:hotel_guide/core/theme/app_theme_data.dart';
+import 'package:hotel_guide/core/theme/colors.dart'; // تأكد من استيراد ملف الألوان الخاص بك
 import '../../logic/wallet_cubit.dart';
 import '../../logic/wallet_state.dart';
 import 'custom_detail_row.dart';
@@ -12,6 +12,8 @@ class CustomWalletHistory extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+
     return BlocBuilder<WalletCubit, WalletState>(
       buildWhen: (_, s) =>
           s is WalletLoading || s is WalletLoaded || s is WalletError,
@@ -26,16 +28,18 @@ class CustomWalletHistory extends StatelessWidget {
           return Padding(
             padding: EdgeInsets.only(top: 60.h),
             child: Center(
-              child: Text(state.message, style: font16RegularMuted),
+              child: Text(
+                state.message,
+                style: AppTextStyles.font16RegularMuted(context),
+              ),
             ),
           );
         }
         if (state is WalletLoaded) {
           final txns = state.paymentTransactions;
           return RefreshIndicator(
-            onRefresh: () async {
-              await context.read<WalletCubit>().fetchWalletData();
-            },
+            onRefresh: () async =>
+                context.read<WalletCubit>().fetchWalletData(),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
@@ -43,8 +47,8 @@ class CustomWalletHistory extends StatelessWidget {
                   padding: EdgeInsets.only(right: 24.w, top: 24.h, bottom: 8.h),
                   child: Text(
                     'سجل الحجوزات',
-                    style: font16BoldWhite.copyWith(
-                      color: AppColors.primary,
+                    style: AppTextStyles.font16BoldWhite(context).copyWith(
+                      color: cs.primary, // العنوان الأساسي
                     ),
                   ),
                 ),
@@ -54,7 +58,7 @@ class CustomWalletHistory extends StatelessWidget {
                     child: Center(
                       child: Text(
                         'لا توجد حجوزات سابقة',
-                        style: font16RegularMuted,
+                        style: AppTextStyles.font16RegularMuted(context),
                       ),
                     ),
                   )
@@ -81,13 +85,14 @@ class _PaymentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     final amount = (trx['amount'] as num? ?? 0).toDouble().abs();
     final hotelName = (trx['hotel_name'] as String?) ?? '—';
     final dateRaw =
         trx['booking_date'] as String? ?? trx['created_at'] as String? ?? '';
     final dateStr = dateRaw.length >= 10 ? dateRaw.substring(0, 10) : dateRaw;
-    final desc = (trx['description'] as String? ?? '');
-    final method = desc.contains('بطاقة') ? 'بطاقة بنكية' : 'محفظة AQUA';
     final status = trx['status'] == 'completed' ? 'مكتملة' : 'معلقة';
 
     return Padding(
@@ -95,16 +100,10 @@ class _PaymentCard extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.all(16.r),
         decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(color: AppColors.ShadowPurple.withOpacity(.15)),
+          // نستخدم ألوان الـ Theme الأساسية لضمان التوافق
+          color: cs.surface,
+          border: Border.all(color: cs.outlineVariant),
           borderRadius: BorderRadius.circular(14.r),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.04),
-              blurRadius: 8,
-              offset: const Offset(0, 3),
-            ),
-          ],
         ),
         child: Column(
           children: [
@@ -112,42 +111,35 @@ class _PaymentCard extends StatelessWidget {
               'دفع حجز',
               ':نوع العملية',
               'assets/icons/dollar-circle.svg',
-              AppColors.primary,
+              cs.onSurfaceVariant,
             ),
             SizedBox(height: 10.h),
             CustomDetailRow(
               hotelName,
               ':اسم الفندق',
               'assets/icons/Hotel.svg',
-              AppColors.accent,
+              cs.primary,
             ),
             SizedBox(height: 10.h),
             CustomDetailRow(
               dateStr,
               ':تاريخ الحجز',
               'assets/icons/calendar-tick.svg',
-              AppColors.primary,
+              cs.onSurfaceVariant,
             ),
             SizedBox(height: 10.h),
             CustomDetailRow(
               '${amount.toStringAsFixed(2)} EGP',
               ':المبلغ',
               'assets/icons/dollar-circle.svg',
-              AppColors.primary,
-            ),
-            SizedBox(height: 10.h),
-            CustomDetailRow(
-              method,
-              ':طريقة الدفع',
-              'assets/icons/empty-wallet.svg',
-              AppColors.ShadowPurple,
+              cs.onSurfaceVariant,
             ),
             SizedBox(height: 10.h),
             CustomDetailRow(
               status,
               ':الحالة',
               'assets/icons/tick-circle.svg',
-              AppColors.success,
+              cs.primary,
             ),
           ],
         ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../core/theme/app_theme_data.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/helpers/widget/custom_appbar_widget.dart';
 
@@ -9,7 +10,8 @@ class AboutUsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F8FC),
+      // scaffoldBackgroundColor from AppThemeData — adapts automatically.
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: CustomAppbarWidget(
         name: 'من نحن',
         onTap: () => Navigator.pop(context),
@@ -20,16 +22,13 @@ class AboutUsScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            // ── Hero intro ─────────────────────────────────────────────
             _HeroIntro(),
             SizedBox(height: 28.h),
-
-            // ── Sections ───────────────────────────────────────────────
             _SectionCard(
               title: 'من نحن',
               icon: Icons.info_outline_rounded,
               content:
-              'مرحبًا بك في منصة فندقي، الوجهة التي ضممت لتكون حلقة الوصل بين الزائر والفندق، '
+                  'مرحبًا بك في منصة فندقي، الوجهة التي ضممت لتكون حلقة الوصل بين الزائر والفندق، '
                   'ولتمنحك تجربة مختلفة تمامًا في عالم استكشاف أماكن الإقامة داخل مصر.\n\n'
                   'نحن نؤمن أن رحلة البحث عن فندق لا يجب أن تكون فوضوية أو معقدة، لذلك أنشأنا '
                   'هذه المنصة لنقدم لك المعلومات التي تحتاجها بوضوح، وبأقل عدد ممكن من الخطوات.\n\n'
@@ -40,9 +39,7 @@ class AboutUsScreen extends StatelessWidget {
                   'رؤيتنا أن نصبح الدليل الأول للمسافرين داخل مصر، والمرجع الأساسي لكل من يبحث '
                   'عن فندق يناسب رحلته.',
             ),
-
             SizedBox(height: 16.h),
-
             _SectionCard(
               title: 'رسالتنا',
               icon: Icons.campaign_outlined,
@@ -52,9 +49,7 @@ class AboutUsScreen extends StatelessWidget {
                 'ولنربط بين الفنادق والعملاء بحديثة تلائم العالم الرقمي الحالي.',
               ],
             ),
-
             SizedBox(height: 16.h),
-
             _SectionCard(
               title: 'قيمنا',
               icon: Icons.verified_outlined,
@@ -65,20 +60,17 @@ class AboutUsScreen extends StatelessWidget {
                 'الاحترافية: من طريقة عرض المحتوى وصولًا إلى تجربة التصفح.',
               ],
             ),
-
             SizedBox(height: 16.h),
-
             _SectionCard(
               title: 'مستقبل المنصة',
               icon: Icons.rocket_launch_outlined,
               content:
-              'نحن نعمل على بناء علامة تجارية قوية في مجال الضيافة الرقمية.\n\n'
+                  'نحن نعمل على بناء علامة تجارية قوية في مجال الضيافة الرقمية.\n\n'
                   'ومع توسعنا، ستتحول المنصة من مجرد دليل للفنادق إلى مركز متكامل للحجوزات، '
                   'المراجعات، الخرائط التفاعلية، وإدارة الإقامات داخل مصر.\n\n'
                   'في ستاي إيجيبت، رحلتك تبدأ من هنا.\n'
                   'ومن هنا ستصل إلى المكان الأنسب لك بكل سهولة.',
             ),
-
             SizedBox(height: 32.h),
           ],
         ),
@@ -87,7 +79,9 @@ class AboutUsScreen extends StatelessWidget {
   }
 }
 
-// ── Hero intro card ───────────────────────────────────────────────────────────
+// ── Hero intro ────────────────────────────────────────────────────────────────
+// The dark gradient (primary → darker primary) is intentional and looks
+// correct in both light and dark modes. White text on it is always correct.
 
 class _HeroIntro extends StatelessWidget {
   @override
@@ -118,10 +112,7 @@ class _HeroIntro extends StatelessWidget {
             children: [
               Text(
                 'منصة فندقي',
-                style: TextStyle(
-                  fontSize: 22.sp,
-                  fontFamily: 'Cairo',
-                  fontWeight: FontWeight.bold,
+                style: AppTextStyles.font22BoldPrimary(context).copyWith(
                   color: Colors.white,
                 ),
               ),
@@ -132,19 +123,21 @@ class _HeroIntro extends StatelessWidget {
                   color: Colors.white.withOpacity(0.15),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(Icons.hotel_rounded, color: Colors.white, size: 24.sp),
+                child: Icon(
+                  Icons.hotel_rounded,
+                  color: Colors.white,
+                  size: 24.sp,
+                ),
               ),
             ],
           ),
           SizedBox(height: 12.h),
           Text(
             'دليلك الأول للإقامة في مصر — نربط الزائر بالفندق المناسب '
-                'بأقل جهد وأعلى ثقة.',
+            'بأقل جهد وأعلى ثقة.',
             textAlign: TextAlign.right,
             textDirection: TextDirection.rtl,
-            style: TextStyle(
-              fontSize: 13.5.sp,
-              fontFamily: 'Cairo',
+            style: AppTextStyles.font14RegularNightfall(context).copyWith(
               color: Colors.white.withOpacity(0.85),
               height: 1.7,
             ),
@@ -172,34 +165,37 @@ class _SectionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final isLight = Theme.of(context).brightness == Brightness.light;
+
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(18.r),
       decoration: BoxDecoration(
-        color: Colors.white,
+        // surface = white in light, dark card in dark mode.
+        color: cs.surface,
         borderRadius: BorderRadius.circular(14.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: isLight
+                ? Colors.black.withOpacity(0.05)
+                : Colors.transparent,
             blurRadius: 10,
             offset: const Offset(0, 3),
           ),
         ],
+        border: isLight ? null : Border.all(color: cs.outline, width: 0.5),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          // Title row
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Text(
                 title,
-                style: TextStyle(
+                style: AppTextStyles.font18BoldGray(context).copyWith(
                   fontSize: 17.sp,
-                  fontFamily: 'Cairo',
-                  fontWeight: FontWeight.bold,
-                  color: const Color(0xFF1A1F3C),
                 ),
               ),
               SizedBox(width: 10.w),
@@ -213,29 +209,21 @@ class _SectionCard extends StatelessWidget {
               ),
             ],
           ),
-
           SizedBox(height: 10.h),
-          Container(height: 1, color: const Color(0xFFEEEEF5)),
+          Divider(height: 1, color: cs.outline),
           SizedBox(height: 14.h),
-
-          // Content
           if (content != null)
             Text(
               content!,
               textDirection: TextDirection.rtl,
               textAlign: TextAlign.right,
-              style: TextStyle(
-                fontSize: 13.5.sp,
-                fontFamily: 'Cairo',
-                color: const Color(0xFF555566),
+              style: AppTextStyles.font14RegularNightfall(context).copyWith(
                 height: 1.85,
               ),
             ),
-
-          // Bullets
           if (bullets != null)
             ...bullets!.map(
-                  (item) => Padding(
+              (item) => Padding(
                 padding: EdgeInsets.only(bottom: 10.h),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -246,12 +234,9 @@ class _SectionCard extends StatelessWidget {
                         item,
                         textDirection: TextDirection.rtl,
                         textAlign: TextAlign.right,
-                        style: TextStyle(
-                          fontSize: 13.5.sp,
-                          fontFamily: 'Cairo',
-                          color: const Color(0xFF555566),
-                          height: 1.75,
-                        ),
+                        style:
+                            AppTextStyles.font14RegularNightfall(context)
+                                .copyWith(height: 1.75),
                       ),
                     ),
                     SizedBox(width: 10.w),

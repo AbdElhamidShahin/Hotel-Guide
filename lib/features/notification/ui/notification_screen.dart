@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hotel_guide/core/theme/app_theme.dart';
+import 'package:hotel_guide/core/theme/app_theme_data.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
 import 'package:hotel_guide/features/notification/ui/widget/custom_item_notification.dart';
 import '../../../core/helpers/contact/build_notification_notfound.dart';
@@ -29,22 +29,22 @@ class _NotificationScreenListViewState
   Map<String, List<NotificationModel>> _groupNotifications(
     List<NotificationModel> list,
   ) {
-    Map<String, List<NotificationModel>> grouped = {};
-    final now = DateTime.now();
-    final yesterday = DateTime.now().subtract(const Duration(days: 1));
+    final Map<String, List<NotificationModel>> grouped = {};
+    final now       = DateTime.now();
+    final yesterday = now.subtract(const Duration(days: 1));
 
-    for (var notif in list) {
-      String day;
+    for (final notif in list) {
+      final String day;
       if (notif.time.year == now.year &&
           notif.time.month == now.month &&
           notif.time.day == now.day) {
-        day = "اليوم";
+        day = 'اليوم';
       } else if (notif.time.year == yesterday.year &&
           notif.time.month == yesterday.month &&
           notif.time.day == yesterday.day) {
-        day = "الأمس";
+        day = 'الأمس';
       } else {
-        day = "${notif.time.year}/${notif.time.month}/${notif.time.day}";
+        day = '${notif.time.year}/${notif.time.month}/${notif.time.day}';
       }
       grouped.putIfAbsent(day, () => []).add(notif);
     }
@@ -54,24 +54,55 @@ class _NotificationScreenListViewState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppbarWidget(name: "الإشعارات", onTap: () => context.pop()),
-
-      body: BlocBuilder<NotificationCubit, List<NotificationModel>>(
-        builder: (context, notifications) {
-          if (notifications.isEmpty) {
-            return BuildNotFoundNotification();
+      // Inherits scaffoldBackgroundColor from AppThemeData automatically.
+      appBar: CustomAppbarWidget(
+        name: 'الإشعارات',
+        onTap: () => context.pop(),
+      ),
+      body: BlocBuilder<NotificationCubit, NotificationState>(
+        builder: (context, state) {
+          if (state is NotificationLoading) {
+            return const Center(child: CircularProgressIndicator());
           }
 
-          final groupedNotifs = _groupNotifications(notifications);
+          if (state is NotificationError) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Migrated from frozen font20BoldShadowPurple global.
+                  Text(
+                    state.message,
+                    style: AppTextStyles.font20BoldShadowPurple(context)
+                        .copyWith(color: AppColors.primary),
+                  ),
+                  const SizedBox(height: 12),
+                  ElevatedButton(
+                    onPressed: () =>
+                        context.read<NotificationCubit>().fetchNotifications(),
+                    child: const Text('إعادة المحاولة'),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          final notifications = state is NotificationLoaded
+              ? state.notifications
+              : <NotificationModel>[];
+
+          if (notifications.isEmpty) return BuildNotFoundNotification();
+
+          final grouped = _groupNotifications(notifications);
 
           return RefreshIndicator(
             onRefresh: () =>
                 context.read<NotificationCubit>().fetchNotifications(),
             child: ListView.builder(
-              itemCount: groupedNotifs.keys.length,
-              itemBuilder: (context, index) {
-                String day = groupedNotifs.keys.elementAt(index);
-                List<NotificationModel> dayNotifs = groupedNotifs[day]!;
+              itemCount: grouped.keys.length,
+              itemBuilder: (context, i) {
+                final day      = grouped.keys.elementAt(i);
+                final dayItems = grouped[day]!;
 
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -82,16 +113,16 @@ class _NotificationScreenListViewState
                         top: 40.h,
                         bottom: 10.h,
                       ),
+                      // Migrated from frozen font20BoldShadowPurple global.
                       child: Text(
                         day,
-                        style: font20BoldShadowPurple.copyWith(
-                          color: AppColors.primary,
-                        ),
+                        style: AppTextStyles.font20BoldShadowPurple(context)
+                            .copyWith(color: AppColors.primary),
                       ),
                     ),
-                    ...dayNotifs
-                        .map((n) => CustomItemNotification(notification: n))
-                        .toList(),
+                    ...dayItems.map(
+                      (n) => CustomItemNotification(notification: n),
+                    ),
                   ],
                 );
               },

@@ -12,43 +12,51 @@ class RatingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // قراءة الـ ColorScheme هنا لتوفير استدعاء متكرر تحت
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         GestureDetector(
-          onTap: () {
-            Share.share(hotelModel.location);
-          },
-          child: _buildCircularIcon("assets/icons/rating/Share_Icon_UIA.svg"),
+          onTap: () => Share.share(hotelModel.location),
+          child: _buildCircularIcon(
+            image: 'assets/icons/rating/Share_Icon_UIA.svg',
+            colorScheme: colorScheme,
+          ),
         ),
         SizedBox(width: 16.w),
-
         const AnimatedLikeButton(),
-
         SizedBox(width: 16.w),
         GestureDetector(
           onTap: () => showDialog(
             context: context,
             builder: (context) => const RatingDialog(),
           ),
-          child: _buildCircularIcon("assets/icons/rating/star.svg"),
+          child: _buildCircularIcon(
+            image: 'assets/icons/rating/star.svg',
+            colorScheme: colorScheme,
+          ),
         ),
       ],
     );
   }
 
-  Widget _buildCircularIcon(String image) {
+  /// التعديل: تمرير الـ ColorScheme لتتحول الأيقونات تلقائياً حسب وضع الشاشة
+  Widget _buildCircularIcon({required String image, required ColorScheme colorScheme}) {
     return Container(
       padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        border: Border.all(color: AppColors.primary, width: 1.w),
+        // outline يعطي لون حدود رمادي خفيف يتناسب تماماً مع الخلفيات البيضاء والسوداء
+        border: Border.all(color: colorScheme.outline, width: 1),
       ),
       child: SvgPicture.asset(
         image,
         height: 24.r,
         width: 24.r,
-        colorFilter: ColorFilter.mode(AppColors.primary, BlendMode.srcIn),
+        // onSurface يضمن أن تظهر الأيقونة باللون الأسود في اللايت وباللون الأبيض في الدارك
+        colorFilter: ColorFilter.mode(colorScheme.onSurface, BlendMode.srcIn),
       ),
     );
   }
@@ -70,13 +78,10 @@ class _AnimatedLikeButtonState extends State<AnimatedLikeButton>
   @override
   void initState() {
     super.initState();
-    // إعداد الـ Controller للتحكم في سرعة الحركة
     _controller = AnimationController(
       duration: const Duration(milliseconds: 200),
       vsync: this,
     );
-
-    // إنشاء أنيميشن يبدأ من حجمه الطبيعي ويكبر شوية ثم يرجع
     _scaleAnimation = TweenSequence<double>([
       TweenSequenceItem(tween: Tween(begin: 1.0, end: 1.3), weight: 50),
       TweenSequenceItem(tween: Tween(begin: 1.3, end: 1.0), weight: 50),
@@ -90,17 +95,14 @@ class _AnimatedLikeButtonState extends State<AnimatedLikeButton>
   }
 
   void _handleTap() {
-    setState(() {
-      isLiked = !isLiked;
-    });
-
-    if (isLiked) {
-      _controller.forward(from: 0.0);
-    }
+    setState(() => isLiked = !isLiked);
+    if (isLiked) _controller.forward(from: 0.0);
   }
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return GestureDetector(
       onTap: _handleTap,
       child: ScaleTransition(
@@ -110,17 +112,18 @@ class _AnimatedLikeButtonState extends State<AnimatedLikeButton>
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             border: Border.all(
-              color: isLiked ? Colors.red : AppColors.primary,
-              width: 1.w,
+              // التعديل: إذا لم يضغط يعطي لون متوافق مع الثيم الحالي، وإذا ضغط يتحول للأحمر
+              color: isLiked ? Colors.red : colorScheme.outline,
+              width: 1,
             ),
-            color: isLiked ? Colors.red.withOpacity(0.0) : Colors.transparent,
+            color: Colors.transparent,
           ),
           child: SvgPicture.asset(
-            "assets/icons/rating/like.svg",
+            'assets/icons/rating/like.svg',
             height: 24.r,
             width: 24.r,
             colorFilter: ColorFilter.mode(
-              isLiked ? Colors.red : AppColors.primary,
+              isLiked ? Colors.red : colorScheme.onSurface,
               BlendMode.srcIn,
             ),
           ),

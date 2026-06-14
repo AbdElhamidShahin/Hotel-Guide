@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../../core/theme/app_theme.dart';
+import '../../../../../core/theme/app_theme_data.dart';
 import '../../../logic/cubit/home_cubit.dart';
 import 'custom_city_home.dart';
 
@@ -26,19 +26,19 @@ void showCitiesBottomSheet(BuildContext context) {
               height: 5.h,
               width: 40.w,
               decoration: BoxDecoration(
-                color: Colors.grey[300],
+                color: Theme.of(context).colorScheme.outline,
                 borderRadius: BorderRadius.circular(10.r),
               ),
             ),
             Text(
-              "جميع المدن",
-              style: font17RegularPrimary.copyWith(
+              'جميع المدن',
+              style: AppTextStyles.font17RegularPrimary(context).copyWith(
                 fontWeight: FontWeight.w600,
                 fontSize: 18.sp,
               ),
             ),
             const Divider(),
-            Expanded(child: CustomCityHome()),
+            const Expanded(child: CustomCityHome()),
           ],
         ),
       ),

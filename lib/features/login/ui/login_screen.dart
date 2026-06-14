@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hotel_guide/core/theme/app_theme.dart';
+import 'package:hotel_guide/core/theme/app_theme_data.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
 import 'package:hotel_guide/features/login/ui/widget/EmailAndPassword.dart';
 import 'package:hotel_guide/features/login/ui/widget/divider_with_text.dart';
@@ -13,16 +13,6 @@ import '../../../core/router/routers.dart';
 import '../logic/cubit/login_cubit.dart';
 import '../logic/cubit/login_state.dart';
 
-/// ✅ التغييرات:
-///
-/// ❌ حُذف: Form() + context.read<LoginCubit>().formKey من الـ Screen
-///    السبب: الـ Form انتقل لـ EmailAndPassword widget
-///
-/// ❌ حُذف: CustomButton من الـ Screen
-///    السبب: الـ Submit button انتقل لـ EmailAndPassword widget
-///
-/// ✅ الـ Screen دلوقتي بتعمل حاجة واحدة بس:
-///    تسمع للـ states وترد بـ navigation أو snackbar
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
@@ -34,7 +24,7 @@ class LoginScreen extends StatelessWidget {
         body: SingleChildScrollView(
           child: Stack(
             children: [
-              _buildBackgroundGradient(),
+              _buildBackgroundGradient(context),
               SafeArea(
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 24.w),
@@ -46,20 +36,20 @@ class LoginScreen extends StatelessWidget {
                         width: 150.r,
                       ),
                       SizedBox(height: 15.h),
+                      // Migrated from frozen font30BoldPrimary global.
                       Text(
                         'بوابتك لتجربة فندقية استثنائية',
-                        style: font30BoldPrimary.copyWith(fontSize: 26.sp),
+                        style: AppTextStyles.font30BoldPrimary(context).copyWith(fontSize: 26.sp),
                         maxLines: 1,
                       ),
                       SizedBox(height: 30.h),
 
-                      // ✅ Form + Controllers + Submit كلهم جوه EmailAndPassword
                       const EmailAndPassword(),
 
                       SizedBox(height: 20.h),
-                      DividerWithText(),
+                      const DividerWithText(),
                       SizedBox(height: 20.h),
-                      SocialLoginSection(),
+                      const SocialLoginSection(),
                       SizedBox(height: 30.h),
 
                       Row(
@@ -67,14 +57,16 @@ class LoginScreen extends StatelessWidget {
                         children: [
                           TextButton(
                             onPressed: () => context.push(routes.signUpScreen),
+                            // Migrated from frozen font16BoldWhite global.
                             child: Text(
                               'إنشاء حساب',
-                              style: font16BoldWhite.copyWith(
+                              style: AppTextStyles.font16BoldWhite(context).copyWith(
                                 color: AppColors.ShadowPurple,
                               ),
                             ),
                           ),
-                          Text('لا تمتلك حساب؟', style: font16RegularMuted),
+                          // Migrated from frozen font16RegularMuted global.
+                          Text('لا تمتلك حساب؟', style: AppTextStyles.font16RegularMuted(context)),
                         ],
                       ),
                       SizedBox(height: 40.h),
@@ -108,7 +100,13 @@ class LoginScreen extends StatelessWidget {
     }
   }
 
-  Widget _buildBackgroundGradient() {
+  /// Decorative top gradient. Fades from the scaffold background colour,
+  /// through the brand purple accent, back to the scaffold background.
+  /// Using scaffoldBackgroundColor (instead of a hardcoded Colors.white) at
+  /// both ends means the gradient blends seamlessly with the page in both
+  /// light and dark mode.
+  Widget _buildBackgroundGradient(BuildContext context) {
+    final bg = Theme.of(context).scaffoldBackgroundColor;
     return Container(
       width: double.infinity,
       height: 0.25.sh,
@@ -117,9 +115,9 @@ class LoginScreen extends StatelessWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Colors.white.withOpacity(0.0),
+            bg.withOpacity(0.0),
             const Color(0xFF83809F).withOpacity(0.6),
-            Colors.white.withOpacity(0.0),
+            bg.withOpacity(0.0),
           ],
           stops: const [0.0, 0.5, 1.0],
         ),

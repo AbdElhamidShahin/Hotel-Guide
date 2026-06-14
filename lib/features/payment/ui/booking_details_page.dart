@@ -45,6 +45,7 @@ class _BookingDetailsView extends StatefulWidget {
 class _BookingDetailsViewState extends State<_BookingDetailsView> {
   UserProfileModel? userProfile;
   bool isLoadingProfile = true;
+
   @override
   void initState() {
     super.initState();
@@ -74,7 +75,7 @@ class _BookingDetailsViewState extends State<_BookingDetailsView> {
 
   static const double _taxes = 500;
   static const double _services = 300;
-  late final UserProfileModel userProfileModel;
+
   int _rooms = 1;
   int _adults = 2;
   int _children = 1;
@@ -91,7 +92,6 @@ class _BookingDetailsViewState extends State<_BookingDetailsView> {
   }
 
   double get _subTotal => widget.room.price.toDouble() * _totalDays * _rooms;
-
   double get _totalPrice => _subTotal + _taxes + _services;
 
   BookingModel get _currentBooking => BookingModel(
@@ -104,7 +104,7 @@ class _BookingDetailsViewState extends State<_BookingDetailsView> {
     adults: _adults,
     children: _children,
     totalDays: _totalDays,
-    userId: '',
+    userId: userProfile?.id ?? '',
     paymentMethod: _selectedPayment,
   );
 
@@ -117,15 +117,17 @@ class _BookingDetailsViewState extends State<_BookingDetailsView> {
     setState(() => _selectedPayment = 'card');
 
     if (userProfile == null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('يرجى تسجيل الدخول أولاً')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('يرجى تسجيل الدخول أولاً')),
+      );
       return;
     }
 
     final stripeCustomerId = await StripeService().getOrCreateStripeCustomerId(
       userProfile!,
     );
+
+    if (!mounted) return;
 
     context.read<BookingCubit>().makePayment(
       input: PaymentIntentInputModel(
@@ -143,14 +145,11 @@ class _BookingDetailsViewState extends State<_BookingDetailsView> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<BookingCubit, BookingStates>(
-      // Only handle card-payment results here.
-      // Wallet-payment results are handled inside the bottom sheet.
       listenWhen: (_, current) =>
       _selectedPayment == 'card' &&
           (current is BookingSuccess || current is BookingError),
       listener: (context, state) {
         if (state is BookingSuccess) {
-          // Refresh notifications so bell updates immediately
           context.push(
             routes.bookingResult,
             extra: {
@@ -166,14 +165,16 @@ class _BookingDetailsViewState extends State<_BookingDetailsView> {
         }
       },
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         appBar: CustomAppbarWidget(
           name: 'تفاصيل الحجز',
           onTap: () => context.pop(),
         ),
         body: Directionality(
           textDirection: TextDirection.rtl,
-          child: SingleChildScrollView(
+          child: isLoadingProfile
+              ? const Center(child: CircularProgressIndicator())
+              : SingleChildScrollView(
             padding: EdgeInsets.symmetric(horizontal: 20.w),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -188,9 +189,7 @@ class _BookingDetailsViewState extends State<_BookingDetailsView> {
                     _focusedDay = focused;
                   }),
                 ),
-
                 SizedBox(height: 30.h),
-
                 CounterRow(
                   title: 'عدد الغرف',
                   value: _rooms,
@@ -199,7 +198,6 @@ class _BookingDetailsViewState extends State<_BookingDetailsView> {
                     if (_rooms > 1) _rooms--;
                   }),
                 ),
-
                 CounterRow(
                   title: 'البالغين',
                   value: _adults,
@@ -208,7 +206,6 @@ class _BookingDetailsViewState extends State<_BookingDetailsView> {
                     if (_adults > 1) _adults--;
                   }),
                 ),
-
                 CounterRow(
                   title: 'الأطفال',
                   value: _children,
@@ -217,12 +214,9 @@ class _BookingDetailsViewState extends State<_BookingDetailsView> {
                     if (_children > 0) _children--;
                   }),
                 ),
-
                 SizedBox(height: 30.h),
-
-                SectionTitle(title: 'تفاصيل الدفع'),
+                const SectionTitle(title: 'تفاصيل الدفع'),
                 SizedBox(height: 15.h),
-
                 PriceSection(
                   days: _totalDays,
                   subTotal: _subTotal,
@@ -230,27 +224,20 @@ class _BookingDetailsViewState extends State<_BookingDetailsView> {
                   services: _services,
                   total: _totalPrice,
                 ),
-
                 SizedBox(height: 30.h),
-
-                SectionTitle(title: 'الغرفة المختارة'),
+                const SectionTitle(title: 'الغرفة المختارة'),
                 SizedBox(height: 15.h),
                 BookingCard(room: widget.room),
-
                 SizedBox(height: 30.h),
-
-                SectionTitle(title: 'وسائل الدفع'),
+                const SectionTitle(title: 'وسائل الدفع'),
                 SizedBox(height: 15.h),
-
                 PaymentTitle(
                   title: 'المحفظة الإلكترونية',
                   isSelected: _selectedPayment == 'wallet',
                   onTap: _onWalletTap,
                   icon: 'assets/icons/empty-wallet.svg',
                 ),
-
                 SizedBox(height: 12.h),
-
                 BlocBuilder<BookingCubit, BookingStates>(
                   buildWhen: (previous, current) =>
                   current is BookingLoading || previous is BookingLoading,
@@ -264,7 +251,6 @@ class _BookingDetailsViewState extends State<_BookingDetailsView> {
                     );
                   },
                 ),
-
                 SizedBox(height: 40.h),
               ],
             ),

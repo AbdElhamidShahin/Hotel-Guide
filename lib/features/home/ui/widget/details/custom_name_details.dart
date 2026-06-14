@@ -1,12 +1,14 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import '../../../../../core/theme/app_theme.dart';
+import '../../../../../core/theme/app_theme_data.dart';
 import '../../../../../core/theme/colors.dart';
 
+/// Branded header strip used in the hotel details screen and description sheet.
+/// Background is always AppColors.primary — it is a brand banner, not a surface.
 class CustomNameDetails extends StatelessWidget {
   const CustomNameDetails({super.key, required this.name});
   final String name;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -15,6 +17,7 @@ class CustomNameDetails extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8.r),
+        // Intentionally primary — brand header, same in both themes.
         color: AppColors.primary,
       ),
       child: Stack(
@@ -43,13 +46,14 @@ class CustomNameDetails extends StatelessWidget {
               ),
             ),
           ),
-
           Center(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 12.w),
               child: Text(
                 name,
-                style: font20BoldShadowPurple.copyWith(
+                // Migrated from frozen font20BoldShadowPurple.copyWith(color: textWhite).
+                // Always white — text sits on primary-colour banner.
+                style: AppTextStyles.font20BoldShadowPurple(context).copyWith(
                   color: AppColors.textWhite,
                 ),
               ),
@@ -58,6 +62,5 @@ class CustomNameDetails extends StatelessWidget {
         ],
       ),
     );
-    ;
   }
 }

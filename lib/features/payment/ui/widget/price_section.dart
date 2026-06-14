@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hotel_guide/core/theme/app_theme.dart';
-import 'package:hotel_guide/core/theme/colors.dart';
-
+import '../../../../core/theme/app_theme_data.dart';
+import '../../../../core/theme/colors.dart';
 class PriceSection extends StatelessWidget {
   final int days;
   final double subTotal;
@@ -23,40 +23,39 @@ class PriceSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        _row("المدة : $days أيام", subTotal),
+        _row(context, "المدة : $days أيام", subTotal),
         SizedBox(height: 12.h),
-        _row("ضرائب", taxes),
+        _row(context, "ضرائب", taxes),
         SizedBox(height: 12.h),
-
-        _row("خدمات", services),
+        _row(context, "خدمات", services),
         SizedBox(height: 12.h),
-
         const Divider(),
         SizedBox(height: 12.h),
-
-        _row("الإجمالي", total, isTotal: true),
+        _row(context, "الإجمالي", total, isTotal: true),
       ],
     );
   }
 
-  Widget _row(String title, double value, {bool isTotal = false}) {
+  Widget _row(BuildContext context, String title, double value, {bool isTotal = false}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           title,
           style: isTotal
-              ? font20RegularPrimary.copyWith(
-                  color: AppColors.darkBackground,
-                  fontWeight: FontWeight.w600,
-                )
-              : font18RegularShadowPurple.copyWith(
-                  color: AppColors.Grayscale,
-                ),
+              ? AppTextStyles.font20RegularPrimary(context).copyWith(
+            color: Theme.of(context).colorScheme.onSurface,
+            fontWeight: FontWeight.w600,
+          )
+              : AppTextStyles.font18RegularShadowPurple(context).copyWith(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
         ),
         Text(
           "${value.toInt()} EGP",
-          style: font20BoldShadowPurple.copyWith(color: AppColors.darkBackground),
+          style: AppTextStyles.font20BoldShadowPurple(context).copyWith(
+            color: Theme.of(context).colorScheme.onSurface,
+          ),
         ),
       ],
     );
