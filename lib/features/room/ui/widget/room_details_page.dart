@@ -66,14 +66,16 @@ class RoomDetailsPage extends StatelessWidget {
                           ],
                         ),
                         SizedBox(height: 40.h),
-                        // Migrated from frozen font22BoldPrimary global.
                         Text(
                           'المرافق',
                           style: AppTextStyles.font22BoldPrimary(context)
                               .copyWith(
-                                color: Theme.of(context).colorScheme.primary,
+                                color:
+                                    Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? Colors.white
+                                    : Theme.of(context).colorScheme.primary,
                               ),
-
                           textAlign: TextAlign.end,
                         ),
                         SizedBox(height: 20.h),

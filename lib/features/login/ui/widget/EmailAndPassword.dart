@@ -39,6 +39,8 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final colorScheme = Theme.of(context).colorScheme;
     return Form(
       key: _formKey,
       child: Column(
@@ -47,7 +49,12 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),
             // Migrated from frozen font16RegularMuted global.
-            child: Text('البريد الإلكتروني', style: AppTextStyles.font16RegularMuted(context)),
+            child: Text(
+              'البريد الإلكتروني',
+              style: AppTextStyles.font16RegularMuted(
+                context,
+              ).copyWith(color: isDark ? Colors.white : colorScheme.primary),
+            ),
           ),
           AppTextFormFeild(
             hintText: 'example@gmail.com',
@@ -66,14 +73,20 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
               child: Icon(
                 Icons.email_outlined,
                 size: 24.r,
-                color: AppColors.primary,
+                color: isDark ? Colors.white70 : colorScheme.primary,
               ),
             ),
           ),
           Padding(
             padding: EdgeInsets.only(bottom: 8.h, top: 16.h),
-            // Migrated from frozen font16RegularMuted global.
-            child: Text('كلمة المرور', style: AppTextStyles.font16RegularMuted(context)),
+            child: Text(
+              'كلمة المرور',
+              style: AppTextStyles.font16RegularMuted(context).copyWith(
+                color: isDark
+                    ? Colors.white
+                    : colorScheme.primary, // أبيض في الدارك
+              ),
+            ),
           ),
           AppTextFormFeild(
             hintText: '******',
@@ -89,7 +102,8 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
               return null;
             },
             suffixIcon: GestureDetector(
-              onTap: () => setState(() => _isPasswordHidden = !_isPasswordHidden),
+              onTap: () =>
+                  setState(() => _isPasswordHidden = !_isPasswordHidden),
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10.w),
                 child: Icon(
@@ -97,13 +111,12 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
                       ? Icons.visibility_off_outlined
                       : Icons.visibility_outlined,
                   size: 24.r,
-                  color: AppColors.primary,
+                  color: isDark ? Colors.white70 : colorScheme.primary,
                 ),
               ),
             ),
           ),
           SizedBox(height: 30.h),
-
           SizedBox(
             width: double.infinity,
             height: 56.h,
@@ -111,10 +124,30 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
               builder: (context, state) {
                 final isLoading = state is LoginLoading;
                 return ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                    ),
+                  ),
                   onPressed: isLoading ? null : _onSubmit,
                   child: isLoading
-                      ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text('تسجيل الدخول'),
+                      ? const SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2.5,
+                          ),
+                        )
+                      : Text(
+                          'تسجيل الدخول',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16.sp,
+                          ),
+                        ),
                 );
               },
             ),

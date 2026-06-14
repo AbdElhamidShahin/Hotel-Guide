@@ -99,14 +99,14 @@ Future<void> setupGetIt() async {
   getIt.registerLazySingleton<WalletRepository>(
     () => WalletRepositoryImpl(getIt<SupabaseClient>()),
   );
-  getIt.registerFactory<WalletCubit>(
-    () => WalletCubit(
+  getIt.registerLazySingleton<WalletCubit>(
+        () => WalletCubit(
       repo: getIt<WalletRepository>(),
       stripe: getIt<StripeService>(),
     ),
   );
 
   // ── Others ─────────────────────────────────────────────────────────────────
-  getIt.registerFactory<FavoriteCubit>(() => FavoriteCubit());
+  getIt.registerLazySingleton<FavoriteCubit>(() => FavoriteCubit());
   getIt.registerFactory<NotificationCubit>(() => NotificationCubit());
 }

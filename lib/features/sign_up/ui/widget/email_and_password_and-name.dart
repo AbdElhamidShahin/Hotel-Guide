@@ -63,7 +63,7 @@ class _EmailAndPasswordAndNameState extends State<EmailAndPasswordAndName> {
               }
               return null;
             },
-            suffixIcon: _buildSuffixIcon(Icons.person_outline_sharp),
+            suffixIcon: _buildSuffixIcon(Icons.person_outline_sharp, context),
           ),
           SizedBox(height: 16.h),
           _buildLabel(context, 'البريد الإلكتروني'),
@@ -79,7 +79,7 @@ class _EmailAndPasswordAndNameState extends State<EmailAndPasswordAndName> {
               }
               return null;
             },
-            suffixIcon: _buildSuffixIcon(Icons.email_outlined),
+            suffixIcon: _buildSuffixIcon(Icons.email_outlined, context),
           ),
           SizedBox(height: 16.h),
           _buildLabel(context, 'كلمة المرور'),
@@ -140,18 +140,18 @@ class _EmailAndPasswordAndNameState extends State<EmailAndPasswordAndName> {
                 }
                 return ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
+                    backgroundColor: Theme.of(context).colorScheme.primary,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.r),
                     ),
                   ),
                   onPressed: _onSubmit,
-                  // Migrated from frozen font16RegularMuted global.
-                  // Always white — on primary-coloured button.
                   child: Text(
                     'إنشاء حساب',
-                    style: AppTextStyles.font16RegularMuted(context).copyWith(
+                    style: TextStyle(
                       color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16.sp,
                     ),
                   ),
                 );
@@ -165,17 +165,28 @@ class _EmailAndPasswordAndNameState extends State<EmailAndPasswordAndName> {
 }
 
 Widget _buildLabel(BuildContext context, String text) {
-  // Migrated from frozen font16RegularMuted global.
+  final isDark = Theme.of(context).brightness == Brightness.dark;
   return Padding(
     padding: EdgeInsets.only(bottom: 6.h, top: 10.h),
-    child: Text(text, style: AppTextStyles.font16RegularMuted(context).copyWith(fontSize: 14.sp)),
+    child: Text(
+      text,
+      style: AppTextStyles.font16RegularMuted(context).copyWith(
+        fontSize: 14.sp,
+        color: isDark ? Colors.white : AppColors.primary,
+      ),
+    ),
   );
 }
 
-Widget _buildSuffixIcon(IconData icon) {
+Widget _buildSuffixIcon(IconData icon, context) {
+  final isDark = Theme.of(context).brightness == Brightness.dark;
   return Padding(
     padding: EdgeInsets.symmetric(horizontal: 12.w),
-    child: Icon(icon, size: 22.r, color: AppColors.primary),
+    child: Icon(
+      icon,
+      size: 22.r,
+      color: isDark ? Colors.white70 : AppColors.primary,
+    ),
   );
 }
 

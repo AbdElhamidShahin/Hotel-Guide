@@ -13,7 +13,8 @@ import '../../../../core/theme/colors.dart';
 import '../../../notification/logic/notificatin_logic.dart';
 import '../../logic/booking_cubit.dart';
 import '../../logic/booking_state.dart';
-import 'custom_wallet_item.dart';import '../../../../core/theme/app_theme_data.dart';
+import 'custom_wallet_item.dart';
+import '../../../../core/theme/app_theme_data.dart';
 import '../../../../core/theme/colors.dart';
 
 bool _isInsufficientBalance(String message) {
@@ -24,9 +25,9 @@ bool _isInsufficientBalance(String message) {
 }
 
 void showWalletBottomSheet(
-    BuildContext parentContext,
-    BookingModel bookingData,
-    ) {
+  BuildContext parentContext,
+  BookingModel bookingData,
+) {
   final bookingCubit = parentContext.read<BookingCubit>();
 
   showModalBottomSheet(
@@ -41,7 +42,8 @@ void showWalletBottomSheet(
             showDialog(
               context: context,
               barrierDismissible: false,
-              builder: (context) => const Center(child: CircularProgressIndicator()),
+              builder: (context) =>
+                  const Center(child: CircularProgressIndicator()),
             );
           } else if (state is BookingSuccess) {
             Navigator.of(context, rootNavigator: true).pop();
@@ -106,13 +108,17 @@ void showWalletBottomSheet(
                   children: [
                     IconButton(
                       onPressed: () => Navigator.pop(context),
-                      icon: Icon(Icons.close, color: Theme.of(context).colorScheme.onSurface),
+                      icon: Icon(
+                        Icons.close,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
                     ),
                     Text(
                       "المحفظة الإلكترونية",
-                      style: AppTextStyles.font20RegularPrimary(context).copyWith(
-                        color: Theme.of(context).colorScheme.onSurface,
-                      ),
+                      style: AppTextStyles.font20RegularPrimary(context)
+                          .copyWith(
+                            color: Theme.of(context).colorScheme.onSurface,
+                          ),
                     ),
                   ],
                 ),
@@ -133,7 +139,9 @@ void showWalletBottomSheet(
                       ),
                       SizedBox(height: 12.h),
                       CustomWalletItem(
-                        image: 'assets/images/logo/logo-light.png',
+                        image: Theme.of(context).brightness == Brightness.dark
+                            ? 'assets/images/logo/logo_new.png'
+                            : 'assets/images/logo/logo-light.png',
                         title: 'محفظة AQUA',
                         cashBack: 'كاش باك 10%',
                         selected: bookingCubit.selectedWallet == "AQUA",
@@ -179,10 +187,10 @@ void showWalletBottomSheet(
                     ),
                     child: Center(
                       child: Text(
-                        "تأكيد دفع ${bookingData.totalAmount.toInt()} EGP",
-                        style: AppTextStyles.font20BoldShadowPurple(context).copyWith(
-                          color: Colors.white,
-                        ),
+                        "EGP تأكيد دفع   ${bookingData.totalAmount.toInt()} ",
+                        style: AppTextStyles.font20BoldShadowPurple(
+                          context,
+                        ).copyWith(color: Colors.white),
                       ),
                     ),
                   ),

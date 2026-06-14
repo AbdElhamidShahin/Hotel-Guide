@@ -68,9 +68,6 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
             ),
           ),
 
-          // Dark overlay on the onboarding photos — intentionally static in
-          // both themes; it ensures the white sheet below stands out and the
-          // photo isn't blown out.
           Positioned.fill(
             bottom: 0.35.sh,
             child: Container(color: Colors.black.withOpacity(0.33)),
@@ -106,18 +103,30 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                              // Migrated from frozen font30BoldPrimary global.
                               Text(
                                 contents[i].title,
                                 textAlign: TextAlign.end,
-                                style: AppTextStyles.font30BoldPrimary(context),
+                                style: AppTextStyles.font30BoldPrimary(context)
+                                    .copyWith(
+                                      color:
+                                          Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? Colors.white
+                                          : cs.primary,
+                                    ),
                               ),
                               SizedBox(height: 16.h),
                               // Migrated from frozen font20RegularPrimary global.
                               Text(
                                 contents[i].description,
                                 textAlign: TextAlign.end,
-                                style: AppTextStyles.font20RegularPrimary(context),
+                                style:
+                                    AppTextStyles.font20RegularPrimary(
+                                      context,
+                                    ).copyWith(
+                                      color: cs
+                                          .onSurfaceVariant, // لون ثانوي مريح للعين
+                                    ),
                               ),
                             ],
                           ),
@@ -138,7 +147,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: List.generate(
                         contents.length,
-                        (index) => buildDot(index, currentIndex),
+                        (index) => buildDot(index, currentIndex, context),
                       ),
                     ),
                     SizedBox(height: 30.h),

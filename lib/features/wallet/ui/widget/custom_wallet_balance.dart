@@ -9,6 +9,7 @@ import '../../../../core/network/model/profile_model.dart';
 
 class CustomWalletBalance extends StatefulWidget {
   final Function(String) onTabChanged;
+
   CustomWalletBalance({
     super.key,
     required this.onTabChanged,
@@ -17,6 +18,7 @@ class CustomWalletBalance extends StatefulWidget {
     this.imageUrl,
     this.currentImageFile,
   });
+
   final UserProfileModel profileModel;
   final String? name;
   final String? imageUrl;
@@ -39,11 +41,12 @@ class _CustomWalletBalanceState extends State<CustomWalletBalance> {
 
   Future<void> _loadUserData() async {
     final userData = await UserDataManager.loadUserData();
-    if (mounted)
+    if (mounted) {
       setState(() {
         name = userData['name'] ?? widget.name;
         image = userData['image'] ?? widget.imageUrl;
       });
+    }
   }
 
   void _switchTab(String tab) {
@@ -54,6 +57,7 @@ class _CustomWalletBalanceState extends State<CustomWalletBalance> {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Container(
@@ -65,6 +69,8 @@ class _CustomWalletBalanceState extends State<CustomWalletBalance> {
         child: Column(
           children: [
             SizedBox(height: 15.h),
+
+            /// Avatar
             Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(60.r),
@@ -76,12 +82,18 @@ class _CustomWalletBalanceState extends State<CustomWalletBalance> {
                 imagePathOrUrl: image,
               ),
             ),
+
             SizedBox(height: 12.h),
+
+            /// Name
             Text(
               widget.profileModel.fullName,
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
             ),
+
             SizedBox(height: 12.h),
+
+            /// ID Card
             Container(
               width: 170,
               padding: EdgeInsets.symmetric(vertical: 2.h, horizontal: 12.w),
@@ -108,7 +120,10 @@ class _CustomWalletBalanceState extends State<CustomWalletBalance> {
                 ],
               ),
             ),
+
             SizedBox(height: 16.h),
+
+            /// Balance Card
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 8.w),
               child: Container(
@@ -126,13 +141,17 @@ class _CustomWalletBalanceState extends State<CustomWalletBalance> {
                         context,
                       ).copyWith(color: cs.onSurfaceVariant),
                     ),
+
                     Text(
                       '${widget.profileModel.walletBalance}',
                       style: AppTextStyles.font36BoldWhite(
                         context,
                       ).copyWith(color: cs.onSurface),
                     ),
+
                     SizedBox(height: 16.h),
+
+                    /// Tabs
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -170,6 +189,7 @@ class _CustomWalletBalanceState extends State<CustomWalletBalance> {
                 ),
               ),
             ),
+
             SizedBox(height: 16.h),
           ],
         ),
@@ -185,6 +205,7 @@ class _TabButton extends StatelessWidget {
     required this.isActive,
     required this.onTap,
   });
+
   final String icon;
   final String label;
   final bool isActive;
@@ -193,6 +214,12 @@ class _TabButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final Color activeColor = isDark ? Colors.white : cs.primary;
+
+    final Color inactiveColor = isDark ? Colors.white70 : cs.onSurfaceVariant;
+
     return GestureDetector(
       onTap: onTap,
       child: Column(
@@ -200,7 +227,7 @@ class _TabButton extends StatelessWidget {
           SvgPicture.asset(
             icon,
             colorFilter: ColorFilter.mode(
-              isActive ? cs.primary : cs.onSurfaceVariant,
+              isActive ? activeColor : inactiveColor,
               BlendMode.srcIn,
             ),
           ),
@@ -209,7 +236,7 @@ class _TabButton extends StatelessWidget {
             label,
             style: AppTextStyles.font16RegularMuted(
               context,
-            ).copyWith(color: isActive ? cs.primary : cs.onSurfaceVariant),
+            ).copyWith(color: isActive ? activeColor : inactiveColor),
           ),
         ],
       ),

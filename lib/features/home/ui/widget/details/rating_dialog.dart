@@ -19,9 +19,11 @@ class _RatingDialogState extends State<RatingDialog> {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final mainColor = isDark ? Colors.white : cs.primary;
 
     return Dialog(
-      // backgroundColor from dialogTheme in AppThemeData — adapts automatically.
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       child: SizedBox(
         width: MediaQuery.of(context).size.width * 0.9,
@@ -31,36 +33,40 @@ class _RatingDialogState extends State<RatingDialog> {
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(24),
-                // surface = white in light, dark card in dark mode.
                 color: cs.surface,
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   SizedBox(height: 120.h),
+
+                  /// Title
                   Text(
                     'شكراً لتقييمك!',
-                    // Migrated from frozen font23RegularPrimary.
-                    style: AppTextStyles.font23RegularPrimary(context).copyWith(
-                      color: AppColors.primary,
-                    ),
+                    style: AppTextStyles.font23RegularPrimary(
+                      context,
+                    ).copyWith(color: mainColor),
                   ),
+
                   SizedBox(height: 16.h),
+
+                  /// Subtitle
                   Text(
                     'سنعمل بجهد أكبر لرضاك أكثر دوماً',
                     textAlign: TextAlign.center,
-                    // Migrated from frozen font17RegularPrimary.
-                    style: AppTextStyles.font17RegularPrimary(context).copyWith(
-                      color: AppColors.primary.withOpacity(0.5),
-                    ),
+                    style: AppTextStyles.font17RegularPrimary(
+                      context,
+                    ).copyWith(color: mainColor.withOpacity(0.6)),
                   ),
+
                   SizedBox(height: 32.h),
-                  // التعديل داخل بناء النجوم التكراري:
+
+                  /// Stars
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: List.generate(5, (index) {
                       return GestureDetector(
-                        onTap: () => setState(() => rating = index + 1), // تعديل بسيط للحساب الرياضي لتبدأ من 1 لـ 5
+                        onTap: () => setState(() => rating = index + 1),
                         child: Padding(
                           padding: EdgeInsets.symmetric(horizontal: 6.w),
                           child: SvgPicture.asset(
@@ -69,35 +75,44 @@ class _RatingDialogState extends State<RatingDialog> {
                                 : 'assets/icons/rating/star-fill.svg',
                             width: 32.r,
                             height: 32.r,
-                            // التعديل: إضافة فتلر تلوين للنجمة غير النشطة لتظهر بوضوح في الـ Dark Mode
                             colorFilter: index < rating
                                 ? null
-                                : ColorFilter.mode(cs.outlineVariant, BlendMode.srcIn),
+                                : ColorFilter.mode(
+                                    mainColor.withOpacity(0.4),
+                                    BlendMode.srcIn,
+                                  ),
                           ),
                         ),
                       );
                     }),
                   ),
+
                   SizedBox(height: 35.r),
+
+                  /// Button
                   ElevatedButton(
                     onPressed: () => Navigator.pop(context),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                      fixedSize: Size(250.w, 60.h),
+                      backgroundColor: mainColor,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(100),
                       ),
+                      fixedSize: Size(250.w, 60.h),
                     ),
                     child: Text(
                       'إرسال التقييم',
-                      // Migrated from frozen font25RegularWhite.
-                      style: AppTextStyles.font25RegularWhite(context),
+                      style: AppTextStyles.font25RegularWhite(
+                        context,
+                      ).copyWith(color: isDark ? Colors.black : Colors.white),
                     ),
                   ),
+
                   SizedBox(height: 32.h),
                 ],
               ),
             ),
+
+            /// Wave image
             ClipRRect(
               borderRadius: const BorderRadius.only(
                 topRight: Radius.circular(24),
@@ -105,10 +120,12 @@ class _RatingDialogState extends State<RatingDialog> {
               ),
               child: Image.asset('assets/images/wave.png'),
             ),
+
+            /// Emoji
             Positioned(
               top: 35.h,
-              right: 0.w,
-              left: 0.w,
+              right: 0,
+              left: 0,
               child: Center(
                 child: Text(
                   emojis[(rating - 0).clamp(0, 4)],

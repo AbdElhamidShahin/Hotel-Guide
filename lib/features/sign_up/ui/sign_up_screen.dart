@@ -38,16 +38,27 @@ class SignUpScreen extends StatelessWidget {
                   child: Column(
                     children: [
                       SizedBox(height: 20.h),
-                      Image.asset(
-                        'assets/images/logo/logo-light.png',
-                        height: 150.h,
-                        width: 150.w,
+                      // داخل SafeArea في الـ Column
+                      Builder(
+                        builder: (context) {
+                          final isDark = Theme.of(context).brightness == Brightness.dark;
+                          return Image.asset(
+                            isDark ? 'assets/images/logo/logo_new.png' : 'assets/images/logo/logo-light.png',
+                            height: 150.h,
+                            width: 150.w,
+                          );
+                        },
                       ),
                       SizedBox(height: 15.h),
                       // Migrated from frozen font30BoldPrimary global.
                       Text(
                         'بوابتك لتجربة فندقية استثنائية',
-                        style: AppTextStyles.font30BoldPrimary(context).copyWith(fontSize: 26.sp),
+                        style: AppTextStyles.font30BoldPrimary(context).copyWith(
+                          fontSize: 26.sp,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white
+                              : Theme.of(context).colorScheme.primary,
+                        ),
                         maxLines: 1,
                       ),
                       SizedBox(height: 20.h),

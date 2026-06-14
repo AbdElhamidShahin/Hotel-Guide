@@ -24,13 +24,18 @@ class _WalletScreenState extends State<WalletScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<WalletCubit>().fetchWalletData();
+    context.read<WalletCubit>()
+      ..fetchWalletData()
+      ..startWalletListener();
   }
-
+  @override
+  void dispose() {
+    context.read<WalletCubit>().stopWalletListener();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Inherits scaffoldBackgroundColor from AppThemeData automatically.
       body: BlocBuilder<WalletCubit, WalletState>(
         buildWhen: (_, s) =>
             s is WalletLoading || s is WalletLoaded || s is WalletError,
@@ -45,7 +50,8 @@ class _WalletScreenState extends State<WalletScreen> {
           }
           if (state is WalletLoaded) {
             return RefreshIndicator(
-              onRefresh: () async => context.read<WalletCubit>().fetchWalletData(),
+              onRefresh: () async =>
+                  context.read<WalletCubit>().fetchWalletData(),
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 child: Column(
@@ -70,9 +76,9 @@ class _WalletScreenState extends State<WalletScreen> {
 
   Widget _buildActiveSection() {
     return switch (_activeSection) {
-      'topup'   => const CustomTopupHistory(),
-      'refund'  => const CustomRefundHistory(),
-      _         => const CustomWalletHistory(),
+      'topup' => const CustomTopupHistory(),
+      'refund' => const CustomRefundHistory(),
+      _ => const CustomWalletHistory(),
     };
   }
 }

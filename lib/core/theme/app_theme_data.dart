@@ -393,6 +393,26 @@ class AppTextStyles {
   AppTextStyles._();
 
   static ColorScheme _cs(BuildContext ctx) => Theme.of(ctx).colorScheme;
+
+  // للنصوص التي فوق أزرار الـ Primary (تظهر دائماً بيضاء)
+  static TextStyle font22BoldPrimary(BuildContext ctx) =>
+      const TextStyle(fontSize: 22, fontWeight: FontWeight.w700, fontFamily: 'Cairo', color: Colors.white);
+
+  static TextStyle font36BoldWhite(BuildContext ctx) =>
+      const TextStyle(fontSize: 36, fontWeight: FontWeight.w700, fontFamily: 'Cairo', color: Colors.white);
+
+  // النصوص الأساسية (تتغير تلقائياً حسب المود)
+  static TextStyle font30BoldPrimary(BuildContext ctx) =>
+      TextStyle(fontSize: 30, fontWeight: FontWeight.w700, fontFamily: 'Cairo', color: _cs(ctx).primary);
+
+  static TextStyle font20RegularPrimary(BuildContext ctx) =>
+      TextStyle(fontSize: 20, fontWeight: FontWeight.w400, fontFamily: 'Cairo', color: _cs(ctx).primary.withOpacity(0.70));
+
+  static TextStyle font16RegularMuted(BuildContext ctx) =>
+      TextStyle(fontSize: 16, fontWeight: FontWeight.w400, fontFamily: 'Cairo', color: _cs(ctx).surfaceTint);
+
+  static TextStyle font16BoldWhite(BuildContext ctx) =>
+      TextStyle(fontSize: 16, fontWeight: FontWeight.w700, fontFamily: 'Cairo', color: _cs(ctx).onSurface);
   static TextTheme   _tt(BuildContext ctx) => Theme.of(ctx).textTheme;
 
   // ── Always-white styles (on brand-colour surfaces) ────────────────────────
@@ -408,17 +428,10 @@ class AppTextStyles {
   static TextStyle font14SemiBoldWhite(BuildContext ctx) =>
       const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, fontFamily: 'Cairo', color: Colors.white);
 
-  static TextStyle font16BoldWhite(BuildContext ctx) =>
-      const TextStyle(fontSize: 16, fontWeight: FontWeight.w700, fontFamily: 'Cairo', color: Colors.white);
-
-  static TextStyle font22BoldPrimary(BuildContext ctx) =>
-      const TextStyle(fontSize: 22, fontWeight: FontWeight.w700, fontFamily: 'Cairo', color: Colors.white);
 
   static TextStyle font25RegularWhite(BuildContext ctx) =>
       const TextStyle(fontSize: 25, fontWeight: FontWeight.w400, fontFamily: 'Cairo', color: Colors.white);
 
-  static TextStyle font36BoldWhite(BuildContext ctx) =>
-      const TextStyle(fontSize: 36, fontWeight: FontWeight.w700, fontFamily: 'Cairo', color: Colors.white);
 
   // ── Dynamic styles ────────────────────────────────────────────────────────
 
@@ -437,14 +450,6 @@ class AppTextStyles {
   static TextStyle font12BoldBlack(BuildContext ctx) =>
       TextStyle(fontSize: 12, fontWeight: FontWeight.w700, fontFamily: 'Cairo', color: _cs(ctx).onSurface);
 
-  static TextStyle font30BoldPrimary(BuildContext ctx) =>
-      const TextStyle(fontSize: 30, fontWeight: FontWeight.w700, fontFamily: 'Cairo', color: AppColors.primary);
-
-  static TextStyle font20RegularPrimary(BuildContext ctx) =>
-      TextStyle(fontSize: 20, fontWeight: FontWeight.w400, fontFamily: 'Cairo', color: AppColors.primary.withOpacity(0.70));
-
-  static TextStyle font16RegularMuted(BuildContext ctx) =>
-      TextStyle(fontSize: 16, fontWeight: FontWeight.w400, fontFamily: 'Cairo', color: _cs(ctx).surfaceTint);
 
   static TextStyle font14RegularNightfall(BuildContext ctx) =>
       TextStyle(fontSize: 14, fontWeight: FontWeight.w400, fontFamily: 'Cairo', color: _cs(ctx).onSurfaceVariant.withOpacity(0.75));

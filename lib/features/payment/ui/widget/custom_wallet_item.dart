@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../core/theme/app_theme.dart';
-import '../../../../core/theme/colors.dart';
+
 import '../../../../core/theme/app_theme_data.dart';
 import '../../../../core/theme/colors.dart';
+
 class CustomWalletItem extends StatelessWidget {
   const CustomWalletItem({
     super.key,
@@ -29,7 +29,9 @@ class CustomWalletItem extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             border: Border.all(
-              color: selected ? AppColors.accent : Theme.of(context).colorScheme.outline,
+              color: selected
+                  ? AppColors.accent
+                  : Theme.of(context).colorScheme.outline,
             ),
             color: Theme.of(context).colorScheme.surface,
             boxShadow: [
@@ -53,15 +55,21 @@ class CustomWalletItem extends StatelessWidget {
                     Text(
                       title,
                       style: AppTextStyles.font16BoldWhite(context).copyWith(
-                        color: Theme.of(context).colorScheme.primary,
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white
+                            : Theme.of(context).colorScheme.primary,
                       ),
                     ),
                     SizedBox(height: 8.h),
                     Text(
                       cashBack,
-                      style: AppTextStyles.font14RegularNightfall(context).copyWith(
-                        color: Theme.of(context).colorScheme.surfaceTint,
-                      ),
+                      style: AppTextStyles.font14RegularNightfall(context)
+                          .copyWith(
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                ? Colors.white.withOpacity(0.6)
+                                : Theme.of(context).colorScheme.surfaceTint,
+                          ),
                     ),
                   ],
                 ),

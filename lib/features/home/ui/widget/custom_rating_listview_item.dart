@@ -42,9 +42,7 @@ class CustomRatingListviewItem extends StatelessWidget {
             ),
           ],
           // Subtle border replaces shadow in dark mode.
-          border: isLight
-              ? null
-              : Border.all(color: cs.outline, width: 0.5),
+          border: isLight ? null : Border.all(color: cs.outline, width: 0.5),
         ),
         child: Column(
           children: [
@@ -91,9 +89,9 @@ class CustomRatingListviewItem extends StatelessWidget {
                     Text(
                       hotelModel.name,
                       // Migrated from font16BoldWhite.copyWith(color: pureBlack).
-                      style: AppTextStyles.font16BoldWhite(context).copyWith(
-                        color: cs.onSurface,
-                      ),
+                      style: AppTextStyles.font16BoldWhite(
+                        context,
+                      ).copyWith(color: cs.onSurface),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -114,11 +112,14 @@ class CustomRatingListviewItem extends StatelessWidget {
                         SizedBox(width: 6.w),
                         Text(
                           'إحجز الآن',
-                          style: AppTextStyles.font17RegularPrimary(context).copyWith(
-                            color: Theme.of(context).brightness == Brightness.dark
-                                ? Colors.white
-                                : AppColors.primary,
-                          ),
+                          style: AppTextStyles.font17RegularPrimary(context)
+                              .copyWith(
+                                color:
+                                    Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? Colors.white
+                                    : AppColors.primary,
+                              ),
                         ),
                       ],
                     ),
@@ -135,13 +136,13 @@ class CustomRatingListviewItem extends StatelessWidget {
   Widget _buildFavoriteIcon() {
     return BlocBuilder<FavoriteCubit, FavoriteState>(
       builder: (context, state) {
-        final favoriteCubit = context.read<FavoriteCubit>();
-        final isFavorite = favoriteCubit.isFavorite(hotelModel);
+        final favorites = state is FavoriteUpdated ? state.favorites : [];
+        final isFavorite = favorites.any((h) => h.id == hotelModel.id);
+
         return IconButton(
           icon: Container(
             padding: EdgeInsets.all(8.r),
             decoration: BoxDecoration(
-              // Always dark circle — sits on top of a photo image.
               color: Colors.black.withOpacity(0.3),
               shape: BoxShape.circle,
             ),
@@ -153,21 +154,16 @@ class CustomRatingListviewItem extends StatelessWidget {
               size: 24.r,
             ),
           ),
-          onPressed: () async {
-            favoriteCubit.toggleFavorite(hotelModel);
-            if (isFavorite) {
-              Snackly.success(
-                context: context,
-                title: 'تم الحذف من المفضلة',
-                style: SnackbarStyle.filled,
-              );
-            } else {
-              Snackly.success(
-                context: context,
-                title: 'تم الإضافة إلى المفضلة',
-                style: SnackbarStyle.filled,
-              );
-            }
+          onPressed: () {
+            context.read<FavoriteCubit>().toggleFavorite(hotelModel);
+            final wasAdded = !isFavorite;
+            Snackly.success(
+              context: context,
+              title: wasAdded
+                  ? 'تم الإضافة إلى المفضلة'
+                  : 'تم الحذف من المفضلة',
+              style: SnackbarStyle.filled,
+            );
           },
           padding: const EdgeInsets.all(8),
           constraints: const BoxConstraints(),
@@ -183,10 +179,9 @@ class CustomRatingListviewItem extends StatelessWidget {
         Text(
           ' ${hotelModel.rating}',
           // Migrated from frozen font14SemiBoldWhite — always white, sits on photo.
-          style: AppTextStyles.font14SemiBoldWhite(context).copyWith(
-            fontSize: 16.sp,
-            fontWeight: FontWeight.bold,
-          ),
+          style: AppTextStyles.font14SemiBoldWhite(
+            context,
+          ).copyWith(fontSize: 16.sp, fontWeight: FontWeight.bold),
         ),
       ],
     );
@@ -200,8 +195,7 @@ class CustomRatingListviewItem extends StatelessWidget {
         borderRadius: BorderRadius.circular(12.r),
       ),
       // Always white — on green background regardless of theme.
-      child: Text('إقتصادي',
-          style: AppTextStyles.font14SemiBoldWhite(context)),
+      child: Text('إقتصادي', style: AppTextStyles.font14SemiBoldWhite(context)),
     );
   }
 }

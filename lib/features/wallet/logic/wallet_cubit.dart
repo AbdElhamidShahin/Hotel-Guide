@@ -15,9 +15,9 @@ class WalletCubit extends Cubit<WalletState> {
   StreamSubscription? _walletSub;
 
   WalletCubit({required WalletRepository repo, required StripeService stripe})
-      : _repo = repo,
-        _stripe = stripe,
-        super(WalletInitial());
+    : _repo = repo,
+      _stripe = stripe,
+      super(WalletInitial());
 
   // ── Fetch ─────────────────────────────────────────
 
@@ -26,11 +26,13 @@ class WalletCubit extends Cubit<WalletState> {
     final result = await _repo.getWalletDetails();
     result.fold(
       (failure) => emit(WalletError(failure.message)),
-      (data) => emit(WalletLoaded(
-        userProfile: data.profile,
-        paymentTransactions: data.payments,
-        topUpTransactions: data.topUps,
-      )),
+      (data) => emit(
+        WalletLoaded(
+          userProfile: data.profile,
+          paymentTransactions: data.payments,
+          topUpTransactions: data.topUps,
+        ),
+      ),
     );
   }
 
@@ -61,8 +63,7 @@ class WalletCubit extends Cubit<WalletState> {
     emit(WalletTopUpLoading());
 
     try {
-      final customerId =
-          await _stripe.getOrCreateStripeCustomerId(profile);
+      final customerId = await _stripe.getOrCreateStripeCustomerId(profile);
 
       await _stripe.makePayment(
         paymentIntentInputModel: PaymentIntentInputModel(
@@ -89,7 +90,10 @@ class WalletCubit extends Cubit<WalletState> {
     }
   }
 
-  // ── Dispose ──────────────────────────────────────
+  void stopWalletListener() {
+    _walletSub?.cancel();
+    _walletSub = null;
+  }
 
   @override
   Future<void> close() {

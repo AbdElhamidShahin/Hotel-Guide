@@ -30,16 +30,31 @@ class LoginScreen extends StatelessWidget {
                   padding: EdgeInsets.symmetric(horizontal: 24.w),
                   child: Column(
                     children: [
-                      Image.asset(
-                        'assets/images/logo/logo-light.png',
-                        height: 150.r,
-                        width: 150.r,
+                      Builder(
+                        builder: (context) {
+                          final isDark =
+                              Theme.of(context).brightness == Brightness.dark;
+                          return Image.asset(
+                            isDark
+                                ? 'assets/images/logo/logo_new.png'
+                                : 'assets/images/logo/logo-light.png',
+                            height: 150.h,
+                            width: 150.w,
+                          );
+                        },
                       ),
                       SizedBox(height: 15.h),
-                      // Migrated from frozen font30BoldPrimary global.
                       Text(
                         'بوابتك لتجربة فندقية استثنائية',
-                        style: AppTextStyles.font30BoldPrimary(context).copyWith(fontSize: 26.sp),
+                        style: AppTextStyles.font30BoldPrimary(context)
+                            .copyWith(
+                              fontSize: 26.sp,
+                              color:
+                                  Theme.of(context).brightness ==
+                                      Brightness.dark
+                                  ? Colors.white
+                                  : Theme.of(context).colorScheme.primary,
+                            ),
                         maxLines: 1,
                       ),
                       SizedBox(height: 30.h),
@@ -57,16 +72,24 @@ class LoginScreen extends StatelessWidget {
                         children: [
                           TextButton(
                             onPressed: () => context.push(routes.signUpScreen),
-                            // Migrated from frozen font16BoldWhite global.
                             child: Text(
                               'إنشاء حساب',
-                              style: AppTextStyles.font16BoldWhite(context).copyWith(
-                                color: AppColors.ShadowPurple,
-                              ),
+                              style: AppTextStyles.font16BoldWhite(
+                                context,
+                              ).copyWith(color: AppColors.ShadowPurple),
                             ),
                           ),
-                          // Migrated from frozen font16RegularMuted global.
-                          Text('لا تمتلك حساب؟', style: AppTextStyles.font16RegularMuted(context)),
+                          Text(
+                            'لا تمتلك حساب؟',
+                            style: AppTextStyles.font16RegularMuted(context)
+                                .copyWith(
+                                  color:
+                                      Theme.of(context).brightness ==
+                                          Brightness.dark
+                                      ? Colors.white
+                                      : null,
+                                ),
+                          ),
                         ],
                       ),
                       SizedBox(height: 40.h),
@@ -100,11 +123,6 @@ class LoginScreen extends StatelessWidget {
     }
   }
 
-  /// Decorative top gradient. Fades from the scaffold background colour,
-  /// through the brand purple accent, back to the scaffold background.
-  /// Using scaffoldBackgroundColor (instead of a hardcoded Colors.white) at
-  /// both ends means the gradient blends seamlessly with the page in both
-  /// light and dark mode.
   Widget _buildBackgroundGradient(BuildContext context) {
     final bg = Theme.of(context).scaffoldBackgroundColor;
     return Container(

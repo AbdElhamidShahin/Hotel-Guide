@@ -38,16 +38,13 @@ Widget iconSocial(BuildContext context, String image, String text) {
     width: double.infinity,
     height: 52.h,
     decoration: BoxDecoration(
-      // outline = themed border — adapts in dark mode.
       border: Border.all(color: cs.outline, width: 1.5),
       borderRadius: BorderRadius.circular(12.r),
-      // surface = white in light, dark card in dark mode.
       color: cs.surface,
     ),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        // Migrated from frozen font16BoldWhite global.
         Text(
           text,
           style: AppTextStyles.font16BoldWhite(context).copyWith(

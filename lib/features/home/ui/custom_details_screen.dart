@@ -12,6 +12,7 @@ import 'package:hotel_guide/features/home/ui/widget/details/show_hotel_descripti
 
 import '../../../core/network/model/hotel_model.dart';
 import '../../../core/theme/app_theme_data.dart';
+import '../../../core/theme/colors.dart';
 
 class CustomDetailsScreen extends StatelessWidget {
   const CustomDetailsScreen({super.key, required this.hotelModel});
@@ -23,7 +24,8 @@ class CustomDetailsScreen extends StatelessWidget {
     final colorScheme = theme.colorScheme;
 
     return Scaffold(
-      backgroundColor: colorScheme.surface, // لضمان تلون خلفية الشاشة بالكامل باللون الصحيح
+      backgroundColor:
+          colorScheme.surface, // لضمان تلون خلفية الشاشة بالكامل باللون الصحيح
       body: SafeArea(
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
@@ -78,7 +80,8 @@ class CustomDetailsScreen extends StatelessWidget {
                       child: Text(
                         'شاهد المزيد',
                         style: AppTextStyles.font18BoldGray(context).copyWith(
-                          color: colorScheme.primary, // قراءة لون الهوية من الـ Theme
+                          color: colorScheme
+                              .primary, // قراءة لون الهوية من الـ Theme
                         ),
                       ),
                     ),
@@ -102,7 +105,9 @@ class CustomDetailsScreen extends StatelessWidget {
                     child: Text(
                       'فنادق مشابهة',
                       style: AppTextStyles.font22BoldPrimary(context).copyWith(
-                        color: colorScheme.primary, // قراءة لون الهوية من الـ Theme
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white
+                            : AppColors.primary,
                       ),
                     ),
                   ),

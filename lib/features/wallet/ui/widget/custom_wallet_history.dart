@@ -45,10 +45,12 @@ class CustomWalletHistory extends StatelessWidget {
               children: [
                 Padding(
                   padding: EdgeInsets.only(right: 24.w, top: 24.h, bottom: 8.h),
-                  child: Text(
+                  child:Text(
                     'سجل الحجوزات',
                     style: AppTextStyles.font16BoldWhite(context).copyWith(
-                      color: cs.primary, // العنوان الأساسي
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white
+                          : cs.primary,
                     ),
                   ),
                 ),

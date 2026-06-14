@@ -12,7 +12,7 @@ class CustomElevatedButton extends StatelessWidget {
   final VoidCallback onPressed;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {final cs = Theme.of(context).colorScheme;
     return SizedBox(
       width: double.infinity,
       height: 56.h,
@@ -20,15 +20,13 @@ class CustomElevatedButton extends StatelessWidget {
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           // Always dark navy — brand action button, same in both themes.
-          backgroundColor: const Color(0xFF2C2C3E),
-          shape: RoundedRectangleBorder(
+          backgroundColor: cs.primary,          shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15.r),
           ),
         ),
         // Migrated from frozen font22BoldPrimary global.
         // Always white — text on dark navy button.
-        child: Text(name, style: AppTextStyles.font22BoldPrimary(context)),
-      ),
+        child: Text(name, style: AppTextStyles.font22BoldPrimary(context)),      ),
     );
   }
 }

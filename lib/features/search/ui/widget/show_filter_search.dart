@@ -143,11 +143,12 @@ void showFilterSearch(
 // ── Section title ─────────────────────────────────────────────────────────────
 
 Widget _buildSectionTitle(BuildContext context, String title) {
+  final isDark = Theme.of(context).brightness == Brightness.dark;
+
   return Text(
     title,
-    // Migrated from frozen font20BoldShadowPurple global.
     style: AppTextStyles.font20BoldShadowPurple(context).copyWith(
-      color: AppColors.primary,
+      color: isDark ? Colors.white : AppColors.primary,
       fontSize: 18.sp,
     ),
   );

@@ -26,7 +26,9 @@ class TopRatingWidget extends StatelessWidget {
                   SvgPicture.asset(
                     'assets/icons/received.svg',
                     colorFilter: ColorFilter.mode(
-                      AppColors.ShadowPurple,
+                      Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white
+                          : AppColors.primary,
                       BlendMode.srcIn,
                     ),
                     width: 20.r,
@@ -35,9 +37,12 @@ class TopRatingWidget extends StatelessWidget {
                   SizedBox(width: 4.w),
                   Text(
                     'عرض المزيد',
-                    // Migrated from frozen font18RegularShadowPurple global.
-                    style: AppTextStyles.font18RegularShadowPurple(context)
-                        .copyWith(fontSize: 16.sp),
+                    style: AppTextStyles.font18RegularShadowPurple(context).copyWith(
+                      fontSize: 16.sp,
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white
+                          : AppColors.primary,
+                    ),
                   ),
                 ],
               ),
@@ -48,9 +53,12 @@ class TopRatingWidget extends StatelessWidget {
               name,
               textAlign: TextAlign.right,
               textDirection: TextDirection.rtl,
-              // Migrated from frozen font20BoldShadowPurple global.
-              style: AppTextStyles.font20BoldShadowPurple(context)
-                  .copyWith(fontSize: 18.sp),
+              style: AppTextStyles.font20BoldShadowPurple(context).copyWith(
+                fontSize: 18.sp,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white
+                    : AppColors.primary,
+              ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
