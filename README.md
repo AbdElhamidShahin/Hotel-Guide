@@ -39,9 +39,9 @@ Hotel Guide is a Flutter app that lets users browse hotels, check availability, 
     <td align="center"><b>Hotel Details</b></td>
   </tr>
   <tr>
-    <td><img src="screenshots/home.png" width="200"/></td>
-    <td><img src="screenshots/search.png" width="200"/></td>
-    <td><img src="screenshots/hotel_details.png" width="200"/></td>
+    <td><img src="https://github.com/user-attachments/assets/f34a32fe-ebcd-4ada-b0a8-b5031cb1ab01" alt="Screenshot_20260502_151036" width="200"/></td>
+    <td><img src="https://github.com/user-attachments/assets/3a375300-d0dd-442b-8c56-82aba432c8a5" alt="Screenshot_20260502_151210" width="200"/></td>
+    <td><img src="https://github.com/user-attachments/assets/4ec648ba-6944-4385-8536-69f679014649" alt="Screenshot_20260502_151318" width="200"/></td
   </tr>
   <tr>
     <td align="center"><b>Booking</b></td>
@@ -49,9 +49,10 @@ Hotel Guide is a Flutter app that lets users browse hotels, check availability, 
     <td align="center"><b>Wallet</b></td>
   </tr>
   <tr>
-    <td><img src="screenshots/booking.png" width="200"/></td>
-    <td><img src="screenshots/payment.png" width="200"/></td>
-    <td><img src="screenshots/wallet.png" width="200"/></td>
+    <td><img src="https://github.com/user-attachments/assets/d98ebec0-7435-48b6-b139-c2629d6675e8" alt="Screenshot_20260502_151413" width="200"/></td>
+    <td><img src="https://github.com/user-attachments/assets/65ab66bc-e0cc-47d0-918f-6d90b221e67c" alt="Screenshot_20260502_151559" width="200"/></td>
+    <td><img src="https://github.com/user-attachments/assets/5947cfaa-dc11-40c6-b145-8c364b4665f3" alt="Screenshot_20260502_151149" width="200"/></td
+                                                                                                                                                
   </tr>
   <tr>
     <td align="center"><b>AI Assistant</b></td>
@@ -59,9 +60,9 @@ Hotel Guide is a Flutter app that lets users browse hotels, check availability, 
     <td align="center"><b>Notifications</b></td>
   </tr>
   <tr>
-    <td><img src="screenshots/ai_chat.png" width="200"/></td>
-    <td><img src="screenshots/profile.png" width="200"/></td>
-    <td><img src="screenshots/notifications.png" width="200"/></td>
+    <td><img src="https://github.com/user-attachments/assets/1649e769-3c2b-4dbe-b569-774e4f3dccc9" alt="Screenshot_20260502_151247" width="200"/></td>
+    <td><img src="https://github.com/user-attachments/assets/96be6462-67b9-4eca-b41b-c71c401c3e22" alt="Screenshot_20260502_151158 - Copy" width="200"/></td>
+    <td><img src="https://github.com/user-attachments/assets/1f909b88-26c2-4f8f-9a5e-07660793ab13" alt="Screenshot_20260502_151831" width="200"/></td
   </tr>
 </table>
 
@@ -87,16 +88,39 @@ Hotel Guide is a Flutter app that lets users browse hotels, check availability, 
 The project follows **Clean Architecture** with a feature-based structure.
 
 ```
+## 🏗️ Project Structure
+
+```text
 lib/
-├── core/                    # Shared utilities, theme, router, DI
-│   ├── network/
-│   ├── router/
-│   └── di/
-└── features/
-    └── [feature]/
-        ├── data/            # Models, data sources, repository implementations
-        ├── domain/          # Entities, use cases, repository interfaces
-        └── presentation/    # BLoC/Cubit, screens, widgets
+├── core/
+│   ├── constants/          # App constants
+│   ├── di/                 # Dependency Injection
+│   ├── helpers/            # Shared helpers
+│   ├── network/            # API & Supabase services
+│   ├── router/             # GoRouter configuration
+│   ├── theme/              # App themes & colors
+│   ├── widgets/            # Reusable widgets
+│   └── models/             # Shared models
+│
+├── features/
+│   ├── auth/
+│   │   ├── data/
+│   │   ├── logic/
+│   │   └── ui/
+│   │
+│   ├── home/
+│   ├── hotel_details/
+│   ├── booking/
+│   ├── payment/
+│   ├── wallet/
+│   ├── favorites/
+│   ├── profile/
+│   ├── notifications/
+│   └── chat_ai/
+│
+├── hotel_app.dart
+└── main.dart
+```
 ```
 
 ---
