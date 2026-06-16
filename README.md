@@ -4,13 +4,11 @@
 
 ### A production-grade Hotel Booking & Management App built with Flutter 🚀
 
-<p>
-  <img src="[https://img.shields.io/badge/Flutter-3.0-blue?style=for-the-badge&logo=flutter](https://img.shields.io/badge/Flutter-3.0-blue?style=for-the-badge&logo=flutter)"/>
-  <img src="[https://img.shields.io/badge/Architecture-Clean%20Architecture-green?style=for-the-badge](https://img.shields.io/badge/Architecture-Clean%20Architecture-green?style=for-the-badge)"/>
-  <img src="[https://img.shields.io/badge/State-BLoC-purple?style=for-the-badge](https://img.shields.io/badge/State-BLoC-purple?style=for-the-badge)"/>
-  <img src="[https://img.shields.io/badge/Payments-Stripe-blue?style=for-the-badge&logo=stripe](https://img.shields.io/badge/Payments-Stripe-blue?style=for-the-badge&logo=stripe)"/>
-  <img src="[https://img.shields.io/badge/Backend-Supabase-black?style=for-the-badge&logo=supabase](https://img.shields.io/badge/Backend-Supabase-black?style=for-the-badge&logo=supabase)"/>
-</p>
+[![Flutter](https://img.shields.io/badge/Flutter-3.0+-blue?style=for-the-badge&logo=flutter)](https://flutter.dev)
+[![Architecture](https://img.shields.io/badge/Architecture-Clean%20Architecture-green?style=for-the-badge)](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
+[![State Management](https://img.shields.io/badge/State-BLoC%20%2F%20Cubit-purple?style=for-the-badge)](https://bloclibrary.dev)
+[![Payments](https://img.shields.io/badge/Payments-Stripe-indigo?style=for-the-badge&logo=stripe)](https://stripe.com)
+[![Backend](https://img.shields.io/badge/Backend-Supabase-black?style=for-the-badge&logo=supabase)](https://supabase.com)
 
 </div>
 
@@ -18,116 +16,56 @@
 
 ## ✨ Overview
 
-**Hotel Guide** is a modern hotel booking application built using Flutter, designed with scalability and real-world production architecture.
-
-It provides a seamless experience for booking hotels, managing payments, chatting with an AI assistant, and handling user wallets.
+**Hotel Guide** ليس مجرد تطبيق حجز تقليدي، بل هو نظام متكامل مصمم لمحاكاة البيئات الإنتاجية الضخمة (Production-Grade). يركز المشروع بشكل أساسي على **Architecture Scalability** وقابلية الفحص والصيانة، من خلال دمج منظومة دفع حقيقية، محفظة مالية رقمية متكاملة، ومساعد ذكي مدعوم بالذكاء الاصطناعي عبر أتمتة الـ Webhooks.
 
 ---
 
-## 🚀 Key Features
+## 🚀 Key Modules & Engineering Depth
 
-### 🏨 Hotel Booking System
-- Browse hotels & rooms with advanced filtering.
-- Detailed hotel profiles, room availability, and pricing.
-- Smart, multi-step booking flow.
-- Comprehensive booking history tracking.
+### 🏨 Booking Core
+* **Advanced Filtering:** نظام تصفية ذكي يعتمد على التوافر الفعلي، الأسعار، وتقييمات الغرف.
+* **Smart Step-Flow:** تجربة مستخدم (UX) مرنة لإتمام الحجز تضمن تماسك البيانات (Data Integrity) قبل الانتقال لخطوة الدفع.
 
-### 💳 Secure Payments (Stripe)
-- Full Stripe Payment Sheet integration.
-- Secure payment intents & ephemeral keys handling.
-- Real-time transaction validation and booking confirmation.
+### 💳 Stripe Infrastructure
+* **Zero PPI Exposure:** الاعتماد الكلي على نظام التشفير (Tokenization) الخاص بـ Stripe دون تخزين أي بيانات حساسة للبطاقات.
+* **Stateful Sessions:** إدارة دورة حياة عملية الدفع بالكامل عبر المزامنة بين `Payment Intent` والـ `Ephemeral Keys`.
 
-### 💰 Wallet System
-- In-app user balance management.
-- Secure top-up functionality.
-- Detailed transaction history & instant refund support.
+### 💰 Wallet Engine
+* **Ledger-Based Analytics:** سجل عمليات صارم لتتبع عمليات الشحن (Top-up)، الخصم المباشر، والدعم الفوري لعمليات الارتجاع (Refunds) لضمان دقة الرصيد.
 
-### 🤖 AI Booking Assistant
-- Smart chat assistant for tailored recommendations.
-- Webhook-based architecture (n8n / automation tools).
-- Context-aware responses based on user preferences.
-
-### ❤️ Core Modules
-- **Favorites System:** Save and quick-access preferred hotels.
-- **Notifications:** Real-time updates for booking and payment statuses.
-- **Authentication:** Supabase Auth integration supporting Email/Password, Google Sign-In, and Facebook (UI Ready).
+### 🤖 Webhook-Driven AI Assistant
+* **Decoupled AI Engine:** بدلاً من ربط التطبيق مباشرة بـ APIs مكلفة، يعتمد التطبيق على بنية تحتية مرنة ترسل طلبات المستخدم إلى نظام أتمتة خارجي (`n8n` Webhooks)، ليعود برصيد إجابات ديناميكي ومخصص وفقًا لحالة الفنادق المتاحة.
 
 ---
 
-## 🧠 Architecture & Tech Stack
+## 🧠 Software Architecture
 
-This project strictly follows **Clean Architecture** combined with a **Feature-Based Structure** to ensure maximum maintainability and testability.
+يتبنى المشروع نمط **Clean Architecture** مدمجًا مع تقسيم قائم على الميزات (**Feature-Based Structure**)، مما يفصل تمامًا بين منطق العمل (Business Logic) وواجهات المستخدم.
 
 ```text
 lib/
-├── core/                  # Shared components (network, theme, router, helpers)
-├── features/              # Feature modules (auth, booking, payment, etc.)
-│   └── [feature_name]/
-│       ├── data/          # Models, Repositories implementations, Data sources
-│       ├── domain/        # Entities, Use cases, Repository interfaces
-│       └── presentation/  # BLoC/Cubit, Screens, Widgets
-└── main.dart
-🛠 Tech Stack Details
-State Management: BLoC / Cubit for predictable state transitions.
+├── core/                  # Shared infrastructure (Network, Theme, Router, DI)
+└── features/              # Modular Domain Features
+    └── [feature_name]/    
+        ├── data/          # Models, API Data Sources, Repository Implementations
+        ├── domain/        # Entities, Use Cases, Repository Contracts (Interfaces)
+        └── presentation/  # State Management (BLoC/Cubit), Screens, UI Widgets
 
-Navigation: GoRouter (Declarative routing mechanism).
+🛠 Technical SpecificationsCategoryTechnology UsedArchitectural PurposeState ManagementBLoC / CubitUnidirectional Data Flow & Predictable StatesRoutingGoRouterDeclarative deep-linking & sub-routes handlingBackend / AuthSupabasePostgreSQL Real-time engine & secure JWT AuthResponsive UIScreenUtilDynamic pixel scaling across varying aspect ratios
 
-Backend Service: Supabase (Database + Authentication).
-
-Payment Gateway: Stripe Payments.
-
-Responsive UI: ScreenUtil with Google Fonts (Cairo).
-
-📸 Screenshots
-(Note: You can check the rest of the app views inside the /screenshots directory)
-
-⚙️ Installation & Setup
-1️⃣ Clone the Repository
-Bash
-git clone https://github.com/your-username/hotel-guide.git
-cd hotel-guide 
-2️⃣ Install Dependencies
-Bash
+🔄 Technical Integration Flows
+💳 Payment Lifecycle Sequence
+[App UI] ──(1. Initiate)──> [Supabase Edge Function] ──(2. Create Intent)──> [Stripe API]
+   │                                                                             │
+   │<───────────────(3. Return Ephemeral Key & Client Secret)────────────────────┘
+   │
+   └──(4. Present Native Sheet)──> [User Confirms] ──(5. Webhook Update)──> [DB Booking Success]
+🤖 AI Workflow (n8n Integration)Design Pattern: يعتمد نظام المحادثة على الـ Stateless Webhooks لتمرير سياق البحث الخاص بالمستخدم (Context-Aware Queries)، معالجة القيود عبر الـ Workflow، ثم استقبال البيانات على هيئة Structured JSON يتم صياغته فوريًا داخل الـ Chat UI.📸 ScreenshotsHome & ExploreHotel DetailsSmooth BookingSecure CheckoutAI AssistantDigital WalletSettings & ProfileBooking History⚙️ Environment Setup & Installation1. Repository SetupBashgit clone [https://github.com/your-username/hotel-guide.git](https://github.com/your-username/hotel-guide.git)
+cd hotel-guide
 flutter pub get
-3️⃣ Configure Environment Credentials
-Create a configuration file at lib/core/network/api_constants.dart (Make sure to exclude sensitive keys from version control):
-
-Dart
-class ApiConstants {
+2. Infrastructure Configurationقم بإنشاء ملف الإعدادات داخل المسار التالي لمنع تسريب المفاتيح الحساسة إلى نظام تعقب الملفات (Git):lib/core/network/api_constants.dartDartabstract class ApiConstants {
   static const String supabaseUrl = "YOUR_SUPABASE_URL";
   static const String supabaseKey = "YOUR_SUPABASE_KEY";
   static const String stripePublishableKey = "YOUR_STRIPE_PUBLISHABLE_KEY";
 }
-4️⃣ Run the Project
-Bash
-flutter run
-🔄 Integration Flows
-💳 Stripe Payment Lifecycle
-Create Payment Intent: Triggered via secure backend/edge functions.
-
-Generate Ephemeral Key: Issued to manage customer state safely.
-
-Attach Customer: Links the Stripe customer ID dynamically.
-
-Present Payment Sheet: Native SDK UI overlay for card details.
-
-Confirm Transaction: Success callback updates the database status.
-
-🤖 Webhook AI Chat
-Standardized payload sent to an external workflow automation service (e.g., n8n).
-
-Processes constraints, availability, and specific context.
-
-Streamlined JSON responses parsed directly within the chat UI block.
-
-🎯 Business Value
-This portfolio asset encapsulates production-grade competencies:
-
-Architecture Scalability: Separation of concerns ensures multiple developers can target features concurrently.
-
-Financial Compliance: Relying on approved Stripe tokenization patterns avoiding direct PPI exposure.
-
-Modern User Experience: Combining automation (AI Chat) with fluid responsiveness to decrease booking friction.
-
-📈 SEO Keywords
-Flutter • Hotel Booking App • Stripe Payment Flutter • Supabase Flutter • AI Chat Flutter • Clean Architecture Flutter • BLoC Flutter • Travel App Flutter
+3. ExecutionBashflutter run
