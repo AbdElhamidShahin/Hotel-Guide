@@ -1,174 +1,168 @@
-# 🏨 Hotel Guide
+<div align="center">
 
-تطبيق موبايل متكامل مبني بـ **Flutter** يساعد المستخدمين على اكتشاف الفنادق، استعراض تفاصيلها، وإتمام الحجز بسهولة — كل ده في مكان واحد.
+# Hotel Guide
 
----
+A full-featured hotel booking app built with Flutter
 
-## 📸 Screenshots
+[![Flutter](https://img.shields.io/badge/Flutter-3.8+-blue?style=flat-square&logo=flutter)](https://flutter.dev)
+[![Dart](https://img.shields.io/badge/Dart-3.0+-blue?style=flat-square&logo=dart)](https://dart.dev)
+[![Supabase](https://img.shields.io/badge/Backend-Supabase-3ECF8E?style=flat-square&logo=supabase)](https://supabase.com)
+[![Stripe](https://img.shields.io/badge/Payments-Stripe-635BFF?style=flat-square&logo=stripe)](https://stripe.com)
 
-### Onboarding
-
-<img width="1080" height="2424" alt="Screenshot_20260502_150854" src="https://github.com/user-attachments/assets/5cc0edd4-ebaf-452b-a481-023fda3b111d" />
-<img width="1080" height="2424" alt="Screenshot_20260502_150819" src="https://github.com/user-attachments/assets/c71a8d5d-bec0-47da-8a6b-21d000d30756" />
-<img width="1080" height="2424" alt="Screenshot_20260502_150903" src="https://github.com/user-attachments/assets/cc522121-e88b-403c-81f8-f9d5d6980f16" />
-
+</div>
 
 ---
 
-### Authentication
+## Overview
 
-
-
-<img width="1080" height="2424" alt="Screenshot_20260502_150914" src="https://github.com/user-attachments/assets/8cd47224-4a54-45ee-88ce-79f3d6e9c39f" />
-
+Hotel Guide is a Flutter app that lets users browse hotels, check availability, and complete bookings with real payment processing. The project is built on Clean Architecture with a feature-based folder structure, making it easy to scale and maintain.
 
 ---
 
-### Home & Discovery
-<img width="1080" height="2424" alt="Screenshot_20260502_151210" src="https://github.com/user-attachments/assets/27f70339-5cf9-4f54-840c-644fbba7c22b" />
-<img width="1080" height="2424" alt="Screenshot_20260502_151054 - Copy" src="https://github.com/user-attachments/assets/c0e21dbe-2975-458e-b76f-e4cf76e9d354" />
-<img width="1080" height="2424" alt="Screenshot_20260502_151036 - Copy" src="https://github.com/user-attachments/assets/779f5fa9-78a4-420a-85e7-453f38283063" />
-<img width="1080" height="2424" alt="Screenshot_20260502_151223 - Copy" src="https://github.com/user-attachments/assets/32c8418c-ed48-4ce3-856c-20abda4a1558" />
+## Screenshots
+
+<table>
+  <tr>
+    <td align="center"><b>Onboarding</b></td>
+    <td align="center"><b>Login</b></td>
+    <td align="center"><b>Register</b></td>
+  </tr>
+  <tr>
+    <td><img src="screenshots/onboarding.png" width="200"/></td>
+    <td><img src="screenshots/login.png" width="200"/></td>
+    <td><img src="screenshots/register.png" width="200"/></td>
+  </tr>
+  <tr>
+    <td align="center"><b>Home</b></td>
+    <td align="center"><b>Search & Filter</b></td>
+    <td align="center"><b>Hotel Details</b></td>
+  </tr>
+  <tr>
+    <td><img src="screenshots/home.png" width="200"/></td>
+    <td><img src="screenshots/search.png" width="200"/></td>
+    <td><img src="screenshots/hotel_details.png" width="200"/></td>
+  </tr>
+  <tr>
+    <td align="center"><b>Booking</b></td>
+    <td align="center"><b>Payment</b></td>
+    <td align="center"><b>Wallet</b></td>
+  </tr>
+  <tr>
+    <td><img src="screenshots/booking.png" width="200"/></td>
+    <td><img src="screenshots/payment.png" width="200"/></td>
+    <td><img src="screenshots/wallet.png" width="200"/></td>
+  </tr>
+  <tr>
+    <td align="center"><b>AI Assistant</b></td>
+    <td align="center"><b>Profile</b></td>
+    <td align="center"><b>Notifications</b></td>
+  </tr>
+  <tr>
+    <td><img src="screenshots/ai_chat.png" width="200"/></td>
+    <td><img src="screenshots/profile.png" width="200"/></td>
+    <td><img src="screenshots/notifications.png" width="200"/></td>
+  </tr>
+</table>
 
 ---
 
-### Hotel Details & Booking
+## Features
 
-<img width="1080" height="2424" alt="Screenshot_20260502_151352" src="https://github.com/user-attachments/assets/1d048b18-c72e-457c-8176-153d65556b0f" />
-<img width="1080" height="2424" alt="Screenshot_20260502_151343" src="https://github.com/user-attachments/assets/e8396c3d-1c9b-4b53-ac3a-6c4a6397d883" />
-
-<img width="1080" height="2424" alt="Screenshot_20260502_151318" src="https://github.com/user-attachments/assets/1131ad4b-e144-4f0f-affd-9bc8761579ec" />
-<img width="1080" height="2424" alt="Screenshot_20260502_151413" src="https://github.com/user-attachments/assets/4d5928dd-05e1-4627-8760-1ef25a14342b" />
-<img width="1080" height="2424" alt="Screenshot_20260502_151403" src="https://github.com/user-attachments/assets/c64c6aa7-233c-4e8d-8ff2-027b0b00cbf6" />
-<img width="1080" height="2424" alt="Screenshot_20260502_151333" src="https://github.com/user-attachments/assets/2452f639-bf93-4898-8d24-c80db5020967" />
-
-
-### Profile & Notifications
-
-| البروفايل | الإشعارات |
-<img width="1080" height="2424" alt="Screenshot_20260502_152025 - Copy" src="https://github.com/user-attachments/assets/f347840b-a2a4-4882-a44d-266b1f77adab" />
-<img width="1080" height="2424" alt="Screenshot_20260502_151831" src="https://github.com/user-attachments/assets/a1c8d9c4-86b3-4629-aeec-2e2d516defea" />
-
-
-## ✨ المميزات
-
-- **Onboarding** — شاشات ترحيب للمستخدمين الجدد
-- **تسجيل الدخول / إنشاء حساب** — مع دعم تسجيل الدخول عبر Facebook
-- **استعراض الفنادق** — عرض الفنادق مع التقييمات والتفاصيل الكاملة
-- **البحث والفلترة** — إيجاد الفندق المناسب بسهولة
-- **حجز الغرف** — اختيار التواريخ والغرف وإتمام الحجز
-- **الدفع الإلكتروني** — بوابة دفع آمنة عبر Stripe
-- **المشاركة** — مشاركة الفنادق مع الأصحاب
-- **الإشعارات** — متابعة حالة الحجوزات
-- **الوضع بدون إنترنت** — مراقبة حالة الاتصال وإبلاغ المستخدم
+- **Onboarding** — intro screens for new users
+- **Auth** — sign up, log in, and Facebook login
+- **Hotel Browsing** — browse hotels with ratings, photos, and details
+- **Search & Filter** — filter by availability, price, and rating
+- **Booking Flow** — multi-step booking with date picker and room selection
+- **Stripe Payments** — secure card payments using Stripe's native sheet
+- **Wallet** — top up balance, track transactions, and handle refunds
+- **AI Assistant** — chat assistant powered by n8n webhooks with hotel context
+- **Notifications** — booking status updates
+- **Offline Handling** — connectivity check with user feedback
 
 ---
 
-## 🛠️ التقنيات المستخدمة
+## Architecture
 
-| التقنية | الاستخدام |
-|---------|----------|
-| **Flutter** | إطار العمل الأساسي للتطبيق |
-| **Dart** | لغة البرمجة |
-| **Supabase** | قاعدة البيانات والـ Backend |
-| **flutter_bloc** | إدارة الـ State |
-| **go_router** | التنقل بين الشاشات |
-| **Stripe** | معالجة المدفوعات |
-| **Firebase** | خدمات إضافية |
-| **get_it** | Dependency Injection |
-| **dio / http** | طلبات الـ API |
-| **shared_preferences** | تخزين البيانات محلياً |
-| **table_calendar** | التقويم لاختيار تواريخ الحجز |
-| **image_picker** | رفع صور البروفايل |
-
----
-
-## 🏗️ هيكل المشروع
+The project follows **Clean Architecture** with a feature-based structure.
 
 ```
-hotel_guide/
-├── lib/                  # الكود الأساسي للتطبيق
-├── assets/
-│   ├── images/           # الصور والـ Logo
-│   ├── icons/            # الأيقونات
-│   ├── fonts/            # خط Cairo
-│   └── Onpording/        # صور شاشات الـ Onboarding
-├── android/              # إعدادات Android
-├── ios/                  # إعدادات iOS
-├── web/                  # دعم الويب
-└── supabase/             # إعدادات Supabase
+lib/
+├── core/                    # Shared utilities, theme, router, DI
+│   ├── network/
+│   ├── router/
+│   └── di/
+└── features/
+    └── [feature]/
+        ├── data/            # Models, data sources, repository implementations
+        ├── domain/          # Entities, use cases, repository interfaces
+        └── presentation/    # BLoC/Cubit, screens, widgets
 ```
 
 ---
 
-## 🚀 تشغيل المشروع
+## Tech Stack
 
-### المتطلبات
+| Area | Technology |
+|------|-----------|
+| Framework | Flutter 3.8+ |
+| State Management | BLoC / Cubit |
+| Navigation | GoRouter |
+| Backend & Auth | Supabase |
+| Payments | Stripe |
+| AI Integration | n8n Webhooks |
+| Responsive UI | ScreenUtil |
+| Local Storage | SharedPreferences |
+| HTTP Client | Dio |
+| DI | GetIt |
+
+---
+
+## Getting Started
+
+### Prerequisites
 
 - Flutter SDK `^3.8.1`
-- Dart SDK
-- حساب على [Supabase](https://supabase.com)
-- حساب على [Stripe](https://stripe.com) للمدفوعات
+- A [Supabase](https://supabase.com) project
+- A [Stripe](https://stripe.com) account
 
-### خطوات التشغيل
+### Installation
 
 ```bash
-# 1. استنسخ الريبو
 git clone https://github.com/AbdElhamidShahin/Hotel-Guide.git
 cd Hotel-Guide
-
-# 2. ثبّت الـ dependencies
 flutter pub get
-
-# 3. شغّل الـ splash screen
-dart run flutter_native_splash:create
-
-# 4. شغّل التطبيق
 flutter run
 ```
 
----
+### Environment Setup
 
-## ⚙️ إعداد المتغيرات البيئية
-
-قبل ما تشغّل التطبيق، لازم تضيف بيانات الاتصال بتاعتك في الملف المناسب:
+Create the following file and add your keys:
 
 ```dart
-// Supabase
-const supabaseUrl = 'YOUR_SUPABASE_URL';
-const supabaseAnonKey = 'YOUR_SUPABASE_ANON_KEY';
-
-// Stripe
-const stripePublishableKey = 'YOUR_STRIPE_PUBLISHABLE_KEY';
+// lib/core/network/api_constants.dart
+abstract class ApiConstants {
+  static const String supabaseUrl = "YOUR_SUPABASE_URL";
+  static const String supabaseKey = "YOUR_SUPABASE_KEY";
+  static const String stripePublishableKey = "YOUR_STRIPE_KEY";
+}
 ```
 
 ---
 
-## 📦 الـ Packages الرئيسية
+## Payment Flow
 
-```yaml
-flutter_bloc: ^9.1.1        # State Management
-go_router: ^16.2.4          # Navigation
-supabase_flutter: ^2.12.0   # Backend
-flutter_stripe: ^11.1.0     # Payments
-flutter_screenutil: ^5.9.3  # Responsive UI
-table_calendar: ^3.2.0      # Date Picker
-flutter_facebook_auth: ^7.1.5
-connectivity_plus: ^7.0.0
-share_plus: ^12.0.1
-dio: ^5.9.2
+```
+App  →  Supabase Edge Function  →  Stripe API
+               ↓
+     Returns Client Secret + Ephemeral Key
+               ↓
+     Native Stripe Sheet shown to user
+               ↓
+     On success → Webhook updates booking in DB
 ```
 
 ---
 
-## 👨‍💻 المطوّر
+## Developer
 
-**Abd Elhamid Shahin**
-
-[![GitHub](https://img.shields.io/badge/GitHub-AbdElhamidShahin-181717?style=flat&logo=github)](https://github.com/AbdElhamidShahin)
-
----
-
-## 📄 الرخصة
-
-This project is for educational and portfolio purposes.
+**Abd Elhamid Shahin** — [GitHub](https://github.com/AbdElhamidShahin)
