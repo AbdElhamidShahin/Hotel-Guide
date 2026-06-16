@@ -27,11 +27,12 @@ Hotel Guide is a Flutter app that lets users browse hotels, check availability, 
     <td align="center"><b>Login</b></td>
     <td align="center"><b>Register</b></td>
   </tr>
-  <tr>
-    <td><img src="screenshots/onboarding.png" width="200"/></td>
-    <td><img src="screenshots/login.png" width="200"/></td>
-    <td><img src="screenshots/register.png" width="200"/></td>
-  </tr>
+<tr>
+    <td><img src="https://github.com/user-attachments/assets/705d50b2-6087-4700-937e-8d1edbfa024a" alt="Screenshot_20260502_150914" width="200"/></td>
+    <td><img src="https://github.com/user-attachments/assets/58a41eec-76f4-47e0-8e73-709c0b6b8f85" alt="Screenshot_20260502_150903" width="200"/></td>
+    <td><img src="https://github.com/user-attachments/assets/e2ce8471-cff8-42a0-b278-b175ef6f1609" alt="Screenshot_20260502_150854" width="200"/></td>
+    <td><img src="https://github.com/user-attachments/assets/beeb8f51-b535-4985-bb41-441bb4495982" alt="Screenshot_20260502_150819" width="200"/></td>
+</tr>
   <tr>
     <td align="center"><b>Home</b></td>
     <td align="center"><b>Search & Filter</b></td>
