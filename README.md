@@ -69,3 +69,49 @@ flutter pub get
   static const String stripePublishableKey = "YOUR_STRIPE_PUBLISHABLE_KEY";
 }
 3. ExecutionBashflutter run
+---
+
+## 📸 Screenshots
+
+<div align="center">
+  <table>
+    <tr>
+      <th>Home & Explore</th>
+      <th>Hotel Details</th>
+      <th>Smooth Booking</th>
+      <th>Secure Checkout</th>
+    </tr>
+    <tr>
+<img width="1080" height="2424" alt="Screenshot_20260502_150914" src="https://github.com/user-attachments/assets/06df0aba-d9c4-4b47-b4cf-3f560ec9671d" />
+<img width="1080" height="2424" alt="Screenshot_20260502_150914 - Copy" src="https://github.com/user-attachments/assets/689324ec-24f4-4580-95f5-544d881c5a5a" />
+<img width="1080" height="2424" alt="Screenshot_20260502_150903" src="https://github.com/user-attachments/assets/37a940cc-a5e1-4cd7-b24b-6abdb499456c" />
+<img width="1080" height="2424" alt="Screenshot_20260502_150854" src="https://github.com/user-attachments/assets/900bf882-e062-464d-851b-aae36d3ab0b5" />
+<img width="1080" height="2424" alt="Screenshot_20260502_150819" src="https://github.com/user-attachments/assets/a0522759-ebfe-452b-b845-f5f88fe3afff" />
+
+    </tr>
+    <tr>
+      <th>AI Assistant</th>
+      <th>Digital Wallet</th>
+      <th>Settings & Profile</th>
+      <th>Booking History</th>
+    </tr>
+    <tr>
+
+<img width="1080" height="2424" alt="Screenshot_20260502_151054 - Copy" src="https://github.com/user-attachments/assets/f5aedffa-ba7a-443c-b56d-a2b0f00a0f84" />
+<img width="1080" height="2424" alt="Screenshot_20260502_151036 - Copy" src="https://github.com/user-attachments/assets/a86c9f85-82c5-4d7d-a3e4-a928d7068d5d" />
+
+    </tr>
+  </table>
+</div>
+![Uploading Screenshot_20260502_151318.png…]()
+<img width="1080" height="2424" alt="Screenshot_20260502_151247 - Copy" src="https://github.com/user-attachments/assets/362d17f7-35eb-4a5e-816e-d3d6067d3b64" />
+<img width="1080" height="2424" alt="Screenshot_20260502_152051" src="https://github.com/user-attachments/assets/29195264-687f-47b5-a627-3a276d2bd1a3" />
+<img width="1080" height="2424" alt="Screenshot_20260502_152037" src="https://github.com/user-attachments/assets/7e5ead33-1116-42a6-8c09-cf314af7f9ab" />
+<img width="1080" height="2424" alt="Screenshot_20260502_152025" src="https://github.com/user-attachments/assets/28f7e27b-d3ce-464d-8cb2-685333dc1029" />
+<img width="1080" height="2424" alt="Screenshot_20260502_151237 - Copy" src="https://github.com/user-attachments/assets/ddadf671-5568-43c5-be97-24e4065b1860" />
+<img width="1080" height="2424" alt="Screenshot_20260502_151223" src="https://github.com/user-attachments/assets/8c619b8a-30bf-4b47-912a-432d5ff5af8c" />
+<img width="1080" height="2424" alt="Screenshot_20260502_151223 - Copy" src="https://github.com/user-attachments/assets/69ab1f0e-a27c-48e9-ae3a-9ae59248edaa" />
+<img width="1080" height="2424" alt="Screenshot_20260502_151210" src="https://github.com/user-attachments/assets/2b2d1860-5e1b-4cd0-b563-d743572222a6" />
+<img width="1080" height="2424" alt="Screenshot_20260502_151105 - Copy" src="https://github.com/user-attachments/assets/29b1194a-c15c-411b-ad94-154b9153b3d3" />
+
+---
