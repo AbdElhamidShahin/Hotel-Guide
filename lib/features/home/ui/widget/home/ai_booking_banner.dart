@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hotel_guide/core/theme/app_theme.dart';
+import 'package:hotel_guide/core/theme/app_theme_data.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
 import '../../../../../core/router/routers.dart';
 
@@ -11,10 +11,7 @@ class AiBookingBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-
-      onTap: (){
-        context.push(routes.ChatScreen);
-      },
+      onTap: () => context.push(routes.ChatScreen),
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 16.0.w),
         child: ClipRRect(
@@ -25,12 +22,15 @@ class AiBookingBanner extends StatelessWidget {
             child: Stack(
               children: [
                 Image.asset(
-                  "assets/Onpording/OnPoarding1.jpg",
+                  'assets/Onpording/OnPoarding1.jpg',
                   width: double.infinity,
                   height: double.infinity,
                   fit: BoxFit.cover,
                 ),
 
+                // Brand-color gradient overlay — intentionally the same in
+                // both themes. It sits on a photo and creates the dark-to-light
+                // fade that makes the text readable.
                 Container(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -51,7 +51,11 @@ class AiBookingBanner extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Image.asset("assets/images/clickOn.png", width: 50.r, height: 50.r),
+                      Image.asset(
+                        'assets/images/clickOn.png',
+                        width: 50.r,
+                        height: 50.r,
+                      ),
                       SizedBox(width: 10.w),
                       Expanded(
                         child: Column(
@@ -62,25 +66,29 @@ class AiBookingBanner extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Image.asset(
-                                  "assets/images/iconCahtRobot.png",
+                                  'assets/images/iconCahtRobot.png',
                                   width: 25.r,
                                   height: 25.r,
+                                  // Always white — on the primary-color overlay.
                                   color: AppColors.textWhite,
                                 ),
                                 Text(
-                                  "  أحجز فندقك خلال ثواني",
-                                  style: font16BoldWhite.copyWith(
-                                    fontSize: 20.sp,
-                                  ),
+                                  '  أحجز فندقك خلال ثواني',
+                                  // Always white — text on dark gradient overlay.
+                                  style: AppTextStyles.font16BoldWhite(context)
+                                      .copyWith(fontSize: 20.sp),
                                 ),
                               ],
                             ),
-                            SizedBox(height: 8.h,),
+                            SizedBox(height: 8.h),
                             Text(
-                              "خلي الذكاء الإصطناعي يساعدك في عملية البحث",
-                              style: font14RegularNightfall.copyWith(
-                                color: AppColors.textWhite.withOpacity(0.7),fontSize: 13.sp
-                              ),textAlign: TextAlign.right,
+                              'خلي الذكاء الإصطناعي يساعدك في عملية البحث',
+                              style: AppTextStyles.font14RegularNightfall(context)
+                                  .copyWith(
+                                color: AppColors.textWhite.withOpacity(0.7),
+                                fontSize: 13.sp,
+                              ),
+                              textAlign: TextAlign.right,
                             ),
                           ],
                         ),

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/theme/app_theme_data.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../payment/ui/widget/payment_summary_section.dart';
 import '../../logic/wallet_cubit.dart';
@@ -14,7 +14,7 @@ class CustomTopupHistory extends StatefulWidget {
 
   @override
   State<CustomTopupHistory> createState() => _CustomTopupHistoryState();
-}
+} 
 
 class _CustomTopupHistoryState extends State<CustomTopupHistory> {
   double _selectedAmount = 100;
@@ -36,33 +36,14 @@ class _CustomTopupHistoryState extends State<CustomTopupHistory> {
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cs = Theme.of(context).colorScheme;
     return BlocListener<WalletCubit, WalletState>(
       listener: (context, state) {
         if (state is WalletTopUpSuccess) {
-          Future.delayed(const Duration(milliseconds: 800), () {
-            context.read<WalletCubit>().fetchWalletData();
-          });
-          showDialog(
-            context: context,
-            builder: (_) => AlertDialog(
-              title: const Text('تم شحن الرصيد ✅'),
-              content: Text(
-                'تمت إضافة ${_selectedAmount.toStringAsFixed(2)} EGP بنجاح.\n'
-                'رصيدك الجديد: ${state.newBalance.toStringAsFixed(2)} EGP',
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text('حسناً'),
-                ),
-              ],
-            ),
-          );
-        } else if (state is WalletTopUpError) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.message), backgroundColor: Colors.red),
-          );
+          context.read<WalletCubit>().fetchWalletData();
         }
       },
       child: Column(
@@ -72,13 +53,11 @@ class _CustomTopupHistoryState extends State<CustomTopupHistory> {
             padding: EdgeInsets.only(right: 24.w, top: 32.h, bottom: 20.h),
             child: Text(
               'شحن رصيد',
-              style: font20BoldShadowPurple.copyWith(
-                color: AppColors.textPrimary,
-              ),
+              style: AppTextStyles.font20BoldShadowPurple(
+                context,
+              ).copyWith(color: isDark ? Colors.white : cs.primary),
             ),
           ),
-
-          // Amount input
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.w),
             child: Form(
@@ -88,76 +67,35 @@ class _CustomTopupHistoryState extends State<CustomTopupHistory> {
                 children: [
                   Text(
                     'أدخل المبلغ (EGP)',
-                    style: font16RegularMuted.copyWith(
-                      color: AppColors.textPrimary,
+                    style: AppTextStyles.font16RegularMuted(context).copyWith(
+                      color: isDark ? Colors.white70 : AppColors.primary,
                     ),
                   ),
                   SizedBox(height: 8.h),
                   TextFormField(
                     controller: _amountController,
-                    keyboardType: const TextInputType.numberWithOptions(
-                      decimal: true,
-                    ),
-                    textAlign: TextAlign.center,
-                    style: font20BoldShadowPurple.copyWith(
-                      color: AppColors.textPrimary,
+                    style: TextStyle(
+                      color: isDark ? Colors.white : Colors.black,
                     ),
                     decoration: InputDecoration(
-                      hintText: 'مثال: 250',
-                      suffixText: 'EGP',
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: 16.w,
-                        vertical: 14.h,
-                      ),
+                      filled: true,
+                      fillColor: isDark ? cs.surface : Colors.white,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12.r),
-                        borderSide: BorderSide(color: AppColors.ShadowPurple),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.r),
                         borderSide: BorderSide(
-                          color: AppColors.primary,
-                          width: 2,
+                          color: isDark ? cs.outline : cs.outlineVariant,
                         ),
                       ),
-                      errorBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.r),
-                        borderSide: const BorderSide(color: Colors.red),
-                      ),
                     ),
-                    validator: (v) {
-                      if (v == null || v.trim().isEmpty)
-                        return 'يرجى إدخال المبلغ';
-                      final p = double.tryParse(v.trim());
-                      if (p == null || p <= 0) return 'مبلغ غير صحيح';
-                      return null;
-                    },
-                    onChanged: (v) {
-                      final p = double.tryParse(v.trim());
-                      if (p != null && p > 0)
-                        setState(() => _selectedAmount = p);
-                    },
                   ),
                   SizedBox(height: 12.h),
-                  Text(
-                    'أو اختر مبلغاً سريعاً',
-                    style: font16RegularMuted.copyWith(
-                      color: AppColors.textPrimary.withOpacity(0.5),
-                      fontSize: 13,
-                    ),
-                  ),
-                  SizedBox(height: 8.h),
                   Wrap(
                     spacing: 8.w,
-                    runSpacing: 8.h,
                     children: _shortcuts.map((a) {
-                      final sel =
-                          _selectedAmount == a &&
-                          _amountController.text == a.toInt().toString();
+                      final sel = _selectedAmount == a;
                       return GestureDetector(
-                        onTap: () => _setFromChip(a),
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 200),
+                        onTap: () => setState(() => _selectedAmount = a),
+                        child: Container(
                           padding: EdgeInsets.symmetric(
                             horizontal: 14.w,
                             vertical: 8.h,
@@ -165,19 +103,17 @@ class _CustomTopupHistoryState extends State<CustomTopupHistory> {
                           decoration: BoxDecoration(
                             color: sel
                                 ? AppColors.primary
-                                : AppColors.ShadowPurple.withOpacity(0.08),
+                                : (isDark
+                                      ? Colors.white10
+                                      : AppColors.softGray),
                             borderRadius: BorderRadius.circular(30.r),
-                            border: Border.all(
-                              color: sel
-                                  ? AppColors.primary
-                                  : Colors.transparent,
-                            ),
                           ),
                           child: Text(
                             '${a.toInt()} EGP',
-                            style: font16RegularMuted.copyWith(
-                              color: sel ? Colors.white : AppColors.textPrimary,
-                              fontWeight: FontWeight.w600,
+                            style: TextStyle(
+                              color: sel
+                                  ? Colors.white
+                                  : (isDark ? Colors.white : Colors.black),
                             ),
                           ),
                         ),
@@ -261,9 +197,7 @@ class _CustomTopupHistoryState extends State<CustomTopupHistory> {
                     ),
                     child: Text(
                       'سجل عمليات الشحن',
-                      style: font16BoldWhite.copyWith(
-                        color: AppColors.primary,
-                      ),
+                      style: font16BoldWhite.copyWith(color: AppColors.primary),
                     ),
                   ),
                   ListView.builder(

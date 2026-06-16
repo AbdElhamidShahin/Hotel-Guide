@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:hotel_guide/core/theme/app_theme.dart';
+import 'package:hotel_guide/core/theme/app_theme_data.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
 import '../../../../core/network/model/notification_model.dart';
 
@@ -11,36 +11,36 @@ class CustomItemNotification extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String assetPath;
+    final cs      = Theme.of(context).colorScheme;
+    final isLight = Theme.of(context).brightness == Brightness.light;
 
-    switch (notification.type) {
-      case NotificationType.success:
-        assetPath = 'assets/images/notification_statuses/success.svg';
-        break;
-      case NotificationType.failure:
-        assetPath = 'assets/images/notification_statuses/Falier.svg';
-        break;
-      case NotificationType.reminder:
-        assetPath = 'assets/images/notification_statuses/times.svg';
-        break;
-      case NotificationType.message:
-        assetPath = 'assets/images/notification_statuses/Email.svg';
-        break;
-    }
+    final String assetPath = switch (notification.type) {
+      NotificationType.success  => 'assets/images/notification_statuses/success.svg',
+      NotificationType.failure  => 'assets/images/notification_statuses/Falier.svg',
+      NotificationType.reminder => 'assets/images/notification_statuses/times.svg',
+      NotificationType.message  => 'assets/images/notification_statuses/Email.svg',
+    };
 
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
       padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
-        color: Colors.white,
+        // surface = white in light, dark card in dark mode.
+        color: cs.surface,
         borderRadius: BorderRadius.circular(15.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
+            // Shadow visible in light only; border handles dark depth.
+            color: isLight
+                ? Colors.black.withOpacity(0.03)
+                : Colors.transparent,
             blurRadius: 15,
             offset: const Offset(0, 5),
           ),
         ],
+        border: isLight
+            ? null
+            : Border.all(color: cs.outline, width: 0.5),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -48,32 +48,31 @@ class CustomItemNotification extends StatelessWidget {
         children: [
           SvgPicture.asset(assetPath, width: 60.r, height: 60.r),
           SizedBox(width: 12.w),
-
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               textDirection: TextDirection.rtl,
               children: [
+                // Migrated from frozen font20BoldShadowPurple global.
                 Text(
                   notification.title,
-                  style: font20BoldShadowPurple.copyWith(
+                  style: AppTextStyles.font20BoldShadowPurple(context).copyWith(
                     color: AppColors.primary,
                     fontSize: 18.sp,
                   ),
                 ),
                 SizedBox(height: 4.h),
+                // Migrated from frozen font14RegularNightfall global.
                 Text(
                   notification.body,
-                  style: font14RegularNightfall.copyWith(
+                  style: AppTextStyles.font14RegularNightfall(context).copyWith(
                     color: AppColors.ShadowPurple,
                   ),
                   textDirection: TextDirection.rtl,
                   maxLines: 1,
                 ),
-
-                if (notification.type == NotificationType.failure) ...[
+                if (notification.type == NotificationType.failure)
                   SizedBox(height: 8.h),
-                ],
               ],
             ),
           ),

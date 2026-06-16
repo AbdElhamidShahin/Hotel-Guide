@@ -5,7 +5,7 @@ import 'package:hotel_guide/core/theme/colors.dart';
 import 'package:hotel_guide/features/sign_up/logic/cubit/sign_up_cubit.dart';
 import '../../../../core/helpers/app_regex.dart';
 import '../../../../core/helpers/widget/custom_text_feild.dart';
-import '../../../../core/theme/app_theme.dart';
+import '../../../../core/theme/app_theme_data.dart';
 import '../../logic/cubit/sign_up_state.dart';
 
 class EmailAndPasswordAndName extends StatefulWidget {
@@ -38,7 +38,6 @@ class _EmailAndPasswordAndNameState extends State<EmailAndPasswordAndName> {
 
   void _onSubmit() {
     if (!_formKey.currentState!.validate()) return;
-
     context.read<SignUpCubit>().signUpUser(
       name: _nameController.text.trim(),
       email: _emailController.text.trim(),
@@ -54,7 +53,7 @@ class _EmailAndPasswordAndNameState extends State<EmailAndPasswordAndName> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          _buildLabel('الإسم'),
+          _buildLabel(context, 'الإسم'),
           AppTextFormFeild(
             hintText: 'abdo shahin',
             controller: _nameController,
@@ -64,10 +63,10 @@ class _EmailAndPasswordAndNameState extends State<EmailAndPasswordAndName> {
               }
               return null;
             },
-            suffixIcon: _buildSuffixIcon(Icons.person_outline_sharp),
+            suffixIcon: _buildSuffixIcon(Icons.person_outline_sharp, context),
           ),
           SizedBox(height: 16.h),
-          _buildLabel('البريد الإلكتروني'),
+          _buildLabel(context, 'البريد الإلكتروني'),
           AppTextFormFeild(
             hintText: 'example@gmail.com',
             controller: _emailController,
@@ -80,10 +79,10 @@ class _EmailAndPasswordAndNameState extends State<EmailAndPasswordAndName> {
               }
               return null;
             },
-            suffixIcon: _buildSuffixIcon(Icons.email_outlined),
+            suffixIcon: _buildSuffixIcon(Icons.email_outlined, context),
           ),
           SizedBox(height: 16.h),
-          _buildLabel('كلمة المرور'),
+          _buildLabel(context, 'كلمة المرور'),
           AppTextFormFeild(
             hintText: '******',
             controller: _passwordController,
@@ -106,7 +105,7 @@ class _EmailAndPasswordAndNameState extends State<EmailAndPasswordAndName> {
             ),
           ),
           SizedBox(height: 16.h),
-          _buildLabel('تأكيد كلمة المرور'),
+          _buildLabel(context, 'تأكيد كلمة المرور'),
           AppTextFormFeild(
             hintText: '******',
             controller: _confirmPasswordController,
@@ -141,7 +140,7 @@ class _EmailAndPasswordAndNameState extends State<EmailAndPasswordAndName> {
                 }
                 return ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
+                    backgroundColor: Theme.of(context).colorScheme.primary,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.r),
                     ),
@@ -149,7 +148,11 @@ class _EmailAndPasswordAndNameState extends State<EmailAndPasswordAndName> {
                   onPressed: _onSubmit,
                   child: Text(
                     'إنشاء حساب',
-                    style: font16RegularMuted.copyWith(color: Colors.white),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16.sp,
+                    ),
                   ),
                 );
               },
@@ -161,17 +164,29 @@ class _EmailAndPasswordAndNameState extends State<EmailAndPasswordAndName> {
   }
 }
 
-Widget _buildLabel(String text) {
+Widget _buildLabel(BuildContext context, String text) {
+  final isDark = Theme.of(context).brightness == Brightness.dark;
   return Padding(
     padding: EdgeInsets.only(bottom: 6.h, top: 10.h),
-    child: Text(text, style: font16RegularMuted.copyWith(fontSize: 14.sp)),
+    child: Text(
+      text,
+      style: AppTextStyles.font16RegularMuted(context).copyWith(
+        fontSize: 14.sp,
+        color: isDark ? Colors.white : AppColors.primary,
+      ),
+    ),
   );
 }
 
-Widget _buildSuffixIcon(IconData icon) {
+Widget _buildSuffixIcon(IconData icon, context) {
+  final isDark = Theme.of(context).brightness == Brightness.dark;
   return Padding(
     padding: EdgeInsets.symmetric(horizontal: 12.w),
-    child: Icon(icon, size: 22.r, color: AppColors.primary),
+    child: Icon(
+      icon,
+      size: 22.r,
+      color: isDark ? Colors.white70 : AppColors.primary,
+    ),
   );
 }
 

@@ -28,47 +28,50 @@ class AppColors {
   static const Color colorText     = Color(0xFF51526C);
   static const Color textGrey      = Color(0xFF6B6B80);
   static final  Color SlateBlueLight = Color(0xFF999AAD).withOpacity(0.3);
+  static const Color SlateBlueLightConst = Color(0x4C999AAD); // same as SlateBlueLight (0.3 opacity)
 
   // ── Dynamic (بتتغير مع الـ Dark Mode) ────────────
+  // ── Dynamic (بتتغير مع الـ Dark Mode) ────────────
+  // ألوان النص في الدارك مود أوضح وأكثر قابلية للقراءة
   static Color get textPrimary =>
-      isDark ? const Color(0xFFF1F1F1) : const Color(0xFF101010);
+      isDark ? const Color(0xFFEAEAF0) : const Color(0xFF101010);
 
   static Color get textSecondary =>
-      isDark ? const Color(0xFFCCCCCC) : const Color(0xFF343434);
+      isDark ? const Color(0xFFD4D4E8) : const Color(0xFF343434);
 
   static Color get textMuted =>
-      isDark ? const Color(0xFF9E9E9E) : const Color(0xFF6C7278);
+      isDark ? const Color(0xFFA0A0B8) : const Color(0xFF6C7278);
 
   static Color get textDisabled =>
-      isDark ? const Color(0xFF616161) : const Color(0xFF939393);
+      isDark ? const Color(0xFF707088) : const Color(0xFF939393);
 
   static Color get pureBlack =>
-      isDark ? const Color(0xFFFFFFFF) : const Color(0xFF000000);
+      isDark ? const Color(0xFFEAEAF0) : const Color(0xFF000000);
 
   static Color get background =>
-      isDark ? const Color(0xFF121212) : const Color(0xFFF5F5F7);
+      isDark ? const Color(0xFF0F0F1A) : const Color(0xFFF5F5F7);
 
   static Color get scaffoldBackground =>
-      isDark ? const Color(0xFF171725) : const Color(0xFFF9F9F9);
+      isDark ? const Color(0xFF13131F) : const Color(0xFFF9F9F9);
 
   static Color get surfaceVariant =>
-      isDark ? const Color(0xFF2A2A3D) : const Color(0xFFEFF0F6);
+      isDark ? const Color(0xFF26263A) : const Color(0xFFEFF0F6);
 
   static Color get border =>
-      isDark ? const Color(0xFF2E2E3E) : const Color(0xFFE9E9E9);
+      isDark ? const Color(0xFF35354A) : const Color(0xFFE9E9E9);
 
   static Color get divider =>
-      isDark ? const Color(0xFF3A3A4A) : const Color(0xFFD9D9D9);
+      isDark ? const Color(0xFF404058) : const Color(0xFFD9D9D9);
 
   static Color get card =>
-      isDark ? const Color(0xFF1E1E2C) : const Color(0xFFFFFFFF);
+      isDark ? const Color(0xFF1C1C28) : const Color(0xFFFFFFFF);
 
   static Color get hintTextGrey =>
-      isDark ? const Color(0xFF555565) : const Color(0xFFD9D9D9);
+      isDark ? const Color(0xFF707088) : const Color(0xFFD9D9D9);
 
   static Color get textTitle =>
-      isDark ? const Color(0xFFF1F1F1) : const Color(0xFF222222);
+      isDark ? const Color(0xFFEAEAF0) : const Color(0xFF222222);
 
   static Color get darkBackground =>
-      isDark ? const Color(0xFF0D0D1A) : const Color(0xFF171725);
+      isDark ? const Color(0xFF0D0D18) : const Color(0xFF171725);
 }

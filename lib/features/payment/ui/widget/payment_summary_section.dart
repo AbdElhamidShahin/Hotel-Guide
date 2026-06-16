@@ -24,7 +24,7 @@ class PaymentTile extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.all(8.w),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.surface,
 
           borderRadius: BorderRadius.circular(16.r),
           border: Border.all(

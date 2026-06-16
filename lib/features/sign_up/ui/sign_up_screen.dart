@@ -3,16 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hotel_guide/core/theme/app_theme.dart';
+import 'package:hotel_guide/core/theme/app_theme_data.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
 import 'package:hotel_guide/features/login/ui/widget/divider_with_text.dart';
 import 'package:hotel_guide/features/login/ui/widget/social_login_section.dart';
 import 'package:hotel_guide/features/sign_up/logic/cubit/sign_up_cubit.dart';
 import 'package:hotel_guide/features/sign_up/ui/widget/email_and_password_and-name.dart';
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import '../../../core/helpers/contact/custom_show_snackbar.dart';
 import '../../../core/router/routers.dart';
 import '../logic/cubit/sign_up_state.dart';
-import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
+
 class SignUpScreen extends StatelessWidget {
   const SignUpScreen({super.key});
 
@@ -21,7 +22,7 @@ class SignUpScreen extends StatelessWidget {
     return BlocListener<SignUpCubit, SignUpState>(
       listener: _handleState,
       child: Scaffold(
-        backgroundColor: Colors.white,
+        // Inherits scaffoldBackgroundColor from AppThemeData automatically.
         body: SingleChildScrollView(
           child: Stack(
             children: [
@@ -29,7 +30,7 @@ class SignUpScreen extends StatelessWidget {
                 filter: ImageFilter.blur(sigmaX: 15.0, sigmaY: 15.0),
                 child: Container(color: Colors.transparent),
               ),
-              _buildBackgroundGradient(),
+              _buildBackgroundGradient(context),
 
               SafeArea(
                 child: Padding(
@@ -37,15 +38,27 @@ class SignUpScreen extends StatelessWidget {
                   child: Column(
                     children: [
                       SizedBox(height: 20.h),
-                      Image.asset(
-                        'assets/images/logo/logo-light.png',
-                        height: 150.h,
-                        width: 150.w,
+                      // داخل SafeArea في الـ Column
+                      Builder(
+                        builder: (context) {
+                          final isDark = Theme.of(context).brightness == Brightness.dark;
+                          return Image.asset(
+                            isDark ? 'assets/images/logo/logo_new.png' : 'assets/images/logo/logo-light.png',
+                            height: 150.h,
+                            width: 150.w,
+                          );
+                        },
                       ),
                       SizedBox(height: 15.h),
+                      // Migrated from frozen font30BoldPrimary global.
                       Text(
                         'بوابتك لتجربة فندقية استثنائية',
-                        style: font30BoldPrimary.copyWith(fontSize: 26.sp),
+                        style: AppTextStyles.font30BoldPrimary(context).copyWith(
+                          fontSize: 26.sp,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white
+                              : Theme.of(context).colorScheme.primary,
+                        ),
                         maxLines: 1,
                       ),
                       SizedBox(height: 20.h),
@@ -53,9 +66,9 @@ class SignUpScreen extends StatelessWidget {
                       const EmailAndPasswordAndName(),
 
                       SizedBox(height: 20.h),
-                      DividerWithText(),
+                      const DividerWithText(),
                       SizedBox(height: 20.h),
-                      SocialLoginSection(),
+                      const SocialLoginSection(),
                       SizedBox(height: 30.h),
 
                       Row(
@@ -63,16 +76,18 @@ class SignUpScreen extends StatelessWidget {
                         children: [
                           TextButton(
                             onPressed: () => context.push(routes.loginScreen),
+                            // Migrated from frozen font16BoldWhite global.
                             child: Text(
                               'تسجيل دخول',
-                              style: font16BoldWhite.copyWith(
+                              style: AppTextStyles.font16BoldWhite(context).copyWith(
                                 color: AppColors.ShadowPurple,
                               ),
                             ),
                           ),
+                          // Migrated from frozen font16RegularMuted global.
                           Text(
                             'لديك حساب بالفعل؟',
-                            style: font16RegularMuted,
+                            style: AppTextStyles.font16RegularMuted(context),
                             textDirection: TextDirection.rtl,
                           ),
                         ],
@@ -88,7 +103,6 @@ class SignUpScreen extends StatelessWidget {
       ),
     );
   }
-
 
   void _handleState(BuildContext context, SignUpState state) {
     if (state is SignUpSuccess) {
@@ -116,7 +130,11 @@ class SignUpScreen extends StatelessWidget {
     }
   }
 
-  Widget _buildBackgroundGradient() {
+  /// Decorative top gradient. Fades from the scaffold background colour,
+  /// through the brand purple accent, back to the scaffold background —
+  /// blends seamlessly in both light and dark mode.
+  Widget _buildBackgroundGradient(BuildContext context) {
+    final bg = Theme.of(context).scaffoldBackgroundColor;
     return Container(
       width: double.infinity,
       height: 0.25.sh,
@@ -125,9 +143,9 @@ class SignUpScreen extends StatelessWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Colors.white.withOpacity(0.0),
+            bg.withOpacity(0.0),
             const Color(0xFF83809F).withOpacity(0.6),
-            Colors.white.withOpacity(0.0),
+            bg.withOpacity(0.0),
           ],
           stops: const [0.0, 0.5, 1.0],
         ),

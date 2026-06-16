@@ -19,24 +19,24 @@ class CustomAppbarHome extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12.r),
+          // Always primary — this is a branded banner, not a surface container.
           color: AppColors.primary,
         ),
         child: Stack(
           children: [
             BackgroundCircle(left: -70.r, bottom: -110.r),
             BackgroundCircle(right: -70.r, bottom: -110.r),
-
             Center(
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.w),
                 child: Row(
                   children: [
-                    _buildAppBarIcon(context, "assets/icons/search-normal.svg", routes.searchScreen),
+                    _buildAppBarIcon(context, 'assets/icons/search-normal.svg', routes.searchScreen),
                     SizedBox(width: 12.w),
-                    _buildAppBarIcon(context, "assets/icons/notification.svg", routes.notification),
+                    _buildAppBarIcon(context, 'assets/icons/notification.svg', routes.notification),
                     const Spacer(),
                     Image.asset(
-                      "assets/images/logo/logo_new.png",
+                      'assets/images/logo/logo_new.png',
                       height: 55.h,
                       width: 65.w,
                       fit: BoxFit.contain,
@@ -44,17 +44,21 @@ class CustomAppbarHome extends StatelessWidget {
                   ],
                 ),
               ),
-            ),          ],
+            ),
+          ],
         ),
       ),
     );
-  }Widget _buildAppBarIcon(BuildContext context, String icon, String route) {
+  }
+
+  Widget _buildAppBarIcon(BuildContext context, String icon, String route) {
     return GestureDetector(
       onTap: () => context.push(route),
       child: SvgPicture.asset(
         icon,
         height: 28.r,
         width: 28.r,
+        // Always white — icons sit on primary-colour banner in both themes.
         colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
       ),
     );

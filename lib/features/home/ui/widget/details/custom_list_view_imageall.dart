@@ -99,7 +99,10 @@ class _CustomSimilarHotelsListviewState
     );
   }
 
+// تم اختصار التعديل داخل الـ Widget المسؤول عن الـ Dots فقط لعدم تكرار الملف الكلي:
   Widget _buildDotsIndicator(int count) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: List.generate(count, (index) {
@@ -110,15 +113,14 @@ class _CustomSimilarHotelsListviewState
           width: _currentPage == index ? 16.w : 6.w,
           decoration: BoxDecoration(
             color: _currentPage == index
-                ? AppColors.primary
-                : Colors.grey.shade300,
+                ? colorScheme.primary // قراءة ثيم البراند التكيفي
+                : colorScheme.outlineVariant, // التعديل: لون رمادي متوافق مع الحالتين تلقائياً
             borderRadius: BorderRadius.circular(4.r),
           ),
         );
       }).reversed.toList(),
     );
   }
-
   List<HotelModel> _filterSimilarHotels(HomeLoaded state) {
     try {
       final cityName = state.cities

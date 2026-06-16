@@ -14,8 +14,9 @@ import '../../../notification/logic/notificatin_logic.dart';
 import '../../logic/booking_cubit.dart';
 import '../../logic/booking_state.dart';
 import 'custom_wallet_item.dart';
+import '../../../../core/theme/app_theme_data.dart';
+import '../../../../core/theme/colors.dart';
 
-// Helper: هل رسالة الخطأ تعني رصيد ناقص؟
 bool _isInsufficientBalance(String message) {
   return message.contains('رصيد') ||
       message.contains('غير كافٍ') ||
@@ -24,9 +25,9 @@ bool _isInsufficientBalance(String message) {
 }
 
 void showWalletBottomSheet(
-    BuildContext parentContext,
-    BookingModel bookingData,
-    ) {
+  BuildContext parentContext,
+  BookingModel bookingData,
+) {
   final bookingCubit = parentContext.read<BookingCubit>();
 
   showModalBottomSheet(
@@ -42,15 +43,12 @@ void showWalletBottomSheet(
               context: context,
               barrierDismissible: false,
               builder: (context) =>
-              const Center(child: CircularProgressIndicator()),
+                  const Center(child: CircularProgressIndicator()),
             );
           } else if (state is BookingSuccess) {
-            Navigator.of(context, rootNavigator: true).pop(); // close loading
-            Navigator.of(context).pop(); // close bottom sheet
+            Navigator.of(context, rootNavigator: true).pop();
+            Navigator.of(context).pop();
 
-            // ✅ Repo already saved the notification to DB.
-            // Here we only refresh the local in-memory NotificationCubit
-            // so the bell icon updates immediately without a re-fetch.
             getIt<NotificationCubit>().fetchNotifications();
 
             context.push(
@@ -67,17 +65,13 @@ void showWalletBottomSheet(
               'تم خصم ${bookingData.totalAmount.toInt()} EGP من محفظتك',
             );
           } else if (state is BookingError) {
-            Navigator.of(context, rootNavigator: true).pop(); // close loading
+            Navigator.of(context, rootNavigator: true).pop();
 
-            // ✅ Repo already saved the failure notification to DB for card path.
-            // Refresh local list so the bell updates immediately.
             getIt<NotificationCubit>().fetchNotifications();
 
-            // ── هل الخطأ بسبب رصيد ناقص؟ ──
             final bool isBalanceError = _isInsufficientBalance(state.message);
 
             if (isBalanceError) {
-              // نفضل في نفس الـ BottomSheet ونعرض رسالة واضحة للمستخدم
               showCustomSnackbar(
                 context,
                 ContentType.failure,
@@ -85,7 +79,6 @@ void showWalletBottomSheet(
                 'رصيد محفظتك لا يكفي لإتمام الحجز.\nالمطلوب: ${bookingData.totalAmount.toInt()} EGP',
               );
             } else {
-              // خطأ عام → أغلق الـ BottomSheet وروح لصفحة النتيجة
               Navigator.of(context).pop();
               context.push(
                 routes.bookingResult,
@@ -103,7 +96,7 @@ void showWalletBottomSheet(
         child: Container(
           height: MediaQuery.of(context).size.height * 0.6,
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
           ),
           child: Column(
@@ -115,13 +108,17 @@ void showWalletBottomSheet(
                   children: [
                     IconButton(
                       onPressed: () => Navigator.pop(context),
-                      icon: const Icon(Icons.close),
+                      icon: Icon(
+                        Icons.close,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
                     ),
                     Text(
                       "المحفظة الإلكترونية",
-                      style: font20RegularPrimary.copyWith(
-                        color: AppColors.darkBackground,
-                      ),
+                      style: AppTextStyles.font20RegularPrimary(context)
+                          .copyWith(
+                            color: Theme.of(context).colorScheme.onSurface,
+                          ),
                     ),
                   ],
                 ),
@@ -142,7 +139,9 @@ void showWalletBottomSheet(
                       ),
                       SizedBox(height: 12.h),
                       CustomWalletItem(
-                        image: 'assets/images/logo/logo-light.png',
+                        image: Theme.of(context).brightness == Brightness.dark
+                            ? 'assets/images/logo/logo_new.png'
+                            : 'assets/images/logo/logo-light.png',
                         title: 'محفظة AQUA',
                         cashBack: 'كاش باك 10%',
                         selected: bookingCubit.selectedWallet == "AQUA",
@@ -188,10 +187,10 @@ void showWalletBottomSheet(
                     ),
                     child: Center(
                       child: Text(
-                        "تأكيد دفع ${bookingData.totalAmount.toInt()} EGP",
-                        style: font20BoldShadowPurple.copyWith(
-                          color: Colors.white,
-                        ),
+                        "EGP تأكيد دفع   ${bookingData.totalAmount.toInt()} ",
+                        style: AppTextStyles.font20BoldShadowPurple(
+                          context,
+                        ).copyWith(color: Colors.white),
                       ),
                     ),
                   ),

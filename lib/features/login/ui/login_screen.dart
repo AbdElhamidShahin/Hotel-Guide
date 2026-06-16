@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hotel_guide/core/theme/app_theme.dart';
+import 'package:hotel_guide/core/theme/app_theme_data.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
 import 'package:hotel_guide/features/login/ui/widget/EmailAndPassword.dart';
 import 'package:hotel_guide/features/login/ui/widget/divider_with_text.dart';
@@ -13,16 +13,6 @@ import '../../../core/router/routers.dart';
 import '../logic/cubit/login_cubit.dart';
 import '../logic/cubit/login_state.dart';
 
-/// ✅ التغييرات:
-///
-/// ❌ حُذف: Form() + context.read<LoginCubit>().formKey من الـ Screen
-///    السبب: الـ Form انتقل لـ EmailAndPassword widget
-///
-/// ❌ حُذف: CustomButton من الـ Screen
-///    السبب: الـ Submit button انتقل لـ EmailAndPassword widget
-///
-/// ✅ الـ Screen دلوقتي بتعمل حاجة واحدة بس:
-///    تسمع للـ states وترد بـ navigation أو snackbar
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
@@ -34,32 +24,47 @@ class LoginScreen extends StatelessWidget {
         body: SingleChildScrollView(
           child: Stack(
             children: [
-              _buildBackgroundGradient(),
+              _buildBackgroundGradient(context),
               SafeArea(
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 24.w),
                   child: Column(
                     children: [
-                      Image.asset(
-                        'assets/images/logo/logo-light.png',
-                        height: 150.r,
-                        width: 150.r,
+                      Builder(
+                        builder: (context) {
+                          final isDark =
+                              Theme.of(context).brightness == Brightness.dark;
+                          return Image.asset(
+                            isDark
+                                ? 'assets/images/logo/logo_new.png'
+                                : 'assets/images/logo/logo-light.png',
+                            height: 150.h,
+                            width: 150.w,
+                          );
+                        },
                       ),
                       SizedBox(height: 15.h),
                       Text(
                         'بوابتك لتجربة فندقية استثنائية',
-                        style: font30BoldPrimary.copyWith(fontSize: 26.sp),
+                        style: AppTextStyles.font30BoldPrimary(context)
+                            .copyWith(
+                              fontSize: 26.sp,
+                              color:
+                                  Theme.of(context).brightness ==
+                                      Brightness.dark
+                                  ? Colors.white
+                                  : Theme.of(context).colorScheme.primary,
+                            ),
                         maxLines: 1,
                       ),
                       SizedBox(height: 30.h),
 
-                      // ✅ Form + Controllers + Submit كلهم جوه EmailAndPassword
                       const EmailAndPassword(),
 
                       SizedBox(height: 20.h),
-                      DividerWithText(),
+                      const DividerWithText(),
                       SizedBox(height: 20.h),
-                      SocialLoginSection(),
+                      const SocialLoginSection(),
                       SizedBox(height: 30.h),
 
                       Row(
@@ -69,12 +74,22 @@ class LoginScreen extends StatelessWidget {
                             onPressed: () => context.push(routes.signUpScreen),
                             child: Text(
                               'إنشاء حساب',
-                              style: font16BoldWhite.copyWith(
-                                color: AppColors.ShadowPurple,
-                              ),
+                              style: AppTextStyles.font16BoldWhite(
+                                context,
+                              ).copyWith(color: AppColors.ShadowPurple),
                             ),
                           ),
-                          Text('لا تمتلك حساب؟', style: font16RegularMuted),
+                          Text(
+                            'لا تمتلك حساب؟',
+                            style: AppTextStyles.font16RegularMuted(context)
+                                .copyWith(
+                                  color:
+                                      Theme.of(context).brightness ==
+                                          Brightness.dark
+                                      ? Colors.white
+                                      : null,
+                                ),
+                          ),
                         ],
                       ),
                       SizedBox(height: 40.h),
@@ -108,7 +123,8 @@ class LoginScreen extends StatelessWidget {
     }
   }
 
-  Widget _buildBackgroundGradient() {
+  Widget _buildBackgroundGradient(BuildContext context) {
+    final bg = Theme.of(context).scaffoldBackgroundColor;
     return Container(
       width: double.infinity,
       height: 0.25.sh,
@@ -117,9 +133,9 @@ class LoginScreen extends StatelessWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            Colors.white.withOpacity(0.0),
+            bg.withOpacity(0.0),
             const Color(0xFF83809F).withOpacity(0.6),
-            Colors.white.withOpacity(0.0),
+            bg.withOpacity(0.0),
           ],
           stops: const [0.0, 0.5, 1.0],
         ),

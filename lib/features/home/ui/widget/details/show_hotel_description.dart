@@ -13,6 +13,7 @@ void showHotelDescription(
     showDragHandle: true,
     backgroundColor: Colors.transparent,
     builder: (context) {
+      final cs = Theme.of(context).colorScheme;
       return Container(
         height: MediaQuery.of(context).size.height * 0.9,
         padding: EdgeInsets.only(bottom: 20.h),
@@ -22,7 +23,8 @@ void showHotelDescription(
               child: Container(
                 margin: EdgeInsets.symmetric(horizontal: 16.w),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  // surface = white in light, dark card in dark mode.
+                  color: cs.surface,
                   borderRadius: BorderRadius.all(Radius.circular(25.r)),
                 ),
                 child: Column(
@@ -34,8 +36,9 @@ void showHotelDescription(
                         child: Text(
                           description,
                           textDirection: TextDirection.rtl,
-                          style: const TextStyle(
-                            color: Color(0xFF535367),
+                          style: TextStyle(
+                            // onSurfaceVariant = secondary text, adapts in dark mode.
+                            color: cs.onSurfaceVariant,
                             fontSize: 16,
                             height: 1.6,
                           ),
@@ -56,10 +59,16 @@ void showHotelDescription(
                     width: 55.r,
                     height: 55.r,
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colors.white, width: 2),
+                      // outline = themed border, visible in both modes.
+                      border: Border.all(color: cs.outline, width: 2),
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(Icons.close, color: Colors.white, size: 30.r),
+                    child: Icon(
+                      Icons.close,
+                      // onSurface = readable in both modes.
+                      color: cs.onSurface,
+                      size: 30.r,
+                    ),
                   ),
                 ),
               ),

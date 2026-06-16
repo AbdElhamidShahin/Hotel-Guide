@@ -1,11 +1,15 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../core/network/model/hotel_model.dart';
-import '../../../../core/network/failure/supabase_failure.dart';
+import '../../../../core/error/failure.dart';
 import '../../logic/model.dart';
 import 'search_repo.dart';
 
 class SearchRepoImpl implements SearchRepo {
-  final SupabaseClient _client = Supabase.instance.client;
+  // ✅ Fix: injected via constructor instead of self-instantiating
+  // from global Supabase.instance (which caused init-order crashes).
+  final SupabaseClient _client;
+
+  SearchRepoImpl(this._client);
 
   @override
   Future<List<HotelModel>> fetchHotels({
@@ -13,8 +17,7 @@ class SearchRepoImpl implements SearchRepo {
     FilterOptions? filter,
   }) async {
     try {
-      var selectQuery = '*, cities!inner(name)';
-
+      const selectQuery = '*, cities!inner(name)';
       var query = _client.from('hotels').select(selectQuery);
 
       if (queryText != null && queryText.isNotEmpty) {
@@ -26,7 +29,7 @@ class SearchRepoImpl implements SearchRepo {
             .gte('price_starts_from', filter.priceRange.start)
             .lte('price_starts_from', filter.priceRange.end);
 
-        if (filter.city != null && filter.city != "الكل") {
+        if (filter.city != null && filter.city != 'الكل') {
           query = query.filter('cities.name', 'eq', filter.city!);
         }
 
@@ -39,9 +42,6 @@ class SearchRepoImpl implements SearchRepo {
       }
 
       final response = await query.order('price_starts_from', ascending: true);
-      print("Raw Response: $response");
-      if ((response as List).isEmpty)
-        print("Warning: Database returned empty list!");
       return (response as List)
           .map((hotel) => HotelModel.fromJson(hotel))
           .toList();
@@ -58,11 +58,14 @@ class SearchRepoImpl implements SearchRepo {
 
   @override
   Future<List<String>> fetchAllViews() async {
+    // ✅ Fix: query only the views column, not all hotel rows
     final response = await _client.from('hotels').select('views');
-    Set<String> uniqueViews = {};
-    for (var item in (response as List)) {
-      List<dynamic> viewsList = item['views'] ?? [];
-      for (var v in viewsList) uniqueViews.add(v.toString());
+    final Set<String> uniqueViews = {};
+    for (final item in (response as List)) {
+      final List<dynamic> viewsList = (item['views'] as List?) ?? [];
+      for (final v in viewsList) {
+        uniqueViews.add(v.toString());
+      }
     }
     return uniqueViews.toList();
   }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:hotel_guide/core/theme/app_theme.dart';
+import 'package:hotel_guide/core/theme/app_theme_data.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
 
 class AccommodationCard extends StatelessWidget {
@@ -16,6 +16,8 @@ class AccommodationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -25,15 +27,19 @@ class AccommodationCard extends StatelessWidget {
               Expanded(
                 child: Text(
                   address,
-                  style: font18BoldGray.copyWith(color: AppColors.primary),
+                  style: AppTextStyles.font18BoldGray(context).copyWith(
+                    color: colorScheme.onSurface, // التعديل: قراءة لون النص الأساسي للثيم الحالي
+                  ),
                   textDirection: TextDirection.rtl,
                 ),
               ),
               SizedBox(width: 6.w),
               SvgPicture.asset(
-                "assets/icons/location.svg",
+                'assets/icons/location.svg',
                 width: 24.w,
                 height: 24.h,
+                // التعديل: تلوين الأيقونة لتتحول للون الأبيض في الـ Dark Mode تلقائياً
+                colorFilter: ColorFilter.mode(colorScheme.onSurface, BlendMode.srcIn),
               ),
             ],
           ),

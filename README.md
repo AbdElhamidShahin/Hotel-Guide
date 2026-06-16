@@ -1,16 +1,193 @@
-# hotel_guide
+<div align="center">
 
-A new Flutter project.
+# Hotel Guide
+
+A full-featured hotel booking app built with Flutter
+
+[![Flutter](https://img.shields.io/badge/Flutter-3.8+-blue?style=flat-square&logo=flutter)](https://flutter.dev)
+[![Dart](https://img.shields.io/badge/Dart-3.0+-blue?style=flat-square&logo=dart)](https://dart.dev)
+[![Supabase](https://img.shields.io/badge/Backend-Supabase-3ECF8E?style=flat-square&logo=supabase)](https://supabase.com)
+[![Stripe](https://img.shields.io/badge/Payments-Stripe-635BFF?style=flat-square&logo=stripe)](https://stripe.com)
+
+</div>
+
+---
+
+## Overview
+
+Hotel Guide is a Flutter app that lets users browse hotels, check availability, and complete bookings with real payment processing. The project is built on Clean Architecture with a feature-based folder structure, making it easy to scale and maintain.
+
+---
+
+## Screenshots
+
+<table>
+  <tr>
+    <td align="center"><b>Onboarding</b></td>
+    <td align="center"><b>Login</b></td>
+    <td align="center"><b>Register</b></td>
+  </tr>
+<tr>
+    <td><img src="https://github.com/user-attachments/assets/705d50b2-6087-4700-937e-8d1edbfa024a" alt="Screenshot_20260502_150914" width="200"/></td>
+    <td><img src="https://github.com/user-attachments/assets/58a41eec-76f4-47e0-8e73-709c0b6b8f85" alt="Screenshot_20260502_150903" width="200"/></td>
+    <td><img src="https://github.com/user-attachments/assets/e2ce8471-cff8-42a0-b278-b175ef6f1609" alt="Screenshot_20260502_150854" width="200"/></td>
+    <td><img src="https://github.com/user-attachments/assets/beeb8f51-b535-4985-bb41-441bb4495982" alt="Screenshot_20260502_150819" width="200"/></td>
+</tr>
+  <tr>
+    <td align="center"><b>Home</b></td>
+    <td align="center"><b>Search & Filter</b></td>
+    <td align="center"><b>Hotel Details</b></td>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/f34a32fe-ebcd-4ada-b0a8-b5031cb1ab01" alt="Screenshot_20260502_151036" width="200"/></td>
+    <td><img src="https://github.com/user-attachments/assets/3a375300-d0dd-442b-8c56-82aba432c8a5" alt="Screenshot_20260502_151210" width="200"/></td>
+    <td><img src="https://github.com/user-attachments/assets/4ec648ba-6944-4385-8536-69f679014649" alt="Screenshot_20260502_151318" width="200"/></td
+  </tr>
+  <tr>
+    <td align="center"><b>Booking</b></td>
+    <td align="center"><b>Payment</b></td>
+    <td align="center"><b>Wallet</b></td>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/d98ebec0-7435-48b6-b139-c2629d6675e8" alt="Screenshot_20260502_151413" width="200"/></td>
+    <td><img src="https://github.com/user-attachments/assets/65ab66bc-e0cc-47d0-918f-6d90b221e67c" alt="Screenshot_20260502_151559" width="200"/></td>
+    <td><img src="https://github.com/user-attachments/assets/5947cfaa-dc11-40c6-b145-8c364b4665f3" alt="Screenshot_20260502_151149" width="200"/></td
+                                                                                                                                                
+  </tr>
+  <tr>
+    <td align="center"><b>AI Assistant</b></td>
+    <td align="center"><b>Profile</b></td>
+    <td align="center"><b>Notifications</b></td>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/1649e769-3c2b-4dbe-b569-774e4f3dccc9" alt="Screenshot_20260502_151247" width="200"/></td>
+    <td><img src="https://github.com/user-attachments/assets/96be6462-67b9-4eca-b41b-c71c401c3e22" alt="Screenshot_20260502_151158 - Copy" width="200"/></td>
+    <td><img src="https://github.com/user-attachments/assets/1f909b88-26c2-4f8f-9a5e-07660793ab13" alt="Screenshot_20260502_151831" width="200"/></td
+  </tr>
+</table>
+
+---
+
+## Features
+
+- **Onboarding** — intro screens for new users
+- **Auth** — sign up, log in, and Facebook login
+- **Hotel Browsing** — browse hotels with ratings, photos, and details
+- **Search & Filter** — filter by availability, price, and rating
+- **Booking Flow** — multi-step booking with date picker and room selection
+- **Stripe Payments** — secure card payments using Stripe's native sheet
+- **Wallet** — top up balance, track transactions, and handle refunds
+- **AI Assistant** — chat assistant powered by n8n webhooks with hotel context
+- **Notifications** — booking status updates
+- **Offline Handling** — connectivity check with user feedback
+
+---
+
+## Architecture
+
+The project follows **Clean Architecture** with a feature-based structure.
+
+```
+## 🏗️ Project Structure
+
+```text
+lib/
+├── core/
+│   ├── constants/          # App constants
+│   ├── di/                 # Dependency Injection
+│   ├── helpers/            # Shared helpers
+│   ├── network/            # API & Supabase services
+│   ├── router/             # GoRouter configuration
+│   ├── theme/              # App themes & colors
+│   ├── widgets/            # Reusable widgets
+│   └── models/             # Shared models
+│
+├── features/
+│   ├── auth/
+│   │   ├── data/
+│   │   ├── logic/
+│   │   └── ui/
+│   │
+│   ├── home/
+│   ├── hotel_details/
+│   ├── booking/
+│   ├── payment/
+│   ├── wallet/
+│   ├── favorites/
+│   ├── profile/
+│   ├── notifications/
+│   └── chat_ai/
+│
+├── hotel_app.dart
+└── main.dart
+```
+```
+
+---
+
+## Tech Stack
+
+| Area | Technology |
+|------|-----------|
+| Framework | Flutter 3.8+ |
+| State Management | BLoC / Cubit |
+| Navigation | GoRouter |
+| Backend & Auth | Supabase |
+| Payments | Stripe |
+| AI Integration | n8n Webhooks |
+| Responsive UI | ScreenUtil |
+| Local Storage | SharedPreferences |
+| HTTP Client | Dio |
+| DI | GetIt |
+
+---
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+### Prerequisites
 
-A few resources to get you started if this is your first Flutter project:
+- Flutter SDK `^3.8.1`
+- A [Supabase](https://supabase.com) project
+- A [Stripe](https://stripe.com) account
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### Installation
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```bash
+git clone https://github.com/AbdElhamidShahin/Hotel-Guide.git
+cd Hotel-Guide
+flutter pub get
+flutter run
+```
+
+### Environment Setup
+
+Create the following file and add your keys:
+
+```dart
+// lib/core/network/api_constants.dart
+abstract class ApiConstants {
+  static const String supabaseUrl = "YOUR_SUPABASE_URL";
+  static const String supabaseKey = "YOUR_SUPABASE_KEY";
+  static const String stripePublishableKey = "YOUR_STRIPE_KEY";
+}
+```
+
+---
+
+## Payment Flow
+
+```
+App  →  Supabase Edge Function  →  Stripe API
+               ↓
+     Returns Client Secret + Ephemeral Key
+               ↓
+     Native Stripe Sheet shown to user
+               ↓
+     On success → Webhook updates booking in DB
+```
+
+---
+
+## Developer
+
+**Abd Elhamid Shahin** — [GitHub](https://github.com/AbdElhamidShahin)

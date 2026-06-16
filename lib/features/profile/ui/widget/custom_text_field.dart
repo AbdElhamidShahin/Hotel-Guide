@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import '../../../../core/theme/app_theme.dart';
+import '../../../../core/theme/app_theme_data.dart';
 import '../../../../core/theme/colors.dart';
 
 class Customtextfeild extends StatelessWidget {
-  Customtextfeild({
+  const Customtextfeild({
     super.key,
     required this.hintText,
     required this.label,
@@ -24,6 +23,8 @@ class Customtextfeild extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
       child: Column(
@@ -31,39 +32,43 @@ class Customtextfeild extends StatelessWidget {
         children: [
           Text(
             label,
-            style: TextStyle(
+            style: AppTextStyles.font12BoldBlack(context).copyWith(
               fontWeight: FontWeight.bold,
               fontSize: 14.sp,
-              color: AppColors.pureBlack,
-              fontFamily: 'Cairo',
             ),
           ),
           SizedBox(height: 6.h),
           TextFormField(
-
             controller: controller,
             onChanged: onChanged,
             validator: validator,
             keyboardType: keyboardType,
             textAlign: TextAlign.right,
-            style: TextStyle(color: AppColors.pureBlack, fontSize: 16.sp),
+            // Input text colour from live theme.
+            style: TextStyle(
+              color: cs.onSurface,
+              fontSize: 16.sp,
+              fontFamily: 'Cairo',
+            ),
             decoration: InputDecoration(
               filled: true,
-              fillColor: Colors.white,
+              // surface = white in light, dark card in dark mode.
+              fillColor: cs.surface,
               hintText: hintText,
-              hintStyle: font15MediumGray,
+              // Migrated from frozen font15MediumGray global.
+              hintStyle: AppTextStyles.font15MediumGray(context),
               contentPadding: EdgeInsets.symmetric(
                 horizontal: 12.w,
                 vertical: 16.h,
               ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(8),
-                borderSide: const BorderSide(color: AppColors.warning),
+                borderSide: BorderSide(color: cs.outline),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(6),
                 borderSide: BorderSide(
-                  color: AppColors.textTitle.withOpacity(0.7),
+                  color: cs.outline,
                   width: 1.0,
                 ),
               ),
@@ -73,6 +78,14 @@ class Customtextfeild extends StatelessWidget {
                   color: AppColors.secondary,
                   width: 1.5,
                 ),
+              ),
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: cs.error),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: cs.error, width: 1.5),
               ),
             ),
           ),

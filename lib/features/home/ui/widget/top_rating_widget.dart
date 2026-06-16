@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:hotel_guide/core/theme/app_theme.dart';
+import 'package:hotel_guide/core/theme/app_theme_data.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
 
 class TopRatingWidget extends StatelessWidget {
@@ -24,9 +24,11 @@ class TopRatingWidget extends StatelessWidget {
               child: Row(
                 children: [
                   SvgPicture.asset(
-                    "assets/icons/received.svg",
+                    'assets/icons/received.svg',
                     colorFilter: ColorFilter.mode(
-                      AppColors.ShadowPurple,
+                      Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white
+                          : AppColors.primary,
                       BlendMode.srcIn,
                     ),
                     width: 20.r,
@@ -34,9 +36,12 @@ class TopRatingWidget extends StatelessWidget {
                   ),
                   SizedBox(width: 4.w),
                   Text(
-                    "عرض المزيد",
-                    style: font18RegularShadowPurple.copyWith(
+                    'عرض المزيد',
+                    style: AppTextStyles.font18RegularShadowPurple(context).copyWith(
                       fontSize: 16.sp,
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white
+                          : AppColors.primary,
                     ),
                   ),
                 ],
@@ -48,8 +53,11 @@ class TopRatingWidget extends StatelessWidget {
               name,
               textAlign: TextAlign.right,
               textDirection: TextDirection.rtl,
-              style: font20BoldShadowPurple.copyWith(
+              style: AppTextStyles.font20BoldShadowPurple(context).copyWith(
                 fontSize: 18.sp,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white
+                    : AppColors.primary,
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,

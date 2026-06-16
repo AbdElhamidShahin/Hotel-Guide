@@ -3,18 +3,17 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hotel_guide/core/router/routers.dart';
 import '../../../../core/network/model/room_model.dart';
-import '../../../../core/theme/app_theme.dart';
+import '../../../../core/theme/app_theme_data.dart';
 import '../../../../core/theme/colors.dart';
 
 class CustomRoomsListViewItem extends StatelessWidget {
   const CustomRoomsListViewItem({super.key, required this.room});
   final Room room;
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        context.push(routes.CustomRoom, extra: room);
-      },
+      onTap: () => context.push(routes.CustomRoom, extra: room),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),
         child: Stack(
@@ -27,25 +26,31 @@ class CustomRoomsListViewItem extends StatelessWidget {
                     fit: BoxFit.cover,
                   )
                 : Image.asset(
-                    "assets/images/onBoardingImage.jpg",
+                    'assets/images/onBoardingImage.jpg',
                     height: 300.h,
                     width: 220.w,
                     fit: BoxFit.cover,
                   ),
+
+            // Dark overlay on the photo — intentionally static in both themes
+            // so the white text below stays readable.
             Container(
               height: 300.h,
               width: 220.w,
-              color: AppColors.pureBlack.withOpacity(0.2),
+              color: Colors.black.withOpacity(0.2),
             ),
+
             Positioned(
               bottom: 12.w,
               right: 12.h,
               left: 12.h,
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                // Migrated from frozen font16BoldWhite global.
+                // Always white — text sits on dark photo overlay.
                 child: Text(
                   room.name,
-                  style: font16BoldWhite,
+                  style: AppTextStyles.font16BoldWhite(context),
                   maxLines: 2,
                   textDirection: TextDirection.rtl,
                 ),
@@ -62,10 +67,13 @@ class CustomRoomsListViewItem extends StatelessWidget {
                     size: 24,
                     color: AppColors.orangeGold,
                   ),
-
+                  // Migrated from frozen font18BoldGray global.
+                  // Always white — text sits on dark photo overlay.
                   Text(
-                    "4.6",
-                    style: font18BoldGray.copyWith(color: AppColors.textWhite),
+                    '4.6',
+                    style: AppTextStyles.font18BoldGray(context).copyWith(
+                      color: AppColors.textWhite,
+                    ),
                   ),
                 ],
               ),

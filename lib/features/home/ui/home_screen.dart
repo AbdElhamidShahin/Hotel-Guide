@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hotel_guide/core/theme/colors.dart';
 import 'package:hotel_guide/features/home/ui/widget/home/ai_booking_banner.dart';
 import 'package:hotel_guide/features/home/ui/widget/home/custom_appBar_home.dart';
 import 'package:hotel_guide/features/home/ui/widget/home/custom_city_home.dart';
@@ -13,7 +12,7 @@ import 'package:hotel_guide/features/home/ui/widget/home/show_hotels_bottom_shee
 import 'package:hotel_guide/features/home/ui/widget/top_rating_widget.dart';
 import '../../../core/helpers/local_storage_account.dart';
 import '../../../core/helpers/widget/section_divider.dart';
-import '../../../core/theme/app_theme.dart';
+import '../../../core/theme/app_theme_data.dart';
 
 const String _featuredCityId = '8a7ee754-037c-4a87-bda6-8a61527982a3';
 
@@ -92,8 +91,9 @@ class HomeScreen extends StatelessWidget {
                     padding: EdgeInsets.symmetric(horizontal: 16.w),
                     child: Text(
                       '!عروض ترويجية وخصومات وعروض خاصة لك',
-                      style: font14SemiBoldWhite.copyWith(
-                        color: AppColors.pureBlack.withOpacity(0.6),
+                      style: AppTextStyles.font14SemiBoldWhite(context).copyWith(
+                        color: Theme.of(context).colorScheme.onSurface
+                            .withOpacity(0.6),
                       ),
                       textAlign: TextAlign.right,
                     ),

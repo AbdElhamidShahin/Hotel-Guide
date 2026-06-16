@@ -3,12 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hotel_guide/core/theme/app_theme_data.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
 import 'package:snackly/snackly.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/network/model/hotel_model.dart';
 import '../../../../core/router/routers.dart';
-import '../../../../core/theme/app_theme.dart';
 import 'package:provider/provider.dart';
 import '../../../favorite/logic/cubit/favorite_cubit.dart';
 import '../../../favorite/logic/cubit/favorite_state.dart';
@@ -19,23 +19,30 @@ class CustomRatingListviewItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final isLight = Theme.of(context).brightness == Brightness.light;
+
     return GestureDetector(
-      onTap: () {
-        context.push(routes.customDetailsScreen, extra: hotelModel);
-      },
+      onTap: () => context.push(routes.customDetailsScreen, extra: hotelModel),
       child: Container(
         width: 240.w,
         margin: EdgeInsetsDirectional.only(start: 16.w, bottom: 10.h),
         decoration: BoxDecoration(
-          color: Colors.white,
+          // surface = white in light, dark card in dark mode.
+          color: cs.surface,
           borderRadius: BorderRadius.circular(16.r),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.08),
+              // Shadow fades out in dark mode; border below provides depth.
+              color: isLight
+                  ? Colors.black.withOpacity(0.08)
+                  : Colors.transparent,
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
           ],
+          // Subtle border replaces shadow in dark mode.
+          border: isLight ? null : Border.all(color: cs.outline, width: 0.5),
         ),
         child: Column(
           children: [
@@ -62,12 +69,12 @@ class CustomRatingListviewItem extends StatelessWidget {
                   Positioned(
                     bottom: 10.h,
                     left: 8.w,
-                    child: _buildRatingBadge(),
+                    child: _buildRatingBadge(context),
                   ),
                   Positioned(
                     bottom: 10.h,
                     right: 8.w,
-                    child: _buildStatusBadge(),
+                    child: _buildStatusBadge(context),
                   ),
                 ],
               ),
@@ -81,24 +88,39 @@ class CustomRatingListviewItem extends StatelessWidget {
                   children: [
                     Text(
                       hotelModel.name,
-                      style: font16BoldWhite.copyWith(
-                        color: AppColors.pureBlack,
-                      ),
+                      // Migrated from font16BoldWhite.copyWith(color: pureBlack).
+                      style: AppTextStyles.font16BoldWhite(
+                        context,
+                      ).copyWith(color: cs.onSurface),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const Divider(height: 1),
+                    Divider(height: 1, color: cs.outline),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         SvgPicture.asset(
-                          "assets/icons/send.svg",
+                          'assets/icons/send.svg',
                           width: 20.r,
-                          color: AppColors.primary,
+                          colorFilter: ColorFilter.mode(
+                            Theme.of(context).brightness == Brightness.dark
+                                ? Colors.white
+                                : AppColors.primary,
+                            BlendMode.srcIn,
+                          ),
                         ),
                         SizedBox(width: 6.w),
-
-                        Text("إحجز الآن", style: font17RegularPrimary),
+                        Text(
+                          'إحجز الآن',
+                          style: AppTextStyles.font17RegularPrimary(context)
+                              .copyWith(
+                                color:
+                                    Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? Colors.white
+                                    : AppColors.primary,
+                              ),
+                        ),
                       ],
                     ),
                   ],
@@ -114,8 +136,8 @@ class CustomRatingListviewItem extends StatelessWidget {
   Widget _buildFavoriteIcon() {
     return BlocBuilder<FavoriteCubit, FavoriteState>(
       builder: (context, state) {
-        final favoriteCubit = context.read<FavoriteCubit>();
-        final isFavorite = favoriteCubit.isFavorite(hotelModel);
+        final favorites = state is FavoriteUpdated ? state.favorites : [];
+        final isFavorite = favorites.any((h) => h.id == hotelModel.id);
 
         return IconButton(
           icon: Container(
@@ -132,22 +154,16 @@ class CustomRatingListviewItem extends StatelessWidget {
               size: 24.r,
             ),
           ),
-          onPressed: () async {
-            favoriteCubit.toggleFavorite(hotelModel);
-            final bool currentlyFavorite = isFavorite;
-            if (currentlyFavorite) {
-              Snackly.success(
-                context: context,
-                title: "تم الحذف من المفضلة",
-                style: SnackbarStyle.filled,
-              );
-            } else {
-              Snackly.success(
-                context: context,
-                title: "تم الإضافة إلى المفضلة",
-                style: SnackbarStyle.filled,
-              );
-            }
+          onPressed: () {
+            context.read<FavoriteCubit>().toggleFavorite(hotelModel);
+            final wasAdded = !isFavorite;
+            Snackly.success(
+              context: context,
+              title: wasAdded
+                  ? 'تم الإضافة إلى المفضلة'
+                  : 'تم الحذف من المفضلة',
+              style: SnackbarStyle.filled,
+            );
           },
           padding: const EdgeInsets.all(8),
           constraints: const BoxConstraints(),
@@ -156,29 +172,30 @@ class CustomRatingListviewItem extends StatelessWidget {
     );
   }
 
-  Widget _buildRatingBadge() {
+  Widget _buildRatingBadge(BuildContext context) {
     return Row(
       children: [
         Icon(Icons.star_rounded, color: Colors.amber, size: 24.r),
         Text(
-          " ${hotelModel.rating}",
-          style: font14SemiBoldWhite.copyWith(
-            fontSize: 16.sp,
-            fontWeight: FontWeight.bold,
-          ),
+          ' ${hotelModel.rating}',
+          // Migrated from frozen font14SemiBoldWhite — always white, sits on photo.
+          style: AppTextStyles.font14SemiBoldWhite(
+            context,
+          ).copyWith(fontSize: 16.sp, fontWeight: FontWeight.bold),
         ),
       ],
     );
   }
 
-  Widget _buildStatusBadge() {
+  Widget _buildStatusBadge(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
       decoration: BoxDecoration(
         color: Colors.green.withOpacity(0.9),
         borderRadius: BorderRadius.circular(12.r),
       ),
-      child: Text("إقتصادي", style: font14SemiBoldWhite),
+      // Always white — on green background regardless of theme.
+      child: Text('إقتصادي', style: AppTextStyles.font14SemiBoldWhite(context)),
     );
   }
 }

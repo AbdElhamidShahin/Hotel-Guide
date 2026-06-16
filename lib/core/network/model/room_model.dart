@@ -54,4 +54,6 @@ class Room {
   }
 
   double get finalPrice => discountPrice ?? price;
+  double get pricePerNight => finalPrice;
+  String? get hotelName => null; // override if hotel data is fetched alongside
 }

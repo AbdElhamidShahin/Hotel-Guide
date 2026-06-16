@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hotel_guide/core/theme/app_theme_data.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
-import '../../theme/app_theme.dart';
 
 class CustomButton extends StatelessWidget {
   const CustomButton({super.key, this.text, this.onTap});
@@ -11,17 +11,17 @@ class CustomButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        backgroundColor:AppColors.primary,
+        backgroundColor: AppColors.primary,
         foregroundColor: AppColors.primary,
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
-          side: BorderSide(color: AppColors.primary, width: 2),
+          side: const BorderSide(color: AppColors.primary, width: 2),
         ),
         padding: EdgeInsets.zero,
       ),
       onPressed: onTap,
-      child: Text(text ?? '', style: font16BoldWhite),
+      child: Text(text ?? '', style: AppTextStyles.font16BoldWhite(context)),
     );
   }
 }

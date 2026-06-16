@@ -7,8 +7,11 @@ import 'sign_up_state.dart';
 
 class SignUpCubit extends Cubit<SignUpState> {
   final SignUpRepository _signUpRepository;
-
   StreamSubscription<AuthState>? _authSubscription;
+
+  // ✅ Fix: track whether sign-up was the trigger to avoid
+  // the auth listener emitting SignUpSuccess on ANY app-wide auth state change.
+  bool _signUpInitiated = false;
 
   SignUpCubit(this._signUpRepository) : super(SignUpInitial()) {
     _listenToAuthChanges();
@@ -18,6 +21,8 @@ class SignUpCubit extends Cubit<SignUpState> {
     _authSubscription = Supabase.instance.client.auth.onAuthStateChange.listen((
       data,
     ) async {
+      // ✅ Fix: only react when this cubit explicitly initiated a sign-up flow
+      if (!_signUpInitiated) return;
       if (data.event != AuthChangeEvent.signedIn) return;
 
       final user = data.session?.user;
@@ -44,6 +49,7 @@ class SignUpCubit extends Cubit<SignUpState> {
       );
 
       if (!isClosed) {
+        _signUpInitiated = false;
         emit(SignUpSuccess(name: name, email: email));
       }
     });
@@ -88,11 +94,14 @@ class SignUpCubit extends Cubit<SignUpState> {
 
   Future<void> signUpWithGoogle() async {
     emit(SignUpLoading());
+    _signUpInitiated = true; // ✅ mark that we initiated sign-up
     try {
       await _signUpRepository.signInWithGoogle();
     } on AuthException catch (e) {
+      _signUpInitiated = false;
       emit(SignUpError(_mapError(e.message)));
     } catch (e) {
+      _signUpInitiated = false;
       emit(SignUpError('فشل تسجيل الدخول بجوجل 🚨'));
     }
   }

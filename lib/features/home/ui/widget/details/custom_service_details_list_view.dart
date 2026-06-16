@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'custom_service_details.dart';
 
 class CustomServiceDetailsListView extends StatelessWidget {
@@ -7,18 +6,13 @@ class CustomServiceDetailsListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // onSurfaceVariant = secondary icon colour — adapts in dark mode.
+    final iconColor = Theme.of(context).colorScheme.onSurfaceVariant;
+
     final List<Map<String, dynamic>> services = [
-      {"text": "4.8", "icon": Icons.star, "color": Colors.amber},
-      {
-        "text": "واي فاي مجاني",
-        "icon": Icons.wifi,
-        "color": const Color(0xFF535367),
-      },
-      {
-        "text": "وجبة إفطار مجانية",
-        "icon": Icons.coffee_outlined,
-        "color": const Color(0xFF535367),
-      },
+      {'text': '4.8', 'icon': Icons.star, 'color': Colors.amber},
+      {'text': 'واي فاي مجاني', 'icon': Icons.wifi, 'color': iconColor},
+      {'text': 'وجبة إفطار مجانية', 'icon': Icons.coffee_outlined, 'color': iconColor},
     ];
 
     return SizedBox(
@@ -27,7 +21,7 @@ class CustomServiceDetailsListView extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16),
         scrollDirection: Axis.horizontal,
         itemCount: services.length,
-        separatorBuilder: (context, index) => const SizedBox(width: 12),
+        separatorBuilder: (_, __) => const SizedBox(width: 12),
         itemBuilder: (context, index) {
           final item = services[index];
           return CustomServiceDetails(

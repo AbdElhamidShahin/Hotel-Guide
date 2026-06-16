@@ -4,19 +4,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
 import '../../../../core/helpers/app_regex.dart';
 import '../../../../core/helpers/widget/custom_text_feild.dart';
-import '../../../../core/theme/app_theme.dart';
+import '../../../../core/theme/app_theme_data.dart';
 import '../../logic/cubit/login_cubit.dart';
 import '../../logic/cubit/login_state.dart';
 
-/// ✅ التغييرات:
-///
-/// ❌ قبل: context.read<LoginCubit>().emailController ← من الـ Cubit
-/// ✅ بعد: controllers موجودين هنا في الـ State
-///
-/// ❌ قبل: FormKey في الـ Cubit
-/// ✅ بعد: FormKey هنا في الـ State
-///
-/// ✅ الـ Submit button انتقل هنا عشان يكون قريب من الـ FormKey
 class EmailAndPassword extends StatefulWidget {
   const EmailAndPassword({super.key});
 
@@ -25,14 +16,12 @@ class EmailAndPassword extends StatefulWidget {
 }
 
 class _EmailAndPasswordState extends State<EmailAndPassword> {
-  // ✅ Controllers هنا — في الـ State مش في الـ Cubit
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   bool _isPasswordHidden = true;
 
-  // ✅ Dispose — مهم عشان مفيش memory leak
   @override
   void dispose() {
     _emailController.dispose();
@@ -42,8 +31,6 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
 
   void _onSubmit() {
     if (!_formKey.currentState!.validate()) return;
-
-    // ✅ بنبعت القيم للـ Cubit كـ parameters — مش بنديه controllers
     context.read<LoginCubit>().loginUser(
       email: _emailController.text.trim(),
       password: _passwordController.text.trim(),
@@ -52,6 +39,8 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final colorScheme = Theme.of(context).colorScheme;
     return Form(
       key: _formKey,
       child: Column(
@@ -59,7 +48,13 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Text('البريد الإلكتروني', style: font16RegularMuted),
+            // Migrated from frozen font16RegularMuted global.
+            child: Text(
+              'البريد الإلكتروني',
+              style: AppTextStyles.font16RegularMuted(
+                context,
+              ).copyWith(color: isDark ? Colors.white : colorScheme.primary),
+            ),
           ),
           AppTextFormFeild(
             hintText: 'example@gmail.com',
@@ -78,13 +73,20 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
               child: Icon(
                 Icons.email_outlined,
                 size: 24.r,
-                color: AppColors.primary,
+                color: isDark ? Colors.white70 : colorScheme.primary,
               ),
             ),
           ),
           Padding(
             padding: EdgeInsets.only(bottom: 8.h, top: 16.h),
-            child: Text('كلمة المرور', style: font16RegularMuted),
+            child: Text(
+              'كلمة المرور',
+              style: AppTextStyles.font16RegularMuted(context).copyWith(
+                color: isDark
+                    ? Colors.white
+                    : colorScheme.primary, // أبيض في الدارك
+              ),
+            ),
           ),
           AppTextFormFeild(
             hintText: '******',
@@ -100,7 +102,8 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
               return null;
             },
             suffixIcon: GestureDetector(
-              onTap: () => setState(() => _isPasswordHidden = !_isPasswordHidden),
+              onTap: () =>
+                  setState(() => _isPasswordHidden = !_isPasswordHidden),
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10.w),
                 child: Icon(
@@ -108,14 +111,12 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
                       ? Icons.visibility_off_outlined
                       : Icons.visibility_outlined,
                   size: 24.r,
-                  color: AppColors.primary,
+                  color: isDark ? Colors.white70 : colorScheme.primary,
                 ),
               ),
             ),
           ),
           SizedBox(height: 30.h),
-
-          // ✅ Submit button هنا جنب الـ FormKey
           SizedBox(
             width: double.infinity,
             height: 56.h,
@@ -123,10 +124,30 @@ class _EmailAndPasswordState extends State<EmailAndPassword> {
               builder: (context, state) {
                 final isLoading = state is LoginLoading;
                 return ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                    ),
+                  ),
                   onPressed: isLoading ? null : _onSubmit,
                   child: isLoading
-                      ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text('تسجيل الدخول'),
+                      ? const SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2.5,
+                          ),
+                        )
+                      : Text(
+                          'تسجيل الدخول',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16.sp,
+                          ),
+                        ),
                 );
               },
             ),

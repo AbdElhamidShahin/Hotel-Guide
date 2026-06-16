@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../theme/app_theme.dart';
+import '../../theme/app_theme_data.dart';
 import '../../theme/colors.dart';
 
-class CustomAppbarWidget extends StatelessWidget
-    implements PreferredSizeWidget {
+class CustomAppbarWidget extends StatelessWidget implements PreferredSizeWidget {
   const CustomAppbarWidget({
     super.key,
     required this.name,
@@ -16,7 +15,8 @@ class CustomAppbarWidget extends StatelessWidget
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
+      // يقرأ لون خلفية الـ AppBar تلقائياً حسب الـ Theme الحالي
+      color: Theme.of(context).appBarTheme.backgroundColor,
       padding: EdgeInsets.only(
         top: MediaQuery.of(context).padding.top,
         left: 16,
@@ -29,9 +29,10 @@ class CustomAppbarWidget extends StatelessWidget
           children: [
             Text(
               name,
-              style: font22BoldPrimary.copyWith(
+              style: AppTextStyles.font22BoldPrimary(context).copyWith(
                 fontWeight: FontWeight.w700,
-                color: AppColors.primary,
+                // التعديل هنا: يقرأ اللون الأساسي للـ Theme عشان يقلب معاك في الدارك تلقائي
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
 
@@ -40,7 +41,8 @@ class CustomAppbarWidget extends StatelessWidget
               child: IconButton(
                 icon: Icon(
                   Icons.arrow_forward,
-                  color: Colors.black,
+                  // يتغير تلقائياً بين الأبيض والأسود حسب وضع الشاشة
+                  color: Theme.of(context).colorScheme.onSurface,
                   size: 28.sp,
                 ),
                 onPressed: onTap,

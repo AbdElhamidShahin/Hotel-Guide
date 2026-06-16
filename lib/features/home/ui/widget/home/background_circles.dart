@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import '../../../../../core/theme/colors.dart';
 
+/// Decorative circles used inside the primary-colour AppBar banner.
+/// The circle colour is always SlateBlueLight — it sits on AppColors.primary
+/// and must stay consistent regardless of theme mode.
 class BackgroundCircle extends StatelessWidget {
   const BackgroundCircle({
     super.key,
@@ -29,6 +31,7 @@ class BackgroundCircle extends StatelessWidget {
         height: 190.r,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
+          // Intentionally static — always on AppColors.primary background.
           color: AppColors.SlateBlueLight,
         ),
       ),

@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hotel_guide/features/wallet/ui/widget/custom_refund_history.dart';
-import 'package:hotel_guide/features/wallet/ui/widget/custom_topup_history.dart';
-import 'package:hotel_guide/features/wallet/ui/widget/custom_wallet_balance.dart';
-import 'package:hotel_guide/features/wallet/ui/widget/custom_wallet_history.dart';
-
-import '../../../core/helpers/widget/custom_appbar_widget.dart';
+import 'package:hotel_guide/core/theme/app_theme_data.dart';
+import 'package:hotel_guide/core/theme/colors.dart';
+import '../../../core/helpers/contact/build_error_widget.dart';
 import '../logic/wallet_cubit.dart';
 import '../logic/wallet_state.dart';
+import 'widget/custom_wallet_balance.dart';
+import 'widget/custom_wallet_history.dart';
+import 'widget/custom_topup_history.dart';
+import 'widget/custom_refund_history.dart';
 
 class WalletScreen extends StatefulWidget {
   const WalletScreen({super.key});
@@ -18,70 +19,66 @@ class WalletScreen extends StatefulWidget {
 }
 
 class _WalletScreenState extends State<WalletScreen> {
-  String currentView = 'history';
+  String _activeSection = 'history';
 
   @override
   void initState() {
     super.initState();
-
-    final cubit = context.read<WalletCubit>();
-
-    // ✅ أول تحميل
-    cubit.fetchWalletData();
-
-    // 🔥 تشغيل realtime
-    cubit.startWalletListener();
+    context.read<WalletCubit>()
+      ..fetchWalletData()
+      ..startWalletListener();
   }
-
+  @override
+  void dispose() {
+    context.read<WalletCubit>().stopWalletListener();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppbarWidget(onTap: () {}, name: "المحفظة"),
       body: BlocBuilder<WalletCubit, WalletState>(
-        buildWhen: (previous, current) =>
-        current is WalletLoading ||
-            current is WalletLoaded ||
-            current is WalletError,
+        buildWhen: (_, s) =>
+            s is WalletLoading || s is WalletLoaded || s is WalletError,
         builder: (context, state) {
           if (state is WalletLoading) {
             return const Center(child: CircularProgressIndicator());
           }
-
           if (state is WalletError) {
-            return Center(child: Text(state.message));
-          }
-
-          if (state is WalletLoaded) {
-            return ListView(
-              physics: const BouncingScrollPhysics(),
-              children: [
-                CustomWalletBalance(
-                  onTabChanged: (view) =>
-                      setState(() => currentView = view),
-                  profileModel: state.userProfile,
-                ),
-                _buildSelectedView(currentView),
-                SizedBox(height: 30.h),
-              ],
+            return buildNoConnectionWidget(
+              onRetry: () => context.read<WalletCubit>().fetchWalletData(),
             );
           }
-
+          if (state is WalletLoaded) {
+            return RefreshIndicator(
+              onRefresh: () async =>
+                  context.read<WalletCubit>().fetchWalletData(),
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: Column(
+                  children: [
+                    SizedBox(height: 40.h),
+                    CustomWalletBalance(
+                      profileModel: state.userProfile,
+                      onTabChanged: (tab) =>
+                          setState(() => _activeSection = tab),
+                    ),
+                    _buildActiveSection(),
+                  ],
+                ),
+              ),
+            );
+          }
           return const SizedBox.shrink();
         },
       ),
     );
   }
-}
 
-Widget _buildSelectedView(currentView) {
-  switch (currentView) {
-    case 'history':
-      return const CustomWalletHistory();
-    case 'refund':
-      return const CustomRefundHistory();
-    case 'topup':
-      return const CustomTopupHistory();
-    default:
-      return const CustomWalletHistory();
+  Widget _buildActiveSection() {
+    return switch (_activeSection) {
+      'topup' => const CustomTopupHistory(),
+      'refund' => const CustomRefundHistory(),
+      _ => const CustomWalletHistory(),
+    };
   }
 }

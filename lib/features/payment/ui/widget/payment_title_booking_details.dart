@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/colors.dart';
-
+import '../../../../core/theme/app_theme_data.dart';
+import '../../../../core/theme/colors.dart';
 class PaymentTitle extends StatelessWidget {
   const PaymentTitle({
+    super.key,
     required this.title,
     required this.isSelected,
     required this.onTap,
@@ -31,7 +32,7 @@ class PaymentTitle extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12.r),
           border: Border.all(
-            color: isSelected ? AppColors.primary : Colors.grey.shade200,
+            color: isSelected ? AppColors.primary : Theme.of(context).colorScheme.outlineVariant,
             width: isSelected ? 2 : 1,
           ),
         ),
@@ -41,7 +42,9 @@ class PaymentTitle extends StatelessWidget {
             SizedBox(width: 12.w),
             Text(
               title,
-              style: font16RegularMuted.copyWith(color: Colors.black),
+              style: AppTextStyles.font16RegularMuted(context).copyWith(
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
             ),
             const Spacer(),
             if (isLoading)
@@ -73,6 +76,7 @@ class PaymentTitle extends StatelessWidget {
     );
   }
 }
+
 class _RadioIndicator extends StatelessWidget {
   const _RadioIndicator({required this.isSelected});
   final bool isSelected;

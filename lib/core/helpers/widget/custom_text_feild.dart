@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../theme/app_theme.dart';
+import '../../theme/app_theme_data.dart';
 import '../../theme/colors.dart';
 
 class AppTextFormFeild extends StatelessWidget {
@@ -32,6 +32,8 @@ class AppTextFormFeild extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+
     return Directionality(
       textDirection: TextDirection.rtl,
       child: TextFormField(
@@ -53,32 +55,35 @@ class AppTextFormFeild extends StatelessWidget {
           focusedBorder:
               focusedBorder ??
               OutlineInputBorder(
-                borderSide: BorderSide(
+                borderSide: const BorderSide(
                   color: AppColors.accent,
                   width: 1.3,
                 ),
-
                 borderRadius: BorderRadius.circular(10),
               ),
           errorBorder: OutlineInputBorder(
-            borderSide:  BorderSide(color: AppColors.error, width: 1.3),
+            borderSide: const BorderSide(color: AppColors.error, width: 1.3),
             borderRadius: BorderRadius.circular(10),
           ),
           focusedErrorBorder: OutlineInputBorder(
-            borderSide:  BorderSide(color: AppColors.error, width: 1.3),
+            borderSide: const BorderSide(color: AppColors.error, width: 1.3),
             borderRadius: BorderRadius.circular(10),
           ),
-          hintStyle: hintStyle ?? font14RegularNightfall,
-          hintText: "${hintText}",
+          // Callers can still override hintStyle; fall back to the themed version.
+          hintStyle: hintStyle ?? AppTextStyles.font14RegularNightfall(context),
+          hintText: hintText,
           suffixIcon: suffixIcon,
           suffixIconColor: AppColors.info,
-
-          fillColor: backGroundColor ?? Colors.transparent,
+          // Caller-supplied background wins; otherwise transparent so the
+          // InputDecorationTheme fillColor from AppThemeData applies.
+          fillColor: backGroundColor ?? cs.surface,
           filled: true,
         ),
         obscureText: isObscureText ?? false,
-
-        style: font16MediumWhite.copyWith(color: AppColors.primary),
+        // Input text color reads from the live theme.
+        style: AppTextStyles.font16MediumWhite(context).copyWith(
+          color: cs.onSurface,
+        ),
         validator: (value) {
           return validator(value);
         },

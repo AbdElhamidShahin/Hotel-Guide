@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:hotel_guide/core/theme/app_theme.dart';
+import 'package:hotel_guide/core/theme/app_theme_data.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
 import 'package:hotel_guide/features/search/ui/widget/price_range_filter.dart';
-
 import '../../logic/cubit/search_cubit.dart';
 import '../../logic/model.dart';
 
@@ -20,20 +19,24 @@ void showFilterSearch(
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
+    // backgroundColor from BottomSheetThemeData in AppThemeData — adapts automatically.
     backgroundColor: Colors.transparent,
     builder: (context) {
+      final cs      = Theme.of(context).colorScheme;
+      final isLight = Theme.of(context).brightness == Brightness.light;
+
       return StatefulBuilder(
         builder: (context, setModalState) {
           return Container(
             decoration: BoxDecoration(
-              color: AppColors.textWhite,
+              // surface = white in light, dark card in dark mode.
+              color: cs.surface,
               borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
             ),
             height: MediaQuery.of(context).size.height * 0.85,
             child: Column(
               children: [
                 _buildFilterHeader(context),
-
                 Expanded(
                   child: SingleChildScrollView(
                     physics: const BouncingScrollPhysics(),
@@ -42,75 +45,53 @@ void showFilterSearch(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         SizedBox(height: 20.h),
-                        _buildSectionTitle("السعر"),
+                        _buildSectionTitle(context, 'السعر'),
                         SizedBox(height: 12.h),
-
-                        Divider(
-                          height: 1.h,
-                          color: AppColors.primary.withOpacity(0.2),
-                        ),
-
+                        Divider(height: 1.h, color: cs.outline),
                         PriceRangeFilter(
                           initialValues: tempFilter.priceRange,
-                          onChanged: (values) => tempFilter.priceRange = values,
+                          onChanged: (v) => tempFilter.priceRange = v,
                         ),
-
                         SizedBox(height: 24.h),
-                        _buildSectionTitle("المدينة"),
+                        _buildSectionTitle(context, 'المدينة'),
                         SizedBox(height: 12.h),
-
-                        Divider(
-                          color: Colors.grey.withOpacity(0.3),
-                          height: 1.h,
-                        ),
+                        Divider(height: 1.h, color: cs.outline),
                         SizedBox(height: 16.h),
-
                         _buildChoiceChips(
+                          context: context,
                           items: cities,
                           selectedItem: tempFilter.city,
-                          onSelected: (val) =>
-                              setModalState(() => tempFilter.city = val),
+                          onSelected: (v) =>
+                              setModalState(() => tempFilter.city = v),
                         ),
-
                         SizedBox(height: 24.h),
-                        _buildSectionTitle("الإطلالة"),
+                        _buildSectionTitle(context, 'الإطلالة'),
                         SizedBox(height: 12.h),
-
-                        Divider(
-                          color: Colors.grey.withOpacity(0.3),
-                          height: 1.h,
-                        ),
+                        Divider(height: 1.h, color: cs.outline),
                         SizedBox(height: 16.h),
-
                         _buildChoiceChips(
+                          context: context,
                           items: views,
                           selectedItem: tempFilter.view,
-                          onSelected: (val) =>
-                              setModalState(() => tempFilter.view = val),
+                          onSelected: (v) =>
+                              setModalState(() => tempFilter.view = v),
                         ),
-
                         SizedBox(height: 24.h),
-                        _buildSectionTitle("التقييم"),
+                        _buildSectionTitle(context, 'التقييم'),
                         SizedBox(height: 12.h),
-
-                        Divider(
-                          color: Colors.grey.withOpacity(0.3),
-                          height: 1.h,
-                        ),
+                        Divider(height: 1.h, color: cs.outline),
                         SizedBox(height: 16.h),
-
                         _buildRatingChips(
+                          context: context,
                           selectedRating: tempFilter.rating,
-                          onSelected: (val) =>
-                              setModalState(() => tempFilter.rating = val),
+                          onSelected: (v) =>
+                              setModalState(() => tempFilter.rating = v),
                         ),
-
                         SizedBox(height: 40.h),
                       ],
                     ),
                   ),
                 ),
-
                 Padding(
                   padding: EdgeInsets.only(bottom: 24.h, top: 12.h),
                   child: Center(
@@ -132,10 +113,12 @@ void showFilterSearch(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text("فلترة", style: font16BoldWhite),
+                            // Always white — on primary-colour button.
+                            Text('فلترة',
+                                style: AppTextStyles.font16BoldWhite(context)),
                             SizedBox(width: 8.w),
                             SvgPicture.asset(
-                              "assets/icons/Filter_alt.svg",
+                              'assets/icons/Filter_alt.svg',
                               colorFilter: const ColorFilter.mode(
                                 Colors.white,
                                 BlendMode.srcIn,
@@ -157,21 +140,29 @@ void showFilterSearch(
   );
 }
 
-Widget _buildSectionTitle(String title) {
+// ── Section title ─────────────────────────────────────────────────────────────
+
+Widget _buildSectionTitle(BuildContext context, String title) {
+  final isDark = Theme.of(context).brightness == Brightness.dark;
+
   return Text(
     title,
-    style: font20BoldShadowPurple.copyWith(
-      color: AppColors.primary,
+    style: AppTextStyles.font20BoldShadowPurple(context).copyWith(
+      color: isDark ? Colors.white : AppColors.primary,
       fontSize: 18.sp,
     ),
   );
 }
 
+// ── Choice chips ──────────────────────────────────────────────────────────────
+
 Widget _buildChoiceChips({
+  required BuildContext context,
   required List<String> items,
   String? selectedItem,
   required Function(String) onSelected,
 }) {
+  final cs = Theme.of(context).colorScheme;
   return Directionality(
     textDirection: TextDirection.rtl,
     child: SingleChildScrollView(
@@ -179,22 +170,25 @@ Widget _buildChoiceChips({
       physics: const BouncingScrollPhysics(),
       child: Row(
         children: items.map((item) {
-          bool isSelected = selectedItem == item;
+          final bool isSelected = selectedItem == item;
           return Padding(
             padding: EdgeInsetsDirectional.only(end: 8.w),
             child: ChoiceChip(
               showCheckmark: false,
               label: Text(
                 item,
-                style: font18BoldGray.copyWith(
-                  color: isSelected ? Colors.white : AppColors.primary,
+                // Migrated from frozen font18BoldGray global.
+                style: AppTextStyles.font18BoldGray(context).copyWith(
+                  // Always white when selected (on primary chip), else themed.
+                  color: isSelected ? Colors.white : cs.onSurfaceVariant,
                   fontSize: 14.sp,
                 ),
               ),
               selected: isSelected,
-              onSelected: (selected) => onSelected(item),
+              onSelected: (_) => onSelected(item),
               selectedColor: AppColors.primary,
-              backgroundColor: const Color(0xFFEBEBEB),
+              // surfaceContainerHighest = themed neutral chip background.
+              backgroundColor: cs.surfaceContainerHighest,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.r),
                 side: BorderSide(
@@ -209,6 +203,9 @@ Widget _buildChoiceChips({
   );
 }
 
+// ── Filter header ─────────────────────────────────────────────────────────────
+// Brand primary header — intentionally static in both themes.
+
 Widget _buildFilterHeader(BuildContext context) {
   return Container(
     padding: EdgeInsets.symmetric(horizontal: 8.w),
@@ -221,12 +218,14 @@ Widget _buildFilterHeader(BuildContext context) {
       children: [
         IconButton(
           onPressed: () => Navigator.pop(context),
+          // Always white — on primary-colour header.
           icon: Icon(Icons.close, color: Colors.white, size: 24.sp),
         ),
         const Spacer(),
+        // Migrated from frozen font16BoldWhite global.
         Text(
-          "البحث المتقدم",
-          style: font16BoldWhite.copyWith(fontSize: 17.sp),
+          'البحث المتقدم',
+          style: AppTextStyles.font16BoldWhite(context).copyWith(fontSize: 17.sp),
         ),
         SizedBox(width: 40.w),
         const Spacer(),
@@ -235,11 +234,15 @@ Widget _buildFilterHeader(BuildContext context) {
   );
 }
 
+// ── Rating chips ──────────────────────────────────────────────────────────────
+
 Widget _buildRatingChips({
+  required BuildContext context,
   double? selectedRating,
   required Function(double) onSelected,
 }) {
-  List<double> ratings = [1.0, 2.0, 3.0, 4.0, 5.0];
+  final cs = Theme.of(context).colorScheme;
+  const List<double> ratings = [1.0, 2.0, 3.0, 4.0, 5.0];
 
   return Directionality(
     textDirection: TextDirection.rtl,
@@ -248,28 +251,27 @@ Widget _buildRatingChips({
       physics: const BouncingScrollPhysics(),
       child: Row(
         children: ratings.map((rate) {
-          bool isSelected = selectedRating == rate;
-          List<Widget> stars = [];
-          for (int i = 0; i < rate.toInt(); i++) {
-            stars.add(
-              SvgPicture.asset(
-                "assets/icons/rating/star-fill.svg",
-                width: 16.w,
-                height: 16.h,
-              ),
-            );
-          }
-
+          final bool isSelected = selectedRating == rate;
           return Padding(
             padding: EdgeInsetsDirectional.only(end: 8.w),
             child: ChoiceChip(
               showCheckmark: false,
               padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 4.h),
-              label: Row(mainAxisSize: MainAxisSize.min, children: stars),
+              label: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: List.generate(
+                  rate.toInt(),
+                  (_) => SvgPicture.asset(
+                    'assets/icons/rating/star-fill.svg',
+                    width: 16.w,
+                    height: 16.h,
+                  ),
+                ),
+              ),
               selected: isSelected,
-              onSelected: (val) => onSelected(rate),
+              onSelected: (_) => onSelected(rate),
               selectedColor: AppColors.primary,
-              backgroundColor: const Color(0xFFEBEBEB),
+              backgroundColor: cs.surfaceContainerHighest,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.r),
                 side: BorderSide(

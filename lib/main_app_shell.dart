@@ -7,7 +7,6 @@ import 'package:hotel_guide/core/theme/colors.dart';
 
 class MainAppShell extends StatefulWidget {
   final StatefulNavigationShell navigationShell;
-
   const MainAppShell({super.key, required this.navigationShell});
 
   @override
@@ -24,6 +23,9 @@ class _MainAppShellState extends State<MainAppShell> {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final isLight = Theme.of(context).brightness == Brightness.light;
+
     return PopScope(
       canPop: widget.navigationShell.currentIndex == 3,
       onPopInvokedWithResult: (didPop, result) {
@@ -36,17 +38,24 @@ class _MainAppShellState extends State<MainAppShell> {
       },
       child: Scaffold(
         body: widget.navigationShell,
-
         bottomNavigationBar: Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            // surface = white in light, dark card colour in dark mode.
+            color: cs.surface,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1),
+                // Shadow visible only in light mode; border handles dark depth.
+                color: isLight
+                    ? Colors.black.withOpacity(0.1)
+                    : Colors.transparent,
                 blurRadius: 8,
                 offset: const Offset(0, -2),
               ),
             ],
+            // Subtle top border replaces shadow in dark mode.
+            border: isLight
+                ? null
+                : Border(top: BorderSide(color: cs.outline, width: 0.5)),
           ),
           child: BottomNavigationBar(
             currentIndex: widget.navigationShell.currentIndex,
@@ -54,22 +63,14 @@ class _MainAppShellState extends State<MainAppShell> {
             showSelectedLabels: false,
             showUnselectedLabels: false,
             type: BottomNavigationBarType.fixed,
-            backgroundColor: Colors.white,
+            // Transparent so the Container colour above shows through.
+            backgroundColor: Colors.transparent,
             elevation: 0,
             items: [
-              _buildBottomItem(
-                'assets/icons/Icons_bar/user-alt-1-svgrepo-com.svg',
-                0,
-              ),
+              _buildBottomItem('assets/icons/Icons_bar/user-alt-1-svgrepo-com.svg', 0),
               _buildBottomItem('assets/icons/Icons_bar/empty-wallet.svg', 1),
-              _buildBottomItem(
-                'assets/icons/Icons_bar/notification-favorite.svg',
-                2,
-              ),
-              _buildBottomItem(
-                'assets/icons/Icons_bar/home-angle-2-svgrepo-com.svg',
-                3,
-              ),
+              _buildBottomItem('assets/icons/Icons_bar/notification-favorite.svg', 2),
+              _buildBottomItem('assets/icons/Icons_bar/home-angle-2-svgrepo-com.svg', 3),
             ],
           ),
         ),

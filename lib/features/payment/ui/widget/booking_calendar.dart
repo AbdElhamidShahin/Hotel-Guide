@@ -22,7 +22,7 @@ class BookingCalendar extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: AppColors.scaffoldBackground,
+        color: Theme.of(context).scaffoldBackgroundColor,
         borderRadius: BorderRadius.circular(8.r),
       ),
       child: TableCalendar(
@@ -33,9 +33,12 @@ class BookingCalendar extends StatelessWidget {
         rangeEndDay: rangeEnd,
 
         rangeSelectionMode: RangeSelectionMode.toggledOn,
-        headerStyle: const HeaderStyle(
+        headerStyle: HeaderStyle(
           formatButtonVisible: false,
           titleCentered: true,
+          titleTextStyle: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+          leftChevronIcon: Icon(Icons.chevron_left, color: Theme.of(context).colorScheme.onSurface),
+          rightChevronIcon: Icon(Icons.chevron_right, color: Theme.of(context).colorScheme.onSurface),
         ),
         onRangeSelected: onSelect,
         calendarStyle: CalendarStyle(
@@ -50,8 +53,9 @@ class BookingCalendar extends StatelessWidget {
             shape: BoxShape.rectangle,
             borderRadius: BorderRadius.circular(10.r),
           ),
-
-          todayTextStyle: const TextStyle(color: Colors.black),
+          defaultTextStyle: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+          weekendTextStyle: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
+          todayTextStyle: TextStyle(color: Theme.of(context).colorScheme.onSurface),
           todayDecoration: const BoxDecoration(color: Colors.transparent),
         ),
       ),

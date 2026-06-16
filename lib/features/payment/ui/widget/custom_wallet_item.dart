@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../core/theme/app_theme.dart';
+import '../../../../core/theme/app_theme_data.dart';
 import '../../../../core/theme/colors.dart';
 
 class CustomWalletItem extends StatelessWidget {
@@ -18,7 +18,6 @@ class CustomWalletItem extends StatelessWidget {
   final String title;
   final String cashBack;
   final bool selected;
-
   final VoidCallback onTap;
 
   @override
@@ -30,12 +29,14 @@ class CustomWalletItem extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             border: Border.all(
-              color: selected ? AppColors.accent : Colors.transparent,
+              color: selected
+                  ? AppColors.accent
+                  : Theme.of(context).colorScheme.outline,
             ),
-            color: AppColors.textWhite,
+            color: Theme.of(context).colorScheme.surface,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1),
+                color: Colors.black.withOpacity(0.05),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -43,26 +44,32 @@ class CustomWalletItem extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
           ),
           child: Padding(
-            padding: EdgeInsets.all(14),
+            padding: const EdgeInsets.all(14),
             child: Row(
               children: [
                 Icon(Icons.done, size: 24, color: AppColors.ShadowPurple),
-                Spacer(),
+                const Spacer(),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
                       title,
-                      style: font16BoldWhite.copyWith(
-                        color: AppColors.primary,
+                      style: AppTextStyles.font16BoldWhite(context).copyWith(
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white
+                            : Theme.of(context).colorScheme.primary,
                       ),
                     ),
                     SizedBox(height: 8.h),
                     Text(
                       cashBack,
-                      style: font14RegularNightfall.copyWith(
-                        color: AppColors.Grayscale,
-                      ),
+                      style: AppTextStyles.font14RegularNightfall(context)
+                          .copyWith(
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                ? Colors.white.withOpacity(0.6)
+                                : Theme.of(context).colorScheme.surfaceTint,
+                          ),
                     ),
                   ],
                 ),

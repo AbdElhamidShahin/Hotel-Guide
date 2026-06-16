@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:hotel_guide/core/router/routers.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
 import 'package:image_picker/image_picker.dart';
-
 import '../../../../core/helpers/custom_user_avatar.dart';
 import '../../../../core/helpers/local_storage_account.dart';
 
@@ -30,12 +29,14 @@ class CustomProfileImageAndName extends StatefulWidget {
   final ImagePickedCallback? onImagePicked;
   final String? name;
   final String? imageUrl;
+
   @override
   State<CustomProfileImageAndName> createState() =>
       _CustomProfileImageAndNameState();
 }
 
-class _CustomProfileImageAndNameState extends State<CustomProfileImageAndName> {
+class _CustomProfileImageAndNameState
+    extends State<CustomProfileImageAndName> {
   String? image;
   String? name;
   final ImagePicker _picker = ImagePicker();
@@ -43,12 +44,10 @@ class _CustomProfileImageAndNameState extends State<CustomProfileImageAndName> {
   @override
   void initState() {
     super.initState();
-    // ✅ اشترك في التغييرات
     UserDataNotifier.instance.addListener(_onUserDataChanged);
-    _syncFromNotifier(); // ✅ حمّل البيانات من الـ notifier فوراً
+    _syncFromNotifier();
   }
 
-  // ✅ دالة جديدة تمسح من الـ notifier مباشرة
   void _syncFromNotifier() {
     final notifier = UserDataNotifier.instance;
     if (notifier.name.isNotEmpty || notifier.image.isNotEmpty) {
@@ -57,7 +56,6 @@ class _CustomProfileImageAndNameState extends State<CustomProfileImageAndName> {
         image = notifier.image.isNotEmpty ? notifier.image : widget.imageUrl;
       });
     } else {
-      // لو الـ notifier فاضي، حمّل من الـ storage
       loadUserData();
     }
   }
@@ -71,7 +69,7 @@ class _CustomProfileImageAndNameState extends State<CustomProfileImageAndName> {
 
   @override
   void dispose() {
-    UserDataNotifier.instance.removeListener(_onUserDataChanged); // ✅
+    UserDataNotifier.instance.removeListener(_onUserDataChanged);
     super.dispose();
   }
 
@@ -89,16 +87,18 @@ class _CustomProfileImageAndNameState extends State<CustomProfileImageAndName> {
     try {
       final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
       if (pickedFile != null) {
-        final file = File(pickedFile.path);
-        widget.onImagePicked?.call(file);
+        widget.onImagePicked?.call(File(pickedFile.path));
       }
     } catch (e) {
-      debugPrint("حدث خطأ أثناء اختيار الصورة: $e");
+      debugPrint('Error picking image: $e');
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    // The profile header gradient (black → dark charcoal) is intentionally
+    // static in both light and dark themes. It is a branded design element,
+    // not a background surface. White text/icons on it are always correct.
     return Container(
       padding: EdgeInsets.only(
         top: 40.h,
@@ -125,6 +125,7 @@ class _CustomProfileImageAndNameState extends State<CustomProfileImageAndName> {
                     routes.editAccountScreen,
                     extra: {'name': name ?? widget.name ?? ''},
                   ),
+                  // Always white — on dark gradient header.
                   icon: Icon(
                     Icons.settings_outlined,
                     color: Colors.white.withOpacity(0.7),
@@ -149,7 +150,6 @@ class _CustomProfileImageAndNameState extends State<CustomProfileImageAndName> {
               ),
             ],
           ),
-
           SizedBox(height: 10.h),
           Stack(
             alignment: Alignment.bottomRight,
@@ -158,6 +158,7 @@ class _CustomProfileImageAndNameState extends State<CustomProfileImageAndName> {
                 padding: EdgeInsets.all(3.r),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
+                  // Always white ring — on dark gradient, correct in both themes.
                   border: Border.all(color: Colors.white, width: 2.w),
                 ),
                 child: CustomUserAvatar(
@@ -166,7 +167,6 @@ class _CustomProfileImageAndNameState extends State<CustomProfileImageAndName> {
                   imagePathOrUrl: image,
                 ),
               ),
-
               if (widget.showAddIcon)
                 Positioned(
                   bottom: 5.h,
@@ -187,10 +187,10 @@ class _CustomProfileImageAndNameState extends State<CustomProfileImageAndName> {
                 ),
             ],
           ),
-
           SizedBox(height: 12.h),
           Text(
             name ?? 'اسم المستخدم',
+            // Always white — on dark gradient header.
             style: TextStyle(
               fontSize: 20.sp,
               color: Colors.white,

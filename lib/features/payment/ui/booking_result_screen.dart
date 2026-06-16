@@ -17,16 +17,19 @@ class BookingResultScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    // إعداد ألوان متناسقة وحيوية حسب حالة الحجز وثيم التطبيق
     final color = isSuccess ? const Color(0xFF14AE5C) : const Color(0xFFFF3838);
     final bgColor = isSuccess
-        ? const Color(0xFFF0FDF4)
-        : const Color(0xFFFFF1F2);
+        ? (isDark ? const Color(0xFF0F291B) : const Color(0xFFF0FDF4))
+        : (isDark ? const Color(0xFF2D1414) : const Color(0xFFFFF1F2));
     final cardAccent = isSuccess
-        ? const Color(0xFFBBF7D0)
-        : const Color(0xFFFECACA);
+        ? (isDark ? const Color(0xFF1B4D3E) : const Color(0xFFBBF7D0))
+        : (isDark ? const Color(0xFF5C2424) : const Color(0xFFFECACA));
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 40.w),
@@ -35,54 +38,42 @@ class BookingResultScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Spacer(flex: 2),
-
-              // ── Booking Card Illustration ──────────────
               _BookingCardIllustration(
                 isSuccess: isSuccess,
                 cardAccent: cardAccent,
                 bgColor: bgColor,
                 color: color,
+                isDark: isDark,
               ),
-
               SizedBox(height: 40.h),
-
-              // ── Title ──────────────────────────────────
               Text(
                 isSuccess ? 'عملية حجز ناجحة' : 'فشلت عملية الحجز',
                 style: TextStyle(
-                  fontSize: 38.sp,
+                  fontSize: 28.sp,
                   fontWeight: FontWeight.w800,
                   color: color,
                   fontFamily: 'Cairo',
                 ),
                 textAlign: TextAlign.center,
               ),
-
               SizedBox(height: 16.h),
-
-              // ── Subtitle ───────────────────────────────
               Text(
                 isSuccess
                     ? 'شكرًا لاستخدامك ${paymentMethod ?? 'AQUA'}'
-                    : ('حدث خطأ ما حاول مره اخري' ??
-                          'تفقد رصيدك وحاول مرة أخرى'),
+                    : (errorMessage ?? 'حدث خطأ ما، حاول مرة أخرى'),
                 style: TextStyle(
                   fontSize: 16.sp,
                   fontWeight: FontWeight.w400,
-                  color: const Color(0xFF6B7280),
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                   fontFamily: 'Cairo',
                 ),
                 textAlign: TextAlign.center,
               ),
-
               const Spacer(flex: 1),
-
-              // ── Button ─────────────────────────────────
               _ResultButton(
                 color: color,
                 onTap: () => context.go(routes.homeScreen),
               ),
-
               const Spacer(flex: 3),
             ],
           ),
@@ -92,29 +83,33 @@ class BookingResultScreen extends StatelessWidget {
   }
 }
 
-// ── Booking Card Illustration ─────────────────────────────────────────────────
-
 class _BookingCardIllustration extends StatelessWidget {
   const _BookingCardIllustration({
     required this.isSuccess,
     required this.cardAccent,
     required this.bgColor,
     required this.color,
+    required this.isDark,
   });
 
   final bool isSuccess;
   final Color cardAccent;
   final Color bgColor;
   final Color color;
+  final bool isDark;
 
   @override
   Widget build(BuildContext context) {
+    final outerCardColor = isDark ? const Color(0xFF1E1E2C) : const Color(0xFFF3F4F6);
+    final innerCardColor = isDark ? const Color(0xFF252535) : Colors.white;
+    final badgeBgColor   = isDark ? const Color(0xFF1A1A2E) : const Color(0xFFFEFEFE);
+
     return SizedBox(
       height: 280.h,
       child: Stack(
         alignment: Alignment.center,
         children: [
-          // Outer card (background)
+          // البطاقة الخلفية الخارجية
           Positioned(
             top: 0,
             left: 24.w,
@@ -122,25 +117,25 @@ class _BookingCardIllustration extends StatelessWidget {
             child: Container(
               height: 225.h,
               decoration: BoxDecoration(
-                color: const Color(0xFFF3F4F6),
+                color: outerCardColor,
                 borderRadius: BorderRadius.circular(20.r),
               ),
             ),
           ),
 
-          // Inner card
+          // البطاقة الأمامية الداخلية
           Positioned(
             top: 35.h,
-            left: 55.w,
-            right: 55.w,
+            left: 45.w,
+            right: 45.w,
             child: Container(
               height: 190.h,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: innerCardColor,
                 borderRadius: BorderRadius.circular(16.r),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
+                    color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
@@ -148,42 +143,28 @@ class _BookingCardIllustration extends StatelessWidget {
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
-
                 children: [
-                  // Header bar
                   Container(
                     height: 5.h,
                     margin: EdgeInsets.only(top: 12.h, left: 80.w, right: 80.w),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFFECACA),
+                      color: cardAccent,
                       borderRadius: BorderRadius.circular(2.r),
                     ),
                   ),
                   SizedBox(height: 16.h),
-
-                  // Status label
                   Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 16.w,
-                      vertical: 8.h,
-                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
                     margin: EdgeInsets.symmetric(horizontal: 20.w),
-
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        SizedBox(height: 32.h),
-
-                        Icon(
-                          Icons.bed_outlined,
-                          size: 16.r,
-                          color: Color(0xFF9CA4AB),
-                        ),
+                        Icon(Icons.bed_outlined, size: 18.r, color: const Color(0xFF9CA4AB)),
                         SizedBox(width: 6.w),
                         Text(
-                          isSuccess ? 'تم الحجز' : 'فشل الحجز',
+                          isSuccess ? 'تم الحجز مسبقاً' : 'الحجز ملغي',
                           style: TextStyle(
-                            color: Color(0xFF9CA4AB),
+                            color: const Color(0xFF9CA4AB),
                             fontSize: 13.sp,
                             fontWeight: FontWeight.w600,
                             fontFamily: 'Cairo',
@@ -193,13 +174,10 @@ class _BookingCardIllustration extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 16.h),
-
-                  // Content skeleton lines
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 40.w),
+                    padding: EdgeInsets.symmetric(horizontal: 30.w),
                     child: Row(
                       children: [
-                        // Square thumbnail
                         Container(
                           width: 40.r,
                           height: 40.r,
@@ -209,7 +187,6 @@ class _BookingCardIllustration extends StatelessWidget {
                           ),
                         ),
                         SizedBox(width: 12.w),
-                        // Text lines
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -217,7 +194,6 @@ class _BookingCardIllustration extends StatelessWidget {
                               Container(
                                 height: 12.h,
                                 width: 90.w,
-
                                 decoration: BoxDecoration(
                                   color: cardAccent,
                                   borderRadius: BorderRadius.circular(4.r),
@@ -242,45 +218,22 @@ class _BookingCardIllustration extends StatelessWidget {
               ),
             ),
           ),
-          Positioned(
-            top: 70.h,
-            left: 80.w,
-            right: 80.w,
-            child: Container(
-              height: 155.h,
-              decoration: BoxDecoration(
-                color: Colors.blue.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(16.r),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-            ),
-          ),
 
-          // Status Badge
+          // شارة الحالة (Status Badge) المتوضعة في الزاوية السفليّة
           Positioned(
             bottom: 0,
-            left: 0,
+            left: 10.w,
+            right: 10.w,
             child: Container(
-              padding: EdgeInsets.only(
-                top: 18.h,
-                bottom: 18.h,
-                right: 100.w,
-                left: 20.w,
-              ),
+              padding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 20.w),
               decoration: BoxDecoration(
-                color: Color(0xFFFEFEFE),
+                color: badgeBgColor,
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF121933).withOpacity(0.08),
-                    blurRadius: 75,
+                    color: const Color(0xFF121933).withOpacity(isDark ? 0.3 : 0.08),
+                    blurRadius: 20,
                     spreadRadius: 1,
-                    offset: const Offset(6, 12),
+                    offset: const Offset(0, 8),
                   ),
                 ],
                 borderRadius: BorderRadius.all(Radius.circular(18.r)),
@@ -288,18 +241,17 @@ class _BookingCardIllustration extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // Circle icon
                   Container(
-                    width: 60.r,
-                    height: 60.r,
+                    width: 48.r,
+                    height: 48.r,
                     decoration: BoxDecoration(
                       color: color,
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
                           color: color.withOpacity(0.35),
-                          blurRadius: 16,
-                          spreadRadius: 2,
+                          blurRadius: 12,
+                          spreadRadius: 1,
                           offset: const Offset(0, 4),
                         ),
                       ],
@@ -307,32 +259,34 @@ class _BookingCardIllustration extends StatelessWidget {
                     child: Icon(
                       isSuccess ? Icons.check_rounded : Icons.close_rounded,
                       color: Colors.white,
-                      size: 30.r,
+                      size: 26.r,
                     ),
                   ),
-                  SizedBox(width: 12.w),
-                  // Status lines
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        width: 140.w,
-                        height: 14.h,
-                        decoration: BoxDecoration(
-                          color: color,
-                          borderRadius: BorderRadius.circular(6.r),
+                  SizedBox(width: 16.w),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: 120.w,
+                          height: 12.h,
+                          decoration: BoxDecoration(
+                            color: color,
+                            borderRadius: BorderRadius.circular(6.r),
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 6.h),
-                      Container(
-                        width: 100.w,
-                        height: 14.h,
-                        decoration: BoxDecoration(
-                          color: color,
-                          borderRadius: BorderRadius.circular(6.r),
+                        SizedBox(height: 6.h),
+                        Container(
+                          width: 80.w,
+                          height: 10.h,
+                          decoration: BoxDecoration(
+                            color: color.withOpacity(0.6),
+                            borderRadius: BorderRadius.circular(6.r),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -343,8 +297,6 @@ class _BookingCardIllustration extends StatelessWidget {
     );
   }
 }
-
-// ── Button ────────────────────────────────────────────────────────────────────
 
 class _ResultButton extends StatelessWidget {
   const _ResultButton({required this.color, required this.onTap});
@@ -357,26 +309,26 @@ class _ResultButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 200.w,
-        height: 56.h,
+        width: 220.w,
+        height: 54.h,
         decoration: BoxDecoration(
           color: color,
           borderRadius: BorderRadius.circular(50.r),
           boxShadow: [
             BoxShadow(
-              color: color.withOpacity(0.4),
-              blurRadius: 20,
-              spreadRadius: 2,
+              color: color.withOpacity(0.3),
+              blurRadius: 15,
+              spreadRadius: 1,
               offset: const Offset(0, 6),
             ),
           ],
         ),
-        child: Center(
+        child:  Center(
           child: Text(
             'العودة للرئيسية',
             style: TextStyle(
               color: Colors.white,
-              fontSize: 18.sp,
+              fontSize: 16.sp,
               fontWeight: FontWeight.w700,
               fontFamily: 'Cairo',
             ),
