@@ -60,7 +60,6 @@ class _AccountScreenState extends State<AccountScreen> {
               padding: EdgeInsets.zero,
               physics: const BouncingScrollPhysics(),
               children: [
-
                 // ── Dark mode toggle ─────────────────────────────────────
                 Padding(
                   padding: EdgeInsets.symmetric(
@@ -70,15 +69,13 @@ class _AccountScreenState extends State<AccountScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-
                       // ── Animated toggle pill ─────────────────────────
                       GestureDetector(
                         // ACTION: calls ThemeCubit.toggleTheme() on every tap.
                         // The Cubit saves the preference and emits the new
                         // ThemeMode. BlocBuilder in hotel_app.dart rebuilds
                         // the entire MaterialApp instantly.
-                        onTap: () =>
-                            context.read<ThemeCubit>().toggleTheme(),
+                        onTap: () => context.read<ThemeCubit>().toggleTheme(),
                         child: Container(
                           width: 60.w,
                           height: 32.h,
@@ -124,8 +121,9 @@ class _AccountScreenState extends State<AccountScreen> {
                         children: [
                           Text(
                             'الوضع الليلي',
-                            style: AppTextStyles.font23SemiBoldBlack(context)
-                                .copyWith(fontSize: 20.sp),
+                            style: AppTextStyles.font23SemiBoldBlack(
+                              context,
+                            ).copyWith(fontSize: 20.sp),
                           ),
                           SizedBox(width: 8.w),
                           Icon(
