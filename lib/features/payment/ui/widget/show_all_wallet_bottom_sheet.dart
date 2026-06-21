@@ -18,8 +18,9 @@ import 'custom_wallet_item.dart';
 bool _isInsufficientBalance(String message) {
   return message.contains('رصيد') ||
       message.contains('غير كافٍ') ||
-      message.contains('insufficient') ||
-      message.contains('balance');
+      message.contains('غير كافي') ||
+      message.toLowerCase().contains('insufficient') ||
+      message.toLowerCase().contains('balance');
 }
 
 void showWalletBottomSheet(
@@ -27,6 +28,9 @@ void showWalletBottomSheet(
   BookingModel bookingData,
 ) {
   final bookingCubit = parentContext.read<BookingCubit>();
+  // ✅ Fix #3/#4: نتابع حالة الـ loading dialog بنفسنا بدل ما نفترض إنه
+  // لسه مفتوح، عشان منعمل pop على navigator غلط ونعمل crash في التنقل.
+  bool isLoadingDialogOpen = false;
 
   showModalBottomSheet(
     context: parentContext,
@@ -37,6 +41,7 @@ void showWalletBottomSheet(
         bloc: bookingCubit,
         listener: (context, state) async {
           if (state is BookingLoading) {
+            isLoadingDialogOpen = true;
             showDialog(
               context: context,
               barrierDismissible: false,
@@ -44,12 +49,21 @@ void showWalletBottomSheet(
                   const Center(child: CircularProgressIndicator()),
             );
           } else if (state is BookingSuccess) {
-            Navigator.of(context, rootNavigator: true).pop();
-            Navigator.of(context).pop();
+            // ✅ نقفل الـ loading dialog أولاً (لو لسه مفتوح)، وبعدين الـ
+            // bottom sheet نفسه — كل واحدة بشرط واضح بدل pop مضاعف أعمى
+            // كان بيحاول يقفل حاجتين حتى لو كانت واحدة منهم مقفولة بالفعل.
+            if (isLoadingDialogOpen) {
+              Navigator.of(context, rootNavigator: true).pop();
+              isLoadingDialogOpen = false;
+            }
+            if (Navigator.of(context).canPop()) {
+              Navigator.of(context).pop();
+            }
 
             getIt<NotificationCubit>().fetchNotifications();
 
-            context.push(
+            if (!parentContext.mounted) return;
+            parentContext.push(
               routes.bookingResult,
               extra: {
                 'isSuccess': true,
@@ -63,22 +77,32 @@ void showWalletBottomSheet(
               'تم خصم ${bookingData.totalAmount.toInt()} EGP من محفظتك',
             );
           } else if (state is BookingError) {
-            Navigator.of(context, rootNavigator: true).pop();
+            if (isLoadingDialogOpen) {
+              Navigator.of(context, rootNavigator: true).pop();
+              isLoadingDialogOpen = false;
+            }
 
             getIt<NotificationCubit>().fetchNotifications();
 
             final bool isBalanceError = _isInsufficientBalance(state.message);
 
+            if (!parentContext.mounted) return;
+
             if (isBalanceError) {
+              // ✅ Fix #4: رسالة مخصصة وواضحة لحالة الرصيد الغير كافٍ بدل
+              // رسالة الخطأ العامة. الـ bottom sheet يفضل مفتوح عشان
+              // المستخدم يقدر يشحن رصيد أو يغيّر وسيلة الدفع فورًا.
               showCustomSnackbar(
-                context,
+                parentContext,
                 ContentType.failure,
-                'رصيد غير كافٍ 💳',
+                'عذراً، لا يوجد رصيد كافٍ',
                 'رصيد محفظتك لا يكفي لإتمام الحجز.\nالمطلوب: ${bookingData.totalAmount.toInt()} EGP',
               );
             } else {
-              Navigator.of(context).pop();
-              context.push(
+              if (Navigator.of(context).canPop()) {
+                Navigator.of(context).pop();
+              }
+              parentContext.push(
                 routes.bookingResult,
                 extra: {'isSuccess': false, 'errorMessage': state.message},
               );

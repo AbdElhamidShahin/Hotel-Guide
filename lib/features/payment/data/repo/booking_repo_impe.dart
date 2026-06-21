@@ -2,12 +2,15 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../core/constants/api_constants.dart';
-import '../../../../core/error/error_handler.dart';
 import '../../../../core/error/failure.dart';
 import '../../../../core/network/model/booking_model.dart';
 import '../../../../core/network/model/notification_model.dart';
 import '../../../../core/network/model/profile_model.dart';
 import 'booking_repo.dart';
+
+/// رسالة موحّدة تُستخدم عند نقص رصيد المحفظة، تُطابق بدقة في الـ UI لعرض
+/// رسالة "رصيد غير كافٍ" المخصّصة بدل رسالة الخطأ العامة.
+const String insufficientBalanceMessage = 'عذراً، لا يوجد رصيد كافٍ في المحفظة.';
 
 class BookingRepoImpl implements BookingRepository {
   final SupabaseClient _supabase;
@@ -22,7 +25,7 @@ class BookingRepoImpl implements BookingRepository {
     try {
       final userId = _supabase.auth.currentUser?.id;
       if (userId == null) {
-        return Left(ErrorHandler.handle('يرجى تسجيل الدخول أولاً.'));
+        return const Left(AuthFailure('يرجى تسجيل الدخول أولاً.'));
       }
       final data = await _supabase
           .from(AppTableNames.profiles)
@@ -32,10 +35,10 @@ class BookingRepoImpl implements BookingRepository {
       return Right(UserProfileModel.fromMap(data));
     } on PostgrestException catch (e) {
       debugPrint('❌ getUserProfile: ${e.message}');
-      return Left(ErrorHandler.handle(e));
+      return Left(SupabaseFailure.fromSupabaseError(e));
     } catch (e) {
       debugPrint('❌ getUserProfile: $e');
-      return Left(ErrorHandler.handle(e));
+      return Left(SupabaseFailure.fromGenericError(e));
     }
   }
 
@@ -46,7 +49,7 @@ class BookingRepoImpl implements BookingRepository {
     try {
       final userId = _supabase.auth.currentUser?.id;
       if (userId == null) {
-        return Left(ErrorHandler.handle('يرجى تسجيل الدخول أولاً.'));
+        return const Left(AuthFailure('يرجى تسجيل الدخول أولاً.'));
       }
 
       final full = booking.copyWith(userId: userId);
@@ -56,16 +59,21 @@ class BookingRepoImpl implements BookingRepository {
       } else if (full.paymentMethod == 'card') {
         await _cardPayment(full);
       } else {
-        return Left(ErrorHandler.handle('وسيلة الدفع غير مدعومة.'));
+        return const Left(PaymentFailure('وسيلة الدفع غير مدعومة.'));
       }
 
       return const Right(null);
     } on PostgrestException catch (e) {
       debugPrint('❌ confirmBooking: ${e.message}');
-      return Left(ErrorHandler.handle(e));
+      // ✅ Fix #4: نحافظ على رسالة الخطأ الحقيقية (e.message) بدل ما نستبدلها
+      // برسالة عامة، عشان حالة "رصيد غير كافٍ" تتعرف صح في الـ UI.
+      await _notifyBookingFailed(booking, e.message);
+      return Left(SupabaseFailure.fromSupabaseError(e));
     } catch (e) {
       debugPrint('❌ confirmBooking: $e');
-      return Left(ErrorHandler.handle(e));
+      final failure = SupabaseFailure.fromGenericError(e);
+      await _notifyBookingFailed(booking, failure.message);
+      return Left(failure);
     }
   }
 
@@ -74,7 +82,7 @@ class BookingRepoImpl implements BookingRepository {
   Future<void> _walletPayment(BookingModel b) async {
     final balance = await _getBalance(b.userId);
     if (balance < b.totalAmount) {
-      throw const PostgrestException(message: 'عذراً، رصيد محفظتك غير كافٍ.');
+      throw PostgrestException(message: insufficientBalanceMessage);
     }
 
     bool rpcFailed = false;
@@ -117,6 +125,9 @@ class BookingRepoImpl implements BookingRepository {
   Future<void> _manualBooking(BookingModel b, String method) async {
     if (method == 'wallet') {
       final current = await _getBalance(b.userId);
+      if (current < b.totalAmount) {
+        throw PostgrestException(message: insufficientBalanceMessage);
+      }
       final updated = await _supabase
           .from(AppTableNames.profiles)
           .update({'wallet_balance': current - b.totalAmount})
@@ -133,6 +144,7 @@ class BookingRepoImpl implements BookingRepository {
         .insert({
           'user_id': b.userId,
           'hotel_name': b.hotelName,
+          'room_name': b.roomName,
           'room_id': b.roomId,
           'total_amount': b.totalAmount,
           'check_in': b.startDate.toIso8601String(),
@@ -144,10 +156,16 @@ class BookingRepoImpl implements BookingRepository {
         .single();
     debugPrint('✅ Booking inserted: ${row['id']}');
 
+    // ✅ Fix #2: نخزن اسم الفندق واسم الغرفة كـ columns صريحة في
+    // wallet_transactions بدل ما يكونوا مدفونين جوه نص description بس.
+    // ده اللي كان يخلي شاشة المحفظة ما تقدر تعرض اسم الفندق/الغرفة.
     await _supabase.from(AppTableNames.walletTransactions).insert({
       'user_id': b.userId,
       'amount': method == 'wallet' ? -b.totalAmount : b.totalAmount,
       'type': 'payment',
+      'status': 'completed',
+      'hotel_name': b.hotelName,
+      'room_name': b.roomName,
       'description':
           'حجز في ${b.hotelName} عبر ${method == 'wallet' ? 'المحفظة' : 'البطاقة'}',
       'booking_id': row['id'],
@@ -174,6 +192,31 @@ class BookingRepoImpl implements BookingRepository {
         .eq('id', userId)
         .single();
     return (d['wallet_balance'] as num).toDouble();
+  }
+
+  // ✅ Fix #4: لما الحجز يفشل لأي سبب، نسجل إشعار فشل عشان يظهر في
+  // قائمة الإشعارات بدل ما يضيع الخطأ في الـ snackbar فقط.
+  Future<void> _notifyBookingFailed(BookingModel b, String reason) async {
+    try {
+      final userId = b.userId.isNotEmpty
+          ? b.userId
+          : _supabase.auth.currentUser?.id;
+      if (userId == null || userId.isEmpty) return;
+
+      final isBalanceError =
+          reason.contains('رصيد') || reason.toLowerCase().contains('balance');
+
+      await _insertNotification(
+        userId: userId,
+        title: 'فشل الحجز ❌',
+        body: isBalanceError
+            ? insufficientBalanceMessage
+            : 'تعذّر تأكيد حجزك في ${b.hotelName}.\n$reason',
+        type: NotificationType.failure,
+      );
+    } catch (e) {
+      debugPrint('⚠️ _notifyBookingFailed: $e');
+    }
   }
 
   Future<void> _insertNotification({

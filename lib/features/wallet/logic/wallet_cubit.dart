@@ -18,14 +18,23 @@ class WalletCubit extends Cubit<WalletState> {
         _stripe = stripe,
         super(WalletInitial());
 
+  // ✅ Fix #3: نلف emit() بفحص isClosed عشان نمنع
+  // "Bad state: Cannot emit new states after calling close" اللي كان
+  // بيحصل لو المستخدم يخرج من شاشة المحفظة (أو الـ realtime listener يرد)
+  // بعد ما الـ Cubit يتقفل، وده اللي كان يظهر كـ "كراش في التنقل" بعد الشحن.
+  void _safeEmit(WalletState state) {
+    if (!isClosed) emit(state);
+  }
+
   // ── Fetch ─────────────────────────────────────────
 
   Future<void> fetchWalletData() async {
-    emit(WalletLoading());
+    _safeEmit(WalletLoading());
     final result = await _repo.getWalletDetails();
+    if (isClosed) return;
     result.fold(
-          (failure) => emit(WalletError(failure.message)),
-          (data) => emit(
+          (failure) => _safeEmit(WalletError(failure.message)),
+          (data) => _safeEmit(
         WalletLoaded(
           userProfile: data.profile,
           paymentTransactions: data.payments,
@@ -52,6 +61,7 @@ class WalletCubit extends Cubit<WalletState> {
     _walletSub?.cancel();
 
     _walletSub = _repo.watchWalletChanges(userId).listen((_) async {
+      if (isClosed) return;
       debugPrint('🔥 Wallet Realtime Triggered');
       await fetchWalletData();
     });
@@ -64,10 +74,11 @@ class WalletCubit extends Cubit<WalletState> {
     if (currentState is! WalletLoaded) return;
 
     final profile = currentState.userProfile;
-    emit(WalletTopUpLoading());
+    _safeEmit(WalletTopUpLoading());
 
     try {
       final customerId = await _stripe.getOrCreateStripeCustomerId(profile);
+      if (isClosed) return;
 
       await _stripe.makePayment(
         paymentIntentInputModel: PaymentIntentInputModel(
@@ -76,21 +87,23 @@ class WalletCubit extends Cubit<WalletState> {
           customerId: customerId,
         ),
       );
+      if (isClosed) return;
 
       debugPrint('✅ Stripe payment success');
 
       final result = await _repo.topUpBalance(amount);
+      if (isClosed) return;
 
       await result.fold(
-            (failure) async => emit(WalletTopUpError(failure.message)),
+            (failure) async => _safeEmit(WalletTopUpError(failure.message)),
             (_) async {
-          emit(WalletTopUpSuccess(profile.walletBalance + amount));
+          _safeEmit(WalletTopUpSuccess(profile.walletBalance + amount));
           await fetchWalletData();
         },
       );
     } catch (e) {
       debugPrint('❌ topUpWallet: $e');
-      emit(WalletTopUpError(e.toString()));
+      _safeEmit(WalletTopUpError(e.toString()));
     }
   }
 
@@ -102,6 +115,7 @@ class WalletCubit extends Cubit<WalletState> {
   @override
   Future<void> close() {
     _walletSub?.cancel();
+    _walletSub = null;
     return super.close();
   }
 }

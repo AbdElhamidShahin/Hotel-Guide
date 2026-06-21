@@ -36,7 +36,6 @@ class _CustomTopupHistoryState extends State<CustomTopupHistory> {
   }
 
   @override
-  @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final cs = Theme.of(context).colorScheme;
@@ -89,16 +88,28 @@ class _CustomTopupHistoryState extends State<CustomTopupHistory> {
                     ),
                   ),
                   SizedBox(height: 12.h),
-                  Wrap(
-                    spacing: 8.w,
-                    children: _shortcuts.map((a) {
+                  // ✅ Fix #3: شبكة منظمة بمسافات ثابتة بدل الـ Wrap اللي كان
+                  // شكله غير متسق (مساحات متفاوتة بين الأزرار حسب طول النص).
+                  GridView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: _shortcuts.length,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      crossAxisSpacing: 10.w,
+                      mainAxisSpacing: 10.h,
+                      childAspectRatio: 2.2,
+                    ),
+                    itemBuilder: (context, index) {
+                      final a = _shortcuts[index];
                       final sel = _selectedAmount == a;
                       return GestureDetector(
-                        onTap: () => setState(() => _selectedAmount = a),
+                        onTap: () => _setFromChip(a),
                         child: Container(
+                          alignment: Alignment.center,
                           padding: EdgeInsets.symmetric(
-                            horizontal: 14.w,
-                            vertical: 8.h,
+                            horizontal: 12.w,
+                            vertical: 10.h,
                           ),
                           decoration: BoxDecoration(
                             color: sel
@@ -106,11 +117,19 @@ class _CustomTopupHistoryState extends State<CustomTopupHistory> {
                                 : (isDark
                                       ? Colors.white10
                                       : AppColors.softGray),
-                            borderRadius: BorderRadius.circular(30.r),
+                            borderRadius: BorderRadius.circular(14.r),
+                            border: Border.all(
+                              color: sel
+                                  ? AppColors.primary
+                                  : Colors.transparent,
+                              width: 1.5,
+                            ),
                           ),
                           child: Text(
                             '${a.toInt()} EGP',
+                            textAlign: TextAlign.center,
                             style: TextStyle(
+                              fontWeight: FontWeight.w600,
                               color: sel
                                   ? Colors.white
                                   : (isDark ? Colors.white : Colors.black),
@@ -118,7 +137,7 @@ class _CustomTopupHistoryState extends State<CustomTopupHistory> {
                           ),
                         ),
                       );
-                    }).toList(),
+                    },
                   ),
                 ],
               ),
@@ -233,17 +252,22 @@ class _TopUpCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     final amount = (trx['amount'] as num? ?? 0).toDouble().abs();
     final dateRaw = trx['created_at'] as String? ?? '';
     final dateStr = dateRaw.length >= 10 ? dateRaw.substring(0, 10) : dateRaw;
-    final status = trx['status'] == 'completed' ? 'مكتملة' : 'معلقة';
+    final isFailed = trx['status'] == 'failed';
+    final statusText = isFailed ? 'فاشلة' : 'مكتملة';
+    final statusColor = isFailed ? AppColors.error : AppColors.success;
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
       child: Container(
         padding: EdgeInsets.all(16.r),
         decoration: BoxDecoration(
-          color: Colors.white,
+          // ✅ Fix #3: كان لون الخلفية أبيض ثابت مهما كان وضع الشاشة —
+          // دلوقتي بيتغير مع الدارك مود زي باقي كروت المحفظة.
+          color: cs.surface,
           border: Border.all(color: AppColors.success.withOpacity(.2)),
           borderRadius: BorderRadius.circular(14.r),
           boxShadow: [
@@ -278,10 +302,10 @@ class _TopUpCard extends StatelessWidget {
             ),
             SizedBox(height: 10.h),
             _r(
-              status,
+              statusText,
               ':الحالة',
               'assets/icons/tick-circle.svg',
-              AppColors.success,
+              statusColor,
             ),
           ],
         ),

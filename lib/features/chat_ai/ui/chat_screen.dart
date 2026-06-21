@@ -78,7 +78,13 @@ class _ChatScreenState extends State<ChatScreen> {
       // Replaced hardcoded Colors.white with scaffoldBackgroundColor.
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       // CustomAppbarWidget already migrated — adapts to theme.
-      appBar: CustomAppbarWidget(name: 'AQUA Hotel AI', onTap: () {}),
+      // ✅ Fix #5: زر الرجوع كان onTap: () {} فاضي تماماً، فمكان يعمل حاجة.
+      // دلوقتي بيستخدم Navigator.maybePop عشان يرجع للشاشة السابقة بأمان
+      // (مايعمل حاجة لو مفيش حاجة تتقفل، بدل ما يعمل throw).
+      appBar: CustomAppbarWidget(
+        name: 'AQUA Hotel AI',
+        onTap: () => Navigator.maybePop(context),
+      ),
       body: Column(
         children: [
           Expanded(

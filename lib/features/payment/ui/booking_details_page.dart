@@ -54,7 +54,10 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
   double get _totalPrice => _subTotal + _taxes + _services;
 
   BookingModel get _currentBooking => BookingModel(
-    hotelName: widget.room.name,
+    // ✅ Fix: كان بيتم تخزين اسم الغرفة باسم الفندق غلط (room.name كان
+    // بيروح في hotelName). دلوقتي كل واحد بقيمته الصحيحة.
+    hotelName: widget.room.hotelName ?? 'فندق غير معروف',
+    roomName: widget.room.name,
     totalAmount: _totalPrice,
     roomId: widget.room.id,
     startDate: _rangeStart ?? DateTime.now(),

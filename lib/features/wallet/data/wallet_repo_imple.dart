@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../core/constants/api_constants.dart';
-import '../../../core/error/error_handler.dart';
 import '../../../core/error/failure.dart';
 import '../../../core/network/model/notification_model.dart';
 import '../../../core/network/model/profile_model.dart';
@@ -20,7 +19,7 @@ class WalletRepositoryImpl implements WalletRepository {
     try {
       final userId = _supabase.auth.currentUser?.id;
       if (userId == null) {
-        return Left(ErrorHandler.handle('يرجى تسجيل الدخول أولا'));
+        return const Left(AuthFailure('يرجى تسجيل الدخول أولا'));
       }
 
       var profileRaw = await _supabase
@@ -72,10 +71,10 @@ class WalletRepositoryImpl implements WalletRepository {
       );
     } on PostgrestException catch (e) {
       debugPrint('❌ getWalletDetails: ${e.message}');
-      return Left(ErrorHandler.handle(e));
+      return Left(SupabaseFailure.fromSupabaseError(e));
     } catch (e) {
       debugPrint('❌ getWalletDetails: $e');
-      return Left(ErrorHandler.handle(e));
+      return Left(SupabaseFailure.fromGenericError(e));
     }
   }
 
@@ -86,7 +85,7 @@ class WalletRepositoryImpl implements WalletRepository {
     try {
       final userId = _supabase.auth.currentUser?.id;
       if (userId == null) {
-        return Left(ErrorHandler.handle('يرجى تسجيل الدخول أولاً'));
+        return const Left(AuthFailure('يرجى تسجيل الدخول أولاً'));
       }
 
       bool rpcFailed = false;
@@ -104,9 +103,9 @@ class WalletRepositoryImpl implements WalletRepository {
       if (rpcFailed) await _manualTopUp(userId, amount);
       return const Right(null);
     } on PostgrestException catch (e) {
-      return Left(ErrorHandler.handle(e));
+      return Left(SupabaseFailure.fromSupabaseError(e));
     } catch (e) {
-      return Left(ErrorHandler.handle(e));
+      return Left(SupabaseFailure.fromGenericError(e));
     }
   }
 
@@ -133,6 +132,7 @@ class WalletRepositoryImpl implements WalletRepository {
       'user_id': userId,
       'amount': amount,
       'type': 'top_up',
+      'status': 'completed',
       'description': 'شحن رصيد عبر البطاقة البنكية',
     });
 

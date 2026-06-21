@@ -88,14 +88,18 @@ class _PaymentCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     final amount = (trx['amount'] as num? ?? 0).toDouble().abs();
     final hotelName = (trx['hotel_name'] as String?) ?? '—';
+    final roomName = (trx['room_name'] as String?) ?? '—';
     final dateRaw =
         trx['booking_date'] as String? ?? trx['created_at'] as String? ?? '';
     final dateStr = dateRaw.length >= 10 ? dateRaw.substring(0, 10) : dateRaw;
-    final status = trx['status'] == 'completed' ? 'مكتملة' : 'معلقة';
+    // ✅ Fix #2: الحالة دلوقتي دايمًا "مكتملة" باللون الأخضر، إلا لو
+    // فعليًا فاشلة (failed) — مفيش حالة "معلقة" بعد ما تتسجل المعاملة.
+    final isFailed = trx['status'] == 'failed';
+    final statusText = isFailed ? 'فاشلة' : 'مكتملة';
+    final statusColor = isFailed ? AppColors.error : AppColors.success;
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
@@ -124,6 +128,13 @@ class _PaymentCard extends StatelessWidget {
             ),
             SizedBox(height: 10.h),
             CustomDetailRow(
+              roomName,
+              ':اسم الغرفة',
+              'assets/icons/Hotel.svg',
+              cs.primary,
+            ),
+            SizedBox(height: 10.h),
+            CustomDetailRow(
               dateStr,
               ':تاريخ الحجز',
               'assets/icons/calendar-tick.svg',
@@ -138,10 +149,10 @@ class _PaymentCard extends StatelessWidget {
             ),
             SizedBox(height: 10.h),
             CustomDetailRow(
-              status,
+              statusText,
               ':الحالة',
               'assets/icons/tick-circle.svg',
-              cs.primary,
+              statusColor,
             ),
           ],
         ),
