@@ -25,6 +25,9 @@ import '../../features/payment/logic/booking_cubit.dart';
 import '../../features/payment/ui/booking_details_page.dart';
 import '../../features/payment/ui/booking_result_screen.dart';
 import '../../features/profile/ui/about_us_screen.dart';
+import '../../features/profile/ui/contact_us_screen.dart';
+import '../../features/profile/ui/sitemap_screen.dart';
+import '../../features/profile/ui/terms_conditions_screen.dart';
 import '../../features/profile/ui/privacy_policy_screen.dart';
 import '../../features/profile/ui/edit_account_screen.dart';
 import '../../features/profile/ui/faq_page.dart';
@@ -64,6 +67,18 @@ abstract class AppRouter {
       GoRoute(
         path: routes.PrivacyPolicyScreen,
         builder: (_, __) => const PrivacyPolicyScreen(),
+      ),
+      GoRoute(
+        path: routes.SitemapScreen,
+        builder: (_, __) => const SitemapScreen(),
+      ),
+      GoRoute(
+        path: routes.ContactUsScreen,
+        builder: (_, __) => const ContactUsScreen(),
+      ),
+      GoRoute(
+        path: routes.TermsConditionsScreen,
+        builder: (_, __) => const TermsConditionsScreen(),
       ),
       GoRoute(
         path: routes.AboutUsScreen,

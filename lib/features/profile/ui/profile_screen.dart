@@ -132,6 +132,11 @@ class _AccountScreenState extends State<AccountScreen> {
                 ),
 
                 buildSttingsItem(
+                  title: 'خريطة التطبيق',
+                  icon: Icons.location_on_outlined,
+                  onTap: () => context.push(routes.SitemapScreen),
+                ),
+                buildSttingsItem(
                   title: 'الموقع',
                   icon: Icons.location_on_outlined,
                   onTap: () {},
@@ -149,7 +154,7 @@ class _AccountScreenState extends State<AccountScreen> {
                 buildSttingsItem(
                   title: 'شروط الإستخدام',
                   icon: Icons.book_outlined,
-                  onTap: () {},
+                  onTap: () => context.push(routes.TermsConditionsScreen),
                 ),
                 buildSttingsItem(
                   title: 'تسجيل الخروج',

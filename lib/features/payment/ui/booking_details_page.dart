@@ -54,8 +54,6 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
   double get _totalPrice => _subTotal + _taxes + _services;
 
   BookingModel get _currentBooking => BookingModel(
-    // ✅ Fix: كان بيتم تخزين اسم الغرفة باسم الفندق غلط (room.name كان
-    // بيروح في hotelName). دلوقتي كل واحد بقيمته الصحيحة.
     hotelName: widget.room.hotelName ?? 'فندق غير معروف',
     roomName: widget.room.name,
     totalAmount: _totalPrice,
@@ -80,9 +78,9 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
     final profile = cubit.userProfile;
 
     if (profile == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('يرجى تسجيل الدخول أولاً')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('يرجى تسجيل الدخول أولاً')));
       return;
     }
 
@@ -105,7 +103,7 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
   Widget build(BuildContext context) {
     return BlocListener<BookingCubit, BookingStates>(
       listenWhen: (_, current) =>
-      _selectedPayment == 'card' &&
+          _selectedPayment == 'card' &&
           (current is BookingSuccess || current is BookingError),
       listener: (context, state) {
         if (state is BookingSuccess) {
@@ -122,11 +120,12 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
       },
       child: BlocBuilder<BookingCubit, BookingStates>(
         buildWhen: (_, current) =>
-        current is BookingInitial ||
+            current is BookingInitial ||
             current is BookingLoading ||
             current is BookingError,
         builder: (context, state) {
-          final isProfileLoading = state is! BookingInitial &&
+          final isProfileLoading =
+              state is! BookingInitial &&
               state is! BookingLoading &&
               context.read<BookingCubit>().userProfile == null;
 
@@ -141,89 +140,89 @@ class _BookingDetailsPageState extends State<BookingDetailsPage> {
               child: isProfileLoading
                   ? const Center(child: CircularProgressIndicator())
                   : SingleChildScrollView(
-                padding: EdgeInsets.symmetric(horizontal: 20.w),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    BookingCalendar(
-                      focusedDay: _focusedDay,
-                      rangeStart: _rangeStart,
-                      rangeEnd: _rangeEnd,
-                      onSelect: (start, end, focused) => setState(() {
-                        _rangeStart = start;
-                        _rangeEnd = end;
-                        _focusedDay = focused;
-                      }),
+                      padding: EdgeInsets.symmetric(horizontal: 20.w),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          BookingCalendar(
+                            focusedDay: _focusedDay,
+                            rangeStart: _rangeStart,
+                            rangeEnd: _rangeEnd,
+                            onSelect: (start, end, focused) => setState(() {
+                              _rangeStart = start;
+                              _rangeEnd = end;
+                              _focusedDay = focused;
+                            }),
+                          ),
+                          SizedBox(height: 30.h),
+                          CounterRow(
+                            title: 'عدد الغرف',
+                            value: _rooms,
+                            onAdd: () => setState(() => _rooms++),
+                            onRemove: () => setState(() {
+                              if (_rooms > 1) _rooms--;
+                            }),
+                          ),
+                          CounterRow(
+                            title: 'البالغين',
+                            value: _adults,
+                            onAdd: () => setState(() => _adults++),
+                            onRemove: () => setState(() {
+                              if (_adults > 1) _adults--;
+                            }),
+                          ),
+                          CounterRow(
+                            title: 'الأطفال',
+                            value: _children,
+                            onAdd: () => setState(() => _children++),
+                            onRemove: () => setState(() {
+                              if (_children > 0) _children--;
+                            }),
+                          ),
+                          SizedBox(height: 30.h),
+                          const SectionTitle(title: 'تفاصيل الدفع'),
+                          SizedBox(height: 15.h),
+                          PriceSection(
+                            days: _totalDays,
+                            subTotal: _subTotal,
+                            taxes: _taxes,
+                            services: _services,
+                            total: _totalPrice,
+                          ),
+                          SizedBox(height: 30.h),
+                          const SectionTitle(title: 'الغرفة المختارة'),
+                          SizedBox(height: 15.h),
+                          BookingCard(room: widget.room),
+                          SizedBox(height: 30.h),
+                          const SectionTitle(title: 'وسائل الدفع'),
+                          SizedBox(height: 15.h),
+                          PaymentTitle(
+                            title: 'المحفظة الإلكترونية',
+                            isSelected: _selectedPayment == 'wallet',
+                            onTap: _onWalletTap,
+                            icon: 'assets/icons/empty-wallet.svg',
+                          ),
+                          SizedBox(height: 12.h),
+                          BlocBuilder<BookingCubit, BookingStates>(
+                            buildWhen: (previous, current) =>
+                                current is BookingLoading ||
+                                previous is BookingLoading,
+                            builder: (context, state) {
+                              return PaymentTitle(
+                                title: 'البطاقة البنكية',
+                                isSelected: _selectedPayment == 'card',
+                                onTap: state is BookingLoading
+                                    ? null
+                                    : _onCardTap,
+                                isCard: true,
+                                isLoading: state is BookingLoading,
+                              );
+                            },
+                          ),
+                          SizedBox(height: 40.h),
+                        ],
+                      ),
                     ),
-                    SizedBox(height: 30.h),
-                    CounterRow(
-                      title: 'عدد الغرف',
-                      value: _rooms,
-                      onAdd: () => setState(() => _rooms++),
-                      onRemove: () => setState(() {
-                        if (_rooms > 1) _rooms--;
-                      }),
-                    ),
-                    CounterRow(
-                      title: 'البالغين',
-                      value: _adults,
-                      onAdd: () => setState(() => _adults++),
-                      onRemove: () => setState(() {
-                        if (_adults > 1) _adults--;
-                      }),
-                    ),
-                    CounterRow(
-                      title: 'الأطفال',
-                      value: _children,
-                      onAdd: () => setState(() => _children++),
-                      onRemove: () => setState(() {
-                        if (_children > 0) _children--;
-                      }),
-                    ),
-                    SizedBox(height: 30.h),
-                    const SectionTitle(title: 'تفاصيل الدفع'),
-                    SizedBox(height: 15.h),
-                    PriceSection(
-                      days: _totalDays,
-                      subTotal: _subTotal,
-                      taxes: _taxes,
-                      services: _services,
-                      total: _totalPrice,
-                    ),
-                    SizedBox(height: 30.h),
-                    const SectionTitle(title: 'الغرفة المختارة'),
-                    SizedBox(height: 15.h),
-                    BookingCard(room: widget.room),
-                    SizedBox(height: 30.h),
-                    const SectionTitle(title: 'وسائل الدفع'),
-                    SizedBox(height: 15.h),
-                    PaymentTitle(
-                      title: 'المحفظة الإلكترونية',
-                      isSelected: _selectedPayment == 'wallet',
-                      onTap: _onWalletTap,
-                      icon: 'assets/icons/empty-wallet.svg',
-                    ),
-                    SizedBox(height: 12.h),
-                    BlocBuilder<BookingCubit, BookingStates>(
-                      buildWhen: (previous, current) =>
-                      current is BookingLoading ||
-                          previous is BookingLoading,
-                      builder: (context, state) {
-                        return PaymentTitle(
-                          title: 'البطاقة البنكية',
-                          isSelected: _selectedPayment == 'card',
-                          onTap: state is BookingLoading
-                              ? null
-                              : _onCardTap,
-                          isCard: true,
-                          isLoading: state is BookingLoading,
-                        );
-                      },
-                    ),
-                    SizedBox(height: 40.h),
-                  ],
-                ),
-              ),
             ),
           );
         },

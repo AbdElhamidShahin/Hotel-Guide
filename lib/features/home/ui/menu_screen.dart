@@ -33,8 +33,7 @@ class MenuScreen extends StatelessWidget {
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(50),
-                        color: AppColors
-                            .primary,
+                        color: AppColors.primary,
                       ),
                       child: IconButton(
                         icon: const Icon(
@@ -75,13 +74,13 @@ class MenuScreen extends StatelessWidget {
                         _MenuTile(
                           title: 'خريطة التطبيق',
                           iconPath: 'assets/icons/menu_icons/map.svg',
-                          onTap: () {},
+                          onTap: () => context.push(routes.SitemapScreen),
                           contentColor: contentColor,
                         ),
                         _MenuTile(
                           title: 'اتصل بنا',
                           iconPath: 'assets/icons/menu_icons/call-calling.svg',
-                          onTap: () {},
+                          onTap: () => context.push(routes.ContactUsScreen),
                           contentColor: contentColor,
                         ),
                         _MenuTile(
@@ -94,7 +93,8 @@ class MenuScreen extends StatelessWidget {
                           title: 'الشروط والأحكام',
                           iconPath:
                               'assets/icons/menu_icons/clipboard-text.svg',
-                          onTap: () {},
+                          onTap: () =>
+                              context.push(routes.TermsConditionsScreen),
                           contentColor: contentColor,
                         ),
                       ],
