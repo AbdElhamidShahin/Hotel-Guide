@@ -2,11 +2,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:hotel_guide/core/theme/app_theme.dart';
+import 'package:hotel_guide/core/theme/app_theme_data.dart';
 import 'package:hotel_guide/core/theme/colors.dart';
 import '../../../../core/helpers/custom_user_avatar.dart';
 import '../../../../core/helpers/local_storage_account.dart';
 import '../../../../core/network/model/profile_model.dart';
+import '../../../../core/theme/app_theme.dart';
 
 class CustomWalletBalance extends StatefulWidget {
   final Function(String) onTabChanged;
@@ -87,7 +88,12 @@ class _CustomWalletBalanceState extends State<CustomWalletBalance> {
             SizedBox(height: 12.h),
             Text(
               widget.profileModel.fullName,
-              style: font23SemiBoldBlack.copyWith(color: Colors.white),
+              // ✅ Fix #4: غيّرنا font23SemiBoldBlack (مجمّدة — لا تتغير مع Dark Mode)
+              // إلى AppTextStyles.font23SemiBoldBlack(context) اللي بتقرأ من الـ Theme.
+              // على سطح primary (بنفسجي) النص دايماً أبيض، فـ copyWith لازم يفضل.
+              style: AppTextStyles.font23SemiBoldBlack(
+                context,
+              ).copyWith(color: Colors.white),
             ),
             SizedBox(height: 12.h),
             Container(

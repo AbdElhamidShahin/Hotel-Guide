@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -8,11 +6,40 @@ import '../../../../core/error/error_handler.dart';
 import '../../../../core/error/failure.dart';
 import '../../../../core/network/model/booking_model.dart';
 import '../../../../core/network/model/notification_model.dart';
+import '../../../../core/network/model/profile_model.dart';
 import 'booking_repo.dart';
 
 class BookingRepoImpl implements BookingRepository {
   final SupabaseClient _supabase;
   const BookingRepoImpl(this._supabase);
+
+  // ── getUserProfile ──────────────────────────────────────────────────────────
+  // ✅ Fix #1: جلب الـ profile انتقل من الـ UI (BookingDetailsPage) إلى هنا.
+  // الـ UI مكانهاش تعرف حاجة عن Supabase أصلاً.
+
+  @override
+  Future<Either<Failure, UserProfileModel>> getUserProfile() async {
+    try {
+      final userId = _supabase.auth.currentUser?.id;
+      if (userId == null) {
+        return Left(ErrorHandler.handle('يرجى تسجيل الدخول أولاً.'));
+      }
+      final data = await _supabase
+          .from(AppTableNames.profiles)
+          .select()
+          .eq('id', userId)
+          .single();
+      return Right(UserProfileModel.fromMap(data));
+    } on PostgrestException catch (e) {
+      debugPrint('❌ getUserProfile: ${e.message}');
+      return Left(ErrorHandler.handle(e));
+    } catch (e) {
+      debugPrint('❌ getUserProfile: $e');
+      return Left(ErrorHandler.handle(e));
+    }
+  }
+
+  // ── confirmBooking ──────────────────────────────────────────────────────────
 
   @override
   Future<Either<Failure, void>> confirmBooking(BookingModel booking) async {
@@ -30,18 +57,15 @@ class BookingRepoImpl implements BookingRepository {
         await _cardPayment(full);
       } else {
         return Left(ErrorHandler.handle('وسيلة الدفع غير مدعومة.'));
-
       }
 
       return const Right(null);
     } on PostgrestException catch (e) {
       debugPrint('❌ confirmBooking: ${e.message}');
-      return Left(ErrorHandler.handle('وسيلة الدفع غير مدعومة.'));
-
+      return Left(ErrorHandler.handle(e));
     } catch (e) {
       debugPrint('❌ confirmBooking: $e');
       return Left(ErrorHandler.handle(e));
-
     }
   }
 
@@ -55,8 +79,10 @@ class BookingRepoImpl implements BookingRepository {
 
     bool rpcFailed = false;
     try {
-      await _supabase.rpc(AppRpcNames.processHotelBooking,
-          params: b.toRpcParams());
+      await _supabase.rpc(
+        AppRpcNames.processHotelBooking,
+        params: b.toRpcParams(),
+      );
       debugPrint('✅ wallet booking via RPC');
       return;
     } on PostgrestException catch (e) {
@@ -72,8 +98,10 @@ class BookingRepoImpl implements BookingRepository {
   Future<void> _cardPayment(BookingModel b) async {
     bool rpcFailed = false;
     try {
-      await _supabase.rpc(AppRpcNames.processCardBooking,
-          params: b.toRpcParams());
+      await _supabase.rpc(
+        AppRpcNames.processCardBooking,
+        params: b.toRpcParams(),
+      );
       debugPrint('✅ card booking via RPC');
       return;
     } on PostgrestException catch (e) {
@@ -87,7 +115,6 @@ class BookingRepoImpl implements BookingRepository {
   // ── Manual Fallback ────────────────────────────────────────────────────────
 
   Future<void> _manualBooking(BookingModel b, String method) async {
-    // 1. Deduct wallet balance
     if (method == 'wallet') {
       final current = await _getBalance(b.userId);
       final updated = await _supabase
@@ -101,34 +128,36 @@ class BookingRepoImpl implements BookingRepository {
       }
     }
 
-    // 2. Insert booking
-    final row = await _supabase.from(AppTableNames.bookings).insert({
-      'user_id': b.userId,
-      'hotel_name': b.hotelName,
-      'room_id': b.roomId,
-      'total_amount': b.totalAmount,
-      'check_in': b.startDate.toIso8601String(),
-      'check_out': b.endDate.toIso8601String(),
-      'payment_method': method,
-      'status': 'confirmed',
-    }).select('id').single();
+    final row = await _supabase
+        .from(AppTableNames.bookings)
+        .insert({
+          'user_id': b.userId,
+          'hotel_name': b.hotelName,
+          'room_id': b.roomId,
+          'total_amount': b.totalAmount,
+          'check_in': b.startDate.toIso8601String(),
+          'check_out': b.endDate.toIso8601String(),
+          'payment_method': method,
+          'status': 'confirmed',
+        })
+        .select('id')
+        .single();
     debugPrint('✅ Booking inserted: ${row['id']}');
 
-    // 3. Transaction
     await _supabase.from(AppTableNames.walletTransactions).insert({
       'user_id': b.userId,
       'amount': method == 'wallet' ? -b.totalAmount : b.totalAmount,
       'type': 'payment',
       'description':
-      'حجز في ${b.hotelName} عبر ${method == 'wallet' ? 'المحفظة' : 'البطاقة'}',
+          'حجز في ${b.hotelName} عبر ${method == 'wallet' ? 'المحفظة' : 'البطاقة'}',
       'booking_id': row['id'],
     });
 
-    // 4. Success notification
     await _insertNotification(
       userId: b.userId,
       title: 'تم الحجز بنجاح ✅',
-      body: 'تم تأكيد حجزك في ${b.hotelName}.\n'
+      body:
+          'تم تأكيد حجزك في ${b.hotelName}.\n'
           'المبلغ: ${b.totalAmount.toStringAsFixed(0)} EGP'
           ' عبر ${method == 'wallet' ? 'المحفظة' : 'البطاقة البنكية'}',
       type: NotificationType.success,
@@ -153,9 +182,15 @@ class BookingRepoImpl implements BookingRepository {
     required String body,
     required NotificationType type,
   }) async {
-    await _supabase.from(AppTableNames.notifications).insert(
-      NotificationModel(title: title, body: body, time: DateTime.now(), type: type)
-          .toJson(userId),
-    );
+    await _supabase
+        .from(AppTableNames.notifications)
+        .insert(
+          NotificationModel(
+            title: title,
+            body: body,
+            time: DateTime.now(),
+            type: type,
+          ).toJson(userId),
+        );
   }
 }

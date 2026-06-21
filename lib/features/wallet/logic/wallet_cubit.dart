@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../core/units/stripe_service.dart';
 import '../../payment/data/model/payment_intent_input_model.dart';
@@ -15,9 +14,9 @@ class WalletCubit extends Cubit<WalletState> {
   StreamSubscription? _walletSub;
 
   WalletCubit({required WalletRepository repo, required StripeService stripe})
-    : _repo = repo,
-      _stripe = stripe,
-      super(WalletInitial());
+      : _repo = repo,
+        _stripe = stripe,
+        super(WalletInitial());
 
   // ── Fetch ─────────────────────────────────────────
 
@@ -25,8 +24,8 @@ class WalletCubit extends Cubit<WalletState> {
     emit(WalletLoading());
     final result = await _repo.getWalletDetails();
     result.fold(
-      (failure) => emit(WalletError(failure.message)),
-      (data) => emit(
+          (failure) => emit(WalletError(failure.message)),
+          (data) => emit(
         WalletLoaded(
           userProfile: data.profile,
           paymentTransactions: data.payments,
@@ -36,13 +35,19 @@ class WalletCubit extends Cubit<WalletState> {
     );
   }
 
-  // ── 🔥 Realtime Listener via Repository ──────────
-  // ✅ Fix: stream now comes from _repo.watchWalletChanges
-  // instead of raw Supabase.instance.client, making this testable.
+  // ── Realtime Listener ─────────────────────────────
+  // ✅ Fix #3: getUserId جه من الـ repo عبر getWalletDetails — مش من
+  // Supabase.instance.client مباشر. الـ Cubit دلوقتي مش عارف حاجة عن Supabase.
 
   void startWalletListener() {
-    final userId = Supabase.instance.client.auth.currentUser?.id;
-    if (userId == null) return;
+    // استخدم الـ userId اللي جه مع أول fetch بدل ما نكلم Supabase مباشر.
+    // لو الـ state loaded → عندنا profile.id جاهز.
+    final currentState = state;
+    final userId = currentState is WalletLoaded
+        ? currentState.userProfile.id
+        : null;
+
+    if (userId == null || userId.isEmpty) return;
 
     _walletSub?.cancel();
 
@@ -59,7 +64,6 @@ class WalletCubit extends Cubit<WalletState> {
     if (currentState is! WalletLoaded) return;
 
     final profile = currentState.userProfile;
-
     emit(WalletTopUpLoading());
 
     try {
@@ -78,8 +82,8 @@ class WalletCubit extends Cubit<WalletState> {
       final result = await _repo.topUpBalance(amount);
 
       await result.fold(
-        (failure) async => emit(WalletTopUpError(failure.message)),
-        (_) async {
+            (failure) async => emit(WalletTopUpError(failure.message)),
+            (_) async {
           emit(WalletTopUpSuccess(profile.walletBalance + amount));
           await fetchWalletData();
         },

@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/network/model/booking_model.dart';
+import '../../../core/network/model/profile_model.dart';
 import '../data/model/payment_intent_input_model.dart';
 import '../data/repo/booking_repo.dart';
 import '../data/repo/payment_repository.dart';
@@ -11,6 +12,9 @@ class BookingCubit extends Cubit<BookingStates> {
 
   String selectedWallet = 'AQUA';
 
+
+  UserProfileModel? userProfile;
+
   BookingCubit({
     required PaymentRepository paymentRepository,
     required BookingRepository bookingRepository,
@@ -18,6 +22,20 @@ class BookingCubit extends Cubit<BookingStates> {
         _bookingRepository = bookingRepository,
         super(const BookingInitial());
 
+  // ── Load Profile ───────────────────────────────────────────────────────────
+
+  Future<void> loadUserProfile() async {
+    final result = await _bookingRepository.getUserProfile();
+    result.fold(
+          (failure) => emit(BookingError(failure.message)),
+          (profile) {
+        userProfile = profile;
+        emit(const BookingInitial());
+      },
+    );
+  }
+
+  // ── Payment (Card) ─────────────────────────────────────────────────────────
 
   Future<void> makePayment({
     required PaymentIntentInputModel input,
@@ -36,13 +54,14 @@ class BookingCubit extends Cubit<BookingStates> {
               (failure) => emit(BookingError(failure.message)),
               (_) async {
             emit(const BookingSuccess());
-
             await Future.delayed(const Duration(milliseconds: 300));
           },
         );
       },
     );
   }
+
+  // ── Payment (Wallet) ───────────────────────────────────────────────────────
 
   Future<void> confirmBooking(BookingModel booking) async {
     emit(const BookingLoading());
@@ -55,6 +74,7 @@ class BookingCubit extends Cubit<BookingStates> {
     );
   }
 
+  // ── Wallet Selection ───────────────────────────────────────────────────────
 
   void changeWallet(String walletName) {
     selectedWallet = walletName;

@@ -19,8 +19,6 @@ class BookingError extends BookingStates {
   const BookingError(this.message);
 }
 
-/// Emitted when the wallet selection changes — keeps UI in sync without
-/// triggering a full reload.
 class BookingWalletChanged extends BookingStates {
   final String selectedWallet;
   const BookingWalletChanged(this.selectedWallet);
