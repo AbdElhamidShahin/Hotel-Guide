@@ -98,7 +98,6 @@ class _CustomWelcomeHeaderState extends State<CustomWelcomeHeader> {
                     padding: const EdgeInsets.all(3),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      // outline = themed border — visible on both backgrounds.
                       border: Border.all(color: cs.outline, width: 2),
                     ),
                     child: CustomUserAvatar(

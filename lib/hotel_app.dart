@@ -28,7 +28,7 @@ class HotelApp extends StatelessWidget {
                   debugShowCheckedModeBanner: false,
 
                   // ── Theme wiring ────────────────────────────────────
-                  theme: AppThemeData.dark,
+                  theme: AppThemeData.light,
                   darkTheme: AppThemeData.dark,
                   // ThemeCubit drives this — any toggleTheme() call
                   // rebuilds this BlocBuilder and the entire app switches.

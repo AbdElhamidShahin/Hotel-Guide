@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../core/constants/api_constants.dart';
 import '../../../core/error/failure.dart';
 import 'chat_message.dart';
@@ -13,20 +12,14 @@ class ChatService {
     required String userId,
   }) async {
     try {
-      final supabase = Supabase.instance.client;
-      final hotels = await supabase
-          .from(AppTableNames.hotels)
-          .select('name, description, address, rating, price_starts_from')
-          .limit(5);
+      // ملاحظة: شيلنا استدعاء Supabase المباشر من هنا.
+      // n8n هو المسؤول الوحيد عن جلب الفنادق الصحيحة حسب سؤال المستخدم
+      // (مدينة/سعر/تقييم)، فمفيش داعي نبعت فنادق عشوائية من هنا.
       final response = await http
           .post(
             Uri.parse(_webhookUrl),
             headers: {'Content-Type': 'application/json'},
-            body: jsonEncode({
-              'message': message,
-              'userId': userId,
-              'hotels': hotels,
-            }),
+            body: jsonEncode({'message': message, 'userId': userId}),
           )
           .timeout(const Duration(seconds: 30));
 
@@ -50,14 +43,28 @@ class ChatService {
     try {
       final decoded = jsonDecode(body);
 
+      // n8n بيرجع Map مباشر: { "text": "...", "hotels": [...] }
+      if (decoded is Map) {
+        final hotelsData = decoded['hotels'];
+        if (hotelsData != null) {
+          return _buildHotelsMessage(decoded['text'] ?? '', hotelsData);
+        }
+
+        final text =
+            decoded['text']?.toString() ??
+            decoded['output']?.toString() ??
+            decoded['answer']?.toString() ??
+            '';
+        if (text.isEmpty) return _limitMessage();
+        return _buildTextMessage(text);
+      }
+
+      // دعم احتياطي لو n8n رجّع List فيها عنصر واحد (شكل قديم محتمل)
       if (decoded is List && decoded.isNotEmpty) {
         final item = decoded[0];
-
-        if (item[AppTableNames.hotels] != null) {
-          return _buildHotelsMessage(
-            item['text'] ?? '',
-            item[AppTableNames.hotels],
-          );
+        final hotelsData = item['hotels'];
+        if (hotelsData != null) {
+          return _buildHotelsMessage(item['text'] ?? '', hotelsData);
         }
 
         final text =
@@ -65,25 +72,8 @@ class ChatService {
         if (text.isEmpty) return _limitMessage();
         return _buildTextMessage(text);
       }
-
-      if (decoded is Map) {
-        if (decoded[AppTableNames.hotels] != null) {
-          return _buildHotelsMessage(
-            decoded['text'] ?? '',
-            decoded[AppTableNames.hotels],
-          );
-        }
-
-        final text =
-            decoded['output']?.toString() ??
-            decoded['answer']?.toString() ??
-            '';
-        if (text.isEmpty) return _limitMessage();
-        return _buildTextMessage(text);
-      }
     } catch (_) {}
 
-    if (body.trim().isEmpty) return _limitMessage();
     return _buildTextMessage(body);
   }
 
@@ -123,7 +113,4 @@ class ChatService {
         '⚠️ عذراً، المساعد الذكي وصل للحد المسموح بيه دلوقتي.\n\nحاول تاني بعد شوية أو تواصل مع الدعم الفني. 🙏',
     isUser: false,
   );
-
-  ChatMessage _errorMessage() =>
-      ChatMessage(text: '⚠️ حصل خطأ، حاول تاني.', isUser: false);
 }

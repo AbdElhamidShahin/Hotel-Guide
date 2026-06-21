@@ -14,9 +14,10 @@ class MenuScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final contentColor = isDarkMode ? Colors.white : AppColors.primary;
+
     return Scaffold(
-      // Reads from AppThemeData scaffoldBackgroundColor — white in light,
-      // dark navy in dark mode.
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Stack(
         children: [
@@ -27,13 +28,13 @@ class MenuScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // ── Close button ─────────────────────────────────
                   Align(
                     alignment: Alignment.topLeft,
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(50),
-                        color: AppColors.primary,
+                        color: AppColors
+                            .primary,
                       ),
                       child: IconButton(
                         icon: const Icon(
@@ -63,39 +64,45 @@ class MenuScreen extends StatelessWidget {
                           title: 'من نحن',
                           iconPath: 'assets/icons/menu_icons/people.svg',
                           onTap: () => context.push(routes.AboutUsScreen),
+                          contentColor: contentColor,
                         ),
                         _MenuTile(
                           title: 'الأسئلة الشائعة',
                           iconPath: 'assets/icons/menu_icons/FAQ_Icon_UIA.svg',
                           onTap: () => context.push(routes.FaqPage),
+                          contentColor: contentColor,
                         ),
                         _MenuTile(
                           title: 'خريطة التطبيق',
                           iconPath: 'assets/icons/menu_icons/map.svg',
                           onTap: () {},
+                          contentColor: contentColor,
                         ),
                         _MenuTile(
                           title: 'اتصل بنا',
                           iconPath: 'assets/icons/menu_icons/call-calling.svg',
                           onTap: () {},
+                          contentColor: contentColor,
                         ),
                         _MenuTile(
                           title: 'سياسة الخصوصية',
                           iconPath: 'assets/icons/menu_icons/security-user.svg',
                           onTap: () => context.push(routes.PrivacyPolicyScreen),
+                          contentColor: contentColor,
                         ),
                         _MenuTile(
                           title: 'الشروط والأحكام',
                           iconPath:
                               'assets/icons/menu_icons/clipboard-text.svg',
                           onTap: () {},
+                          contentColor: contentColor,
                         ),
                       ],
                     ),
                   ),
 
                   // ── Logout button ─────────────────────────────────
-                  _LogoutButton(),
+                  _LogoutButton(contentColor: contentColor),
                   SizedBox(height: 36.h),
                 ],
               ),
@@ -113,11 +120,13 @@ class _MenuTile extends StatelessWidget {
   final String title;
   final String iconPath;
   final VoidCallback onTap;
+  final Color contentColor; // استقبال اللون الديناميكي
 
   const _MenuTile({
     required this.title,
     required this.iconPath,
     required this.onTap,
+    required this.contentColor,
   });
 
   @override
@@ -130,25 +139,32 @@ class _MenuTile extends StatelessWidget {
           leading: Icon(
             Icons.arrow_back_ios_new,
             size: 22,
-            color: AppColors.primary,
+            color: contentColor, // يتغير ديناميكيًا
           ),
           title: Text(
             title,
             textAlign: TextAlign.right,
-            // Migrated from frozen font23RegularPrimary global.
-            style: AppTextStyles.font23RegularPrimary(context),
+            // استخدام copyWith لتحديث لون النص فقط والحفاظ على بقية خصائص الـ Style ثابتة
+            style: AppTextStyles.font23RegularPrimary(
+              context,
+            ).copyWith(color: contentColor),
           ),
           trailing: SvgPicture.asset(
             iconPath,
             width: 28.w,
             height: 28.h,
-            colorFilter: ColorFilter.mode(AppColors.primary, BlendMode.srcIn),
+            colorFilter: ColorFilter.mode(
+              contentColor,
+              BlendMode.srcIn,
+            ), // يتغير ديناميكيًا
           ),
         ),
         Divider(
           height: 1,
           thickness: 0.5,
-          color: AppColors.primary.withOpacity(0.15),
+          color: contentColor.withOpacity(
+            0.15,
+          ), // يتناسب مع الخلفية والمود الحالي
         ),
         SizedBox(height: 24.h),
       ],
@@ -159,6 +175,10 @@ class _MenuTile extends StatelessWidget {
 // ── Logout button ─────────────────────────────────────────────────────────────
 
 class _LogoutButton extends StatelessWidget {
+  final Color contentColor; // استقبال اللون الديناميكي
+
+  const _LogoutButton({required this.contentColor});
+
   @override
   Widget build(BuildContext context) {
     return OutlinedButton(
@@ -167,7 +187,10 @@ class _LogoutButton extends StatelessWidget {
         if (context.mounted) context.go(routes.onBoardingScreen);
       },
       style: OutlinedButton.styleFrom(
-        side: BorderSide(color: AppColors.primary, width: 1.2.w),
+        side: BorderSide(
+          color: contentColor,
+          width: 1.2.w,
+        ), // إطار الزر يتغير مع المود
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(47.r),
         ),
@@ -176,15 +199,21 @@ class _LogoutButton extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Migrated from frozen font23RegularPrimary global.
-          Text('تسجيل الخروج',
-              style: AppTextStyles.font23RegularPrimary(context)),
+          Text(
+            'تسجيل الخروج',
+            style: AppTextStyles.font23RegularPrimary(context).copyWith(
+              color: contentColor, // نص زر الخروج يتغير حسب المود
+            ),
+          ),
           SizedBox(width: 10.w),
           SvgPicture.asset(
             'assets/icons/menu_icons/logout.svg',
             width: 26.w,
             height: 26.h,
-            colorFilter: ColorFilter.mode(AppColors.primary, BlendMode.srcIn),
+            colorFilter: ColorFilter.mode(
+              contentColor,
+              BlendMode.srcIn,
+            ), // لون الأيقونة ديناميكي
           ),
         ],
       ),

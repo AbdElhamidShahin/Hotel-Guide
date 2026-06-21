@@ -36,8 +36,6 @@ class CustomUserAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     return CircleAvatar(
       radius: radius,
-      // surfaceContainerHighest is the correct M3 slot for a placeholder
-      // surface that needs to stand out from the background in both modes.
       backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
       backgroundImage: _buildProfileImage(),
     );

@@ -40,12 +40,9 @@ class _AccountScreenState extends State<AccountScreen> {
     final notifier = UserDataNotifier.instance;
     final cs = Theme.of(context).colorScheme;
 
-    // ── Read current dark-mode state directly from the live theme.
-    // This is the single source of truth — no local bool, no AppColors.isDark.
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      // scaffoldBackgroundColor from AppThemeData — adapts automatically.
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         children: [
@@ -69,12 +66,7 @@ class _AccountScreenState extends State<AccountScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      // ── Animated toggle pill ─────────────────────────
                       GestureDetector(
-                        // ACTION: calls ThemeCubit.toggleTheme() on every tap.
-                        // The Cubit saves the preference and emits the new
-                        // ThemeMode. BlocBuilder in hotel_app.dart rebuilds
-                        // the entire MaterialApp instantly.
                         onTap: () => context.read<ThemeCubit>().toggleTheme(),
                         child: Container(
                           width: 60.w,
@@ -82,16 +74,11 @@ class _AccountScreenState extends State<AccountScreen> {
                           padding: EdgeInsets.all(2.r),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(30.r),
-                            border: Border.all(
-                              // outline = themed border — adapts in dark mode.
-                              color: cs.outline,
-                              width: 2.w,
-                            ),
+                            border: Border.all(color: cs.outline, width: 2.w),
                           ),
                           child: AnimatedAlign(
                             duration: const Duration(milliseconds: 250),
                             curve: Curves.easeInOut,
-                            // STATE REFLECTION: pill position mirrors live brightness.
                             alignment: isDark
                                 ? Alignment.centerRight
                                 : Alignment.centerLeft,
@@ -100,7 +87,6 @@ class _AccountScreenState extends State<AccountScreen> {
                               height: 24.r,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                // Primary colour for the knob — consistent brand.
                                 color: AppColors.primary,
                               ),
                               child: Icon(
@@ -116,19 +102,21 @@ class _AccountScreenState extends State<AccountScreen> {
                         ),
                       ),
 
-                      // ── Label ────────────────────────────────────────
                       Row(
                         children: [
                           Text(
-                            'الوضع الليلي',
-                            style: AppTextStyles.font23SemiBoldBlack(
-                              context,
-                            ).copyWith(fontSize: 20.sp),
+                            isDark ? 'الوضع الفاتح' : 'الوضع الليلي',
+                            style: AppTextStyles.font23SemiBoldBlack(context)
+                                .copyWith(
+                                  fontSize: 20.sp,
+                                  color: isDark ? Colors.white : cs.onSurface,
+                                ),
                           ),
                           SizedBox(width: 8.w),
                           Icon(
-                            Icons.nightlight_outlined,
-                            // onSurfaceVariant = secondary icon colour.
+                            isDark
+                                ? Icons.light_mode_outlined
+                                : Icons.nightlight_outlined,
                             color: cs.onSurfaceVariant,
                             size: 24.sp,
                           ),
@@ -138,17 +126,15 @@ class _AccountScreenState extends State<AccountScreen> {
                   ),
                 ),
 
-                // Themed divider — correct shade in both modes.
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 8.w),
                   child: Divider(height: 2, color: cs.outline),
                 ),
 
-                // ── Settings rows ────────────────────────────────────────
                 buildSttingsItem(
                   title: 'الموقع',
                   icon: Icons.location_on_outlined,
-                  onTap: () => context.push(routes.AboutUsScreen),
+                  onTap: () {},
                 ),
                 buildSttingsItem(
                   title: 'سياسة الخصوصية',
