@@ -7,6 +7,7 @@ import 'package:hotel_guide/features/home/ui/widget/details/custom_name_details.
 import 'package:hotel_guide/features/home/ui/widget/details/custom_rooms_and_location_details_screen.dart';
 import 'package:hotel_guide/features/home/ui/widget/details/custom_service_details_list_view.dart';
 import 'package:hotel_guide/features/home/ui/widget/details/divider.dart';
+import 'package:hotel_guide/features/home/ui/widget/details/hotel_images_gallery.dart';
 import 'package:hotel_guide/features/home/ui/widget/details/rating_screen.dart';
 import 'package:hotel_guide/features/home/ui/widget/details/show_hotel_description.dart';
 
@@ -24,8 +25,7 @@ class CustomDetailsScreen extends StatelessWidget {
     final colorScheme = theme.colorScheme;
 
     return Scaffold(
-      backgroundColor:
-          colorScheme.surface, // لضمان تلون خلفية الشاشة بالكامل باللون الصحيح
+      backgroundColor: colorScheme.surface,
       body: SafeArea(
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
@@ -38,17 +38,18 @@ class CustomDetailsScreen extends StatelessWidget {
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
                   SizedBox(height: 16.h),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(20.r),
-                    child: Image.network(
-                      hotelModel.images.isNotEmpty ? hotelModel.images[0] : '',
-                      width: double.infinity,
-                      height: 230.h,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  SizedBox(height: 16.h),
 
+                  // ✅ بدّلنا ClipRRect الثابتة بـ HotelImagesGallery:
+                  // - صورة واحدة  → تتعرض عادي بدون dots أو سهام
+                  // - أكتر من صورة → PageView + dots + سهام + counter (1/N)
+                  // - مفيش صور    → placeholder "لا توجد صور"
+                  HotelImagesGallery(
+                    images: hotelModel.images,
+                    height: 230,
+                    borderRadius: 20,
+                  ),
+
+                  SizedBox(height: 16.h),
                   const CustomServiceDetailsListView(),
                   SizedBox(height: 20.h),
 
@@ -64,10 +65,9 @@ class CustomDetailsScreen extends StatelessWidget {
                     maxLines: 4,
                     textDirection: TextDirection.rtl,
                     overflow: TextOverflow.ellipsis,
-                    style: AppTextStyles.font17RegularPrimary(context).copyWith(
-                      // التعديل: قراءة لون النص الفرعي من الـ Theme ليتغير في الـ Dark Mode تلقائياً
-                      color: colorScheme.onSurfaceVariant,
-                    ),
+                    style: AppTextStyles.font17RegularPrimary(
+                      context,
+                    ).copyWith(color: colorScheme.onSurfaceVariant),
                   ),
                   Align(
                     alignment: Alignment.centerLeft,
@@ -79,10 +79,9 @@ class CustomDetailsScreen extends StatelessWidget {
                       ),
                       child: Text(
                         'شاهد المزيد',
-                        style: AppTextStyles.font18BoldGray(context).copyWith(
-                          color: colorScheme
-                              .primary, // قراءة لون الهوية من الـ Theme
-                        ),
+                        style: AppTextStyles.font18BoldGray(
+                          context,
+                        ).copyWith(color: colorScheme.primary),
                       ),
                     ),
                   ),
@@ -92,7 +91,6 @@ class CustomDetailsScreen extends StatelessWidget {
                     child: RatingScreen(hotelModel: hotelModel),
                   ),
                   CustomRoomsAndLocationDetailsScreen(hotelModel: hotelModel),
-
                   SizedBox(height: 40.h),
                 ]),
               ),
