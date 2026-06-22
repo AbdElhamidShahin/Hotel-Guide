@@ -20,32 +20,25 @@ class BookingCalendar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(10.r),
+      padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
         borderRadius: BorderRadius.circular(8.r),
       ),
       child: TableCalendar(
         focusedDay: focusedDay,
-        firstDay: DateTime.now(),
+        firstDay: DateTime(2025, 1, 1),
         lastDay: DateTime(2027, 12, 31),
         rangeStartDay: rangeStart,
         rangeEndDay: rangeEnd,
+
         rangeSelectionMode: RangeSelectionMode.toggledOn,
         headerStyle: HeaderStyle(
           formatButtonVisible: false,
           titleCentered: true,
-          titleTextStyle: TextStyle(
-            color: Theme.of(context).colorScheme.onSurface,
-          ),
-          leftChevronIcon: Icon(
-            Icons.chevron_left,
-            color: Theme.of(context).colorScheme.onSurface,
-          ),
-          rightChevronIcon: Icon(
-            Icons.chevron_right,
-            color: Theme.of(context).colorScheme.onSurface,
-          ),
+          titleTextStyle: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+          leftChevronIcon: Icon(Icons.chevron_left, color: Theme.of(context).colorScheme.onSurface),
+          rightChevronIcon: Icon(Icons.chevron_right, color: Theme.of(context).colorScheme.onSurface),
         ),
         onRangeSelected: onSelect,
         calendarStyle: CalendarStyle(
@@ -55,38 +48,15 @@ class BookingCalendar extends StatelessWidget {
             borderRadius: BorderRadius.circular(8.r),
           ),
           rangeHighlightColor: AppColors.primary.withOpacity(.2),
-
           rangeEndDecoration: BoxDecoration(
             color: AppColors.primary,
             shape: BoxShape.rectangle,
             borderRadius: BorderRadius.circular(10.r),
           ),
-
-          defaultDecoration: BoxDecoration(
-            shape: BoxShape.rectangle,
-            borderRadius: BorderRadius.circular(6.r),
-          ),
-
-          weekendDecoration: BoxDecoration(
-            shape: BoxShape.rectangle,
-            borderRadius: BorderRadius.circular(6.r),
-          ),
-
-          todayDecoration: BoxDecoration(
-            color: Colors.transparent,
-            shape: BoxShape.rectangle,
-            borderRadius: BorderRadius.circular(6.r),
-          ),
-
-          defaultTextStyle: TextStyle(
-            color: Theme.of(context).colorScheme.onSurface,
-          ),
-          weekendTextStyle: TextStyle(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-          ),
-          todayTextStyle: TextStyle(
-            color: Theme.of(context).colorScheme.onSurface,
-          ),
+          defaultTextStyle: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+          weekendTextStyle: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
+          todayTextStyle: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+          todayDecoration: const BoxDecoration(color: Colors.transparent),
         ),
       ),
     );

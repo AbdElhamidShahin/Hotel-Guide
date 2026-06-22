@@ -16,7 +16,8 @@ class FavoriteScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
+      // Inherits scaffoldBackgroundColor from AppThemeData automatically.
+      // CustomAppbarWidget already migrated — adapts to theme.
       appBar: CustomAppbarWidget(name: 'المفضله', onTap: () {}),
       body: BlocBuilder<FavoriteCubit, FavoriteState>(
         builder: (context, state) {

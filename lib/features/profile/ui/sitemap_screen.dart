@@ -7,6 +7,9 @@ import '../../../core/theme/app_theme_data.dart';
 import '../../../core/theme/colors.dart';
 import '../../../core/helpers/widget/custom_appbar_widget.dart';
 
+/// "خريطة التطبيق" — mirrors the website's app-map / sitemap section.
+/// Groups every reachable screen into sections, each tile routes
+/// straight to the matching screen via go_router.
 class SitemapScreen extends StatelessWidget {
   const SitemapScreen({super.key});
 
@@ -36,7 +39,7 @@ class SitemapScreen extends StatelessWidget {
                   title: 'الرئيسية',
                   subtitle: 'نقطة الانطلاق لاكتشاف أفضل العروض والفنادق',
                   icon: Icons.home_rounded,
-                  onTap: () => context.go(routes.homeScreen),
+                  onTap: () => context.push(routes.homeScreen),
                 ),
                 _SitemapTileData(
                   title: 'اكتشف الفنادق',
@@ -63,19 +66,19 @@ class SitemapScreen extends StatelessWidget {
                   title: 'الملف الشخصي',
                   subtitle: 'تحديث بياناتك الشخصية وصورتك',
                   icon: Icons.account_circle_rounded,
-                  onTap: () => context.go(routes.accountScreen),
+                  onTap: () => context.push(routes.accountScreen),
                 ),
                 _SitemapTileData(
                   title: 'محفظتي',
                   subtitle: 'رصيد المحفظة والعمليات المالية',
                   icon: Icons.account_balance_wallet_rounded,
-                  onTap: () => context.go(routes.walletScreen),
+                  onTap: () => context.push(routes.walletScreen),
                 ),
                 _SitemapTileData(
                   title: 'المفضلة',
                   subtitle: 'الفنادق التي قمت بحفظها للرجوع إليها',
                   icon: Icons.favorite_rounded,
-                  onTap: () => context.go(routes.favoritesScreen),
+                  onTap: () => context.push(routes.favoritesScreen),
                 ),
                 _SitemapTileData(
                   title: 'الإشعارات',
@@ -163,23 +166,15 @@ class _SitemapHero extends StatelessWidget {
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment
-                .center, // لضمان سنترة الأيقونة مع النص عمودياً
             children: [
-              // 1. تغليف النص بـ Expanded لحل مشكلة الـ Overflow وجعله ينزل سطر جديد عند الحاجة
-              Expanded(
-                child: Text(
-                  'خريطة الموقع والشرح التفصيلي',
-                  textAlign: TextAlign.right,
-                  textDirection:
-                      TextDirection.rtl, // لضمان المحاذاة الصحيحة للغة العربية
-                  style: AppTextStyles.font22BoldPrimary(
-                    context,
-                  ).copyWith(color: Colors.white),
+              Text(
+                'خريطة الموقع والشرح التفصيلي',
+                textAlign: TextAlign.right,
+                style: AppTextStyles.font22BoldPrimary(context).copyWith(
+                  color: Colors.white,
                 ),
               ),
               SizedBox(width: 10.w),
-              // 2. الأيقونة هتفضل ثابتة في مكانها على اليمين والنص هياخد باقي المساحة
               Container(
                 padding: EdgeInsets.all(8.r),
                 decoration: BoxDecoration(
@@ -200,15 +195,17 @@ class _SitemapHero extends StatelessWidget {
             'المختلفة للاستفادة القصوى من خدماتنا السياحية.',
             textAlign: TextAlign.right,
             textDirection: TextDirection.rtl,
-            style: AppTextStyles.font14RegularNightfall(
-              context,
-            ).copyWith(color: Colors.white.withOpacity(0.85), height: 1.7),
+            style: AppTextStyles.font14RegularNightfall(context).copyWith(
+              color: Colors.white.withOpacity(0.85),
+              height: 1.7,
+            ),
           ),
         ],
       ),
     );
   }
 }
+
 // ── Section header + tiles group ────────────────────────────────────────────
 
 class _SitemapSection extends StatelessWidget {
@@ -235,7 +232,10 @@ class _SitemapSection extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text(title, style: AppTextStyles.font18BoldGray(context)),
+                Text(
+                  title,
+                  style: AppTextStyles.font18BoldGray(context),
+                ),
                 SizedBox(height: 2.h),
                 Text(
                   subtitle,
@@ -325,7 +325,11 @@ class _SitemapTile extends StatelessWidget {
                   color: AppColors.primary.withOpacity(0.08),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(data.icon, color: AppColors.primary, size: 20.sp),
+                child: Icon(
+                  data.icon,
+                  color: AppColors.primary,
+                  size: 20.sp,
+                ),
               ),
               SizedBox(width: 12.w),
               Expanded(
@@ -335,17 +339,16 @@ class _SitemapTile extends StatelessWidget {
                     Text(
                       data.title,
                       textAlign: TextAlign.right,
-                      style: AppTextStyles.font18BoldGray(
-                        context,
-                      ).copyWith(fontSize: 16.sp),
+                      style: AppTextStyles.font18BoldGray(context).copyWith(
+                        fontSize: 16.sp,
+                      ),
                     ),
                     SizedBox(height: 4.h),
                     Text(
                       data.subtitle,
                       textAlign: TextAlign.right,
-                      style: AppTextStyles.font14RegularNightfall(
-                        context,
-                      ).copyWith(fontSize: 12.5.sp, height: 1.4),
+                      style: AppTextStyles.font14RegularNightfall(context)
+                          .copyWith(fontSize: 12.5.sp, height: 1.4),
                     ),
                   ],
                 ),

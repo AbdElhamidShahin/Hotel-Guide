@@ -8,19 +8,20 @@ import '../../../../core/di/injection.dart';
 import '../../../../core/helpers/contact/custom_show_snackbar.dart';
 import '../../../../core/network/model/booking_model.dart';
 import '../../../../core/router/routers.dart';
-import '../../../../core/theme/app_theme_data.dart';
+import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../notification/logic/notificatin_logic.dart';
 import '../../logic/booking_cubit.dart';
 import '../../logic/booking_state.dart';
 import 'custom_wallet_item.dart';
+import '../../../../core/theme/app_theme_data.dart';
+import '../../../../core/theme/colors.dart';
 
 bool _isInsufficientBalance(String message) {
   return message.contains('رصيد') ||
       message.contains('غير كافٍ') ||
-      message.contains('غير كافي') ||
-      message.toLowerCase().contains('insufficient') ||
-      message.toLowerCase().contains('balance');
+      message.contains('insufficient') ||
+      message.contains('balance');
 }
 
 void showWalletBottomSheet(
@@ -28,9 +29,6 @@ void showWalletBottomSheet(
   BookingModel bookingData,
 ) {
   final bookingCubit = parentContext.read<BookingCubit>();
-  // ✅ Fix #3/#4: نتابع حالة الـ loading dialog بنفسنا بدل ما نفترض إنه
-  // لسه مفتوح، عشان منعمل pop على navigator غلط ونعمل crash في التنقل.
-  bool isLoadingDialogOpen = false;
 
   showModalBottomSheet(
     context: parentContext,
@@ -41,7 +39,6 @@ void showWalletBottomSheet(
         bloc: bookingCubit,
         listener: (context, state) async {
           if (state is BookingLoading) {
-            isLoadingDialogOpen = true;
             showDialog(
               context: context,
               barrierDismissible: false,
@@ -49,21 +46,12 @@ void showWalletBottomSheet(
                   const Center(child: CircularProgressIndicator()),
             );
           } else if (state is BookingSuccess) {
-            // ✅ نقفل الـ loading dialog أولاً (لو لسه مفتوح)، وبعدين الـ
-            // bottom sheet نفسه — كل واحدة بشرط واضح بدل pop مضاعف أعمى
-            // كان بيحاول يقفل حاجتين حتى لو كانت واحدة منهم مقفولة بالفعل.
-            if (isLoadingDialogOpen) {
-              Navigator.of(context, rootNavigator: true).pop();
-              isLoadingDialogOpen = false;
-            }
-            if (Navigator.of(context).canPop()) {
-              Navigator.of(context).pop();
-            }
+            Navigator.of(context, rootNavigator: true).pop();
+            Navigator.of(context).pop();
 
             getIt<NotificationCubit>().fetchNotifications();
 
-            if (!parentContext.mounted) return;
-            parentContext.push(
+            context.push(
               routes.bookingResult,
               extra: {
                 'isSuccess': true,
@@ -77,32 +65,22 @@ void showWalletBottomSheet(
               'تم خصم ${bookingData.totalAmount.toInt()} EGP من محفظتك',
             );
           } else if (state is BookingError) {
-            if (isLoadingDialogOpen) {
-              Navigator.of(context, rootNavigator: true).pop();
-              isLoadingDialogOpen = false;
-            }
+            Navigator.of(context, rootNavigator: true).pop();
 
             getIt<NotificationCubit>().fetchNotifications();
 
             final bool isBalanceError = _isInsufficientBalance(state.message);
 
-            if (!parentContext.mounted) return;
-
             if (isBalanceError) {
-              // ✅ Fix #4: رسالة مخصصة وواضحة لحالة الرصيد الغير كافٍ بدل
-              // رسالة الخطأ العامة. الـ bottom sheet يفضل مفتوح عشان
-              // المستخدم يقدر يشحن رصيد أو يغيّر وسيلة الدفع فورًا.
               showCustomSnackbar(
-                parentContext,
+                context,
                 ContentType.failure,
-                'عذراً، لا يوجد رصيد كافٍ',
+                'رصيد غير كافٍ 💳',
                 'رصيد محفظتك لا يكفي لإتمام الحجز.\nالمطلوب: ${bookingData.totalAmount.toInt()} EGP',
               );
             } else {
-              if (Navigator.of(context).canPop()) {
-                Navigator.of(context).pop();
-              }
-              parentContext.push(
+              Navigator.of(context).pop();
+              context.push(
                 routes.bookingResult,
                 extra: {'isSuccess': false, 'errorMessage': state.message},
               );

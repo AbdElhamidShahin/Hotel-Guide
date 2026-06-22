@@ -2,7 +2,6 @@ class BookingModel {
   final String roomId;
   final String userId;
   final String hotelName;
-  final String roomName;
   final DateTime startDate;
   final DateTime endDate;
   final double totalAmount;
@@ -16,7 +15,6 @@ class BookingModel {
     required this.roomId,
     required this.userId,
     required this.hotelName,
-    required this.roomName,
     required this.startDate,
     required this.endDate,
     required this.totalAmount,
@@ -31,7 +29,6 @@ class BookingModel {
     return {
       'p_user_id': userId,
       'p_hotel_name': hotelName,
-      'p_room_name': roomName,
       'p_room_id': roomId,
       'p_total_amount': totalAmount,
       'p_check_in': startDate.toIso8601String(),
@@ -48,7 +45,6 @@ class BookingModel {
     return BookingModel(
       roomId: roomId,
       hotelName: hotelName,
-      roomName: roomName,
       startDate: startDate,
       endDate: endDate,
       totalAmount: totalAmount ?? this.totalAmount,

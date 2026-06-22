@@ -12,9 +12,6 @@ class ChatService {
     required String userId,
   }) async {
     try {
-      // ملاحظة: شيلنا استدعاء Supabase المباشر من هنا.
-      // n8n هو المسؤول الوحيد عن جلب الفنادق الصحيحة حسب سؤال المستخدم
-      // (مدينة/سعر/تقييم)، فمفيش داعي نبعت فنادق عشوائية من هنا.
       final response = await http
           .post(
             Uri.parse(_webhookUrl),
@@ -36,14 +33,12 @@ class ChatService {
       throw UnknownFailure(e.toString());
     }
   }
-
   ChatMessage _parseResponse(String body) {
     if (body.trim().isEmpty) return _limitMessage();
 
     try {
       final decoded = jsonDecode(body);
 
-      // n8n بيرجع Map مباشر: { "text": "...", "hotels": [...] }
       if (decoded is Map) {
         final hotelsData = decoded['hotels'];
         if (hotelsData != null) {
@@ -59,7 +54,6 @@ class ChatService {
         return _buildTextMessage(text);
       }
 
-      // دعم احتياطي لو n8n رجّع List فيها عنصر واحد (شكل قديم محتمل)
       if (decoded is List && decoded.isNotEmpty) {
         final item = decoded[0];
         final hotelsData = item['hotels'];
@@ -91,10 +85,15 @@ class ChatService {
             name: h['name'] ?? '',
             rating: (h['rating'] ?? 0).toDouble(),
             description: h['description'] ?? '',
-            imageUrl: h['image'] ?? h['main_images'] ?? '',
+            imageUrl: h['image'] ?? '',
             price: h['price_starts_from'] != null
                 ? double.tryParse(h['price_starts_from'].toString())
                 : null,
+            city: h['city'] ?? '',
+            address: h['address'] ?? '',
+            mainImages: h['main_images'] != null
+                ? List<String>.from(h['main_images'])
+                : [],
           ),
         );
       }

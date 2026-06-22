@@ -33,7 +33,8 @@ class MenuScreen extends StatelessWidget {
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(50),
-                        color: AppColors.primary,
+                        color: AppColors
+                            .primary,
                       ),
                       child: IconButton(
                         icon: const Icon(
@@ -93,8 +94,7 @@ class MenuScreen extends StatelessWidget {
                           title: 'الشروط والأحكام',
                           iconPath:
                               'assets/icons/menu_icons/clipboard-text.svg',
-                          onTap: () =>
-                              context.push(routes.TermsConditionsScreen),
+                          onTap: () => context.push(routes.TermsConditionsScreen),
                           contentColor: contentColor,
                         ),
                       ],

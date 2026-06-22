@@ -16,10 +16,7 @@ class ContactUsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: CustomAppbarWidget(
-        name: 'اتصل بنا',
-        onTap: () => context.pop(),
-      ),
+      appBar: CustomAppbarWidget(name: 'اتصل بنا', onTap: () => context.pop()),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
@@ -31,22 +28,22 @@ class ContactUsScreen extends StatelessWidget {
             _ContactChannelCard(
               icon: Icons.call_rounded,
               title: 'اتصل بنا هاتفيًا',
-              value: '+20 100 123 4567',
-              onTap: () => launchUrl(Uri.parse('tel:+201001234567')),
+              value: '+20 1205687372',
+              onTap: () => launchUrl(Uri.parse('tel:+201205687372')),
             ),
             SizedBox(height: 14.h),
             _ContactChannelCard(
               icon: Icons.email_rounded,
               title: 'راسلنا عبر البريد الإلكتروني',
-              value: 'support@aquabooking.com',
-              onTap: () => launchUrl(Uri.parse('mailto:support@aquabooking.com')),
+              value: 'abdelhamid.shahin0@gmail.com',
+              onTap: () => launchUrl(Uri.parse('abdelhamid.shahin0@gmail.com')),
             ),
             SizedBox(height: 14.h),
             _ContactChannelCard(
               icon: Icons.chat_bubble_rounded,
               title: 'تواصل عبر واتساب',
-              value: '+20 100 123 4567',
-              onTap: () => launchUrl(Uri.parse('https://wa.me/201001234567')),
+              value: '+20 1205687372',
+              onTap: () => launchUrl(Uri.parse('https://wa.me/201205687372')),
             ),
             SizedBox(height: 14.h),
             _ContactChannelCard(
@@ -108,9 +105,9 @@ class _ContactHero extends StatelessWidget {
             children: [
               Text(
                 'نحن في خدمتك',
-                style: AppTextStyles.font22BoldPrimary(context).copyWith(
-                  color: Colors.white,
-                ),
+                style: AppTextStyles.font22BoldPrimary(
+                  context,
+                ).copyWith(color: Colors.white),
               ),
               SizedBox(width: 10.w),
               Container(
@@ -133,10 +130,9 @@ class _ContactHero extends StatelessWidget {
             'في أي وقت عبر القنوات التالية.',
             textAlign: TextAlign.right,
             textDirection: TextDirection.rtl,
-            style: AppTextStyles.font14RegularNightfall(context).copyWith(
-              color: Colors.white.withOpacity(0.85),
-              height: 1.7,
-            ),
+            style: AppTextStyles.font14RegularNightfall(
+              context,
+            ).copyWith(color: Colors.white.withOpacity(0.85), height: 1.7),
           ),
         ],
       ),
@@ -204,9 +200,9 @@ class _ContactChannelCard extends StatelessWidget {
                     Text(
                       title,
                       textAlign: TextAlign.right,
-                      style: AppTextStyles.font18BoldGray(context).copyWith(
-                        fontSize: 15.sp,
-                      ),
+                      style: AppTextStyles.font18BoldGray(
+                        context,
+                      ).copyWith(fontSize: 15.sp),
                     ),
                     SizedBox(height: 4.h),
                     Text(
@@ -262,11 +258,7 @@ class _SocialRow extends StatelessWidget {
                     color: AppColors.primary.withOpacity(0.08),
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(
-                    item.$1,
-                    color: AppColors.primary,
-                    size: 22.sp,
-                  ),
+                  child: Icon(item.$1, color: AppColors.primary, size: 22.sp),
                 ),
               ),
             ),
@@ -319,9 +311,9 @@ class _SectionCard extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: AppTextStyles.font18BoldGray(context).copyWith(
-                  fontSize: 17.sp,
-                ),
+                style: AppTextStyles.font18BoldGray(
+                  context,
+                ).copyWith(fontSize: 17.sp),
               ),
               SizedBox(width: 10.w),
               Container(
@@ -349,8 +341,9 @@ class _SectionCard extends StatelessWidget {
                       item,
                       textDirection: TextDirection.rtl,
                       textAlign: TextAlign.right,
-                      style: AppTextStyles.font14RegularNightfall(context)
-                          .copyWith(height: 1.75),
+                      style: AppTextStyles.font14RegularNightfall(
+                        context,
+                      ).copyWith(height: 1.75),
                     ),
                   ),
                   SizedBox(width: 10.w),
