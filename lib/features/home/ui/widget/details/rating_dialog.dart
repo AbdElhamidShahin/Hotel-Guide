@@ -14,7 +14,7 @@ class RatingDialog extends StatefulWidget {
 
 class _RatingDialogState extends State<RatingDialog> {
   int rating = 4;
-  final List<String> emojis = ['😍', '😄', '😐', '😟', '😢'];
+  final List<String> emojis = ['😢', '😟', '😐', '😄', '😍'];
 
   @override
   Widget build(BuildContext context) {
