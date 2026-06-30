@@ -24,5 +24,8 @@ class routes {
   static const String AboutUsScreen = "/AboutUsScreen";
   static const String ChatScreen = "/ChatScreen";
   static const String PrivacyPolicyScreen = "/PrivacyPolicyScreen";
+  static const String SitemapScreen = "/SitemapScreen";
+  static const String ContactUsScreen = "/ContactUsScreen";
+  static const String TermsConditionsScreen = "/TermsConditionsScreen";
 
 }

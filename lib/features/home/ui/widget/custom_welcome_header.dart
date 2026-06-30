@@ -29,7 +29,36 @@ class _CustomWelcomeHeaderState extends State<CustomWelcomeHeader> {
   @override
   void initState() {
     super.initState();
-    loadUserData();
+    // ✅ Fix #1: نسمع لـ UserDataNotifier بدل تحميل البيانات مرة واحدة بس.
+    // كان initState يقرأ من SharedPreferences مرة واحدة فقط، فلو غيّر
+    // المستخدم صورته من صفحة البروفايل، الهوم سكرين ما كانت تتحدث إلا
+    // بعد إعادة فتح التطبيق بالكامل.
+    UserDataNotifier.instance.addListener(_onUserDataChanged);
+    _syncFromNotifier();
+  }
+
+  void _syncFromNotifier() {
+    final notifier = UserDataNotifier.instance;
+    if (notifier.name.isNotEmpty || notifier.image.isNotEmpty) {
+      setState(() {
+        name = notifier.name.isNotEmpty ? notifier.name : widget.name;
+        image = notifier.image.isNotEmpty ? notifier.image : widget.imageUrl;
+      });
+    } else {
+      loadUserData();
+    }
+  }
+
+  void _onUserDataChanged() {
+    if (!mounted) return;
+    setState(() {
+      name = UserDataNotifier.instance.name.isNotEmpty
+          ? UserDataNotifier.instance.name
+          : widget.name;
+      image = UserDataNotifier.instance.image.isNotEmpty
+          ? UserDataNotifier.instance.image
+          : widget.imageUrl;
+    });
   }
 
   Future<void> loadUserData() async {
@@ -40,6 +69,12 @@ class _CustomWelcomeHeaderState extends State<CustomWelcomeHeader> {
         image = userData['image'] ?? widget.imageUrl;
       });
     }
+  }
+
+  @override
+  void dispose() {
+    UserDataNotifier.instance.removeListener(_onUserDataChanged);
+    super.dispose();
   }
 
   @override
@@ -98,7 +133,6 @@ class _CustomWelcomeHeaderState extends State<CustomWelcomeHeader> {
                     padding: const EdgeInsets.all(3),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      // outline = themed border — visible on both backgrounds.
                       border: Border.all(color: cs.outline, width: 2),
                     ),
                     child: CustomUserAvatar(

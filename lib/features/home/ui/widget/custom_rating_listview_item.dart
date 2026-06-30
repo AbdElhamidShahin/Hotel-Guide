@@ -9,7 +9,6 @@ import 'package:snackly/snackly.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/network/model/hotel_model.dart';
 import '../../../../core/router/routers.dart';
-import 'package:provider/provider.dart';
 import '../../../favorite/logic/cubit/favorite_cubit.dart';
 import '../../../favorite/logic/cubit/favorite_state.dart';
 

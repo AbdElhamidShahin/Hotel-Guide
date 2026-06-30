@@ -11,7 +11,11 @@ Widget CustomDetailRow(String title, String supTitle, String image, Color color)
       final cs = Theme.of(context).colorScheme;
       return Row(
         children: [
-          Text(title, style: AppTextStyles.font16RegularMuted(context).copyWith(color: isDark ? Colors.white : color)),          const Spacer(),
+          // ✅ Fix: كان بيتجاهل اللون اللي بيتمرر (color) في الدارك مود
+          // ويستخدم أبيض ثابت دايمًا، فكانت ألوان الحالة (الأخضر للمكتملة
+          // مثلًا) بتختفي في الدارك مود. دلوقتي نستخدم نفس اللون الممرر
+          // في الحالتين عشان الألوان الدلالية (أخضر/أحمر) تفضل واضحة.
+          Text(title, style: AppTextStyles.font16RegularMuted(context).copyWith(color: color)),          const Spacer(),
           Text(
             supTitle,
             style: AppTextStyles.font16RegularMuted(context).copyWith(

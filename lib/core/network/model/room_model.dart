@@ -11,6 +11,9 @@ class Room {
   final List<String> gallery;
   final String bedType;
   final DateTime createdAt;
+  final String? hotelName;
+
+
 
   Room({
     required this.id,
@@ -25,6 +28,7 @@ class Room {
     required this.gallery,
     required this.bedType,
     required this.createdAt,
+    this.hotelName,
   });
 
   factory Room.fromJson(Map<String, dynamic> json) {
@@ -50,10 +54,13 @@ class Room {
       createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'])
           : DateTime.now(),
+      // ✅ اسم الفندق الحقيقي جاي من الـ join مع جدول hotels (hotels(name)).
+      hotelName: json['hotels'] != null
+          ? (json['hotels']['name'] as String?)
+          : null,
     );
   }
 
   double get finalPrice => discountPrice ?? price;
   double get pricePerNight => finalPrice;
-  String? get hotelName => null; // override if hotel data is fetched alongside
 }

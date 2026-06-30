@@ -16,17 +16,13 @@ class SocialLoginSection extends StatelessWidget {
       children: [
         GestureDetector(
           onTap: () => context.read<SignUpCubit>().signUpWithGoogle(),
-          child: iconSocial(context, 'assets/icons/google.svg', 'التسجيل حساب جوجل'),
-        ),
-        SizedBox(height: 8.w),
-        GestureDetector(
-          onTap: () {},
           child: iconSocial(
             context,
-            'assets/icons/2021_Facebook_icon 1.svg',
-            'التسجيل حساب فيس بوك',
+            'assets/icons/google.svg',
+            'التسجيل حساب جوجل',
           ),
         ),
+        SizedBox(height: 8.w),
       ],
     );
   }
@@ -47,9 +43,9 @@ Widget iconSocial(BuildContext context, String image, String text) {
       children: [
         Text(
           text,
-          style: AppTextStyles.font16BoldWhite(context).copyWith(
-            color: cs.onSurface,
-          ),
+          style: AppTextStyles.font16BoldWhite(
+            context,
+          ).copyWith(color: cs.onSurface),
         ),
         SizedBox(width: 12.w),
         SvgPicture.asset(image, width: 22.r, height: 22.r),

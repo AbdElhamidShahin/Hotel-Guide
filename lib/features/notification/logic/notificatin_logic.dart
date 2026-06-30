@@ -1,11 +1,10 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../core/constants/api_constants.dart';
 import '../../../core/network/model/notification_model.dart';
 
-// ── States ────────────────────────────────────────────────────────────────────
 
 abstract class NotificationState {}
 
@@ -23,24 +22,22 @@ class NotificationError extends NotificationState {
   NotificationError(this.message);
 }
 
-// ── Cubit ─────────────────────────────────────────────────────────────────────
 
-/// ✅ Fix: NotificationCubit now uses a proper state system
-/// instead of emitting raw List<T> with no loading/error states.
 class NotificationCubit extends Cubit<NotificationState> {
-  NotificationCubit() : super(NotificationInitial());
+  final SupabaseClient _supabase;
+
+  NotificationCubit(this._supabase) : super(NotificationInitial());
 
   void addNotification(NotificationModel notification) {
     final currentList = state is NotificationLoaded
         ? (state as NotificationLoaded).notifications
         : <NotificationModel>[];
-    final newList = [notification, ...currentList];
-    emit(NotificationLoaded(newList));
+    emit(NotificationLoaded([notification, ...currentList]));
   }
 
   Future<void> fetchNotifications() async {
-    final user = Supabase.instance.client.auth.currentUser;
-    if (user == null) {
+    final userId = _supabase.auth.currentUser?.id;
+    if (userId == null) {
       emit(NotificationError('يرجى تسجيل الدخول أولاً'));
       return;
     }
@@ -48,20 +45,23 @@ class NotificationCubit extends Cubit<NotificationState> {
     emit(NotificationLoading());
 
     try {
-      final response = await Supabase.instance.client
+      final response = await _supabase
           .from(AppTableNames.notifications)
           .select()
-          .eq('user_id', user.id)
+          .eq('user_id', userId)
           .order('created_at', ascending: false);
 
-      final List<NotificationModel> fetched = (response as List<dynamic>)
-          .map((e) => NotificationModel.fromJson(e))
+      final fetched = (response as List<dynamic>)
+          .map((e) => NotificationModel.fromJson(e as Map<String, dynamic>))
           .toList();
 
       emit(NotificationLoaded(fetched));
+    } on PostgrestException catch (e) {
+      debugPrint('❌ fetchNotifications (Postgrest): ${e.message}');
+      emit(NotificationError('فشل تحميل الإشعارات، حاول مرة أخرى.'));
     } catch (e) {
       debugPrint('❌ fetchNotifications: $e');
-      emit(NotificationError('فشل تحميل الإشعارات، حاول مرة أخرى.'));
+      emit(NotificationError('حدث خطأ غير متوقع.'));
     }
   }
 }

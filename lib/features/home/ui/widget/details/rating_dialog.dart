@@ -15,7 +15,7 @@ class RatingDialog extends StatefulWidget {
 
 class _RatingDialogState extends State<RatingDialog> {
   int rating = 4;
-  final List<String> emojis = ['😍', '😄', '😐', '😟', '😢'];
+  final List<String> emojis = ['😢', '😟', '😐', '😄', '😍'];
 
   @override
   Widget build(BuildContext context) {
@@ -63,25 +63,34 @@ class _RatingDialogState extends State<RatingDialog> {
                   SizedBox(height: 32.h),
 
                   /// Stars
+                  /// ✅ Fix #6: كان المنطق معكوس بالكامل — النجمة "المختارة"
+                  /// كانت بتستخدم اسم ملف غلط/غير موجود (🦆 emoji...svg) وهو
+                  /// أصلاً غير موجود على القرص، بينما النجمة "الغير مختارة"
+                  /// كانت بتستخدم star-fill.svg (نجمة مليانة!). ده كان يخلي
+                  /// التفاعل يبان إنه "مش بيزود صح" بصرياً حتى لو الرقم
+                  /// الداخلي (rating) كان بيتحدث صحيح. دلوقتي:
+                  /// - star-fill.svg (مليانة) للنجوم المختارة، بلون أصفر/ذهبي.
+                  /// - star.svg (outline) للنجوم الغير مختارة.
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: List.generate(5, (index) {
+                      final bool isSelected = index < rating;
                       return GestureDetector(
                         onTap: () => setState(() => rating = index + 1),
                         child: Padding(
                           padding: EdgeInsets.symmetric(horizontal: 6.w),
                           child: SvgPicture.asset(
-                            index < rating
-                                ? 'assets/icons/rating/🦆 emoji _white medium star_.svg'
-                                : 'assets/icons/rating/star-fill.svg',
+                            isSelected
+                                ? 'assets/icons/rating/star-fill.svg'
+                                : 'assets/icons/rating/star.svg',
                             width: 32.r,
                             height: 32.r,
-                            colorFilter: index < rating
-                                ? null
-                                : ColorFilter.mode(
-                                    mainColor.withOpacity(0.4),
-                                    BlendMode.srcIn,
-                                  ),
+                            colorFilter: ColorFilter.mode(
+                              isSelected
+                                  ? AppColors.secondary
+                                  : mainColor.withOpacity(0.3),
+                              BlendMode.srcIn,
+                            ),
                           ),
                         ),
                       );
