@@ -74,20 +74,24 @@ class AiBookingBanner extends StatelessWidget {
                                 ),
                                 Text(
                                   '  أحجز فندقك خلال ثواني',
-                                  // Always white — text on dark gradient overlay.
                                   style: AppTextStyles.font16BoldWhite(context)
-                                      .copyWith(fontSize: 20.sp),
+                                      .copyWith(
+                                        fontSize: 20.sp,
+                                        color: Colors.white,
+                                      ),
                                 ),
                               ],
                             ),
                             SizedBox(height: 8.h),
                             Text(
                               'خلي الذكاء الإصطناعي يساعدك في عملية البحث',
-                              style: AppTextStyles.font14RegularNightfall(context)
-                                  .copyWith(
-                                color: AppColors.textWhite.withOpacity(0.7),
-                                fontSize: 13.sp,
-                              ),
+                              style:
+                                  AppTextStyles.font14RegularNightfall(
+                                    context,
+                                  ).copyWith(
+                                    color: AppColors.textWhite.withOpacity(0.7),
+                                    fontSize: 13.sp,
+                                  ),
                               textAlign: TextAlign.right,
                             ),
                           ],

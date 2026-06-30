@@ -36,17 +36,13 @@ final getIt = GetIt.instance;
 Future<void> setupGetIt() async {
   if (getIt.isRegistered<SupabaseClient>()) return;
 
-  // ✅ Safe: Supabase.initialize() is guaranteed to run before setupGetIt()
+
   getIt.registerLazySingleton<SupabaseClient>(() => Supabase.instance.client);
   getIt.registerLazySingleton<SupabaseService>(() => SupabaseService());
   getIt.registerLazySingleton<ApiService>(() => ApiService());
   getIt.registerLazySingleton<StripeService>(() => StripeService());
 
-  // ── Theme ──────────────────────────────────────────────────────────────────
-  // ThemeMode is loaded in main() before runApp and passed in here.
-  // Registered as LazySingleton so the same Cubit instance is shared across
-  // the entire app — profile toggle and MaterialApp both point to it.
-  getIt.registerLazySingleton<ThemeCubit>(
+ getIt.registerLazySingleton<ThemeCubit>(
     () => ThemeCubit(ThemeMode.light), // placeholder; real value set in main()
   );
 
@@ -99,8 +95,8 @@ Future<void> setupGetIt() async {
   getIt.registerLazySingleton<WalletRepository>(
     () => WalletRepositoryImpl(getIt<SupabaseClient>()),
   );
-  getIt.registerLazySingleton<WalletCubit>(
-        () => WalletCubit(
+ getIt.registerFactory<WalletCubit>(
+    () => WalletCubit(
       repo: getIt<WalletRepository>(),
       stripe: getIt<StripeService>(),
     ),
@@ -108,5 +104,7 @@ Future<void> setupGetIt() async {
 
   // ── Others ─────────────────────────────────────────────────────────────────
   getIt.registerLazySingleton<FavoriteCubit>(() => FavoriteCubit());
-  getIt.registerFactory<NotificationCubit>(() => NotificationCubit());
+ getIt.registerFactory<NotificationCubit>(
+    () => NotificationCubit(getIt<SupabaseClient>()),
+  );
 }

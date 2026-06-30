@@ -29,6 +29,9 @@ class HomeScreen extends StatelessWidget {
         listenable: UserDataNotifier.instance,
         builder: (context, child) {
           final displayName = notifier.name.isNotEmpty ? notifier.name : name;
+          final displayImage = notifier.image.isNotEmpty
+              ? notifier.image
+              : null;
 
           return SafeArea(
             child: CustomScrollView(
@@ -39,7 +42,10 @@ class HomeScreen extends StatelessWidget {
                     children: [
                       const CustomAppbarHome(),
                       SizedBox(height: 16.h),
-                      CustomWelcomeHeader(name: displayName),
+                      CustomWelcomeHeader(
+                        name: displayName,
+                        imageUrl: displayImage,
+                      ),
                       SizedBox(height: 14.h),
                       const AiBookingBanner(),
                       SizedBox(height: 24.h),

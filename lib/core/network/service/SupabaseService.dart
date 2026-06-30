@@ -17,9 +17,11 @@ class SupabaseService {
   }
 
   Future<List<Map<String, dynamic>>> fetchRooms(String hotelId) async {
+    // ✅ نجيب اسم الفندق مع الغرفة في نفس الكويري (join) عشان نقدر نعرض
+    // اسم الفندق صح في تفاصيل الحجز والمحفظة، بدل ما يفضل null دايمًا.
     final response = await _client
         .from(AppTableNames.rooms)
-        .select()
+        .select('*, hotels(name)')
         .eq('hotel_id', hotelId);
 
     return List<Map<String, dynamic>>.from(response);

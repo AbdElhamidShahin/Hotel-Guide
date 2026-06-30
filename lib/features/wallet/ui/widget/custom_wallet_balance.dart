@@ -3,13 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hotel_guide/core/theme/app_theme_data.dart';
+import 'package:hotel_guide/core/theme/colors.dart';
 import '../../../../core/helpers/custom_user_avatar.dart';
 import '../../../../core/helpers/local_storage_account.dart';
 import '../../../../core/network/model/profile_model.dart';
+import '../../../../core/theme/app_theme.dart';
 
 class CustomWalletBalance extends StatefulWidget {
   final Function(String) onTabChanged;
-
   CustomWalletBalance({
     super.key,
     required this.onTabChanged,
@@ -18,12 +19,10 @@ class CustomWalletBalance extends StatefulWidget {
     this.imageUrl,
     this.currentImageFile,
   });
-
   final UserProfileModel profileModel;
   final String? name;
   final String? imageUrl;
   final File? currentImageFile;
-
   @override
   State<CustomWalletBalance> createState() => _CustomWalletBalanceState();
 }
@@ -56,102 +55,99 @@ class _CustomWalletBalanceState extends State<CustomWalletBalance> {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
       child: Container(
         width: double.infinity,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16.r),
-          color: cs.primary,
+          color: AppColors.primary,
         ),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+
           children: [
             SizedBox(height: 15.h),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(60.r),
 
-            /// Avatar
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(60.r),
-                border: Border.all(color: cs.onPrimary),
-              ),
-              child: CustomUserAvatar(
-                radius: 80,
-                currentImageFile: widget.currentImageFile,
-                imagePathOrUrl: image,
-              ),
+                    border: Border.all(color: AppColors.colorText),
+                  ),
+                  child: CustomUserAvatar(
+                    radius: 80,
+                    currentImageFile: widget.currentImageFile,
+                    imagePathOrUrl: image,
+                  ),
+                ),
+              ],
             ),
-
             SizedBox(height: 12.h),
-
-            /// Name
             Text(
               widget.profileModel.fullName,
-              style: const TextStyle(color: Colors.white),
+              // ✅ Fix #4: غيّرنا font23SemiBoldBlack (مجمّدة — لا تتغير مع Dark Mode)
+              // إلى AppTextStyles.font23SemiBoldBlack(context) اللي بتقرأ من الـ Theme.
+              // على سطح primary (بنفسجي) النص دايماً أبيض، فـ copyWith لازم يفضل.
+              style: AppTextStyles.font23SemiBoldBlack(
+                context,
+              ).copyWith(color: Colors.white),
             ),
-
             SizedBox(height: 12.h),
-
-            /// ID Card
             Container(
               width: 170,
               padding: EdgeInsets.symmetric(vertical: 2.h, horizontal: 12.w),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(60.r),
-                color: cs.primaryContainer,
+                color: AppColors.ShadowPurple,
               ),
               child: Row(
                 children: [
                   Text(
-                    'ID  ',
-                    style: AppTextStyles.font22RegularWhite(
-                      context,
-                    ).copyWith(color: cs.onPrimaryContainer),
+                    "ID  ",
+                    style: font22RegularWhite.copyWith(
+                      color: AppColors.textWhite,
+                    ),
                   ),
                   Text(
                     widget.profileModel.id.length > 8
                         ? widget.profileModel.id.substring(0, 8).toUpperCase()
                         : widget.profileModel.id,
-                    style: AppTextStyles.font20BoldShadowPurple(
-                      context,
-                    ).copyWith(color: cs.onPrimaryContainer.withOpacity(0.6)),
+                    style: font20BoldShadowPurple.copyWith(
+                      color: AppColors.textWhite.withOpacity(0.6),
+                    ),
+                    textAlign: TextAlign.center,
                   ),
                 ],
               ),
             ),
-
             SizedBox(height: 16.h),
-
-            /// Balance Card
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 8.w),
               child: Container(
-                padding: const EdgeInsets.all(16),
+                padding: EdgeInsets.all(16),
                 width: double.infinity,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
-                  color: cs.surfaceContainerHighest,
+                  color: AppColors.PurplePrimary,
                 ),
                 child: Column(
                   children: [
                     Text(
-                      'الرصيد الحالي',
-                      style: AppTextStyles.font16RegularMuted(
-                        context,
-                      ).copyWith(color: cs.onSurfaceVariant),
+                      "الرصيد الحالي",
+                      style: font16RegularMuted.copyWith(
+                        color: AppColors.textWhite,
+                      ),
                     ),
 
                     Text(
-                      '${widget.profileModel.walletBalance}',
-                      style: AppTextStyles.font36BoldWhite(
-                        context,
-                      ).copyWith(color: cs.onSurface),
+                      "${widget.profileModel.walletBalance}",
+                      style: font36BoldWhite,
                     ),
 
                     SizedBox(height: 16.h),
-
-                    /// Tabs
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -163,7 +159,7 @@ class _CustomWalletBalanceState extends State<CustomWalletBalance> {
                         ),
                         Container(
                           height: 32.h,
-                          color: cs.onSurfaceVariant,
+                          color: Colors.white,
                           width: 1.5,
                         ),
                         _TabButton(
@@ -174,7 +170,7 @@ class _CustomWalletBalanceState extends State<CustomWalletBalance> {
                         ),
                         Container(
                           height: 32.h,
-                          color: cs.onSurfaceVariant,
+                          color: Colors.white,
                           width: 1.5,
                         ),
                         _TabButton(
@@ -205,7 +201,6 @@ class _TabButton extends StatelessWidget {
     required this.isActive,
     required this.onTap,
   });
-
   final String icon;
   final String label;
   final bool isActive;
@@ -213,30 +208,21 @@ class _TabButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    final Color activeColor = isDark ? Colors.white : cs.primary;
-
-    final Color inactiveColor = isDark ? Colors.white70 : cs.onSurfaceVariant;
-
     return GestureDetector(
       onTap: onTap,
       child: Column(
         children: [
           SvgPicture.asset(
             icon,
-            colorFilter: ColorFilter.mode(
-              isActive ? activeColor : inactiveColor,
-              BlendMode.srcIn,
-            ),
+            // ignore: deprecated_member_use
+            color: isActive ? AppColors.AccentsPurple : AppColors.textWhite,
           ),
           SizedBox(height: 12.h),
           Text(
             label,
-            style: AppTextStyles.font16RegularMuted(
-              context,
-            ).copyWith(color: isActive ? activeColor : inactiveColor),
+            style: font16RegularMuted.copyWith(
+              color: isActive ? AppColors.AccentsPurple : AppColors.textWhite,
+            ),
           ),
         ],
       ),

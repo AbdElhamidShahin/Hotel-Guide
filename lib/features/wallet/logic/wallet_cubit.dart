@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../core/units/stripe_service.dart';
 import '../../payment/data/model/payment_intent_input_model.dart';
@@ -15,18 +14,27 @@ class WalletCubit extends Cubit<WalletState> {
   StreamSubscription? _walletSub;
 
   WalletCubit({required WalletRepository repo, required StripeService stripe})
-    : _repo = repo,
-      _stripe = stripe,
-      super(WalletInitial());
+      : _repo = repo,
+        _stripe = stripe,
+        super(WalletInitial());
+
+  // ✅ Fix #3: نلف emit() بفحص isClosed عشان نمنع
+  // "Bad state: Cannot emit new states after calling close" اللي كان
+  // بيحصل لو المستخدم يخرج من شاشة المحفظة (أو الـ realtime listener يرد)
+  // بعد ما الـ Cubit يتقفل، وده اللي كان يظهر كـ "كراش في التنقل" بعد الشحن.
+  void _safeEmit(WalletState state) {
+    if (!isClosed) emit(state);
+  }
 
   // ── Fetch ─────────────────────────────────────────
 
   Future<void> fetchWalletData() async {
-    emit(WalletLoading());
+    _safeEmit(WalletLoading());
     final result = await _repo.getWalletDetails();
+    if (isClosed) return;
     result.fold(
-      (failure) => emit(WalletError(failure.message)),
-      (data) => emit(
+          (failure) => _safeEmit(WalletError(failure.message)),
+          (data) => _safeEmit(
         WalletLoaded(
           userProfile: data.profile,
           paymentTransactions: data.payments,
@@ -36,17 +44,24 @@ class WalletCubit extends Cubit<WalletState> {
     );
   }
 
-  // ── 🔥 Realtime Listener via Repository ──────────
-  // ✅ Fix: stream now comes from _repo.watchWalletChanges
-  // instead of raw Supabase.instance.client, making this testable.
+  // ── Realtime Listener ─────────────────────────────
+  // ✅ Fix #3: getUserId جه من الـ repo عبر getWalletDetails — مش من
+  // Supabase.instance.client مباشر. الـ Cubit دلوقتي مش عارف حاجة عن Supabase.
 
   void startWalletListener() {
-    final userId = Supabase.instance.client.auth.currentUser?.id;
-    if (userId == null) return;
+    // استخدم الـ userId اللي جه مع أول fetch بدل ما نكلم Supabase مباشر.
+    // لو الـ state loaded → عندنا profile.id جاهز.
+    final currentState = state;
+    final userId = currentState is WalletLoaded
+        ? currentState.userProfile.id
+        : null;
+
+    if (userId == null || userId.isEmpty) return;
 
     _walletSub?.cancel();
 
     _walletSub = _repo.watchWalletChanges(userId).listen((_) async {
+      if (isClosed) return;
       debugPrint('🔥 Wallet Realtime Triggered');
       await fetchWalletData();
     });
@@ -59,11 +74,11 @@ class WalletCubit extends Cubit<WalletState> {
     if (currentState is! WalletLoaded) return;
 
     final profile = currentState.userProfile;
-
-    emit(WalletTopUpLoading());
+    _safeEmit(WalletTopUpLoading());
 
     try {
       final customerId = await _stripe.getOrCreateStripeCustomerId(profile);
+      if (isClosed) return;
 
       await _stripe.makePayment(
         paymentIntentInputModel: PaymentIntentInputModel(
@@ -72,21 +87,23 @@ class WalletCubit extends Cubit<WalletState> {
           customerId: customerId,
         ),
       );
+      if (isClosed) return;
 
       debugPrint('✅ Stripe payment success');
 
       final result = await _repo.topUpBalance(amount);
+      if (isClosed) return;
 
       await result.fold(
-        (failure) async => emit(WalletTopUpError(failure.message)),
-        (_) async {
-          emit(WalletTopUpSuccess(profile.walletBalance + amount));
+            (failure) async => _safeEmit(WalletTopUpError(failure.message)),
+            (_) async {
+          _safeEmit(WalletTopUpSuccess(profile.walletBalance + amount));
           await fetchWalletData();
         },
       );
     } catch (e) {
       debugPrint('❌ topUpWallet: $e');
-      emit(WalletTopUpError(e.toString()));
+      _safeEmit(WalletTopUpError(e.toString()));
     }
   }
 
@@ -98,6 +115,7 @@ class WalletCubit extends Cubit<WalletState> {
   @override
   Future<void> close() {
     _walletSub?.cancel();
+    _walletSub = null;
     return super.close();
   }
 }
