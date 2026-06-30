@@ -12,6 +12,7 @@ class RatingDialog extends StatefulWidget {
   State<RatingDialog> createState() => _RatingDialogState();
 }
 
+
 class _RatingDialogState extends State<RatingDialog> {
   int rating = 4;
   final List<String> emojis = ['😍', '😄', '😐', '😟', '😢'];
