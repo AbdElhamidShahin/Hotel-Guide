@@ -22,7 +22,7 @@ class _RatingDialogState extends State<RatingDialog> {
 
 
 
-  
+
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
