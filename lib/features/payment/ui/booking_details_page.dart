@@ -112,6 +112,13 @@ class _BookingDetailsViewState extends State<_BookingDetailsView> {
     setState(() => _selectedPayment = 'wallet');
     showWalletBottomSheet(context, _currentBooking);
   }
+}
+
+// ── Extracted widgets ──────────────────────────────────────────────────────
+
+class _SectionTitle extends StatelessWidget {
+  const _SectionTitle({required this.title});
+  final String title;
 
   void _onCardTap() async {
     setState(() => _selectedPayment = 'card');
@@ -141,6 +148,7 @@ class _BookingDetailsViewState extends State<_BookingDetailsView> {
       ),
     );
   }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -255,6 +263,27 @@ class _BookingDetailsViewState extends State<_BookingDetailsView> {
                 ),
         ),
       ),
+    );
+  }
+}
+
+class _RadioIndicator extends StatelessWidget {
+  const _RadioIndicator({required this.isSelected});
+  final bool isSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 20.r,
+      height: 20.r,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(color: AppColors.primary),
+        color: isSelected ? AppColors.primary : Colors.transparent,
+      ),
+      child: isSelected
+          ? Icon(Icons.check, size: 12.r, color: Colors.white)
+          : null,
     );
   }
 }

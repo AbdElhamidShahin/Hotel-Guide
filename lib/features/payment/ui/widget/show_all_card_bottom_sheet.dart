@@ -87,11 +87,11 @@ void showCardsBottomSheet({
                 SizedBox(height: 10.h),
               ],
             ),
-          );
-        },
-      );
-    },
-  );
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 Widget _buildCardItem({
