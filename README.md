@@ -184,3 +184,17 @@ abstract class ApiConstants {
 ---
 
 ## Payment Flow
+App → Supabase Edge Function → Stripe API
+↓
+Returns Client Secret
+↓
+Native Stripe Sheet shown to user
+↓
+On success → updates booking in DB
+
+
+---
+
+## Developer
+
+**Abd Elhamid Shahin** — [GitHub](https://github.com/AbdElhamidShahin)
